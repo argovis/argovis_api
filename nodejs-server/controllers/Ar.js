@@ -12,3 +12,13 @@ module.exports.findARbyDate = function findARbyDate (req, res, next, date) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.arShapesFindByIDGET = function arShapesFindByIDGET (req, res, next, arid) {
+  Ar.arShapesFindByIDGET(arid)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};

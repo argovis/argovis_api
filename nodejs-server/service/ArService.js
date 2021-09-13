@@ -17,3 +17,31 @@ exports.findARbyDate = function(date) {
   });
 }
 
+
+/**
+ * shapes representing atmospheric rivers with a given ID
+ *
+ * arid String ID of an atmospheric river object
+ * returns arShapeSchema
+ **/
+exports.arShapesFindByIDGET = function(arid) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "date" : "2000-01-23T04:56:07.000+00:00",
+  "date_formateed" : "2000-01-23",
+  "shapeId" : 0,
+  "geoLocation" : {
+    "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
+    "type" : "type"
+  },
+  "_id" : "_id"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
