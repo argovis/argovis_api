@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Ar = require('../service/ArService');
 
-module.exports.arShapesFindByDateGET = function arShapesFindByDateGET (req, res, next, date) {
-  Ar.arShapesFindByDateGET(date)
+module.exports.findARbyDate = function findARbyDate (req, res, next, date) {
+  Ar.findARbyDate(date)
     .then(function (response) {
       utils.writeJson(res, response);
     })

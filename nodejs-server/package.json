@@ -4,7 +4,6 @@
   "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
   "main": "index.js",
   "scripts": {
-	"prestart": "npm install",
 	"start": "node index.js"
   },
   "keywords": [
@@ -14,7 +13,10 @@
   "private": true,
   "dependencies": {
     "connect": "^3.2.0",
+    "debug": "3.1.0",
     "js-yaml": "^3.3.0",
+    "moment": "^2.24.0",
+    "mongoose": ">=5.7.5",
     "oas3-tools": "^2.2.3"
   }
 }
