@@ -13,8 +13,8 @@ module.exports.findARbyDate = function findARbyDate (req, res, next, date) {
     });
 };
 
-module.exports.arShapesFindByIDGET = function arShapesFindByIDGET (req, res, next, arid) {
-  Ar.arShapesFindByIDGET(arid)
+module.exports.findARbyID = function findARbyID (req, res, next, arid) {
+  Ar.findARbyID(arid)
     .then(function (response) {
       utils.writeJson(res, response);
     })

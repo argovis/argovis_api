@@ -24,7 +24,7 @@ exports.findARbyDate = function(date) {
  * arid String ID of an atmospheric river object
  * returns arShapeSchema
  **/
-exports.arShapesFindByIDGET = function(arid) {
+exports.findARbyID = function(arid) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
