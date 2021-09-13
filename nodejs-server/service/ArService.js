@@ -32,10 +32,10 @@ exports.findARbyDate = function(date) {
 /**
  * shapes representing atmospheric rivers with a given ID
  *
- * arid String ID of an atmospheric river object (optional)
+ * _id String ID of an atmospheric river object (optional)
  * returns arShapeSchema
  **/
-exports.findARbyID = function(arid) {
+exports.findARbyID = function(_id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {

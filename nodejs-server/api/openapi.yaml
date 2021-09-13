@@ -58,7 +58,7 @@ paths:
       summary: shapes representing atmospheric rivers with a given ID
       operationId: findARbyID
       parameters:
-      - name: arid
+      - name: _id
         in: query
         description: ID of an atmospheric river object
         required: false
@@ -145,7 +145,7 @@ components:
         format: date-time
       example: 2010-01-01T00:00:00Z
     arID:
-      name: arid
+      name: _id
       in: query
       description: ID of an atmospheric river object
       required: false

@@ -100,7 +100,7 @@ components:
       example: '2010-01-01T00:00:00Z'
     arID:
       in: query
-      name: arid
+      name: _id
       description: ID of an atmospheric river object
       schema: 
         type: string
