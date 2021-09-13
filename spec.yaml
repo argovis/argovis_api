@@ -29,7 +29,7 @@ paths:
       tags:
       - ar
       summary: shapes representing atmospheric rivers at a given date-time
-      operationID: findARbyDate
+      operationId: findARbyDate
       parameters:
         - $ref: '#/components/parameters/arDate'
       responses:
@@ -44,7 +44,7 @@ paths:
       tags:
       - ar
       summary: shapes representing atmospheric rivers with a given ID
-      operationID: findARbyID
+      operationId: findARbyID
       parameters:
         - $ref: '#/components/parameters/arID'
       responses:

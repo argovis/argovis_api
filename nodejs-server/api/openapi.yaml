@@ -30,7 +30,7 @@ paths:
       tags:
       - ar
       summary: shapes representing atmospheric rivers at a given date-time
-      operationId: arShapesFindByDateGET
+      operationId: findARbyDate
       parameters:
       - name: date
         in: query
@@ -56,7 +56,7 @@ paths:
       tags:
       - ar
       summary: shapes representing atmospheric rivers with a given ID
-      operationId: arShapesFindByIDGET
+      operationId: findARbyID
       parameters:
       - name: arid
         in: path

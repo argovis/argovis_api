@@ -7,7 +7,7 @@
  * date Date three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00 (optional)
  * returns arShapeSchema
  **/
-exports.arShapesFindByDateGET = function(date) {
+exports.findARbyDate = function(date) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
@@ -35,7 +35,7 @@ exports.arShapesFindByDateGET = function(date) {
  * arid String ID of an atmospheric river object
  * returns arShapeSchema
  **/
-exports.arShapesFindByIDGET = function(arid) {
+exports.findARbyID = function(arid) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
