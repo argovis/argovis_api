@@ -99,7 +99,7 @@ components:
         format: date-time
       example: '2010-01-01T00:00:00Z'
     arID:
-      in: path
+      in: query
       name: arid
       description: ID of an atmospheric river object
       schema: 

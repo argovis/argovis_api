@@ -59,11 +59,11 @@ paths:
       operationId: findARbyID
       parameters:
       - name: arid
-        in: path
+        in: query
         description: ID of an atmospheric river object
         required: false
-        style: simple
-        explode: false
+        style: form
+        explode: true
         schema:
           type: string
         example: arid9999
@@ -146,11 +146,11 @@ components:
       example: 2010-01-01T00:00:00Z
     arID:
       name: arid
-      in: path
+      in: query
       description: ID of an atmospheric river object
       required: false
-      style: simple
-      explode: false
+      style: form
+      explode: true
       schema:
         type: string
       example: arid9999
