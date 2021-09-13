@@ -51,6 +51,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
       x-swagger-router-controller: Ar
+  /arShapes/findByID:
+    get:
+      tags:
+      - ar
+      summary: shapes representing atmospheric rivers with a given ID
+      operationId: arShapesFindByIDGET
+      parameters:
+      - name: arid
+        in: path
+        description: ID of an atmospheric river object
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: arid9999
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arShapeSchema'
+      x-swagger-router-controller: Ar
 components:
   schemas:
     arShapeSchema:
@@ -120,3 +144,13 @@ components:
         type: string
         format: date-time
       example: 2010-01-01T00:00:00Z
+    arID:
+      name: arid
+      in: path
+      description: ID of an atmospheric river object
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: arid9999

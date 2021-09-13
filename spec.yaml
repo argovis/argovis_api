@@ -39,6 +39,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
+  /arShapes/findByID:
+    get:
+      tags:
+      - ar
+      summary: shapes representing atmospheric rivers with a given ID
+      operationID: findARbyID
+      parameters:
+        - $ref: '#/components/parameters/arID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arShapeSchema'
 components:
   schemas:
     arShapeSchema:
@@ -83,5 +98,13 @@ components:
         type: string
         format: date-time
       example: '2010-01-01T00:00:00Z'
+    arID:
+      in: path
+      name: arid
+      description: ID of an atmospheric river object
+      schema: 
+        type: string
+      example: 'arid9999'
+
 security:
   - name: []
