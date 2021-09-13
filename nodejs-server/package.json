@@ -1,0 +1,20 @@
+{
+  "name": "argovis-api",
+  "version": "0.1",
+  "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
+  "main": "index.js",
+  "scripts": {
+	"prestart": "npm install",
+	"start": "node index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "oas3-tools": "^2.2.3"
+  }
+}

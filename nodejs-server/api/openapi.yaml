@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Argovis API
+  description: "REST API for Argo profiles, platforms, selections, BGC data, gridded\
+    \ products, etc."
+  contact:
+    name: Argovis Collaboration
+    url: https://argovis.colorado.edu/
+    email: tbd@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: "0.1"
+externalDocs:
+  description: Find us on GitHub
+  url: https://github.com/argovis/argovis_api
+servers:
+- url: https://argovis.colorado.edu
+  description: "Server Hosted by University of Colorado, Boulder"
+- url: http://localhost:3001
+  description: Local server for testing and development
+security:
+- name: []
+tags:
+- name: ar
+  description: atmospheric river shapes
+paths:
+  /arShapes/findByDate:
+    get:
+      tags:
+      - ar
+      summary: shapes representing atmospheric rivers at a given date-time
+      operationId: arShapesFindByDateGET
+      parameters:
+      - name: date
+        in: query
+        description: three hour increments starting at 2004-01-01T00:00:00 and ending
+          at 2017-04-02T03:00:00
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+        example: 2010-01-01T00:00:00Z
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arShapeSchema'
+      x-swagger-router-controller: Ar
+components:
+  schemas:
+    arShapeSchema:
+      required:
+      - _id
+      - date
+      - date_formatted
+      - geoLocation
+      - shapeID
+      type: object
+      properties:
+        _id:
+          type: string
+        date:
+          type: string
+          format: date-time
+        shapeId:
+          type: integer
+        geoLocation:
+          $ref: '#/components/schemas/arShapeSchema_geoLocation'
+        date_formateed:
+          type: string
+          format: date
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        date_formateed: 2000-01-23
+        shapeId: 0
+        geoLocation:
+          coordinates:
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          type: type
+        _id: _id
+    arShapeSchema_geoLocation:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            uniqueItems: true
+            type: array
+            items:
+              maxItems: 2
+              minItems: 2
+              type: number
+      example:
+        coordinates:
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        type: type
+  parameters:
+    arDate:
+      name: date
+      in: query
+      description: three hour increments starting at 2004-01-01T00:00:00 and ending
+        at 2017-04-02T03:00:00
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date-time
+      example: 2010-01-01T00:00:00Z
