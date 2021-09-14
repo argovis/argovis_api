@@ -39,6 +39,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /arShapes/findByID:
     get:
       tags:
@@ -56,10 +74,53 @@ paths:
                 $ref: '#/components/schemas/arShapeSchema'
         '400':
           description: Bad Request
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         '404':
           description: Not Found
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /arShapes:
+    get:
+      tags:
+      - ar
+      summary: one instance of a shape representing an atmospheric river
+      operationId: findOneAR
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arShapeSchema'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 components:
   schemas:
     arShapeSchema:
@@ -95,6 +156,16 @@ components:
         date_formateed:
           type: string
           format: date
+    errorResponse:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
   parameters:
     arDate:
       in: query
@@ -112,7 +183,7 @@ components:
       description: ID of an atmospheric river object
       schema: 
         type: string
-      example: 'arid9999'
+      example: '1_262992'
 
 security:
   - name: []

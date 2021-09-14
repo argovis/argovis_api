@@ -22,3 +22,13 @@ module.exports.findARbyID = function findARbyID (req, res, next, _id) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.findOneAR = function findOneAR (req, res, next) {
+  Ar.findOneAR()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
