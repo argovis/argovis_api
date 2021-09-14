@@ -26,9 +26,15 @@ exports.findARbyDate = function(date) {
  **/
 exports.findARbyID = function(_id) {
   return new Promise(function(resolve, reject) {
+
+    // confirm arguments are reasonable, otherwise error 400.
+    if(!RegExp('^[0-9]+_[0-9]+$').test(String(_id))) reject(400)
+
+    // perform DB query, error 500 if it fails or 404 if no results.
     const query = arShapes.find({_id: _id})
     query.exec(function (err, arShapes) {
-        if (err) reject(err);
+        if (err) reject(500);
+        if(arShapes.length == 0) reject(404);
         resolve(arShapes);
     })
   });
