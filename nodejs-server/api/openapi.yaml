@@ -50,6 +50,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Ar
   /arShapes/findByID:
     get:
@@ -66,7 +84,7 @@ paths:
         explode: true
         schema:
           type: string
-        example: arid9999
+        example: 1_262992
       responses:
         "200":
           description: OK
@@ -76,10 +94,54 @@ paths:
                 $ref: '#/components/schemas/arShapeSchema'
         "400":
           description: Bad Request
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         "404":
           description: Not Found
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Ar
+  /arShapes:
+    get:
+      tags:
+      - ar
+      summary: one instance of a shape representing an atmospheric river
+      operationId: findOneAR
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/arShapeSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Ar
 components:
   schemas:
@@ -116,6 +178,16 @@ components:
             - 6.02745618307040320615897144307382404804229736328125
           type: type
         _id: _id
+    errorResponse:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
     arShapeSchema_geoLocation:
       type: object
       properties:
@@ -159,4 +231,4 @@ components:
       explode: true
       schema:
         type: string
-      example: arid9999
+      example: 1_262992
