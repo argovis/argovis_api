@@ -209,6 +209,25 @@ components:
         - - 6.02745618307040320615897144307382404804229736328125
           - 6.02745618307040320615897144307382404804229736328125
         type: type
+  responses:
+    badRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    notFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    serverError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
   parameters:
     arDate:
       name: date
