@@ -93,6 +93,7 @@ components:
     arDate:
       in: query
       name: date
+      required: true
       description: three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00
       schema:
         type: string
@@ -101,6 +102,7 @@ components:
     arID:
       in: query
       name: _id
+      required: true
       description: ID of an atmospheric river object
       schema: 
         type: string
