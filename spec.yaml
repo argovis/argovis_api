@@ -54,6 +54,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
 components:
   schemas:
     arShapeSchema:
