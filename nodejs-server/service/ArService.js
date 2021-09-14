@@ -9,9 +9,13 @@ const arShapes = require('../models/arShapes');
  **/
 exports.findARbyDate = function(date) {
   return new Promise(function(resolve, reject) {
+    // argument sanitization performed by oa3 typechecking
+
+    // perform DB query, error 500 if it fails or 404 if no results.
     const query = arShapes.find({date: date});
     query.exec(function (err, arShapes) {
-        if (err) reject(err);
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(arShapes.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(arShapes);
     })
   });
@@ -28,13 +32,13 @@ exports.findARbyID = function(_id) {
   return new Promise(function(resolve, reject) {
 
     // confirm arguments are reasonable, otherwise error 400.
-    if(!RegExp('^[0-9]+_[0-9]+$').test(String(_id))) reject(400)
+    if(!RegExp('^[0-9]+_[0-9]+$').test(String(_id))) reject({"code": 400, "message": "Bad request: Valid ID parameters match '^[0-9]+_[0-9]+$'."})
 
     // perform DB query, error 500 if it fails or 404 if no results.
     const query = arShapes.find({_id: _id})
     query.exec(function (err, arShapes) {
-        if (err) reject(500);
-        if(arShapes.length == 0) reject(404);
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(arShapes.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(arShapes);
     })
   });

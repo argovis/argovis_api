@@ -6,10 +6,10 @@ var Ar = require('../service/ArService');
 module.exports.findARbyDate = function findARbyDate (req, res, next, date) {
   Ar.findARbyDate(date)
     .then(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, 200);
     },
-    function (responseCode) {
-      utils.writeJson(res, {}, responseCode);
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -19,10 +19,10 @@ module.exports.findARbyDate = function findARbyDate (req, res, next, date) {
 module.exports.findARbyID = function findARbyID (req, res, next, _id) {
   Ar.findARbyID(_id)
     .then(function (response) {
-      utils.writeJson(res, response);
+      utils.writeJson(res, response, 200);
     },
-    function (responseCode) {
-      utils.writeJson(res, {}, responseCode);
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
