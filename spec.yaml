@@ -40,23 +40,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/badRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/notFound'
         '500':
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/serverError'
   /arShapes/findByID:
     get:
       tags:
@@ -73,23 +61,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/badRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/notFound'
         '500':
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/serverError'
   /arShapes:
     get:
       tags:
@@ -104,23 +80,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/arShapeSchema'
         '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/badRequest'
         '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/notFound'
         '500':
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
+          $ref: '#/components/responses/serverError'
 components:
   schemas:
     arShapeSchema:
@@ -184,3 +148,23 @@ components:
       schema: 
         type: string
       example: '1_262992'
+  responses:
+    badRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    notFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    serverError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+
