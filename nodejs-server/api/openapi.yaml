@@ -36,7 +36,7 @@ paths:
         in: query
         description: three hour increments starting at 2004-01-01T00:00:00 and ending
           at 2017-04-02T03:00:00
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -61,7 +61,7 @@ paths:
       - name: _id
         in: query
         description: ID of an atmospheric river object
-        required: false
+        required: true
         style: form
         explode: true
         schema:
@@ -137,7 +137,7 @@ components:
       in: query
       description: three hour increments starting at 2004-01-01T00:00:00 and ending
         at 2017-04-02T03:00:00
-      required: false
+      required: true
       style: form
       explode: true
       schema:
@@ -148,7 +148,7 @@ components:
       name: _id
       in: query
       description: ID of an atmospheric river object
-      required: false
+      required: true
       style: form
       explode: true
       schema:

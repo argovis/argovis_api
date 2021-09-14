@@ -4,7 +4,7 @@
 /**
  * shapes representing atmospheric rivers at a given date-time
  *
- * date Date three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00 (optional)
+ * date Date three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00
  * returns arShapeSchema
  **/
 exports.findARbyDate = function(date) {
@@ -32,7 +32,7 @@ exports.findARbyDate = function(date) {
 /**
  * shapes representing atmospheric rivers with a given ID
  *
- * _id String ID of an atmospheric river object (optional)
+ * _id String ID of an atmospheric river object
  * returns arShapeSchema
  **/
 exports.findARbyID = function(_id) {
