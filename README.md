@@ -18,6 +18,6 @@ docker container run --rm -v ${PWD}:/local \
 
 4. Implement custom logic and commit to the `server` branch, which will be the build and release branch.
 
-5. [build image]
+5. Image can be built from the local `Dockerfile`
 
-6. [tests]
+6. API endpoint testing is handled by supertest, mocha and chai, and is performed from an external test container that issues requests to a build of the main api container. See `.travis.yml` for a detailed description of how to set these tests up and run them locally.
