@@ -10,6 +10,6 @@ script:
   - docker network create travis
   - docker container run -d --network travis --name database argovis/testdb:0.1 
   - docker image build -t argovis/api:test .
-  - docker iamge build -f Dockerfile-test -t testrunner:dev .
+  - docker image build -f Dockerfile-test -t testrunner:dev .
   - docker container run -d --network travis --name api argovis/api:test
   - docker container run --network travis testrunner:dev
