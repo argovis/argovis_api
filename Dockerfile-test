@@ -1,0 +1,6 @@
+FROM node:16.8.0
+WORKDIR /tests
+COPY tests/package.json .
+RUN npm install
+COPY tests .
+CMD npm test
