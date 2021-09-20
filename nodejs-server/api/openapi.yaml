@@ -24,6 +24,8 @@ security:
 tags:
 - name: ar
   description: atmospheric river shapes
+- name: covar
+  description: Argo float position forcast product
 paths:
   /arShapes/findByDate:
     get:
@@ -43,7 +45,7 @@ paths:
         schema:
           type: string
           format: date-time
-        example: 2010-01-01T00:00:00Z
+          example: 2010-01-01T00:00:00Z
       responses:
         "200":
           description: OK
@@ -85,7 +87,7 @@ paths:
         explode: true
         schema:
           type: string
-        example: 1_262992
+          example: 1_262992
       responses:
         "200":
           description: OK
@@ -144,6 +146,89 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Ar
+  /covarGrid/{lat}/{lon}/{forcastDays}:
+    get:
+      tags:
+      - covar
+      summary: Probability distribution field for a float at point lat-lon after forcastDays.
+      operationId: findCovar
+      parameters:
+      - name: lat
+        in: path
+        description: latitude (degrees) of Argo float location
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 90
+          minimum: -90
+          type: number
+          example: 5.25
+      - name: lon
+        in: path
+        description: longitude (degrees) of Argo float location
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 180
+          minimum: -180
+          type: number
+          example: -20.33
+      - name: forcastDays
+        in: path
+        description: number of days over which to project Argo float drift
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 1800
+          minimum: 60
+          type: number
+          example: 60
+          enum:
+          - 60
+          - 120
+          - 140
+          - 240
+          - 360
+          - 480
+          - 720
+          - 840
+          - 960
+          - 1080
+          - 1200
+          - 1320
+          - 1440
+          - 1560
+          - 1680
+          - 1800
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovarSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Covar
 components:
   schemas:
     arShapeSchema:
@@ -163,7 +248,7 @@ components:
         shapeId:
           type: integer
         geoLocation:
-          $ref: '#/components/schemas/arShapeSchema_geoLocation'
+          $ref: '#/components/schemas/geoLocation'
         date_formateed:
           type: string
           format: date
@@ -179,17 +264,60 @@ components:
             - 6.02745618307040320615897144307382404804229736328125
           type: type
         _id: _id
-    errorResponse:
+    CovarSchema:
       required:
-      - code
-      - message
+      - _id
+      - dLat
+      - dLon
+      - feature
+      - forcastDays
+      - geoLocation
       type: object
       properties:
-        code:
-          type: integer
-        message:
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/CovarSchema_features'
+        _id:
           type: string
-    arShapeSchema_geoLocation:
+        dLat:
+          type: number
+        dLon:
+          type: number
+        forcastDays:
+          type: integer
+        geoLocation:
+          $ref: '#/components/schemas/geoLocation'
+      example:
+        features:
+        - geometry:
+            coordinates:
+            - - 0.80082819046101150206595775671303272247314453125
+              - 0.80082819046101150206595775671303272247314453125
+            - - 0.80082819046101150206595775671303272247314453125
+              - 0.80082819046101150206595775671303272247314453125
+            type: type
+          type: type
+        - geometry:
+            coordinates:
+            - - 0.80082819046101150206595775671303272247314453125
+              - 0.80082819046101150206595775671303272247314453125
+            - - 0.80082819046101150206595775671303272247314453125
+              - 0.80082819046101150206595775671303272247314453125
+            type: type
+          type: type
+        dLat: 6.02745618307040320615897144307382404804229736328125
+        geoLocation:
+          coordinates:
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          type: type
+        dLon: 1.46581298050294517310021547018550336360931396484375
+        _id: _id
+        forcastDays: 5
+    geoLocation:
       type: object
       properties:
         type:
@@ -209,6 +337,52 @@ components:
           - 6.02745618307040320615897144307382404804229736328125
         - - 6.02745618307040320615897144307382404804229736328125
           - 6.02745618307040320615897144307382404804229736328125
+        type: type
+    errorResponse:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    CovarSchema_geometry:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              maxItems: 2
+              minItems: 2
+              type: number
+      example:
+        coordinates:
+        - - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+        - - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+        type: type
+    CovarSchema_features:
+      type: object
+      properties:
+        geometry:
+          $ref: '#/components/schemas/CovarSchema_geometry'
+        type:
+          type: string
+      example:
+        geometry:
+          coordinates:
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          - - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+          type: type
         type: type
   responses:
     badRequest:
@@ -242,7 +416,7 @@ components:
       schema:
         type: string
         format: date-time
-      example: 2010-01-01T00:00:00Z
+        example: 2010-01-01T00:00:00Z
     arID:
       name: _id
       in: query
@@ -252,4 +426,57 @@ components:
       explode: true
       schema:
         type: string
-      example: 1_262992
+        example: 1_262992
+    lat:
+      name: lat
+      in: path
+      description: latitude (degrees) of Argo float location
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maximum: 90
+        minimum: -90
+        type: number
+        example: 5.25
+    lon:
+      name: lon
+      in: path
+      description: longitude (degrees) of Argo float location
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maximum: 180
+        minimum: -180
+        type: number
+        example: -20.33
+    forcastDays:
+      name: forcastDays
+      in: path
+      description: number of days over which to project Argo float drift
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maximum: 1800
+        minimum: 60
+        type: number
+        example: 60
+        enum:
+        - 60
+        - 120
+        - 140
+        - 240
+        - 360
+        - 480
+        - 720
+        - 840
+        - 960
+        - 1080
+        - 1200
+        - 1320
+        - 1440
+        - 1560
+        - 1680
+        - 1800

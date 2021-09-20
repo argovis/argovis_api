@@ -21,8 +21,10 @@ servers:
 security:
 - name: []
 tags: 
-- name: 'ar'
-  description: 'atmospheric river shapes'
+  - name: 'ar'
+    description: 'atmospheric river shapes'
+  - name: 'covar'
+    description: 'Argo float position forcast product'
 paths:
   /arShapes/findByDate:
     get:
@@ -85,6 +87,29 @@ paths:
           $ref: '#/components/responses/notFound'
         '500':
           $ref: '#/components/responses/serverError'
+  /covarGrid/{lat}/{lon}/{forcastDays}:
+    get:
+      tags:
+      - covar
+      summary: Probability distribution field for a float at point lat-lon after forcastDays.
+      operationId: findCovar
+      parameters:
+        - $ref: '#/components/parameters/lat'
+        - $ref: '#/components/parameters/lon'
+        - $ref: '#/components/parameters/forcastDays'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CovarSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
 components:
   schemas:
     arShapeSchema:
@@ -104,22 +129,64 @@ components:
         shapeId:
           type: integer
         geoLocation:
-          type: object
-          properties:
-            type:
-              type: string
-            coordinates:
-              type: array
-              items:
-                type: array
-                items:
-                  type: number
-                  minItems: 2
-                  maxItems: 2
-                uniqueItems: true
+          $ref: '#/components/schemas/geoLocation'
         date_formateed:
           type: string
           format: date
+    CovarSchema:
+      type: object
+      required:
+      - _id
+      - feature
+      - dLat
+      - forcastDays
+      - dLon
+      - geoLocation
+      properties:
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              geometry:
+                type: object
+                properties:
+                  type: 
+                    type: string
+                  coordinates: 
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: number
+                        minItems: 2
+                        maxItems: 2
+              type: 
+                type: string    
+        _id:
+          type: string
+        dLat:
+          type: number
+        dLon:
+          type: number
+        forcastDays:
+          type: integer
+        geoLocation: 
+          $ref: '#/components/schemas/geoLocation'
+    geoLocation:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+              minItems: 2
+              maxItems: 2
+            uniqueItems: true
     errorResponse:
       type: object
       required:
@@ -136,11 +203,11 @@ components:
       name: date
       required: true
       description: three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00
+      allowReserved: true
       schema:
         type: string
         format: date-time
-      allowReserved: true
-      example: '2010-01-01T00:00:00Z'
+        example: '2010-01-01T00:00:00Z'
     arID:
       in: query
       name: _id
@@ -148,7 +215,39 @@ components:
       description: ID of an atmospheric river object
       schema: 
         type: string
-      example: '1_262992'
+        example: '1_262992'
+    lat:
+      in: path
+      name: lat
+      required: true
+      description: latitude (degrees) of Argo float location
+      schema: 
+        type: number
+        minimum: -90
+        maximum: 90
+        example: 5.25
+    lon:
+      in: path
+      name: lon
+      required: true
+      description: longitude (degrees) of Argo float location
+      schema: 
+        type: number
+        minimum: -180
+        maximum: 180
+        example: -20.33
+    forcastDays:
+      in: path
+      name: forcastDays
+      required: true
+      description: number of days over which to project Argo float drift
+      schema: 
+        type: number
+        minimum: 60
+        maximum: 1800
+        example: 60
+        enum: [60, 120, 140, 240, 360, 480, 720, 840, 960, 1080, 1200, 1320, 1440, 1560, 1680, 1800]
+
   responses:
     badRequest:
       description: Bad Request

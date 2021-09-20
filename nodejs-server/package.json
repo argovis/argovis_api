@@ -15,6 +15,7 @@
     "connect": "^3.2.0",
     "cors": "^2.8.5",
     "debug": "3.1.0",
+    "geojson-validation": "^0.1.6",
     "js-yaml": "^3.3.0",
     "moment": "^2.24.0",
     "mongoose": ">=5.7.5",
