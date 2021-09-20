@@ -12,23 +12,21 @@ const GJV = require('geojson-validation');
  **/
 exports.findCovar = function(lat,lon,forcastDays) {
   return new Promise(function(resolve, reject) {
-    // argument sanitization performed by oa3 typechecking
 
-    point = {'type': 'Point', 'coordinates': [lat, lon]}
-    GJV.valid(point)
-    GJV.isPoint(point)
+    var point = {"type": "Point", "coordinates": [lon,lat]};
+    if (!GJV.valid(point) || !GJV.isPoint(point)) reject({"code": 400, "message": "Invalid lat/lon."});
 
-    // perform DB query, error 500 if it fails or 404 if no results.
     const query = covar.findOne({forcastDays: forcastDays, geoLocation: {
                                 $near: {
-                                    $geometry: point,
+                                    $geometry: point
                                     //$maxDistance: radius
                                 }
                             }
                             });
+
     query.exec(function (err, covars) {
         if (err) reject({"code": 500, "message": "Server error"});
-        if(covars.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (covars == null) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(covars);
     })
   });

@@ -57,7 +57,7 @@ exports.findOneAR = function() {
     const query = arShapes.findOne()
     query.exec(function (err, arShapes) {
         if (err) reject({"code": 500, "message": "Server error"});
-        if(arShapes.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (arShapes == null) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(arShapes);
     })
   });
