@@ -248,7 +248,7 @@ components:
         shapeId:
           type: integer
         geoLocation:
-          $ref: '#/components/schema/geoLocation'
+          $ref: '#/components/schemas/geoLocation'
         date_formateed:
           type: string
           format: date
@@ -287,7 +287,7 @@ components:
         forcastDays:
           type: integer
         geoLocation:
-          $ref: '#/components/schema/geoLocation'
+          $ref: '#/components/schemas/geoLocation'
       example:
         features:
         - geometry:
