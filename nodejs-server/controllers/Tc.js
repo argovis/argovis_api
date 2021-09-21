@@ -54,3 +54,13 @@ module.exports.findTCbyDateRange = function findTCbyDateRange (req, res, next, s
       utils.writeJson(res, response);
     });
 };
+
+module.exports.findTCbyNameYear = function findTCbyNameYear (req, res, next, name, year) {
+  Tc.findTCbyNameYear(name, year)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};

@@ -64,3 +64,10 @@ describe("GET /tc/stormNameList", function () {
     expect(response.body[0]).to.eql('LANE-2018');   
   });
 });
+
+describe("GET /tc/findByNameYear", function () {
+  it("return a tc by name and year", async function () {
+    const response = await request.get("/tc/findByNameYear?name=lane&year=2018");
+    expect(response.body[0].name).to.eql('LANE');   
+  });
+});

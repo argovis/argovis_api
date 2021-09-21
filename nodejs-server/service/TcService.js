@@ -107,3 +107,25 @@ exports.findTCbyDateRange = function(startDate,endDate) {
     })
   });
 }
+
+/**
+ * find a tropical cyclone by name and year
+ *
+ * name String name of tropical cyclone
+ * year BigDecimal year of tropical cyclone
+ * returns tcSchema
+ **/
+exports.findTCbyNameYear = function(name,year) {
+  return new Promise(function(resolve, reject) {
+
+    const tc_name = name.toUpperCase()
+
+    const query = tcTraj.find({name: tc_name, year: year})
+    query.exec(function (err, tcTraj) {
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(tcTraj.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        resolve(tcTraj);
+    })
+  });
+}
+
