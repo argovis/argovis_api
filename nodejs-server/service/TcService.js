@@ -25,13 +25,34 @@ exports.findOneTC = function() {
  **/
 exports.findStormNameList = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
+    const TRAJ_GROUP = { _id: '$stormName'}    
+    const TRAJ_PROJ = { 
+                        _id: 1,
+                        name: 1,
+                        year: 1,
+                        stormName: 1,
+                      }
+
+    let agg = [ {$addFields: {
+                    stormName: {
+                            $concat: [
+                                '$name', '-',
+                                {$toString: '$year'}
+                            ]
+                    }
+                }},
+                {$match: {stormName: {$exists: true, $ne: null}}},
+                {$group: TRAJ_GROUP},
+                {$project: TRAJ_PROJ}
+
+              ]
+    const query = tcTraj.aggregate(agg)
+    query.exec(function (err, tcTraj) {
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(tcTraj.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        resolve(tcTraj);
+    })
   });
 }
 

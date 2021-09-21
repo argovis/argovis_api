@@ -20,6 +20,9 @@ module.exports.findStormNameList = function findStormNameList (req, res, next) {
   Tc.findStormNameList()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
