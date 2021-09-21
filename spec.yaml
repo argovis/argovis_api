@@ -152,6 +152,28 @@ paths:
           $ref: '#/components/responses/notFound'
         '500':
           $ref: '#/components/responses/serverError'
+  /tc/findByDateRange:
+    get:
+      tags:
+      - tc
+      summary: tropical cyclones intersecting a time period
+      operationId: findTCbyDateRange
+      parameters:
+      - $ref: '#/components/parameters/startDate'
+      - $ref: '#/components/parameters/endDate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
 components:
   schemas:
     arShapeSchema:
@@ -320,6 +342,26 @@ components:
       name: date
       required: true
       description: date-time formatted string
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: '2010-01-01T00:00:00Z'
+    startDate:
+      in: query
+      name: startDate
+      required: true
+      description: date-time formatted string indicating the beginning of a time period
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: '2010-01-01T00:00:00Z'
+    endDate:
+      in: query
+      name: endDate
+      required: true
+      description: date-time formatted string indicating the end of a time period
       allowReserved: true
       schema:
         type: string

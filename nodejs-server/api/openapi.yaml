@@ -307,6 +307,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Tc
+  /tc/findByDateRange:
+    get:
+      tags:
+      - tc
+      summary: tropical cyclones intersecting a time period
+      operationId: findTCbyDateRange
+      parameters:
+      - name: startDate
+        in: query
+        description: date-time formatted string indicating the beginning of a time
+          period
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: date-time formatted string indicating the end of a time period
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Tc
 components:
   schemas:
     arShapeSchema:
@@ -625,6 +681,30 @@ components:
       name: date
       in: query
       description: date-time formatted string
+      required: true
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    startDate:
+      name: startDate
+      in: query
+      description: date-time formatted string indicating the beginning of a time period
+      required: true
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    endDate:
+      name: endDate
+      in: query
+      description: date-time formatted string indicating the end of a time period
       required: true
       style: form
       explode: true
