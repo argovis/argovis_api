@@ -32,5 +32,5 @@ var tcTrajSchema = Schema(
     }
   );
 
-module.exports = mongoose.model('tcTraj', tcTrajSchema, 'tc');
+module.exports = mongoose.model('tcTrajs', tcTrajSchema, 'tcTrajs');
 

@@ -13,6 +13,6 @@ exports.findOneTC = function() {
         if (err) reject({"code": 500, "message": "Server error"});
         if (tcTraj == null) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(tcTraj);
-
+    })
   });
 }
