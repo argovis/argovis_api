@@ -56,6 +56,24 @@ exports.findOneTC = function() {
 
 
 /**
+ * returns a list of tropical cyclone names and years
+ *
+ * returns List
+ **/
+exports.findStormNameList = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * tropical cyclones at a given date-time
  *
  * date Date date-time formatted string
