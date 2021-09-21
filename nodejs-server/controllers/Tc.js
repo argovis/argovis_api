@@ -20,6 +20,9 @@ module.exports.findTCbyDate = function findTCbyDate (req, res, next, date) {
   Tc.findTCbyDate(date)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
