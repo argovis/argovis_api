@@ -266,6 +266,7 @@ components:
       - source
       - startDate
       - endDate
+      - year
       properties:
         _id:
           type: string
@@ -281,6 +282,8 @@ components:
         endDate:
           type: string
           format: date-time
+        year:
+          type: number
         trajData:
           type: array
           items:
