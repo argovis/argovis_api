@@ -1,9 +1,7 @@
 openapi: 3.0.3
 info:
   title: Argovis API
-  description: REST API for Argo profiles, platforms, selections, BGC data, gridded products,
-    etc.
-  termsOfService: ''
+  description: REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.
   contact:
     name: Argovis Collaboration
     email: tbd@example.com
@@ -16,15 +14,19 @@ externalDocs:
   description: Find us on GitHub
   url: https://github.com/argovis/argovis_api
 servers:
-  - url: 'https://argovis.colorado.edu'
-    description: Server Hosted by University of Colorado, Boulder
-  - url: 'http://localhost:3001'
-    description: Local server for testing and development
+- url: 'https://argovis.colorado.edu'
+  description: Server Hosted by University of Colorado, Boulder
+- url: 'http://localhost:3001'
+  description: Local server for testing and development
+security:
+- name: []
 tags: 
   - name: 'ar'
     description: 'atmospheric river shapes'
   - name: 'covar'
     description: 'Argo float position forcast product'
+  - name: 'tc'
+    description: 'tropical cyclone data'
 paths:
   /arShapes/findByDate:
     get:
@@ -33,7 +35,7 @@ paths:
       summary: shapes representing atmospheric rivers at a given date-time
       operationId: findARbyDate
       parameters:
-        - $ref: '#/components/parameters/arDate'
+      - $ref: '#/components/parameters/arDate'
       responses:
         '200':
           description: OK
@@ -110,6 +112,25 @@ paths:
           $ref: '#/components/responses/notFound'
         '500':
           $ref: '#/components/responses/serverError'
+  /tc:
+    get:
+      tags:
+      - tc
+      summary: one tropical cyclone instance
+      operationId: findOneTC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
 components:
   schemas:
     arShapeSchema:
@@ -137,7 +158,7 @@ components:
       type: object
       required:
       - _id
-      - feature
+      - features
       - dLat
       - forcastDays
       - dLon
@@ -173,6 +194,63 @@ components:
           type: integer
         geoLocation: 
           $ref: '#/components/schemas/geoLocation'
+    tcSchema:
+      type: object
+      required:
+      - _id
+      - num
+      - source
+      - startDate
+      - endDate
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        num:
+          type: number
+        source:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        trajData:
+          type: array
+          items:
+            type: object
+            required:
+            - date
+            - time
+            - class
+            - lat
+            - lon
+            - timestamp
+            - geoLocation
+            properties:
+              date: 
+                type: string
+              time:  
+                type: number
+              class:  
+                type: string
+              lat:  
+                type: number
+              lon:  
+                type: number
+              wind:  
+                type: number
+              pres: 
+                type: number
+              season: 
+                type: number
+              timestamp: 
+                type: string
+                format: date-time
+              geoLocation:
+                $ref: '#/components/schemas/geoLocation'
     geoLocation:
       type: object
       properties:
@@ -268,5 +346,3 @@ components:
           schema:
             $ref: '#/components/schemas/errorResponse'
 
-security:
-  - name: []
