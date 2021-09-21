@@ -57,3 +57,10 @@ describe("GET /tc/findByDateRange", function () {
     expect(response.status).to.eql(400);    
   });
 });
+
+describe("GET /tc/stormNameList", function () {
+  it("format and return an appropriate storm name", async function () {
+    const response = await request.get("/tc/stormNameList");
+    expect(response.body[0]).to.eql('LANE-2018');   
+  });
+});
