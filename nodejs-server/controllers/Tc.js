@@ -16,6 +16,16 @@ module.exports.findOneTC = function findOneTC (req, res, next) {
     });
 };
 
+module.exports.findStormNameList = function findStormNameList (req, res, next) {
+  Tc.findStormNameList()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.findTCbyDate = function findTCbyDate (req, res, next, date) {
   Tc.findTCbyDate(date)
     .then(function (response) {
