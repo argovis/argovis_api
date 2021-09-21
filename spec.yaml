@@ -131,6 +131,27 @@ paths:
           $ref: '#/components/responses/notFound'
         '500':
           $ref: '#/components/responses/serverError'
+  /tc/findByDate:
+    get:
+      tags:
+      - tc
+      summary: tropical cyclones at a given date-time
+      operationId: findTCbyDate
+      parameters:
+      - $ref: '#/components/parameters/date'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
 components:
   schemas:
     arShapeSchema:
@@ -294,6 +315,16 @@ components:
       schema: 
         type: string
         example: '1_262992'
+    date:
+      in: query
+      name: date
+      required: true
+      description: date-time formatted string
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: '2010-01-01T00:00:00Z'
     lat:
       in: path
       name: lat

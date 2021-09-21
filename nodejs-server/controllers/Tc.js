@@ -12,3 +12,13 @@ module.exports.findOneTC = function findOneTC (req, res, next) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.findTCbyDate = function findTCbyDate (req, res, next, date) {
+  Tc.findTCbyDate(date)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
