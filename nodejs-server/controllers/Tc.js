@@ -22,3 +22,13 @@ module.exports.findTCbyDate = function findTCbyDate (req, res, next, date) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.findTCbyDateRange = function findTCbyDateRange (req, res, next, startDate, endDate) {
+  Tc.findTCbyDateRange(startDate, endDate)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
