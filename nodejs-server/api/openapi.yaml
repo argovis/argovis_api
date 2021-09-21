@@ -404,6 +404,25 @@ paths:
       - tc
       summary: find a tropical cyclone by name and year
       operationId: findTCbyNameYear
+      parameters:
+      - name: name
+        in: query
+        description: name of tropical cyclone
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: LANE
+      - name: year
+        in: query
+        description: year of tropical cyclone
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 2018
       responses:
         "200":
           description: OK

@@ -202,22 +202,20 @@ paths:
       summary: find a tropical cyclone by name and year
       operationId: findTCbyNameYear
       parameters:
-        tcname:
-          in: query
-          name: name
-          required: true
-          description: name of tropical cyclone
-          schema:
-            type: string
-            example: 'LANE'
-        tcyear:
-          in: query
-          name: year
-          required: true
-          description: year of tropical cyclone
-          schema:
-            type: number
-            example: 2018
+      - name: name
+        in: query
+        required: true
+        description: name of tropical cyclone
+        schema:
+          type: string
+          example: 'LANE'
+      - name: year
+        in: query
+        required: true
+        description: year of tropical cyclone
+        schema:
+          type: number
+          example: 2018
       responses:
         '200':
           description: OK
