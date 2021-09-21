@@ -33,6 +33,9 @@ module.exports.findTCbyDateRange = function findTCbyDateRange (req, res, next, s
   Tc.findTCbyDateRange(startDate, endDate)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);

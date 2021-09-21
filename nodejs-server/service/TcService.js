@@ -1,5 +1,6 @@
 'use strict';
 const tcTraj = require('../models/tcTraj');
+const moment = require('moment');
 
 /**
  * one tropical cyclone instance
@@ -43,50 +44,27 @@ exports.findTCbyDate = function(date) {
  **/
 exports.findTCbyDateRange = function(startDate,endDate) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "endDate" : "2000-01-23T04:56:07.000+00:00",
-  "num" : 0.8008281904610115,
-  "name" : "name",
-  "_id" : "_id",
-  "source" : "source",
-  "trajData" : [ {
-    "date" : "date",
-    "pres" : 2.3021358869347655,
-    "geoLocation" : {
-      "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
-      "type" : "type"
-    },
-    "season" : 7.061401241503109,
-    "lon" : 5.962133916683182,
-    "time" : 6.027456183070403,
-    "class" : "class",
-    "lat" : 1.4658129805029452,
-    "wind" : 5.637376656633329,
-    "timestamp" : "2000-01-23T04:56:07.000+00:00"
-  }, {
-    "date" : "date",
-    "pres" : 2.3021358869347655,
-    "geoLocation" : {
-      "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
-      "type" : "type"
-    },
-    "season" : 7.061401241503109,
-    "lon" : 5.962133916683182,
-    "time" : 6.027456183070403,
-    "class" : "class",
-    "lat" : 1.4658129805029452,
-    "wind" : 5.637376656633329,
-    "timestamp" : "2000-01-23T04:56:07.000+00:00"
-  } ],
-  "startDate" : "2000-01-23T04:56:07.000+00:00"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+
+    // limit to 3 months worth of cyclones per request
+    const sDate = moment(startDate, 'YYYY-MM-DDTHH:mm:ss')
+    const eDate = moment(endDate, 'YYYY-MM-DDTHH:mm:ss')
+    const dateDiff = eDate.diff(sDate)
+    const monthDiff = Math.floor(moment.duration(dateDiff).asMonths())
+    if (monthDiff > 3) {
+        reject({"code": 400, "message": "Query timespan exceeds 3 months; please search for a smaller period."})
     }
+
+    const query = tcTraj.find({$or: [
+          {$and: [ {startDate: {$lte: startDate}}, {endDate: {$gte: endDate} }] },    // cyclone completely within timespan
+          {$and: [ {endDate: {$gte: startDate}}, {endDate: {$lte: endDate} }] },      // cyclone ends during timespan
+          {$and: [ {startDate: {$gte: startDate}}, {startDate: {$lte: endDate} }] }   // cyclone begins during timespan
+        ]}
+      );
+
+    query.exec(function (err, tcTraj) {
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(tcTraj.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        resolve(tcTraj);
+    })
   });
 }
-
-
