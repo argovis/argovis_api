@@ -20,6 +20,9 @@ module.exports.uniformGridWindow = function uniformGridWindow (req, res, next, g
   Grid.uniformGridWindow(gridName, presLevel, latRange, lonRange, date)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
