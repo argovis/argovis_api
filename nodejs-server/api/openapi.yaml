@@ -28,6 +28,11 @@ tags:
   description: Argo float position forcast product
 - name: tc
   description: tropical cyclone data
+- name: grid
+  description: "Gridded products derived from Argo floats, simulation, or satalite\
+    \ product"
+- name: metadata
+  description: metadata-only queries
 paths:
   /arShapes/findByDate:
     get:
@@ -449,6 +454,49 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Tc
+  /griddedProducts/gridMetadata:
+    get:
+      tags:
+      - grid
+      - metadata
+      summary: "metadata from grid unique dates, pres levels"
+      operationId: gridmeta
+      parameters:
+      - name: gridName
+        in: query
+        description: name of the gridded product
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rgTempAnom
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridMeta'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Grid
 components:
   schemas:
     arShapeSchema:
@@ -608,6 +656,41 @@ components:
           wind: 2.3021358869347654518833223846741020679473876953125
           timestamp: 2000-01-23T04:56:07.000+00:00
         startDate: 2000-01-23T04:56:07.000+00:00
+    GridMeta:
+      required:
+      - dates
+      - maxDate
+      - minDate
+      - presLevels
+      type: object
+      properties:
+        _id:
+          type: string
+        presLevels:
+          type: array
+          items:
+            type: number
+        dates:
+          type: array
+          items:
+            type: string
+            format: date-time
+        minDate:
+          type: string
+          format: date-time
+        maxDate:
+          type: string
+          format: date-time
+      example:
+        minDate: 2000-01-23T04:56:07.000+00:00
+        dates:
+        - 2000-01-23T04:56:07.000+00:00
+        - 2000-01-23T04:56:07.000+00:00
+        maxDate: 2000-01-23T04:56:07.000+00:00
+        _id: _id
+        presLevels:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
     geoLocation:
       type: object
       properties:
@@ -803,6 +886,16 @@ components:
         type: string
         format: date-time
         example: 2010-01-01T00:00:00Z
+    gridNameUniform:
+      name: gridName
+      in: query
+      description: name of the gridded product
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: rgTempAnom
     lat:
       name: lat
       in: path

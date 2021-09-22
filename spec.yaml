@@ -27,6 +27,10 @@ tags:
     description: 'Argo float position forcast product'
   - name: 'tc'
     description: 'tropical cyclone data'
+  - name: 'grid'
+    description: 'Gridded products derived from Argo floats, simulation, or satalite product'
+  - name: 'metadata'
+    description: 'metadata-only queries'
 paths:
   /arShapes/findByDate:
     get:
@@ -229,6 +233,28 @@ paths:
           $ref: '#/components/responses/notFound'
         '500':
           $ref: '#/components/responses/serverError'
+  /griddedProducts/gridMetadata:
+    get:
+      tags:
+      - grid
+      - metadata
+      summary: metadata from grid unique dates, pres levels
+      operationId: gridmeta
+      parameters:
+      - $ref: '#/components/parameters/gridNameUniform'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridMeta'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
 components:
   schemas:
     arShapeSchema:
@@ -352,6 +378,31 @@ components:
                 format: date-time
               geoLocation:
                 $ref: '#/components/schemas/geoLocation'
+    GridMeta:
+      type: object
+      required:
+      - presLevels
+      - dates
+      - minDate
+      - maxDate
+      properties:
+        _id:
+          type: string
+        presLevels:
+          type: array
+          items:
+            type: number
+        dates:
+          type: array
+          items:
+            type: string
+            format: date-time
+        minDate:
+          type: string
+          format: date-time
+        maxDate:
+          type: string
+          format: date-time
     geoLocation:
       type: object
       properties:
@@ -425,6 +476,14 @@ components:
         type: string
         format: date-time
         example: '2010-01-01T00:00:00Z'
+    gridNameUniform:
+      in: query
+      name: gridName
+      required: true
+      description: name of the gridded product
+      schema:
+        type: string
+        example: rgTempAnom
     lat:
       in: path
       name: lat
