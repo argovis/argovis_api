@@ -305,7 +305,7 @@ paths:
   /griddedProducts/gridCoords:
     get:
       tags: 
-      - 'grid'
+      - grid
       summary: coordinates for gridded product
       operationId: gridCoords
       parameters:
@@ -319,6 +319,75 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GridCoordSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
+  /griddedProducts/grid/find:
+    get:
+      tags:
+      - grid
+      summary: returns a single grid by name
+      operationId: findGrid
+      parameters:
+      - $ref: '#/components/parameters/gridNameUniform'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
+  /griddedProducts/gridParams/find:
+    get:
+      tags:
+      - grid
+      summary: grid parameter search
+      operationId: findGridParam
+      parameters:
+      - $ref: '#/components/parameters/gridNameUniform'
+      - $ref: '#/components/parameters/presLevelUniform'
+      - $ref: '#/components/parameters/gridParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
+  /griddedProducts/gridParams/window:
+    get:
+      tags:
+      - grid
+      summary: tbd
+      operationId: windowGridParam
+      parameters:
+      - $ref: '#/components/parameters/gridNameUniform'
+      - $ref: '#/components/parameters/presLevelUniform'
+      - $ref: '#/components/parameters/latRangeUniform'
+      - $ref: '#/components/parameters/lonRange'
+      - $ref: '#/components/parameters/gridParam'  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridSchema'
         '400':
           $ref: '#/components/responses/badRequest'
         '404':
@@ -769,6 +838,14 @@ components:
         type: string
         format: date
         example: '2012-01-01'
+    gridParam:
+        in: query
+        name: param
+        required: true
+        description: tbd
+        schema:
+          type: string
+          example: ''
     lat:
       in: path
       name: lat
