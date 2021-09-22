@@ -525,6 +525,7 @@ paths:
         required: true
         style: form
         explode: false
+        allowReserved: true
         schema:
           type: array
           example: "-5,5.33"
@@ -540,6 +541,7 @@ paths:
         required: true
         style: form
         explode: false
+        allowReserved: true
         schema:
           type: array
           example: "0,2.153"
@@ -1073,6 +1075,7 @@ components:
       required: true
       style: form
       explode: false
+      allowReserved: true
       schema:
         type: array
         example: "-5,5.33"
@@ -1089,6 +1092,7 @@ components:
       required: true
       style: form
       explode: false
+      allowReserved: true
       schema:
         type: array
         example: "0,2.153"
