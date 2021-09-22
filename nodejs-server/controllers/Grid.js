@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Grid = require('../service/GridService');
 
-module.exports.griddedProductsGridCoordsGET = function griddedProductsGridCoordsGET (req, res, next, gridName, latRange, lonRange) {
-  Grid.griddedProductsGridCoordsGET(gridName, latRange, lonRange)
+module.exports.gridCoords = function gridCoords (req, res, next, gridName, latRange, lonRange) {
+  Grid.gridCoords(gridName, latRange, lonRange)
     .then(function (response) {
       utils.writeJson(res, response);
     })

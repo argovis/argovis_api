@@ -526,6 +526,75 @@ components:
         date:
           type: string
           format: date-time
+    GridSchema:
+      type: object
+      required:
+      - _id
+      - measurement
+      - units
+      - pres
+      - param
+      - cellSize
+      - NODATA_value
+      properties:
+        _id:
+          type: string
+        gridName: 
+          type: string
+        measurement:
+          type: string
+        units:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              lat:
+                type: number
+              lon:
+                type: number
+              value: 
+                type: number
+        variable:
+          type: string
+        date:
+          type: string
+          format: date-time
+        pres:
+          type: number
+        model:
+          type: string
+        trend:
+          type: string
+        param:
+          type: string
+        chunk: 
+          type: integer
+        cellSize: 
+          type: number
+        NODATA_value:
+          type: number
+    GridCoordSchema:
+      type: object
+      required:
+      - _id
+      - lats
+      - lons
+      - gridName
+      properties:
+        _id:
+          type: string
+        lats:
+          type: array
+          items:
+            type: number
+        lons: 
+          type: array
+          items:
+            type: number
+        gridName: 
+          type: string
     geoLocation:
       type: object
       properties:
