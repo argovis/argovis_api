@@ -754,6 +754,200 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
+  /griddedProducts/grid/find:
+    get:
+      tags:
+      - grid
+      summary: returns a single grid by name
+      operationId: findGrid
+      parameters:
+      - name: gridName
+        in: query
+        description: name of the gridded product
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rgTempAnom
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Grid
+  /griddedProducts/gridParams/find:
+    get:
+      tags:
+      - grid
+      summary: grid parameter search
+      operationId: findGridParam
+      parameters:
+      - name: gridName
+        in: query
+        description: name of the gridded product
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rgTempAnom
+      - name: presLevel
+        in: query
+        description: pressure level (dbar)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 10
+      - name: param
+        in: query
+        description: tbd
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Grid
+  /griddedProducts/gridParams/window:
+    get:
+      tags:
+      - grid
+      summary: tbd
+      operationId: windowGridParam
+      parameters:
+      - name: gridName
+        in: query
+        description: name of the gridded product
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rgTempAnom
+      - name: presLevel
+        in: query
+        description: pressure level (dbar)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 10
+      - name: latRange
+        in: query
+        description: Latitude range (-90 to 90 degrees)
+        required: true
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "-5,5.33"
+          items:
+            maximum: 90
+            minimum: -90
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: lonRange
+        in: query
+        description: Longitude range (-180 to 180 degrees)
+        required: true
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "0,2.153"
+          items:
+            maximum: 180
+            minimum: -180
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: param
+        in: query
+        description: tbd
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Grid
 components:
   schemas:
     arShapeSchema:
@@ -1433,6 +1627,16 @@ components:
         type: string
         format: date
         example: 2012-01-01
+    gridParam:
+      name: param
+      in: query
+      description: tbd
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: ""
     lat:
       name: lat
       in: path

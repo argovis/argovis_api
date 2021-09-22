@@ -6,6 +6,92 @@ const moment = require('moment');
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
 
 /**
+ * returns a single grid by name
+ *
+ * gridName String name of the gridded product
+ * returns GridSchema
+ **/
+exports.findGrid = function(gridName) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "date" : "2000-01-23T04:56:07.000+00:00",
+  "gridName" : "gridName",
+  "data" : [ {
+    "lon" : 6.027456183070403,
+    "value" : 1.4658129805029452,
+    "lat" : 0.8008281904610115
+  }, {
+    "lon" : 6.027456183070403,
+    "value" : 1.4658129805029452,
+    "lat" : 0.8008281904610115
+  } ],
+  "pres" : 5.962133916683182,
+  "trend" : "trend",
+  "chunk" : 5,
+  "units" : "units",
+  "NODATA_value" : 7.061401241503109,
+  "cellSize" : 2.3021358869347655,
+  "measurement" : "measurement",
+  "param" : "param",
+  "variable" : "variable",
+  "model" : "model",
+  "_id" : "_id"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * grid parameter search
+ *
+ * gridName String name of the gridded product
+ * presLevel BigDecimal pressure level (dbar)
+ * param String tbd
+ * returns GridSchema
+ **/
+exports.findGridParam = function(gridName,presLevel,param) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "date" : "2000-01-23T04:56:07.000+00:00",
+  "gridName" : "gridName",
+  "data" : [ {
+    "lon" : 6.027456183070403,
+    "value" : 1.4658129805029452,
+    "lat" : 0.8008281904610115
+  }, {
+    "lon" : 6.027456183070403,
+    "value" : 1.4658129805029452,
+    "lat" : 0.8008281904610115
+  } ],
+  "pres" : 5.962133916683182,
+  "trend" : "trend",
+  "chunk" : 5,
+  "units" : "units",
+  "NODATA_value" : 7.061401241503109,
+  "cellSize" : 2.3021358869347655,
+  "measurement" : "measurement",
+  "param" : "param",
+  "variable" : "variable",
+  "model" : "model",
+  "_id" : "_id"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * coordinates for gridded product
  *
  * gridName String name of the gridded product
@@ -194,6 +280,51 @@ exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) 
         if(uniformGridWindow.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(uniformGridWindow);
     })
+  });
+}
+
+/**
+ * tbd
+ *
+ * gridName String name of the gridded product
+ * presLevel BigDecimal pressure level (dbar)
+ * latRange List Latitude range (-90 to 90 degrees)
+ * lonRange List Longitude range (-180 to 180 degrees)
+ * param String tbd
+ * returns GridSchema
+ **/
+exports.windowGridParam = function(gridName,presLevel,latRange,lonRange,param) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "date" : "2000-01-23T04:56:07.000+00:00",
+  "gridName" : "gridName",
+  "data" : [ {
+    "lon" : 6.027456183070403,
+    "value" : 1.4658129805029452,
+    "lat" : 0.8008281904610115
+  }, {
+    "lon" : 6.027456183070403,
+    "value" : 1.4658129805029452,
+    "lat" : 0.8008281904610115
+  } ],
+  "pres" : 5.962133916683182,
+  "trend" : "trend",
+  "chunk" : 5,
+  "units" : "units",
+  "NODATA_value" : 7.061401241503109,
+  "cellSize" : 2.3021358869347655,
+  "measurement" : "measurement",
+  "param" : "param",
+  "variable" : "variable",
+  "model" : "model",
+  "_id" : "_id"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
   });
 }
 
