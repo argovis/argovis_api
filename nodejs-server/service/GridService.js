@@ -1,5 +1,8 @@
 'use strict';
+const Grid = require('../models/grid');
 
+
+const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
 
 /**
  * metadata from grid unique dates, pres levels
@@ -9,19 +12,23 @@
  **/
 exports.gridmeta = function(gridName) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "minDate" : "2000-01-23T04:56:07.000+00:00",
-  "dates" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
-  "maxDate" : "2000-01-23T04:56:07.000+00:00",
-  "_id" : "_id",
-  "presLevels" : [ 0.8008281904610115, 0.8008281904610115 ]
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const GridModel = Grid.get_grid_model(gridName);
+    const query = GridModel.aggregate( [
+        {$match: {gridName: gridName}},
+        {$group: datePresGrouping},
+        {$unwind: "$presLevels"},
+        {$sort: {presLevels: 1}},
+        {$group: {_id: null, "presLevels": {$push: "$presLevels"}, dates: {$first: '$dates'}}},
+        {$unwind: "$dates"},
+        {$sort: {dates: 1}},
+        {$group: {_id: null, "dates": {$push: "$dates"}, minDate: {$min: '$dates'}, maxDate: {$max: '$dates'}, presLevels: {$first: '$presLevels'}}},
+    ])
+    query.exec(function (err, gridmeta) {
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(gridmeta.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        resolve(gridmeta);
+    })
+    console.log('agg executed')
   });
 }
 
