@@ -7,6 +7,9 @@ module.exports.findGrid = function findGrid (req, res, next, gridName) {
   Grid.findGrid(gridName)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -17,6 +20,9 @@ module.exports.findGridParam = function findGridParam (req, res, next, gridName,
   Grid.findGridParam(gridName, presLevel, param)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -79,6 +85,9 @@ module.exports.windowGridParam = function windowGridParam (req, res, next, gridN
   Grid.windowGridParam(gridName, presLevel, latRange, lonRange, param)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
