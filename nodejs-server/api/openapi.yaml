@@ -524,11 +524,10 @@ paths:
         description: Latitude range (-90 to 90 degrees)
         required: true
         style: form
-        explode: true
-        allowReserved: true
+        explode: false
         schema:
           type: array
-          example: "[-5, 5.33]"
+          example: "-5,5.33"
           items:
             maximum: 90
             minimum: -90
@@ -540,11 +539,10 @@ paths:
         description: Longitude range (-180 to 180 degrees)
         required: true
         style: form
-        explode: true
-        allowReserved: true
+        explode: false
         schema:
           type: array
-          example: "[0,2.153]"
+          example: "0,2.153"
           items:
             maximum: 180
             minimum: -180
@@ -1074,28 +1072,26 @@ components:
       description: Latitude range (-90 to 90 degrees)
       required: true
       style: form
-      explode: true
-      allowReserved: true
+      explode: false
       schema:
         type: array
-        example: "[-5, 5.33]"
+        example: "-5,5.33"
         items:
           maximum: 90
           minimum: -90
           maxItems: 2
           minItems: 2
           type: number
-    lonRange:
+    lonRangeUniform:
       name: lonRange
       in: query
       description: Longitude range (-180 to 180 degrees)
       required: true
       style: form
-      explode: true
-      allowReserved: true
+      explode: false
       schema:
         type: array
-        example: "[0,2.153]"
+        example: "0,2.153"
         items:
           maximum: 180
           minimum: -180
