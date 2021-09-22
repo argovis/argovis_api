@@ -7,6 +7,9 @@ module.exports.gridCoords = function gridCoords (req, res, next, gridName, latRa
   Grid.gridCoords(gridName, latRange, lonRange)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -30,6 +33,9 @@ module.exports.nonuniformGridWindow = function nonuniformGridWindow (req, res, n
   Grid.nonuniformGridWindow(gridName, presLevel, latRange, lonRange, date)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
