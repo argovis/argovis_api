@@ -252,6 +252,30 @@ paths:
           $ref: '#/components/responses/notFound'
         '500':
           $ref: '#/components/responses/serverError'
+  /griddedProducts/grid/window:
+    get:
+      tags:
+      - grid
+      summary: uniformly spaced rectangular gridded product selector
+      parameters:
+      - $ref: '#/components/parameters/gridNameUniform'
+      - $ref: '#/components/parameters/presLevelUniform'
+      - $ref: '#/components/parameters/latRangeUniform'
+      - $ref: '#/components/parameters/lonRange'            
+      - $ref: '#/components/parameters/dateUniform'  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RasterGrid'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
 components:
   schemas:
     arShapeSchema:
@@ -400,6 +424,59 @@ components:
         maxDate:
           type: string
           format: date-time
+    RasterGrid:
+      type: object
+      required:
+      - _id
+      - pres
+      - cellXSize
+      - cellYSize
+      - noDataValue
+      - zs
+      - nRows
+      - nCols
+      - xllCorner
+      - yllCorner
+      - time
+      properties:
+        _id:
+          type: string
+        pres:
+          type: number
+        cellXSize:
+          type: number
+          nullable: true
+        cellYSize:
+          type: number
+          nullable: true
+        noDataValue:
+          type: number
+          nullable: true
+        zs: 
+          type: array
+          items:
+            type: number
+        nRows:
+          type: integer
+        nCols:
+          type: integer
+        xllCorner:
+          type: number
+        yllCorner:
+          type: number
+        gridName:
+          type: string
+        units:
+          type: string
+        measurement:
+          type: string
+        param:
+          type: string
+        time: 
+          type: number
+        date:
+          type: string
+          format: date-time
     geoLocation:
       type: object
       properties:
@@ -481,6 +558,51 @@ components:
       schema:
         type: string
         example: rgTempAnom
+    presLevelUniform:
+      in: query
+      name: presLevel
+      required: true
+      description: pressure level (dbar)
+      schema:
+        type: number
+        example: 10
+    latRangeUniform:
+      in: query
+      name: latRange
+      required: true
+      description: Latitude range (-90 to 90 degrees)
+      schema:
+        type: array
+        items:
+          type: number
+          minItems: 2
+          maxItems: 2
+          minimum: -90
+          maximum: 90
+        example: "[-5, 5.33]"
+    lonRange:
+      in: query
+      name: lonRange
+      required: true
+      description: Longitude range (-180 to 180 degrees)
+      schema:
+        type: array
+        items:
+          type: number
+          minItems: 2
+          maxItems: 2
+          minimum: -180
+          maximum: 180
+        example: "[0,2.153]"
+    dateUniform:
+      in: query
+      name: date
+      required: true
+      description: YYYY-MM-DD format. Monthly grids use the first day of the month.
+      schema:
+        type: string
+        format: date
+        example: '2012-01-01'
     lat:
       in: path
       name: lat

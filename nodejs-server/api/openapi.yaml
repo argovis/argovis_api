@@ -494,6 +494,97 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
+  /griddedProducts/grid/window:
+    get:
+      tags:
+      - grid
+      summary: uniformly spaced rectangular gridded product selector
+      operationId: griddedProductsGridWindowGET
+      parameters:
+      - name: gridName
+        in: query
+        description: name of the gridded product
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rgTempAnom
+      - name: presLevel
+        in: query
+        description: pressure level (dbar)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 10
+      - name: latRange
+        in: query
+        description: Latitude range (-90 to 90 degrees)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          example: "[-5, 5.33]"
+          items:
+            maximum: 90
+            minimum: -90
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: lonRange
+        in: query
+        description: Longitude range (-180 to 180 degrees)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          example: "[0,2.153]"
+          items:
+            maximum: 180
+            minimum: -180
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: date
+        in: query
+        description: YYYY-MM-DD format. Monthly grids use the first day of the month.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+          example: 2012-01-01
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RasterGrid'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Grid
 components:
   schemas:
     arShapeSchema:
@@ -688,6 +779,78 @@ components:
         presLevels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125
+    RasterGrid:
+      required:
+      - _id
+      - cellXSize
+      - cellYSize
+      - nCols
+      - nRows
+      - noDataValue
+      - pres
+      - time
+      - xllCorner
+      - yllCorner
+      - zs
+      type: object
+      properties:
+        _id:
+          type: string
+        pres:
+          type: number
+        cellXSize:
+          type: number
+          nullable: true
+        cellYSize:
+          type: number
+          nullable: true
+        noDataValue:
+          type: number
+          nullable: true
+        zs:
+          type: array
+          items:
+            type: number
+        nRows:
+          type: integer
+        nCols:
+          type: integer
+        xllCorner:
+          type: number
+        yllCorner:
+          type: number
+        gridName:
+          type: string
+        units:
+          type: string
+        measurement:
+          type: string
+        param:
+          type: string
+        time:
+          type: number
+        date:
+          type: string
+          format: date-time
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        gridName: gridName
+        pres: 0.80082819046101150206595775671303272247314453125
+        units: units
+        cellXSize: 6.02745618307040320615897144307382404804229736328125
+        measurement: measurement
+        nCols: 7
+        yllCorner: 3.61607674925191080461672754609026014804840087890625
+        nRows: 2
+        param: param
+        xllCorner: 9.301444243932575517419536481611430644989013671875
+        noDataValue: 5.962133916683182377482808078639209270477294921875
+        zs:
+        - 5.63737665663332876420099637471139430999755859375
+        - 5.63737665663332876420099637471139430999755859375
+        _id: _id
+        time: 2.027123023002321833274663731572218239307403564453125
+        cellYSize: 1.46581298050294517310021547018550336360931396484375
     geoLocation:
       type: object
       properties:
@@ -893,6 +1056,59 @@ components:
       schema:
         type: string
         example: rgTempAnom
+    presLevelUniform:
+      name: presLevel
+      in: query
+      description: pressure level (dbar)
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 10
+    latRangeUniform:
+      name: latRange
+      in: query
+      description: Latitude range (-90 to 90 degrees)
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: array
+        example: "[-5, 5.33]"
+        items:
+          maximum: 90
+          minimum: -90
+          maxItems: 2
+          minItems: 2
+          type: number
+    lonRange:
+      name: lonRange
+      in: query
+      description: Longitude range (-180 to 180 degrees)
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: array
+        example: "[0,2.153]"
+        items:
+          maximum: 180
+          minimum: -180
+          maxItems: 2
+          minItems: 2
+          type: number
+    dateUniform:
+      name: date
+      in: query
+      description: YYYY-MM-DD format. Monthly grids use the first day of the month.
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+        example: 2012-01-01
     lat:
       name: lat
       in: path
