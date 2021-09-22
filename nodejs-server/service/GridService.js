@@ -14,6 +14,7 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
 exports.gridmeta = function(gridName) {
   return new Promise(function(resolve, reject) {
     const GridModel = Grid.get_grid_model(gridName);
+    if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
     const query = GridModel.aggregate( [
         {$match: {gridName: gridName}},
         {$group: datePresGrouping},
@@ -46,7 +47,7 @@ exports.gridmeta = function(gridName) {
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
     const GridModel = Grid.get_grid_model(gridName)
-
+    if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
     let agg = []
     agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
     agg = add_grid_projection(agg, latRange, lonRange)
