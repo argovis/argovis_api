@@ -572,6 +572,7 @@ components:
       name: latRange
       required: true
       description: Latitude range (-90 to 90 degrees)
+      allowReserved: true
       schema:
         type: array
         items:
@@ -586,6 +587,7 @@ components:
       name: lonRange
       required: true
       description: Longitude range (-180 to 180 degrees)
+      allowReserved: true
       schema:
         type: array
         items:
