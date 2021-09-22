@@ -307,6 +307,7 @@ paths:
       tags: 
       - 'grid'
       summary: coordinates for gridded product
+      operationId: gridCoords
       parameters:
       - $ref: '#/components/parameters/gridNameNonUniform'
       - $ref: '#/components/parameters/latRangeNonUniform'
