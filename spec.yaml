@@ -29,8 +29,6 @@ tags:
     description: 'tropical cyclone data'
   - name: 'grid'
     description: 'Gridded products derived from Argo floats, simulation, or satalite product'
-  - name: 'metadata'
-    description: 'metadata-only queries'
 paths:
   /arShapes/findByDate:
     get:
@@ -237,7 +235,6 @@ paths:
     get:
       tags:
       - grid
-      - metadata
       summary: metadata from grid unique dates, pres levels
       operationId: gridmeta
       parameters:
