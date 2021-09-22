@@ -2,6 +2,31 @@
 
 
 /**
+ * metadata from grid unique dates, pres levels
+ *
+ * gridName String name of the gridded product
+ * returns GridMeta
+ **/
+exports.gridmeta = function(gridName) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "minDate" : "2000-01-23T04:56:07.000+00:00",
+  "dates" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
+  "maxDate" : "2000-01-23T04:56:07.000+00:00",
+  "_id" : "_id",
+  "presLevels" : [ 0.8008281904610115, 0.8008281904610115 ]
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * uniformly spaced rectangular gridded product selector
  *
  * gridName String name of the gridded product
@@ -11,7 +36,7 @@
  * date date YYYY-MM-DD format. Monthly grids use the first day of the month.
  * returns RasterGrid
  **/
-exports.griddedProductsGridWindowGET = function(gridName,presLevel,latRange,lonRange,date) {
+exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
@@ -31,31 +56,6 @@ exports.griddedProductsGridWindowGET = function(gridName,presLevel,latRange,lonR
   "_id" : "_id",
   "time" : 2.027123023002322,
   "cellYSize" : 1.4658129805029452
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
-
-/**
- * metadata from grid unique dates, pres levels
- *
- * gridName String name of the gridded product
- * returns GridMeta
- **/
-exports.gridmeta = function(gridName) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "minDate" : "2000-01-23T04:56:07.000+00:00",
-  "dates" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
-  "maxDate" : "2000-01-23T04:56:07.000+00:00",
-  "_id" : "_id",
-  "presLevels" : [ 0.8008281904610115, 0.8008281904610115 ]
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);

@@ -257,6 +257,7 @@ paths:
       tags:
       - grid
       summary: uniformly spaced rectangular gridded product selector
+      operationId: uniformGridWindow
       parameters:
       - $ref: '#/components/parameters/gridNameUniform'
       - $ref: '#/components/parameters/presLevelUniform'

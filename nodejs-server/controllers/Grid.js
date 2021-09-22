@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Grid = require('../service/GridService');
 
-module.exports.griddedProductsGridWindowGET = function griddedProductsGridWindowGET (req, res, next, gridName, presLevel, latRange, lonRange, date) {
-  Grid.griddedProductsGridWindowGET(gridName, presLevel, latRange, lonRange, date)
+module.exports.gridmeta = function gridmeta (req, res, next, gridName) {
+  Grid.gridmeta(gridName)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -13,8 +13,8 @@ module.exports.griddedProductsGridWindowGET = function griddedProductsGridWindow
     });
 };
 
-module.exports.gridmeta = function gridmeta (req, res, next, gridName) {
-  Grid.gridmeta(gridName)
+module.exports.uniformGridWindow = function uniformGridWindow (req, res, next, gridName, presLevel, latRange, lonRange, date) {
+  Grid.uniformGridWindow(gridName, presLevel, latRange, lonRange, date)
     .then(function (response) {
       utils.writeJson(res, response);
     })

@@ -499,7 +499,7 @@ paths:
       tags:
       - grid
       summary: uniformly spaced rectangular gridded product selector
-      operationId: griddedProductsGridWindowGET
+      operationId: uniformGridWindow
       parameters:
       - name: gridName
         in: query
