@@ -26,6 +26,8 @@ tags:
   description: atmospheric river shapes
 - name: covar
   description: Argo float position forcast product
+- name: tc
+  description: tropical cyclone data
 paths:
   /arShapes/findByDate:
     get:
@@ -229,6 +231,224 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Covar
+  /tc:
+    get:
+      tags:
+      - tc
+      summary: one tropical cyclone instance
+      operationId: findOneTC
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Tc
+  /tc/findByDate:
+    get:
+      tags:
+      - tc
+      summary: tropical cyclones at a given date-time
+      operationId: findTCbyDate
+      parameters:
+      - name: date
+        in: query
+        description: date-time formatted string
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Tc
+  /tc/findByDateRange:
+    get:
+      tags:
+      - tc
+      summary: tropical cyclones intersecting a time period
+      operationId: findTCbyDateRange
+      parameters:
+      - name: startDate
+        in: query
+        description: date-time formatted string indicating the beginning of a time
+          period
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: date-time formatted string indicating the end of a time period
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Tc
+  /tc/stormNameList:
+    get:
+      tags:
+      - tc
+      summary: returns a list of tropical cyclone names and years
+      operationId: findStormNameList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Tc
+  /tc/findByNameYear:
+    get:
+      tags:
+      - tc
+      summary: find a tropical cyclone by name and year
+      operationId: findTCbyNameYear
+      parameters:
+      - name: name
+        in: query
+        description: name of tropical cyclone
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: LANE
+      - name: year
+        in: query
+        description: year of tropical cyclone
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 2018
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tcSchema'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Tc
 components:
   schemas:
     arShapeSchema:
@@ -269,7 +489,7 @@ components:
       - _id
       - dLat
       - dLon
-      - feature
+      - features
       - forcastDays
       - geoLocation
       type: object
@@ -317,6 +537,77 @@ components:
         dLon: 1.46581298050294517310021547018550336360931396484375
         _id: _id
         forcastDays: 5
+    tcSchema:
+      required:
+      - _id
+      - endDate
+      - num
+      - source
+      - startDate
+      - year
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        num:
+          type: number
+        source:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        year:
+          type: number
+        trajData:
+          type: array
+          items:
+            $ref: '#/components/schemas/tcSchema_trajData'
+      example:
+        endDate: 2000-01-23T04:56:07.000+00:00
+        year: 6.02745618307040320615897144307382404804229736328125
+        num: 0.80082819046101150206595775671303272247314453125
+        name: name
+        _id: _id
+        source: source
+        trajData:
+        - date: date
+          pres: 7.061401241503109105224211816675961017608642578125
+          geoLocation:
+            coordinates:
+            - - 6.02745618307040320615897144307382404804229736328125
+              - 6.02745618307040320615897144307382404804229736328125
+            - - 6.02745618307040320615897144307382404804229736328125
+              - 6.02745618307040320615897144307382404804229736328125
+            type: type
+          season: 9.301444243932575517419536481611430644989013671875
+          lon: 5.63737665663332876420099637471139430999755859375
+          time: 1.46581298050294517310021547018550336360931396484375
+          class: class
+          lat: 5.962133916683182377482808078639209270477294921875
+          wind: 2.3021358869347654518833223846741020679473876953125
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        - date: date
+          pres: 7.061401241503109105224211816675961017608642578125
+          geoLocation:
+            coordinates:
+            - - 6.02745618307040320615897144307382404804229736328125
+              - 6.02745618307040320615897144307382404804229736328125
+            - - 6.02745618307040320615897144307382404804229736328125
+              - 6.02745618307040320615897144307382404804229736328125
+            type: type
+          season: 9.301444243932575517419536481611430644989013671875
+          lon: 5.63737665663332876420099637471139430999755859375
+          time: 1.46581298050294517310021547018550336360931396484375
+          class: class
+          lat: 5.962133916683182377482808078639209270477294921875
+          wind: 2.3021358869347654518833223846741020679473876953125
+          timestamp: 2000-01-23T04:56:07.000+00:00
+        startDate: 2000-01-23T04:56:07.000+00:00
     geoLocation:
       type: object
       properties:
@@ -384,6 +675,55 @@ components:
             - 0.80082819046101150206595775671303272247314453125
           type: type
         type: type
+    tcSchema_trajData:
+      required:
+      - class
+      - date
+      - geoLocation
+      - lat
+      - lon
+      - time
+      - timestamp
+      type: object
+      properties:
+        date:
+          type: string
+        time:
+          type: number
+        class:
+          type: string
+        lat:
+          type: number
+        lon:
+          type: number
+        wind:
+          type: number
+        pres:
+          type: number
+        season:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        geoLocation:
+          $ref: '#/components/schemas/geoLocation'
+      example:
+        date: date
+        pres: 7.061401241503109105224211816675961017608642578125
+        geoLocation:
+          coordinates:
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          - - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+          type: type
+        season: 9.301444243932575517419536481611430644989013671875
+        lon: 5.63737665663332876420099637471139430999755859375
+        time: 1.46581298050294517310021547018550336360931396484375
+        class: class
+        lat: 5.962133916683182377482808078639209270477294921875
+        wind: 2.3021358869347654518833223846741020679473876953125
+        timestamp: 2000-01-23T04:56:07.000+00:00
   responses:
     badRequest:
       description: Bad Request
@@ -427,6 +767,42 @@ components:
       schema:
         type: string
         example: 1_262992
+    date:
+      name: date
+      in: query
+      description: date-time formatted string
+      required: true
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    startDate:
+      name: startDate
+      in: query
+      description: date-time formatted string indicating the beginning of a time period
+      required: true
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    endDate:
+      name: endDate
+      in: query
+      description: date-time formatted string indicating the end of a time period
+      required: true
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
     lat:
       name: lat
       in: path
