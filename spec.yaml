@@ -262,7 +262,7 @@ paths:
       - $ref: '#/components/parameters/gridNameUniform'
       - $ref: '#/components/parameters/presLevelUniform'
       - $ref: '#/components/parameters/latRangeUniform'
-      - $ref: '#/components/parameters/lonRangeUniform'
+      - $ref: '#/components/parameters/lonRange'
       - $ref: '#/components/parameters/dateUniform'  
       responses:
         '200':
@@ -271,6 +271,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RasterGrid'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
+  /griddedProducts/nonUniformGrid/window:
+    get:
+      tags:
+      - grid
+      summary: non uniformly spaced rectangular gridded product
+      operationId: nonuniformGridWindow
+      parameters:
+      - $ref: '#/components/parameters/gridNameNonUniform'
+      - $ref: '#/components/parameters/presLevelNonUniform'
+      - $ref: '#/components/parameters/latRangeNonUniform'
+      - $ref: '#/components/parameters/lonRange'    
+      - $ref: '#/components/parameters/dateNonUniform'  
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridSchema'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '500':
+          $ref: '#/components/responses/serverError'
+  /griddedProducts/gridCoords:
+    get:
+      tags: 
+      - 'grid'
+      summary: coordinates for gridded product
+      parameters:
+      - $ref: '#/components/parameters/gridNameNonUniform'
+      - $ref: '#/components/parameters/latRangeNonUniform'
+      - $ref: '#/components/parameters/lonRange'    
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GridCoordSchema'
         '400':
           $ref: '#/components/responses/badRequest'
         '404':
@@ -559,6 +606,14 @@ components:
       schema:
         type: string
         example: rgTempAnom
+    gridNameNonUniform:
+      in: query
+      name: gridName
+      required: true
+      description: name of the gridded product
+      schema:
+        type: string
+        example: sose_si_area_1_day_sparse
     presLevelUniform:
       in: query
       name: presLevel
@@ -567,6 +622,14 @@ components:
       schema:
         type: number
         example: 10
+    presLevelNonUniform:
+      in: query
+      name: presLevel
+      required: true
+      description: pressure level (dbar)
+      schema:
+        type: number
+        example: 0
     latRangeUniform:
       in: query
       name: latRange
@@ -584,7 +647,24 @@ components:
           minimum: -90
           maximum: 90
         example: "-5,5.33"
-    lonRangeUniform:
+    latRangeNonUniform:
+      in: query
+      name: latRange
+      required: true
+      description: Latitude range (-90 to 90 degrees)
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        items:
+          type: number
+          minItems: 2
+          maxItems: 2
+          minimum: -90
+          maximum: 90
+        example: "-5,5.33"
+    lonRange:
       in: query
       name: lonRange
       required: true
@@ -602,6 +682,15 @@ components:
           maximum: 180
         example: "0,2.153"
     dateUniform:
+      in: query
+      name: date
+      required: true
+      description: YYYY-MM-DD format. Monthly grids use the first day of the month.
+      schema:
+        type: string
+        format: date
+        example: '2012-01-01'
+    dateNonUniform:
       in: query
       name: date
       required: true
