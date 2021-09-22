@@ -6,6 +6,27 @@ const moment = require('moment');
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
 
 /**
+ * coordinates for gridded product
+ *
+ * gridName String name of the gridded product
+ * latRange List Latitude range (-90 to 90 degrees)
+ * lonRange List Longitude range (-180 to 180 degrees)
+ * returns GridCoordSchema
+ **/
+exports.griddedProductsGridCoordsGET = function(gridName,latRange,lonRange) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = "{}";
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * metadata from grid unique dates, pres levels
  *
  * gridName String name of the gridded product
@@ -30,6 +51,29 @@ exports.gridmeta = function(gridName) {
         if(gridmeta.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(gridmeta);
     })
+  });
+}
+
+
+/**
+ * non uniformly spaced rectangular gridded product
+ *
+ * gridName String name of the gridded product
+ * presLevel BigDecimal pressure level (dbar)
+ * latRange List Latitude range (-90 to 90 degrees)
+ * lonRange List Longitude range (-180 to 180 degrees)
+ * date date YYYY-MM-DD format. Monthly grids use the first day of the month.
+ * returns GridSchema
+ **/
+exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = "{}";
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
   });
 }
 
