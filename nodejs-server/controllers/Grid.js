@@ -15,3 +15,13 @@ module.exports.gridmeta = function gridmeta (req, res, next, gridName) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.uniformGridWindow = function uniformGridWindow (req, res, next, gridName, presLevel, latRange, lonRange, date) {
+  Grid.uniformGridWindow(gridName, presLevel, latRange, lonRange, date)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
