@@ -262,7 +262,7 @@ paths:
       - $ref: '#/components/parameters/gridNameUniform'
       - $ref: '#/components/parameters/presLevelUniform'
       - $ref: '#/components/parameters/latRangeUniform'
-      - $ref: '#/components/parameters/lonRange'            
+      - $ref: '#/components/parameters/lonRangeUniform'
       - $ref: '#/components/parameters/dateUniform'  
       responses:
         '200':
@@ -572,7 +572,8 @@ components:
       name: latRange
       required: true
       description: Latitude range (-90 to 90 degrees)
-      allowReserved: true
+      style: form
+      explode: false
       schema:
         type: array
         items:
@@ -581,13 +582,14 @@ components:
           maxItems: 2
           minimum: -90
           maximum: 90
-        example: "[-5, 5.33]"
-    lonRange:
+        example: "-5,5.33"
+    lonRangeUniform:
       in: query
       name: lonRange
       required: true
       description: Longitude range (-180 to 180 degrees)
-      allowReserved: true
+      style: form
+      explode: false
       schema:
         type: array
         items:
@@ -596,7 +598,7 @@ components:
           maxItems: 2
           minimum: -180
           maximum: 180
-        example: "[0,2.153]"
+        example: "0,2.153"
     dateUniform:
       in: query
       name: date
