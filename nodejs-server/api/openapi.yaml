@@ -685,7 +685,7 @@ paths:
       tags:
       - grid
       summary: coordinates for gridded product
-      operationId: griddedProductsGridCoordsGET
+      operationId: gridCoords
       parameters:
       - name: gridName
         in: query
@@ -1020,6 +1020,98 @@ components:
         _id: _id
         time: 2.027123023002321833274663731572218239307403564453125
         cellYSize: 1.46581298050294517310021547018550336360931396484375
+    GridSchema:
+      required:
+      - NODATA_value
+      - _id
+      - cellSize
+      - measurement
+      - param
+      - pres
+      - units
+      type: object
+      properties:
+        _id:
+          type: string
+        gridName:
+          type: string
+        measurement:
+          type: string
+        units:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GridSchema_data'
+        variable:
+          type: string
+        date:
+          type: string
+          format: date-time
+        pres:
+          type: number
+        model:
+          type: string
+        trend:
+          type: string
+        param:
+          type: string
+        chunk:
+          type: integer
+        cellSize:
+          type: number
+        NODATA_value:
+          type: number
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        gridName: gridName
+        data:
+        - lon: 6.02745618307040320615897144307382404804229736328125
+          value: 1.46581298050294517310021547018550336360931396484375
+          lat: 0.80082819046101150206595775671303272247314453125
+        - lon: 6.02745618307040320615897144307382404804229736328125
+          value: 1.46581298050294517310021547018550336360931396484375
+          lat: 0.80082819046101150206595775671303272247314453125
+        pres: 5.962133916683182377482808078639209270477294921875
+        trend: trend
+        chunk: 5
+        units: units
+        NODATA_value: 7.061401241503109105224211816675961017608642578125
+        cellSize: 2.3021358869347654518833223846741020679473876953125
+        measurement: measurement
+        param: param
+        variable: variable
+        model: model
+        _id: _id
+    GridCoordSchema:
+      required:
+      - _id
+      - gridName
+      - lats
+      - lons
+      type: object
+      properties:
+        _id:
+          type: string
+        lats:
+          type: array
+          items:
+            type: number
+        lons:
+          type: array
+          items:
+            type: number
+        gridName:
+          type: string
+      example:
+        gridName: gridName
+        lats:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
+        lons:
+        - 6.02745618307040320615897144307382404804229736328125
+        - 6.02745618307040320615897144307382404804229736328125
+        _id: _id
     geoLocation:
       type: object
       properties:
@@ -1136,6 +1228,19 @@ components:
         lat: 5.962133916683182377482808078639209270477294921875
         wind: 2.3021358869347654518833223846741020679473876953125
         timestamp: 2000-01-23T04:56:07.000+00:00
+    GridSchema_data:
+      type: object
+      properties:
+        lat:
+          type: number
+        lon:
+          type: number
+        value:
+          type: number
+      example:
+        lon: 6.02745618307040320615897144307382404804229736328125
+        value: 1.46581298050294517310021547018550336360931396484375
+        lat: 0.80082819046101150206595775671303272247314453125
   responses:
     badRequest:
       description: Bad Request
