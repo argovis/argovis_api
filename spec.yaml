@@ -590,8 +590,6 @@ components:
           type: string
         param:
           type: string
-        time: 
-          type: number
         date:
           type: string
           format: date-time
