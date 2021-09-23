@@ -1192,8 +1192,6 @@ components:
           type: string
         param:
           type: string
-        time:
-          type: number
         date:
           type: string
           format: date-time
@@ -1214,7 +1212,6 @@ components:
         - 5.63737665663332876420099637471139430999755859375
         - 5.63737665663332876420099637471139430999755859375
         _id: _id
-        time: 2.027123023002321833274663731572218239307403564453125
         cellYSize: 1.46581298050294517310021547018550336360931396484375
     GridSchema:
       required:

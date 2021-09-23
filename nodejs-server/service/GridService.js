@@ -212,7 +212,6 @@ exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) 
   "noDataValue" : 5.962133916683182,
   "zs" : [ 5.637376656633329, 5.637376656633329 ],
   "_id" : "_id",
-  "time" : 2.027123023002322,
   "cellYSize" : 1.4658129805029452
 };
     if (Object.keys(examples).length > 0) {
