@@ -230,6 +230,7 @@ exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) 
     const GridModel = Grid.get_grid_model(gridName)
     if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
     let agg = []
+    date = new Date(date)
     agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
     agg = add_grid_projection(agg, latRange, lonRange)
     const query = GridModel.aggregate(agg)
