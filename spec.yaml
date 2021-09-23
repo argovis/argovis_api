@@ -288,7 +288,7 @@ paths:
       - $ref: '#/components/parameters/presLevelNonUniform'
       - $ref: '#/components/parameters/latRangeNonUniform'
       - $ref: '#/components/parameters/lonRange'    
-      - $ref: '#/components/parameters/dateNonUniform'  
+      - $ref: '#/components/parameters/date'  
       responses:
         '200':
           description: OK

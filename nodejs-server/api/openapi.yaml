@@ -647,14 +647,15 @@ paths:
             type: number
       - name: date
         in: query
-        description: YYYY-MM-DD format. Monthly grids use the first day of the month.
+        description: date-time formatted string
         required: true
         style: form
         explode: true
+        allowReserved: true
         schema:
           type: string
-          format: date
-          example: 2012-01-01
+          format: date-time
+          example: 2010-01-01T00:00:00Z
       responses:
         "200":
           description: OK
