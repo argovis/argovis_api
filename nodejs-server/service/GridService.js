@@ -222,7 +222,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
  * presLevel BigDecimal pressure level (dbar)
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
- * date date YYYY-MM-DD format. Monthly grids use the first day of the month.
+ * date Date date-time formatted string
  * returns RasterGrid
  **/
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {

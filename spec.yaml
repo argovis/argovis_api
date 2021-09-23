@@ -263,7 +263,7 @@ paths:
       - $ref: '#/components/parameters/presLevelUniform'
       - $ref: '#/components/parameters/latRangeUniform'
       - $ref: '#/components/parameters/lonRange'
-      - $ref: '#/components/parameters/dateUniform'  
+      - $ref: '#/components/parameters/date'  
       responses:
         '200':
           description: OK
