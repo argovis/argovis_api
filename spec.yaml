@@ -362,7 +362,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                $ref: '#/components/schemas/gridParams'
         '400':
           $ref: '#/components/responses/badRequest'
         '404':
@@ -679,6 +679,19 @@ components:
             type: number
         gridName: 
           type: string
+    gridParams:
+      type: object
+      properties:
+        model:
+          type: string
+        param:
+          type: string
+        measurement:
+          type: string
+        trend:
+          type: string
+        pres:
+          type: number
     geoLocation:
       type: object
       properties:
