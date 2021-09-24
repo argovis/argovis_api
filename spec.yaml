@@ -295,7 +295,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                $ref: '#/components/schemas/nonUniformGrid'
         '400':
           $ref: '#/components/responses/badRequest'
         '404':
@@ -593,15 +593,16 @@ components:
         date:
           type: string
           format: date-time
-    GridSchema:
+    ancestorGrid:
       type: object
+      description: ancestor object describing common grid-like properties
       required:
       - _id
       - measurement
       - units
       - pres
       - param
-      - cellSize
+      - cellsize
       - NODATA_value
       properties:
         _id:
@@ -636,12 +637,28 @@ components:
           type: string
         param:
           type: string
-        chunk: 
-          type: integer
-        cellSize: 
+        cellsize: 
           type: number
         NODATA_value:
           type: number
+    GridSchema:
+      description: grid document as it appears in the database
+      allOf:
+        - $ref: '#/components/schemas/ancestorGrid'  
+        - type: object
+          properties:
+            chunk: 
+              type: integer
+    nonUniformGrid:
+      description: response object for non-uniform grid search
+      allOf:
+        - $ref: '#/components/schemas/ancestorGrid'
+        - type: object
+          properties:
+            chunks: 
+              type: array
+              items:
+                type: number
     GridCoordSchema:
       type: object
       required:

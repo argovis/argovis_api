@@ -662,7 +662,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                $ref: '#/components/schemas/nonUniformGrid'
         "400":
           description: Bad Request
           content:
@@ -1213,11 +1213,11 @@ components:
         - 5.63737665663332876420099637471139430999755859375
         _id: _id
         cellYSize: 1.46581298050294517310021547018550336360931396484375
-    GridSchema:
+    ancestorGrid:
       required:
       - NODATA_value
       - _id
-      - cellSize
+      - cellsize
       - measurement
       - param
       - pres
@@ -1235,7 +1235,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/GridSchema_data'
+            $ref: '#/components/schemas/ancestorGrid_data'
         variable:
           type: string
         date:
@@ -1249,33 +1249,29 @@ components:
           type: string
         param:
           type: string
-        chunk:
-          type: integer
-        cellSize:
+        cellsize:
           type: number
         NODATA_value:
           type: number
-      example:
-        date: 2000-01-23T04:56:07.000+00:00
-        gridName: gridName
-        data:
-        - lon: 6.02745618307040320615897144307382404804229736328125
-          value: 1.46581298050294517310021547018550336360931396484375
-          lat: 0.80082819046101150206595775671303272247314453125
-        - lon: 6.02745618307040320615897144307382404804229736328125
-          value: 1.46581298050294517310021547018550336360931396484375
-          lat: 0.80082819046101150206595775671303272247314453125
-        pres: 5.962133916683182377482808078639209270477294921875
-        trend: trend
-        chunk: 5
-        units: units
-        NODATA_value: 7.061401241503109105224211816675961017608642578125
-        cellSize: 2.3021358869347654518833223846741020679473876953125
-        measurement: measurement
-        param: param
-        variable: variable
-        model: model
-        _id: _id
+      description: ancestor object describing common grid-like properties
+    GridSchema:
+      description: grid document as it appears in the database
+      allOf:
+      - $ref: '#/components/schemas/ancestorGrid'
+      - type: object
+        properties:
+          chunk:
+            type: integer
+    nonUniformGrid:
+      description: response object for non-uniform grid search
+      allOf:
+      - $ref: '#/components/schemas/ancestorGrid'
+      - type: object
+        properties:
+          chunks:
+            type: array
+            items:
+              type: number
     GridCoordSchema:
       required:
       - _id
@@ -1421,7 +1417,7 @@ components:
         lat: 5.962133916683182377482808078639209270477294921875
         wind: 2.3021358869347654518833223846741020679473876953125
         timestamp: 2000-01-23T04:56:07.000+00:00
-    GridSchema_data:
+    ancestorGrid_data:
       type: object
       properties:
         lat:
@@ -1430,10 +1426,6 @@ components:
           type: number
         value:
           type: number
-      example:
-        lon: 6.02745618307040320615897144307382404804229736328125
-        value: 1.46581298050294517310021547018550336360931396484375
-        lat: 0.80082819046101150206595775671303272247314453125
   responses:
     badRequest:
       description: Bad Request
