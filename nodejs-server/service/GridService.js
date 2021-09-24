@@ -135,6 +135,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
             variable: -1,
             NODATA_value: -1,
             chunk: -1,
+            cellsize: -1,
             data: {
                 $filter: {
                     input: '$data',
@@ -161,6 +162,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
             variable: -1,
             NODATA_value: -1,
             chunk: -1,
+            cellsize: -1,
             data: -1,
             count: { $size:'$data' },
         }}
@@ -179,6 +181,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
                 'NODATA_value': {$first: '$NODATA_value'},
                 'variable': {$first: '$variable'},
                 'gridName': {$first: '$gridName'},
+                'cellsize': {$first: '$cellsize'},
                 'data': {$push : "$data" // values should be in sorted order
                 },
         }
@@ -196,6 +199,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
         variable: -1,
         NODATA_value: -1,
         chunks: -1,
+        cellsize: -1,
         data: {
             $reduce: {
                 input: '$data',
