@@ -1,5 +1,6 @@
 'use strict';
 const Grid = require('../models/grid');
+const GridParameter = Grid.ksTempParams;
 const moment = require('moment');
 
 
