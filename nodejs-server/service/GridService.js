@@ -123,7 +123,8 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
     const GridModel = Grid.get_grid_model(gridName)
     if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
     let agg = []
-    agg.push({$match: {pres: pres, date: date, gridName: gridName }})
+    date = new Date(date)
+    agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
     const proj =  {$project: { // query for lat lng ranges
             pres: -1,
             date: -1,
