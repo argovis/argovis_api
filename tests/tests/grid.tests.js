@@ -37,6 +37,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/gridCoords'].get.responses['200'].content['application/json'].schema);
       });
     });
+
+    describe("GET /griddedProducts/gridParams/find", function () {
+      it("fetch grid parameters", async function () {
+        const response = await request.get("/griddedProducts/gridParams/find?gridName=ksSpaceTempTrend&presLevel=10&param=aOpt");    
+        expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/gridParams/find'].get.responses['200'].content['application/json'].schema);
+      });
+    });
   }
 })
 
