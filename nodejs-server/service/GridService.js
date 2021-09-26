@@ -117,7 +117,7 @@ exports.gridmeta = function(gridName) {
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
  * date Date date-time formatted string
- * returns nonUniformGrid
+ * returns List
  **/
 exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {

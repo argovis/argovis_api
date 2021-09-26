@@ -508,7 +508,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/nonUniformGrid"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/nonUniformGrid"
+                           }
                         }
                      }
                   }
@@ -1026,8 +1029,10 @@
                   "type": "number"
                },
                "NODATA_value": {
-                  "type": "number"
-               }
+                  "anyOf": [
+                    {"type": "string"},
+                    {"type": "null"}
+               ]}
             }
          },
          "GridSchema": {
