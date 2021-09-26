@@ -24,6 +24,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /griddedProducts/nonUniformGrid/window", function () {
+      it("fetch nonuniform grid", async function () {
+        const response = await request.get("/griddedProducts/nonUniformGrid/window?gridName=ksTempTrend2&presLevel=10&latRange=-52,-50&lonRange=21,22&date=2012-09-01T00:00:00Z");    
+        expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/nonUniformGrid/window'].get.responses['200'].content['application/json'].schema);
+      });
+    });
   }
 })
 

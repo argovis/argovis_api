@@ -229,7 +229,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
  * date Date date-time formatted string
- * returns RasterGrid
+ * returns List
  **/
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {

@@ -580,7 +580,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RasterGrid'
+                type: array
+                items:
+                  $ref: '#/components/schemas/RasterGrid'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -1151,11 +1154,11 @@ components:
       - _id
       - cellXSize
       - cellYSize
+      - date
       - nCols
       - nRows
       - noDataValue
       - pres
-      - time
       - xllCorner
       - yllCorner
       - zs
@@ -1166,14 +1169,17 @@ components:
         pres:
           type: number
         cellXSize:
-          type: number
-          nullable: true
+          anyOf:
+          - type: number
+          - type: "null"
         cellYSize:
-          type: number
-          nullable: true
+          anyOf:
+          - type: number
+          - type: "null"
         noDataValue:
-          type: number
-          nullable: true
+          anyOf:
+          - type: number
+          - type: "null"
         zs:
           type: array
           items:
@@ -1202,19 +1208,19 @@ components:
         gridName: gridName
         pres: 0.80082819046101150206595775671303272247314453125
         units: units
-        cellXSize: 6.02745618307040320615897144307382404804229736328125
+        cellXSize: ""
         measurement: measurement
-        nCols: 7
-        yllCorner: 3.61607674925191080461672754609026014804840087890625
-        nRows: 2
+        nCols: 5
+        yllCorner: 2.3021358869347654518833223846741020679473876953125
+        nRows: 1
         param: param
-        xllCorner: 9.301444243932575517419536481611430644989013671875
-        noDataValue: 5.962133916683182377482808078639209270477294921875
+        xllCorner: 5.63737665663332876420099637471139430999755859375
+        noDataValue: ""
         zs:
-        - 5.63737665663332876420099637471139430999755859375
-        - 5.63737665663332876420099637471139430999755859375
+        - 6.02745618307040320615897144307382404804229736328125
+        - 6.02745618307040320615897144307382404804229736328125
         _id: _id
-        cellYSize: 1.46581298050294517310021547018550336360931396484375
+        cellYSize: ""
     ancestorGrid:
       required:
       - NODATA_value
