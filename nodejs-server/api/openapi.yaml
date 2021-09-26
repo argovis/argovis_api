@@ -677,7 +677,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/nonUniformGrid'
+                type: array
+                items:
+                  $ref: '#/components/schemas/nonUniformGrid'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -1260,7 +1263,9 @@ components:
         cellsize:
           type: number
         NODATA_value:
-          type: number
+          anyOf:
+          - type: string
+          - type: "null"
       description: ancestor object describing common grid-like properties
     GridSchema:
       description: grid document as it appears in the database
