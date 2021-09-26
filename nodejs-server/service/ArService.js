@@ -15,7 +15,7 @@ exports.findARbyDate = function(date) {
   "date_formateed" : "2000-01-23",
   "shapeId" : 0,
   "geoLocation" : {
-    "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+    "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
     "type" : "type"
   },
   "_id" : "_id"
@@ -43,7 +43,7 @@ exports.findARbyID = function(_id) {
   "date_formateed" : "2000-01-23",
   "shapeId" : 0,
   "geoLocation" : {
-    "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+    "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
     "type" : "type"
   },
   "_id" : "_id"
@@ -70,7 +70,7 @@ exports.findOneAR = function() {
   "date_formateed" : "2000-01-23",
   "shapeId" : 0,
   "geoLocation" : {
-    "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+    "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
     "type" : "type"
   },
   "_id" : "_id"

@@ -15,23 +15,23 @@ exports.findCovar = function(lat,lon,forcastDays) {
     examples['application/json'] = {
   "features" : [ {
     "geometry" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "type" : "type",
     "properties" : { }
   }, {
     "geometry" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "type" : "type",
     "properties" : { }
   } ],
-  "dLat" : 0.8008281904610115,
-  "dLong" : 6.027456183070403,
+  "dLat" : 6.027456183070403,
+  "dLong" : 1.4658129805029452,
   "_id" : "_id",
-  "forcastDays" : 1
+  "forcastDays" : 5
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);

@@ -20,7 +20,7 @@ exports.findOneTC = function() {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
@@ -34,7 +34,7 @@ exports.findOneTC = function() {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
@@ -94,7 +94,7 @@ exports.findTCbyDate = function(date) {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
@@ -108,7 +108,7 @@ exports.findTCbyDate = function(date) {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
@@ -151,7 +151,7 @@ exports.findTCbyDateRange = function(startDate,endDate) {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
@@ -165,7 +165,7 @@ exports.findTCbyDateRange = function(startDate,endDate) {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
@@ -208,7 +208,7 @@ exports.findTCbyNameYear = function(name,year) {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
@@ -222,7 +222,7 @@ exports.findTCbyNameYear = function(name,year) {
     "date" : "date",
     "pres" : 7.061401241503109,
     "geoLocation" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
       "type" : "type"
     },
     "season" : 9.301444243932576,
