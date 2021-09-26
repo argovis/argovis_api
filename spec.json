@@ -698,7 +698,7 @@
                   "type": "integer"
                },
                "geoLocation": {
-                  "$ref": "#/components/schemas/geoJSONpoint"
+                  "$ref": "#/components/schemas/geoJSONpolygon"
                },
                "date_formateed": {
                   "type": "string",
@@ -1106,6 +1106,25 @@
                      "type": "number",
                      "minItems": 2,
                      "maxItems": 2
+                  }
+               }
+            }
+         },
+         "geoJSONpolygon": {
+            "type": "object",
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "array",
+                     "items": {
+                        "type": "number",
+                        "minItems": 2,
+                        "maxItems": 2
+                     }
                   }
                }
             }
