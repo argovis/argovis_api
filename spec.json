@@ -590,7 +590,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/GridSchema"
+                           }
                         }
                      }
                   }
@@ -681,7 +684,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/RasterParam"
+                           }
                         }
                      }
                   }
@@ -897,7 +903,7 @@
                }
             }
          },
-         "RasterGrid": {
+         "RasterParam": {
             "type": "object",
             "required": [
                "_id",
@@ -909,8 +915,7 @@
                "nRows",
                "nCols",
                "xllCorner",
-               "yllCorner",
-               "date"
+               "yllCorner"
             ],
             "properties": {
                "_id": {
@@ -963,12 +968,24 @@
                },
                "param": {
                   "type": "string"
-               },
-               "date": {
-                  "type": "string",
-                  "format": "date-time"
                }
             }
+         },
+         "RasterGrid": {
+            "allOf": [
+               {
+                  "$ref": "#/components/schemas/RasterParam"
+               },
+               {
+                  "type": "object",
+                  "properties": {
+                     "date": {
+                        "type": "string",
+                        "format": "date-time"
+                     }
+                  }
+               }
+            ]
          },
          "ancestorGrid": {
             "type": "object",
@@ -1007,7 +1024,10 @@
                            "type": "number"
                         },
                         "value": {
-                           "type": "number"
+                           "anyOf": [
+                              {"type": "number"},
+                              {"type": "null"}
+                           ]
                         }
                      }
                   }
@@ -1042,7 +1062,6 @@
             }
          },
          "GridSchema": {
-            "description": "grid document as it appears in the database",
             "allOf": [
                {
                   "$ref": "#/components/schemas/ancestorGrid"

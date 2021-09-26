@@ -799,7 +799,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GridSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -954,7 +957,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/RasterParam'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -1158,12 +1164,11 @@ components:
         presLevels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125
-    RasterGrid:
+    RasterParam:
       required:
       - _id
       - cellXSize
       - cellYSize
-      - date
       - nCols
       - nRows
       - noDataValue
@@ -1209,11 +1214,7 @@ components:
           type: string
         param:
           type: string
-        date:
-          type: string
-          format: date-time
       example:
-        date: 2000-01-23T04:56:07.000+00:00
         gridName: gridName
         pres: 0.80082819046101150206595775671303272247314453125
         units: units
@@ -1230,6 +1231,14 @@ components:
         - 6.02745618307040320615897144307382404804229736328125
         _id: _id
         cellYSize: ""
+    RasterGrid:
+      allOf:
+      - $ref: '#/components/schemas/RasterParam'
+      - type: object
+        properties:
+          date:
+            type: string
+            format: date-time
     ancestorGrid:
       required:
       - NODATA_value
@@ -1274,7 +1283,6 @@ components:
           - type: "null"
       description: ancestor object describing common grid-like properties
     GridSchema:
-      description: grid document as it appears in the database
       allOf:
       - $ref: '#/components/schemas/ancestorGrid'
       - type: object
@@ -1459,7 +1467,9 @@ components:
         lon:
           type: number
         value:
-          type: number
+          anyOf:
+          - type: number
+          - type: "null"
   responses:
     badRequest:
       description: Bad Request

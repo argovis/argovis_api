@@ -10,7 +10,7 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
  * returns a single grid by name
  *
  * gridName String name of the gridded product
- * returns GridSchema
+ * returns List
  **/
 exports.findGrid = function(gridName) {
   return new Promise(function(resolve, reject) {
