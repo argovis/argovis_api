@@ -135,28 +135,44 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
  * date Date date-time formatted string
- * returns RasterGrid
+ * returns List
  **/
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = {
+    examples['application/json'] = [ {
   "date" : "2000-01-23T04:56:07.000+00:00",
   "gridName" : "gridName",
   "pres" : 0.8008281904610115,
   "units" : "units",
-  "cellXSize" : 6.027456183070403,
+  "cellXSize" : "",
   "measurement" : "measurement",
-  "nCols" : 7,
-  "yllCorner" : 3.616076749251911,
-  "nRows" : 2,
+  "nCols" : 5,
+  "yllCorner" : 2.3021358869347655,
+  "nRows" : 1,
   "param" : "param",
-  "xllCorner" : 9.301444243932576,
-  "noDataValue" : 5.962133916683182,
-  "zs" : [ 5.637376656633329, 5.637376656633329 ],
+  "xllCorner" : 5.637376656633329,
+  "noDataValue" : "",
+  "zs" : [ 6.027456183070403, 6.027456183070403 ],
   "_id" : "_id",
-  "cellYSize" : 1.4658129805029452
-};
+  "cellYSize" : ""
+}, {
+  "date" : "2000-01-23T04:56:07.000+00:00",
+  "gridName" : "gridName",
+  "pres" : 0.8008281904610115,
+  "units" : "units",
+  "cellXSize" : "",
+  "measurement" : "measurement",
+  "nCols" : 5,
+  "yllCorner" : 2.3021358869347655,
+  "nRows" : 1,
+  "param" : "param",
+  "xllCorner" : 5.637376656633329,
+  "noDataValue" : "",
+  "zs" : [ 6.027456183070403, 6.027456183070403 ],
+  "_id" : "_id",
+  "cellYSize" : ""
+} ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
