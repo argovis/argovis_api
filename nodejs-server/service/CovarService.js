@@ -12,7 +12,6 @@ const GJV = require('geojson-validation');
  **/
 exports.findCovar = function(lat,lon,forcastDays) {
   return new Promise(function(resolve, reject) {
-
     var point = {"type": "Point", "coordinates": [lon,lat]};
     if (!GJV.valid(point) || !GJV.isPoint(point)) reject({"code": 400, "message": "Invalid lat/lon."});
 

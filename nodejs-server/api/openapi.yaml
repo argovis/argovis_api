@@ -989,7 +989,7 @@ components:
       required:
       - _id
       - dLat
-      - dLon
+      - dLong
       - features
       - forcastDays
       - geoLocation
@@ -1003,7 +1003,7 @@ components:
           type: string
         dLat:
           type: number
-        dLon:
+        dLong:
           type: number
         forcastDays:
           type: integer
@@ -1028,6 +1028,7 @@ components:
             type: type
           type: type
         dLat: 6.02745618307040320615897144307382404804229736328125
+        dLong: 1.46581298050294517310021547018550336360931396484375
         geoLocation:
           coordinates:
           - - 6.02745618307040320615897144307382404804229736328125
@@ -1035,7 +1036,6 @@ components:
           - - 6.02745618307040320615897144307382404804229736328125
             - 6.02745618307040320615897144307382404804229736328125
           type: type
-        dLon: 1.46581298050294517310021547018550336360931396484375
         _id: _id
         forcastDays: 5
     tcSchema:

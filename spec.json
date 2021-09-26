@@ -713,7 +713,7 @@
                "features",
                "dLat",
                "forcastDays",
-               "dLon",
+               "dLong",
                "geoLocation"
             ],
             "properties": {
@@ -753,7 +753,7 @@
                "dLat": {
                   "type": "number"
                },
-               "dLon": {
+               "dLong": {
                   "type": "number"
                },
                "forcastDays": {
