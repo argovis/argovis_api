@@ -859,7 +859,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/gridParams'
+                type: array
+                items:
+                  $ref: '#/components/schemas/gridParams'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:

@@ -35,7 +35,7 @@ exports.findGrid = function(gridName) {
  * gridName String name of the gridded product
  * presLevel BigDecimal pressure level (dbar)
  * param String tbd
- * returns gridParams
+ * returns List
  **/
 exports.findGridParam = function(gridName,presLevel,param) {
   return new Promise(function(resolve, reject) {
