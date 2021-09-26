@@ -44,6 +44,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/gridParams/find'].get.responses['200'].content['application/json'].schema);
       });
     });
+
+    describe("GET /griddedProducts/grid/find", function () {
+      it("fetch grid by name", async function () {
+        const response = await request.get("/griddedProducts/grid/find?gridName=ksTempTrend2");    
+        expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/grid/find'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /griddedProducts/gridParams/window", function () {
+      it("tbd", async function () {
+        const response = await request.get("/griddedProducts/gridParams/window?gridName=ksSpaceTempTrend&presLevel=10&latRange=-52,-50&lonRange=21,22&param=aOpt");    
+        expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/gridParams/window'].get.responses['200'].content['application/json'].schema);
+      });
+    });
   }
 })
 
