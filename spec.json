@@ -682,7 +682,7 @@
             "required": [
                "_id",
                "date",
-               "shapeID",
+               "shapeId",
                "geoLocation",
                "date_formatted"
             ],
