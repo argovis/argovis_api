@@ -30,7 +30,6 @@ exports.findARbyDate = function(date) {
  **/
 exports.findARbyID = function(_id) {
   return new Promise(function(resolve, reject) {
-
     // confirm arguments are reasonable, otherwise error 400.
     if(!RegExp('^[0-9]+_[0-9]+$').test(String(_id))) reject({"code": 400, "message": "Bad request: Valid ID parameters match '^[0-9]+_[0-9]+$'."})
 

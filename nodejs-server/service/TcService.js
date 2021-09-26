@@ -83,7 +83,6 @@ exports.findTCbyDate = function(date) {
  **/
 exports.findTCbyDateRange = function(startDate,endDate) {
   return new Promise(function(resolve, reject) {
-
     // limit to 3 months worth of cyclones per request
     const sDate = moment(startDate, 'YYYY-MM-DDTHH:mm:ss')
     const eDate = moment(endDate, 'YYYY-MM-DDTHH:mm:ss')
@@ -117,7 +116,6 @@ exports.findTCbyDateRange = function(startDate,endDate) {
  **/
 exports.findTCbyNameYear = function(name,year) {
   return new Promise(function(resolve, reject) {
-
     const tc_name = name.toUpperCase()
 
     const query = tcTraj.find({name: tc_name, year: year})

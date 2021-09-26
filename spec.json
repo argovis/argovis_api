@@ -683,7 +683,7 @@
                "_id",
                "date",
                "shapeId",
-               "geoLocation",
+               "geoJSONpoint",
                "date_formatted"
             ],
             "properties": {
@@ -697,8 +697,8 @@
                "shapeId": {
                   "type": "integer"
                },
-               "geoLocation": {
-                  "$ref": "#/components/schemas/geoLocation"
+               "geoJSONpoint": {
+                  "$ref": "#/components/schemas/geoJSONpoint"
                },
                "date_formateed": {
                   "type": "string",
@@ -714,7 +714,7 @@
                "dLat",
                "forcastDays",
                "dLong",
-               "geoLocation"
+               "geoJSONpoint"
             ],
             "properties": {
                "features": {
@@ -759,8 +759,8 @@
                "forcastDays": {
                   "type": "integer"
                },
-               "geoLocation": {
-                  "$ref": "#/components/schemas/geoLocation"
+               "geoJSONpoint": {
+                  "$ref": "#/components/schemas/geoJSONpoint"
                }
             }
          },
@@ -809,7 +809,7 @@
                         "lat",
                         "lon",
                         "timestamp",
-                        "geoLocation"
+                        "geoJSONpoint"
                      ],
                      "properties": {
                         "date": {
@@ -840,8 +840,8 @@
                            "type": "string",
                            "format": "date-time"
                         },
-                        "geoLocation": {
-                           "$ref": "#/components/schemas/geoLocation"
+                        "geoJSONpoint": {
+                           "$ref": "#/components/schemas/geoJSONpoint"
                         }
                      }
                   }
@@ -1106,7 +1106,7 @@
                }
             }
          },
-         "geoLocation": {
+         "geoJSONpoint": {
             "type": "object",
             "properties": {
                "type": {
@@ -1115,13 +1115,9 @@
                "coordinates": {
                   "type": "array",
                   "items": {
-                     "type": "array",
-                     "items": {
-                        "type": "number",
-                        "minItems": 2,
-                        "maxItems": 2
-                     },
-                     "uniqueItems": true
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
                   }
                }
             }

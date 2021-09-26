@@ -957,7 +957,7 @@ components:
       - _id
       - date
       - date_formatted
-      - geoLocation
+      - geoJSONpoint
       - shapeId
       type: object
       properties:
@@ -968,8 +968,8 @@ components:
           format: date-time
         shapeId:
           type: integer
-        geoLocation:
-          $ref: '#/components/schemas/geoLocation'
+        geoJSONpoint:
+          $ref: '#/components/schemas/geoJSONpoint'
         date_formateed:
           type: string
           format: date
@@ -977,14 +977,12 @@ components:
         date: 2000-01-23T04:56:07.000+00:00
         date_formateed: 2000-01-23
         shapeId: 0
-        geoLocation:
-          coordinates:
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          type: type
         _id: _id
+        geoJSONpoint:
+          coordinates:
+          - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+          type: type
     CovarSchema:
       required:
       - _id
@@ -992,7 +990,7 @@ components:
       - dLong
       - features
       - forcastDays
-      - geoLocation
+      - geoJSONpoint
       type: object
       properties:
         features:
@@ -1007,8 +1005,8 @@ components:
           type: number
         forcastDays:
           type: integer
-        geoLocation:
-          $ref: '#/components/schemas/geoLocation'
+        geoJSONpoint:
+          $ref: '#/components/schemas/geoJSONpoint'
       example:
         features:
         - geometry:
@@ -1029,14 +1027,12 @@ components:
           type: type
         dLat: 6.02745618307040320615897144307382404804229736328125
         dLong: 1.46581298050294517310021547018550336360931396484375
-        geoLocation:
-          coordinates:
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          type: type
         _id: _id
+        geoJSONpoint:
+          coordinates:
+          - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+          type: type
         forcastDays: 5
     tcSchema:
       required:
@@ -1078,33 +1074,29 @@ components:
         trajData:
         - date: date
           pres: 7.061401241503109105224211816675961017608642578125
-          geoLocation:
-            coordinates:
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
-            type: type
           season: 9.301444243932575517419536481611430644989013671875
           lon: 5.63737665663332876420099637471139430999755859375
           time: 1.46581298050294517310021547018550336360931396484375
           class: class
+          geoJSONpoint:
+            coordinates:
+            - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+            type: type
           lat: 5.962133916683182377482808078639209270477294921875
           wind: 2.3021358869347654518833223846741020679473876953125
           timestamp: 2000-01-23T04:56:07.000+00:00
         - date: date
           pres: 7.061401241503109105224211816675961017608642578125
-          geoLocation:
-            coordinates:
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
-            type: type
           season: 9.301444243932575517419536481611430644989013671875
           lon: 5.63737665663332876420099637471139430999755859375
           time: 1.46581298050294517310021547018550336360931396484375
           class: class
+          geoJSONpoint:
+            coordinates:
+            - 6.02745618307040320615897144307382404804229736328125
+            - 6.02745618307040320615897144307382404804229736328125
+            type: type
           lat: 5.962133916683182377482808078639209270477294921875
           wind: 2.3021358869347654518833223846741020679473876953125
           timestamp: 2000-01-23T04:56:07.000+00:00
@@ -1320,7 +1312,7 @@ components:
         trend: trend
         model: model
         measurement: measurement
-    geoLocation:
+    geoJSONpoint:
       type: object
       properties:
         type:
@@ -1328,18 +1320,13 @@ components:
         coordinates:
           type: array
           items:
-            uniqueItems: true
-            type: array
-            items:
-              maxItems: 2
-              minItems: 2
-              type: number
+            maxItems: 2
+            minItems: 2
+            type: number
       example:
         coordinates:
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
+        - 6.02745618307040320615897144307382404804229736328125
+        - 6.02745618307040320615897144307382404804229736328125
         type: type
     errorResponse:
       required:
@@ -1391,7 +1378,7 @@ components:
       required:
       - class
       - date
-      - geoLocation
+      - geoJSONpoint
       - lat
       - lon
       - time
@@ -1417,22 +1404,20 @@ components:
         timestamp:
           type: string
           format: date-time
-        geoLocation:
-          $ref: '#/components/schemas/geoLocation'
+        geoJSONpoint:
+          $ref: '#/components/schemas/geoJSONpoint'
       example:
         date: date
         pres: 7.061401241503109105224211816675961017608642578125
-        geoLocation:
-          coordinates:
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          type: type
         season: 9.301444243932575517419536481611430644989013671875
         lon: 5.63737665663332876420099637471139430999755859375
         time: 1.46581298050294517310021547018550336360931396484375
         class: class
+        geoJSONpoint:
+          coordinates:
+          - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+          type: type
         lat: 5.962133916683182377482808078639209270477294921875
         wind: 2.3021358869347654518833223846741020679473876953125
         timestamp: 2000-01-23T04:56:07.000+00:00
