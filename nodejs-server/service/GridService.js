@@ -56,11 +56,10 @@ exports.findGridParam = function(gridName,presLevel,param) {
  * gridName String name of the gridded product
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
- * returns GridCoordSchema
+ * returns List
  **/
 exports.gridCoords = function(gridName,latRange,lonRange) {
   return new Promise(function(resolve, reject) {
-
     let agg = [
         {$match: {gridName: gridName}},
         {$unwind: "$lats"},

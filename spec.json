@@ -552,7 +552,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridCoordSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/GridCoordSchema"
+                           }
                         }
                      }
                   }
@@ -1080,8 +1083,10 @@
             ],
             "properties": {
                "_id": {
-                  "type": "string"
-               },
+                  "anyOf": [
+                    {"type": "string"},
+                    {"type": "null"}
+               ]},
                "lats": {
                   "type": "array",
                   "items": {
