@@ -1,5 +1,6 @@
 'use strict';
 const Grid = require('../models/grid');
+const GridParameter = Grid.ksTempParams;
 const moment = require('moment');
 
 
@@ -34,7 +35,7 @@ exports.findGrid = function(gridName) {
  * gridName String name of the gridded product
  * presLevel BigDecimal pressure level (dbar)
  * param String tbd
- * returns GridSchema
+ * returns gridParams
  **/
 exports.findGridParam = function(gridName,presLevel,param) {
   return new Promise(function(resolve, reject) {
@@ -115,15 +116,16 @@ exports.gridmeta = function(gridName) {
  * presLevel BigDecimal pressure level (dbar)
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
- * date date YYYY-MM-DD format. Monthly grids use the first day of the month.
- * returns GridSchema
+ * date Date date-time formatted string
+ * returns nonUniformGrid
  **/
 exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
     const GridModel = Grid.get_grid_model(gridName)
     if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
     let agg = []
-    agg.push({$match: {pres: pres, date: date, gridName: gridName }})
+    date = new Date(date)
+    agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
     const proj =  {$project: { // query for lat lng ranges
             pres: -1,
             date: -1,
@@ -134,6 +136,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
             variable: -1,
             NODATA_value: -1,
             chunk: -1,
+            cellsize: -1,
             data: {
                 $filter: {
                     input: '$data',
@@ -160,6 +163,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
             variable: -1,
             NODATA_value: -1,
             chunk: -1,
+            cellsize: -1,
             data: -1,
             count: { $size:'$data' },
         }}
@@ -178,6 +182,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
                 'NODATA_value': {$first: '$NODATA_value'},
                 'variable': {$first: '$variable'},
                 'gridName': {$first: '$gridName'},
+                'cellsize': {$first: '$cellsize'},
                 'data': {$push : "$data" // values should be in sorted order
                 },
         }
@@ -195,6 +200,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
         variable: -1,
         NODATA_value: -1,
         chunks: -1,
+        cellsize: -1,
         data: {
             $reduce: {
                 input: '$data',
@@ -222,7 +228,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
  * presLevel BigDecimal pressure level (dbar)
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
- * date date YYYY-MM-DD format. Monthly grids use the first day of the month.
+ * date Date date-time formatted string
  * returns RasterGrid
  **/
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
@@ -230,6 +236,7 @@ exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) 
     const GridModel = Grid.get_grid_model(gridName)
     if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
     let agg = []
+    date = new Date(date)
     agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
     agg = add_grid_projection(agg, latRange, lonRange)
     const query = GridModel.aggregate(agg)

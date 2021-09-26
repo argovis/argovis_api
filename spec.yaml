@@ -263,7 +263,7 @@ paths:
       - $ref: '#/components/parameters/presLevelUniform'
       - $ref: '#/components/parameters/latRangeUniform'
       - $ref: '#/components/parameters/lonRange'
-      - $ref: '#/components/parameters/dateUniform'  
+      - $ref: '#/components/parameters/date'  
       responses:
         '200':
           description: OK
@@ -288,14 +288,14 @@ paths:
       - $ref: '#/components/parameters/presLevelNonUniform'
       - $ref: '#/components/parameters/latRangeNonUniform'
       - $ref: '#/components/parameters/lonRange'    
-      - $ref: '#/components/parameters/dateNonUniform'  
+      - $ref: '#/components/parameters/date'  
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                $ref: '#/components/schemas/nonUniformGrid'
         '400':
           $ref: '#/components/responses/badRequest'
         '404':
@@ -362,7 +362,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                $ref: '#/components/schemas/gridParams'
         '400':
           $ref: '#/components/responses/badRequest'
         '404':
@@ -590,20 +590,19 @@ components:
           type: string
         param:
           type: string
-        time: 
-          type: number
         date:
           type: string
           format: date-time
-    GridSchema:
+    ancestorGrid:
       type: object
+      description: ancestor object describing common grid-like properties
       required:
       - _id
       - measurement
       - units
       - pres
       - param
-      - cellSize
+      - cellsize
       - NODATA_value
       properties:
         _id:
@@ -638,12 +637,28 @@ components:
           type: string
         param:
           type: string
-        chunk: 
-          type: integer
-        cellSize: 
+        cellsize: 
           type: number
         NODATA_value:
           type: number
+    GridSchema:
+      description: grid document as it appears in the database
+      allOf:
+        - $ref: '#/components/schemas/ancestorGrid'  
+        - type: object
+          properties:
+            chunk: 
+              type: integer
+    nonUniformGrid:
+      description: response object for non-uniform grid search
+      allOf:
+        - $ref: '#/components/schemas/ancestorGrid'
+        - type: object
+          properties:
+            chunks: 
+              type: array
+              items:
+                type: number
     GridCoordSchema:
       type: object
       required:
@@ -664,6 +679,19 @@ components:
             type: number
         gridName: 
           type: string
+    gridParams:
+      type: object
+      properties:
+        model:
+          type: string
+        param:
+          type: string
+        measurement:
+          type: string
+        trend:
+          type: string
+        pres:
+          type: number
     geoLocation:
       type: object
       properties:
