@@ -408,7 +408,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridMeta"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/GridMeta"
+                           }
                         }
                      }
                   }
@@ -855,8 +858,10 @@
             ],
             "properties": {
                "_id": {
-                  "type": "string"
-               },
+                  "anyOf": [
+                    {"type": "string"},
+                    {"type": "null"}
+               ]},
                "presLevels": {
                   "type": "array",
                   "items": {

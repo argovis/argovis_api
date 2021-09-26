@@ -483,7 +483,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridMeta'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GridMeta'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -1115,7 +1118,9 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          anyOf:
+          - type: string
+          - type: "null"
         presLevels:
           type: array
           items:
@@ -1137,7 +1142,7 @@ components:
         - 2000-01-23T04:56:07.000+00:00
         - 2000-01-23T04:56:07.000+00:00
         maxDate: 2000-01-23T04:56:07.000+00:00
-        _id: _id
+        _id: ""
         presLevels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125

@@ -84,7 +84,7 @@ exports.gridCoords = function(gridName,latRange,lonRange) {
  * metadata from grid unique dates, pres levels
  *
  * gridName String name of the gridded product
- * returns GridMeta
+ * returns List
  **/
 exports.gridmeta = function(gridName) {
   return new Promise(function(resolve, reject) {

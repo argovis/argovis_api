@@ -17,6 +17,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /griddedProducts/grid/window", function () {
+      it("fetch grid window", async function () {
+        const response = await request.get("/griddedProducts/grid/window?gridName=ksTempTrend2&presLevel=10&latRange=-52,-50&lonRange=21,22&date=2012-09-01T00:00:00Z");    
+        expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/grid/window'].get.responses['200'].content['application/json'].schema);
+      });
+    });
 
   }
 })
