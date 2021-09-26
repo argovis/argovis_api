@@ -241,7 +241,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/tcSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/tcSchema"
+                           }
                         }
                      }
                   }
@@ -279,7 +282,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/tcSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/tcSchema"
+                           }
                         }
                      }
                   }

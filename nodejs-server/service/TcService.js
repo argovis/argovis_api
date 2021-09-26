@@ -61,7 +61,7 @@ exports.findStormNameList = function() {
  * tropical cyclones at a given date-time
  *
  * date Date date-time formatted string
- * returns tcSchema
+ * returns List
  **/
 exports.findTCbyDate = function(date) {
   return new Promise(function(resolve, reject) {
@@ -79,7 +79,7 @@ exports.findTCbyDate = function(date) {
  *
  * startDate Date date-time formatted string indicating the beginning of a time period
  * endDate Date date-time formatted string indicating the end of a time period
- * returns tcSchema
+ * returns List
  **/
 exports.findTCbyDateRange = function(startDate,endDate) {
   return new Promise(function(resolve, reject) {

@@ -13,7 +13,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /covarGrid/-58/98/140", function () {
       it("returns one covar grid result", async function () {
         const response = await request.get("/covarGrid/-58/98/140");    
-        expect(response.body).to.be.jsonSchema(schema.components.schemas.CovarSchema);
+        expect(response.body).to.be.jsonSchema(schema.paths['/covarGrid/{lat}/{lon}/{forcastDays}'].get.responses['200'].content['application/json'].schema);
       });
     });
 
