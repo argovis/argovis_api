@@ -7,7 +7,7 @@ Argovis's API is automatically templated from the OpenAPI specification in `spec
 ```
 docker container run --rm -v ${PWD}:/local \
     swaggerapi/swagger-codegen-cli-v3 generate \
-    -i /local/spec.yaml \
+    -i /local/spec.json \
     -l nodejs-server \
     -o /local/nodejs-server
 ```
