@@ -14,11 +14,11 @@ exports.findARbyDate = function(date) {
   "date" : "2000-01-23T04:56:07.000+00:00",
   "date_formateed" : "2000-01-23",
   "shapeId" : 0,
-  "geoLocation" : {
-    "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
+  "_id" : "_id",
+  "geoJSONpoint" : {
+    "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
     "type" : "type"
-  },
-  "_id" : "_id"
+  }
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -42,11 +42,11 @@ exports.findARbyID = function(_id) {
   "date" : "2000-01-23T04:56:07.000+00:00",
   "date_formateed" : "2000-01-23",
   "shapeId" : 0,
-  "geoLocation" : {
-    "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
+  "_id" : "_id",
+  "geoJSONpoint" : {
+    "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
     "type" : "type"
-  },
-  "_id" : "_id"
+  }
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -69,11 +69,11 @@ exports.findOneAR = function() {
   "date" : "2000-01-23T04:56:07.000+00:00",
   "date_formateed" : "2000-01-23",
   "shapeId" : 0,
-  "geoLocation" : {
-    "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
+  "_id" : "_id",
+  "geoJSONpoint" : {
+    "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
     "type" : "type"
-  },
-  "_id" : "_id"
+  }
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
