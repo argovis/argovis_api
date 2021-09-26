@@ -27,11 +27,11 @@ exports.findCovar = function(lat,lon,forcastDays) {
     "type" : "type"
   } ],
   "dLat" : 6.027456183070403,
+  "dLong" : 1.4658129805029452,
   "geoLocation" : {
     "coordinates" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
     "type" : "type"
   },
-  "dLon" : 1.4658129805029452,
   "_id" : "_id",
   "forcastDays" : 5
 };

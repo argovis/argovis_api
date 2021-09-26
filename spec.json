@@ -1,0 +1,1424 @@
+{
+   "openapi": "3.0.3",
+   "info": {
+      "title": "Argovis API",
+      "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
+      "contact": {
+         "name": "Argovis Collaboration",
+         "email": "tbd@example.com",
+         "url": "https://argovis.colorado.edu/"
+      },
+      "license": {
+         "name": "MIT",
+         "url": "https://opensource.org/licenses/MIT"
+      },
+      "version": "0.1"
+   },
+   "externalDocs": {
+      "description": "Find us on GitHub",
+      "url": "https://github.com/argovis/argovis_api"
+   },
+   "servers": [
+      {
+         "url": "https://argovis.colorado.edu",
+         "description": "Server Hosted by University of Colorado, Boulder"
+      },
+      {
+         "url": "http://localhost:3001",
+         "description": "Local server for testing and development"
+      }
+   ],
+   "security": [
+      {
+         "name": []
+      }
+   ],
+   "tags": [
+      {
+         "name": "ar",
+         "description": "atmospheric river shapes"
+      },
+      {
+         "name": "covar",
+         "description": "Argo float position forcast product"
+      },
+      {
+         "name": "tc",
+         "description": "tropical cyclone data"
+      },
+      {
+         "name": "grid",
+         "description": "Gridded products derived from Argo floats, simulation, or satalite product"
+      }
+   ],
+   "paths": {
+      "/arShapes/findByDate": {
+         "get": {
+            "tags": [
+               "ar"
+            ],
+            "summary": "shapes representing atmospheric rivers at a given date-time",
+            "operationId": "findARbyDate",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/arDate"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/arShapeSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/arShapes/findByID": {
+         "get": {
+            "tags": [
+               "ar"
+            ],
+            "summary": "shapes representing atmospheric rivers with a given ID",
+            "operationId": "findARbyID",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/arID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/arShapeSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/arShapes": {
+         "get": {
+            "tags": [
+               "ar"
+            ],
+            "summary": "one instance of a shape representing an atmospheric river",
+            "operationId": "findOneAR",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/arShapeSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/covarGrid/{lat}/{lon}/{forcastDays}": {
+         "get": {
+            "tags": [
+               "covar"
+            ],
+            "summary": "Probability distribution field for a float at point lat-lon after forcastDays.",
+            "operationId": "findCovar",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/lat"
+               },
+               {
+                  "$ref": "#/components/parameters/lon"
+               },
+               {
+                  "$ref": "#/components/parameters/forcastDays"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/CovarSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/tc": {
+         "get": {
+            "tags": [
+               "tc"
+            ],
+            "summary": "one tropical cyclone instance",
+            "operationId": "findOneTC",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/tcSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/tc/findByDate": {
+         "get": {
+            "tags": [
+               "tc"
+            ],
+            "summary": "tropical cyclones at a given date-time",
+            "operationId": "findTCbyDate",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/date"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/tcSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/tc/findByDateRange": {
+         "get": {
+            "tags": [
+               "tc"
+            ],
+            "summary": "tropical cyclones intersecting a time period",
+            "operationId": "findTCbyDateRange",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/tcSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/tc/stormNameList": {
+         "get": {
+            "tags": [
+               "tc"
+            ],
+            "summary": "returns a list of tropical cyclone names and years",
+            "operationId": "findStormNameList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/tc/findByNameYear": {
+         "get": {
+            "tags": [
+               "tc"
+            ],
+            "summary": "find a tropical cyclone by name and year",
+            "operationId": "findTCbyNameYear",
+            "parameters": [
+               {
+                  "name": "name",
+                  "in": "query",
+                  "required": true,
+                  "description": "name of tropical cyclone",
+                  "schema": {
+                     "type": "string",
+                     "example": "LANE"
+                  }
+               },
+               {
+                  "name": "year",
+                  "in": "query",
+                  "required": true,
+                  "description": "year of tropical cyclone",
+                  "schema": {
+                     "type": "number",
+                     "example": 2018
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/tcSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/griddedProducts/gridMetadata": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "metadata from grid unique dates, pres levels",
+            "operationId": "gridmeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridNameUniform"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/GridMeta"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/griddedProducts/grid/window": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "uniformly spaced rectangular gridded product selector",
+            "operationId": "uniformGridWindow",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridNameUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/presLevelUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/latRangeUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/lonRange"
+               },
+               {
+                  "$ref": "#/components/parameters/date"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/RasterGrid"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/griddedProducts/nonUniformGrid/window": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "non uniformly spaced rectangular gridded product",
+            "operationId": "nonuniformGridWindow",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridNameNonUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/presLevelNonUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/latRangeNonUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/lonRange"
+               },
+               {
+                  "$ref": "#/components/parameters/date"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/nonUniformGrid"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/griddedProducts/gridCoords": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "coordinates for gridded product",
+            "operationId": "gridCoords",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridNameNonUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/latRangeNonUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/lonRange"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/GridCoordSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/griddedProducts/grid/find": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "returns a single grid by name",
+            "operationId": "findGrid",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridNameUniform"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/GridSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/griddedProducts/gridParams/find": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "grid parameter search",
+            "operationId": "findGridParam",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridNameUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/presLevelUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/gridParam"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/gridParams"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/griddedProducts/gridParams/window": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "tbd",
+            "operationId": "windowGridParam",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridNameUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/presLevelUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/latRangeUniform"
+               },
+               {
+                  "$ref": "#/components/parameters/lonRange"
+               },
+               {
+                  "$ref": "#/components/parameters/gridParam"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/GridSchema"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      }
+   },
+   "components": {
+      "schemas": {
+         "arShapeSchema": {
+            "type": "object",
+            "required": [
+               "_id",
+               "date",
+               "shapeId",
+               "geoLocation",
+               "date_formatted"
+            ],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "shapeId": {
+                  "type": "integer"
+               },
+               "geoLocation": {
+                  "$ref": "#/components/schemas/geoLocation"
+               },
+               "date_formateed": {
+                  "type": "string",
+                  "format": "date"
+               }
+            }
+         },
+         "CovarSchema": {
+            "type": "object",
+            "required": [
+               "_id",
+               "features",
+               "dLat",
+               "forcastDays",
+               "dLong",
+               "geoLocation"
+            ],
+            "properties": {
+               "features": {
+                  "type": "array",
+                  "items": {
+                     "type": "object",
+                     "properties": {
+                        "geometry": {
+                           "type": "object",
+                           "properties": {
+                              "type": {
+                                 "type": "string"
+                              },
+                              "coordinates": {
+                                 "type": "array",
+                                 "items": {
+                                    "type": "array",
+                                    "items": {
+                                       "type": "number",
+                                       "minItems": 2,
+                                       "maxItems": 2
+                                    }
+                                 }
+                              }
+                           }
+                        },
+                        "type": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               },
+               "_id": {
+                  "type": "string"
+               },
+               "dLat": {
+                  "type": "number"
+               },
+               "dLong": {
+                  "type": "number"
+               },
+               "forcastDays": {
+                  "type": "integer"
+               },
+               "geoLocation": {
+                  "$ref": "#/components/schemas/geoLocation"
+               }
+            }
+         },
+         "tcSchema": {
+            "type": "object",
+            "required": [
+               "_id",
+               "num",
+               "source",
+               "startDate",
+               "endDate",
+               "year"
+            ],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "name": {
+                  "type": "string"
+               },
+               "num": {
+                  "type": "number"
+               },
+               "source": {
+                  "type": "string"
+               },
+               "startDate": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "endDate": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "year": {
+                  "type": "number"
+               },
+               "trajData": {
+                  "type": "array",
+                  "items": {
+                     "type": "object",
+                     "required": [
+                        "date",
+                        "time",
+                        "class",
+                        "lat",
+                        "lon",
+                        "timestamp",
+                        "geoLocation"
+                     ],
+                     "properties": {
+                        "date": {
+                           "type": "string"
+                        },
+                        "time": {
+                           "type": "number"
+                        },
+                        "class": {
+                           "type": "string"
+                        },
+                        "lat": {
+                           "type": "number"
+                        },
+                        "lon": {
+                           "type": "number"
+                        },
+                        "wind": {
+                           "type": "number"
+                        },
+                        "pres": {
+                           "type": "number"
+                        },
+                        "season": {
+                           "type": "number"
+                        },
+                        "timestamp": {
+                           "type": "string",
+                           "format": "date-time"
+                        },
+                        "geoLocation": {
+                           "$ref": "#/components/schemas/geoLocation"
+                        }
+                     }
+                  }
+               }
+            }
+         },
+         "GridMeta": {
+            "type": "object",
+            "required": [
+               "presLevels",
+               "dates",
+               "minDate",
+               "maxDate"
+            ],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "presLevels": {
+                  "type": "array",
+                  "items": {
+                     "type": "number"
+                  }
+               },
+               "dates": {
+                  "type": "array",
+                  "items": {
+                     "type": "string",
+                     "format": "date-time"
+                  }
+               },
+               "minDate": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "maxDate": {
+                  "type": "string",
+                  "format": "date-time"
+               }
+            }
+         },
+         "RasterGrid": {
+            "type": "object",
+            "required": [
+               "_id",
+               "pres",
+               "cellXSize",
+               "cellYSize",
+               "noDataValue",
+               "zs",
+               "nRows",
+               "nCols",
+               "xllCorner",
+               "yllCorner",
+               "time"
+            ],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "pres": {
+                  "type": "number"
+               },
+               "cellXSize": {
+                  "type": "number",
+                  "nullable": true
+               },
+               "cellYSize": {
+                  "type": "number",
+                  "nullable": true
+               },
+               "noDataValue": {
+                  "type": "number",
+                  "nullable": true
+               },
+               "zs": {
+                  "type": "array",
+                  "items": {
+                     "type": "number"
+                  }
+               },
+               "nRows": {
+                  "type": "integer"
+               },
+               "nCols": {
+                  "type": "integer"
+               },
+               "xllCorner": {
+                  "type": "number"
+               },
+               "yllCorner": {
+                  "type": "number"
+               },
+               "gridName": {
+                  "type": "string"
+               },
+               "units": {
+                  "type": "string"
+               },
+               "measurement": {
+                  "type": "string"
+               },
+               "param": {
+                  "type": "string"
+               },
+               "date": {
+                  "type": "string",
+                  "format": "date-time"
+               }
+            }
+         },
+         "ancestorGrid": {
+            "type": "object",
+            "description": "ancestor object describing common grid-like properties",
+            "required": [
+               "_id",
+               "measurement",
+               "units",
+               "pres",
+               "param",
+               "cellsize",
+               "NODATA_value"
+            ],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "gridName": {
+                  "type": "string"
+               },
+               "measurement": {
+                  "type": "string"
+               },
+               "units": {
+                  "type": "string"
+               },
+               "data": {
+                  "type": "array",
+                  "items": {
+                     "type": "object",
+                     "properties": {
+                        "lat": {
+                           "type": "number"
+                        },
+                        "lon": {
+                           "type": "number"
+                        },
+                        "value": {
+                           "type": "number"
+                        }
+                     }
+                  }
+               },
+               "variable": {
+                  "type": "string"
+               },
+               "date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "pres": {
+                  "type": "number"
+               },
+               "model": {
+                  "type": "string"
+               },
+               "trend": {
+                  "type": "string"
+               },
+               "param": {
+                  "type": "string"
+               },
+               "cellsize": {
+                  "type": "number"
+               },
+               "NODATA_value": {
+                  "type": "number"
+               }
+            }
+         },
+         "GridSchema": {
+            "description": "grid document as it appears in the database",
+            "allOf": [
+               {
+                  "$ref": "#/components/schemas/ancestorGrid"
+               },
+               {
+                  "type": "object",
+                  "properties": {
+                     "chunk": {
+                        "type": "integer"
+                     }
+                  }
+               }
+            ]
+         },
+         "nonUniformGrid": {
+            "description": "response object for non-uniform grid search",
+            "allOf": [
+               {
+                  "$ref": "#/components/schemas/ancestorGrid"
+               },
+               {
+                  "type": "object",
+                  "properties": {
+                     "chunks": {
+                        "type": "array",
+                        "items": {
+                           "type": "number"
+                        }
+                     }
+                  }
+               }
+            ]
+         },
+         "GridCoordSchema": {
+            "type": "object",
+            "required": [
+               "_id",
+               "lats",
+               "lons",
+               "gridName"
+            ],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "lats": {
+                  "type": "array",
+                  "items": {
+                     "type": "number"
+                  }
+               },
+               "lons": {
+                  "type": "array",
+                  "items": {
+                     "type": "number"
+                  }
+               },
+               "gridName": {
+                  "type": "string"
+               }
+            }
+         },
+         "gridParams": {
+            "type": "object",
+            "properties": {
+               "model": {
+                  "type": "string"
+               },
+               "param": {
+                  "type": "string"
+               },
+               "measurement": {
+                  "type": "string"
+               },
+               "trend": {
+                  "type": "string"
+               },
+               "pres": {
+                  "type": "number"
+               }
+            }
+         },
+         "geoLocation": {
+            "type": "object",
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "array",
+                     "items": {
+                        "type": "number",
+                        "minItems": 2,
+                        "maxItems": 2
+                     },
+                     "uniqueItems": true
+                  }
+               }
+            }
+         },
+         "errorResponse": {
+            "type": "object",
+            "required": [
+               "code",
+               "message"
+            ],
+            "properties": {
+               "code": {
+                  "type": "integer"
+               },
+               "message": {
+                  "type": "string"
+               }
+            }
+         }
+      },
+      "parameters": {
+         "arDate": {
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "description": "three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "arID": {
+            "in": "query",
+            "name": "_id",
+            "required": true,
+            "description": "ID of an atmospheric river object",
+            "schema": {
+               "type": "string",
+               "example": "1_262992"
+            }
+         },
+         "date": {
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "description": "date-time formatted string",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "startDate": {
+            "in": "query",
+            "name": "startDate",
+            "required": true,
+            "description": "date-time formatted string indicating the beginning of a time period",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "endDate": {
+            "in": "query",
+            "name": "endDate",
+            "required": true,
+            "description": "date-time formatted string indicating the end of a time period",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "gridNameUniform": {
+            "in": "query",
+            "name": "gridName",
+            "required": true,
+            "description": "name of the gridded product",
+            "schema": {
+               "type": "string",
+               "example": "rgTempAnom"
+            }
+         },
+         "gridNameNonUniform": {
+            "in": "query",
+            "name": "gridName",
+            "required": true,
+            "description": "name of the gridded product",
+            "schema": {
+               "type": "string",
+               "example": "sose_si_area_1_day_sparse"
+            }
+         },
+         "presLevelUniform": {
+            "in": "query",
+            "name": "presLevel",
+            "required": true,
+            "description": "pressure level (dbar)",
+            "schema": {
+               "type": "number",
+               "example": 10
+            }
+         },
+         "presLevelNonUniform": {
+            "in": "query",
+            "name": "presLevel",
+            "required": true,
+            "description": "pressure level (dbar)",
+            "schema": {
+               "type": "number",
+               "example": 0
+            }
+         },
+         "latRangeUniform": {
+            "in": "query",
+            "name": "latRange",
+            "required": true,
+            "description": "Latitude range (-90 to 90 degrees)",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "minimum": -90,
+                  "maximum": 90
+               },
+               "example": "-5,5.33"
+            }
+         },
+         "latRangeNonUniform": {
+            "in": "query",
+            "name": "latRange",
+            "required": true,
+            "description": "Latitude range (-90 to 90 degrees)",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "minimum": -90,
+                  "maximum": 90
+               },
+               "example": "-5,5.33"
+            }
+         },
+         "lonRange": {
+            "in": "query",
+            "name": "lonRange",
+            "required": true,
+            "description": "Longitude range (-180 to 180 degrees)",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "minimum": -180,
+                  "maximum": 180
+               },
+               "example": "0,2.153"
+            }
+         },
+         "dateUniform": {
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "description": "YYYY-MM-DD format. Monthly grids use the first day of the month.",
+            "schema": {
+               "type": "string",
+               "format": "date",
+               "example": "2012-01-01"
+            }
+         },
+         "dateNonUniform": {
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "description": "YYYY-MM-DD format. Monthly grids use the first day of the month.",
+            "schema": {
+               "type": "string",
+               "format": "date",
+               "example": "2012-01-01"
+            }
+         },
+         "gridParam": {
+            "in": "query",
+            "name": "param",
+            "required": true,
+            "description": "tbd",
+            "schema": {
+               "type": "string",
+               "example": ""
+            }
+         },
+         "lat": {
+            "in": "path",
+            "name": "lat",
+            "required": true,
+            "description": "latitude (degrees) of Argo float location",
+            "schema": {
+               "type": "number",
+               "minimum": -90,
+               "maximum": 90,
+               "example": 5.25
+            }
+         },
+         "lon": {
+            "in": "path",
+            "name": "lon",
+            "required": true,
+            "description": "longitude (degrees) of Argo float location",
+            "schema": {
+               "type": "number",
+               "minimum": -180,
+               "maximum": 180,
+               "example": -20.33
+            }
+         },
+         "forcastDays": {
+            "in": "path",
+            "name": "forcastDays",
+            "required": true,
+            "description": "number of days over which to project Argo float drift",
+            "schema": {
+               "type": "number",
+               "minimum": 60,
+               "maximum": 1800,
+               "example": 60,
+               "enum": [
+                  60,
+                  120,
+                  140,
+                  240,
+                  360,
+                  480,
+                  720,
+                  840,
+                  960,
+                  1080,
+                  1200,
+                  1320,
+                  1440,
+                  1560,
+                  1680,
+                  1800
+               ]
+            }
+         }
+      },
+      "responses": {
+         "badRequest": {
+            "description": "Bad Request",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "notFound": {
+            "description": "Not Found",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "serverError": {
+            "description": "Server Error",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         }
+      }
+   }
+}
