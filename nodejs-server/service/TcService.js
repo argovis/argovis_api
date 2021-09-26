@@ -19,28 +19,28 @@ exports.findOneTC = function() {
   "trajData" : [ {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"
   }, {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"
@@ -93,28 +93,28 @@ exports.findTCbyDate = function(date) {
   "trajData" : [ {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"
   }, {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"
@@ -150,28 +150,28 @@ exports.findTCbyDateRange = function(startDate,endDate) {
   "trajData" : [ {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"
   }, {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"
@@ -207,28 +207,28 @@ exports.findTCbyNameYear = function(name,year) {
   "trajData" : [ {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"
   }, {
     "date" : "date",
     "pres" : 7.061401241503109,
+    "geoLocation" : {
+      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
+      "type" : "type"
+    },
     "season" : 9.301444243932576,
     "lon" : 5.637376656633329,
     "time" : 1.4658129805029452,
     "class" : "class",
-    "geoJSONpoint" : {
-      "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
-      "type" : "type"
-    },
     "lat" : 5.962133916683182,
     "wind" : 2.3021358869347655,
     "timestamp" : "2000-01-23T04:56:07.000+00:00"

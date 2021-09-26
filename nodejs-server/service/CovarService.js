@@ -28,11 +28,11 @@ exports.findCovar = function(lat,lon,forcastDays) {
   } ],
   "dLat" : 6.027456183070403,
   "dLong" : 1.4658129805029452,
-  "_id" : "_id",
-  "geoJSONpoint" : {
+  "geoLocation" : {
     "coordinates" : [ 6.027456183070403, 6.027456183070403 ],
     "type" : "type"
   },
+  "_id" : "_id",
   "forcastDays" : 5
 };
     if (Object.keys(examples).length > 0) {

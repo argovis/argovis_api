@@ -683,7 +683,7 @@
                "_id",
                "date",
                "shapeId",
-               "geoJSONpoint",
+               "geoLocation",
                "date_formatted"
             ],
             "properties": {
@@ -697,7 +697,7 @@
                "shapeId": {
                   "type": "integer"
                },
-               "geoJSONpoint": {
+               "geoLocation": {
                   "$ref": "#/components/schemas/geoJSONpoint"
                },
                "date_formateed": {
@@ -714,7 +714,7 @@
                "dLat",
                "forcastDays",
                "dLong",
-               "geoJSONpoint"
+               "geoLocation"
             ],
             "properties": {
                "features": {
@@ -759,7 +759,7 @@
                "forcastDays": {
                   "type": "integer"
                },
-               "geoJSONpoint": {
+               "geoLocation": {
                   "$ref": "#/components/schemas/geoJSONpoint"
                }
             }
@@ -809,7 +809,7 @@
                         "lat",
                         "lon",
                         "timestamp",
-                        "geoJSONpoint"
+                        "geoLocation"
                      ],
                      "properties": {
                         "date": {
@@ -840,7 +840,7 @@
                            "type": "string",
                            "format": "date-time"
                         },
-                        "geoJSONpoint": {
+                        "geoLocation": {
                            "$ref": "#/components/schemas/geoJSONpoint"
                         }
                      }
