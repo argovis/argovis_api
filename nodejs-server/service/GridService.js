@@ -26,18 +26,24 @@ exports.findGrid = function(gridName) {
  * gridName String name of the gridded product
  * presLevel BigDecimal pressure level (dbar)
  * param String tbd
- * returns gridParams
+ * returns List
  **/
 exports.findGridParam = function(gridName,presLevel,param) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = {
+    examples['application/json'] = [ {
   "pres" : 0.8008281904610115,
   "param" : "param",
   "trend" : "trend",
   "model" : "model",
   "measurement" : "measurement"
-};
+}, {
+  "pres" : 0.8008281904610115,
+  "param" : "param",
+  "trend" : "trend",
+  "model" : "model",
+  "measurement" : "measurement"
+} ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
