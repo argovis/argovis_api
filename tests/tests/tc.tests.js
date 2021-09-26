@@ -71,6 +71,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/tc/stormNameList");
         expect(response.body).to.be.jsonSchema(schema.paths['/tc/stormNameList'].get.responses['200'].content['application/json'].schema);   
       });
+    });
+
+    describe("GET /tc/findByNameYear", function () {
+      it("find tc by name and year", async function () {
+        const response = await request.get("/tc/findByNameYear?name=LANE&year=2018");
+        expect(response.body).to.be.jsonSchema(schema.paths['/tc/findByNameYear'].get.responses['200'].content['application/json'].schema);   
+      });
     });    
   }
 })
