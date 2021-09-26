@@ -958,7 +958,7 @@ components:
       - date
       - date_formatted
       - geoLocation
-      - shapeID
+      - shapeId
       type: object
       properties:
         _id:
