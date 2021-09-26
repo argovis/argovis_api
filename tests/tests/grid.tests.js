@@ -30,6 +30,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/nonUniformGrid/window'].get.responses['200'].content['application/json'].schema);
       });
     });
+
+    describe("GET /griddedProducts/gridCoords", function () {
+      it("fetch coordinates for gridded product", async function () {
+        const response = await request.get("/griddedProducts/gridCoords?gridName=sose_si_area_1_day_sparse&latRange=-52,-50&lonRange=21,22");    
+        expect(response.body).to.be.jsonSchema(schema.paths['/griddedProducts/gridCoords'].get.responses['200'].content['application/json'].schema);
+      });
+    });
   }
 })
 
