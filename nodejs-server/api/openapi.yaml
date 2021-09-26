@@ -754,7 +754,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridCoordSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GridCoordSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -1294,7 +1297,9 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          anyOf:
+          - type: string
+          - type: "null"
         lats:
           type: array
           items:
@@ -1313,7 +1318,7 @@ components:
         lons:
         - 6.02745618307040320615897144307382404804229736328125
         - 6.02745618307040320615897144307382404804229736328125
-        _id: _id
+        _id: ""
     gridParams:
       type: object
       properties:

@@ -53,17 +53,22 @@ exports.findGridParam = function(gridName,presLevel,param) {
  * gridName String name of the gridded product
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
- * returns GridCoordSchema
+ * returns List
  **/
 exports.gridCoords = function(gridName,latRange,lonRange) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = {
+    examples['application/json'] = [ {
   "gridName" : "gridName",
   "lats" : [ 0.8008281904610115, 0.8008281904610115 ],
   "lons" : [ 6.027456183070403, 6.027456183070403 ],
-  "_id" : "_id"
-};
+  "_id" : ""
+}, {
+  "gridName" : "gridName",
+  "lats" : [ 0.8008281904610115, 0.8008281904610115 ],
+  "lons" : [ 6.027456183070403, 6.027456183070403 ],
+  "_id" : ""
+} ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
