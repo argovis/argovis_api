@@ -5,12 +5,12 @@
  * returns a single grid by name
  *
  * gridName String name of the gridded product
- * returns GridSchema
+ * returns List
  **/
 exports.findGrid = function(gridName) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = "";
+    examples['application/json'] = [ "", "" ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
@@ -151,39 +151,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ {
-  "date" : "2000-01-23T04:56:07.000+00:00",
-  "gridName" : "gridName",
-  "pres" : 0.8008281904610115,
-  "units" : "units",
-  "cellXSize" : "",
-  "measurement" : "measurement",
-  "nCols" : 5,
-  "yllCorner" : 2.3021358869347655,
-  "nRows" : 1,
-  "param" : "param",
-  "xllCorner" : 5.637376656633329,
-  "noDataValue" : "",
-  "zs" : [ 6.027456183070403, 6.027456183070403 ],
-  "_id" : "_id",
-  "cellYSize" : ""
-}, {
-  "date" : "2000-01-23T04:56:07.000+00:00",
-  "gridName" : "gridName",
-  "pres" : 0.8008281904610115,
-  "units" : "units",
-  "cellXSize" : "",
-  "measurement" : "measurement",
-  "nCols" : 5,
-  "yllCorner" : 2.3021358869347655,
-  "nRows" : 1,
-  "param" : "param",
-  "xllCorner" : 5.637376656633329,
-  "noDataValue" : "",
-  "zs" : [ 6.027456183070403, 6.027456183070403 ],
-  "_id" : "_id",
-  "cellYSize" : ""
-} ];
+    examples['application/json'] = [ "", "" ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
@@ -201,12 +169,42 @@ exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) 
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
  * param String tbd
- * returns GridSchema
+ * returns List
  **/
 exports.windowGridParam = function(gridName,presLevel,latRange,lonRange,param) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = "";
+    examples['application/json'] = [ {
+  "gridName" : "gridName",
+  "pres" : 0.8008281904610115,
+  "units" : "units",
+  "cellXSize" : "",
+  "measurement" : "measurement",
+  "nCols" : 5,
+  "yllCorner" : 2.3021358869347655,
+  "nRows" : 1,
+  "param" : "param",
+  "xllCorner" : 5.637376656633329,
+  "noDataValue" : "",
+  "zs" : [ 6.027456183070403, 6.027456183070403 ],
+  "_id" : "_id",
+  "cellYSize" : ""
+}, {
+  "gridName" : "gridName",
+  "pres" : 0.8008281904610115,
+  "units" : "units",
+  "cellXSize" : "",
+  "measurement" : "measurement",
+  "nCols" : 5,
+  "yllCorner" : 2.3021358869347655,
+  "nRows" : 1,
+  "param" : "param",
+  "xllCorner" : 5.637376656633329,
+  "noDataValue" : "",
+  "zs" : [ 6.027456183070403, 6.027456183070403 ],
+  "_id" : "_id",
+  "cellYSize" : ""
+} ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
