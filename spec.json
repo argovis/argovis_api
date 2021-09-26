@@ -458,7 +458,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/RasterGrid"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/RasterGrid"
+                           }
                         }
                      }
                   }
@@ -898,7 +901,7 @@
                "nCols",
                "xllCorner",
                "yllCorner",
-               "time"
+               "date"
             ],
             "properties": {
                "_id": {
@@ -908,17 +911,20 @@
                   "type": "number"
                },
                "cellXSize": {
-                  "type": "number",
-                  "nullable": true
-               },
+                  "anyOf": [
+                    {"type": "number"},
+                    {"type": "null"}
+               ]},
                "cellYSize": {
-                  "type": "number",
-                  "nullable": true
-               },
+                  "anyOf": [
+                    {"type": "number"},
+                    {"type": "null"}
+               ]},
                "noDataValue": {
-                  "type": "number",
-                  "nullable": true
-               },
+                  "anyOf": [
+                    {"type": "number"},
+                    {"type": "null"}
+               ]},
                "zs": {
                   "type": "array",
                   "items": {
