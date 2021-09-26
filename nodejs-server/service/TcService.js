@@ -112,7 +112,7 @@ exports.findTCbyDateRange = function(startDate,endDate) {
  *
  * name String name of tropical cyclone
  * year BigDecimal year of tropical cyclone
- * returns tcSchema
+ * returns List
  **/
 exports.findTCbyNameYear = function(name,year) {
   return new Promise(function(resolve, reject) {
