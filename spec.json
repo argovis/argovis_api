@@ -241,7 +241,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/tcSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/tcSchema"
+                           }
                         }
                      }
                   }
@@ -279,7 +282,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/tcSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/tcSchema"
+                           }
                         }
                      }
                   }
@@ -364,7 +370,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/tcSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/tcSchema"
+                           }
                         }
                      }
                   }
@@ -698,7 +707,7 @@
                   "type": "integer"
                },
                "geoLocation": {
-                  "$ref": "#/components/schemas/geoLocation"
+                  "$ref": "#/components/schemas/geoJSONpolygon"
                },
                "date_formateed": {
                   "type": "string",
@@ -713,7 +722,7 @@
                "features",
                "dLat",
                "forcastDays",
-               "dLon",
+               "dLong",
                "geoLocation"
             ],
             "properties": {
@@ -723,26 +732,14 @@
                      "type": "object",
                      "properties": {
                         "geometry": {
-                           "type": "object",
-                           "properties": {
-                              "type": {
-                                 "type": "string"
-                              },
-                              "coordinates": {
-                                 "type": "array",
-                                 "items": {
-                                    "type": "array",
-                                    "items": {
-                                       "type": "number",
-                                       "minItems": 2,
-                                       "maxItems": 2
-                                    }
-                                 }
-                              }
-                           }
+                           "$ref": "#/components/schemas/geoJSONpoint"
                         },
                         "type": {
                            "type": "string"
+                        },
+                        "properties": {
+                           "type": "object",
+                           "Probability": "number"
                         }
                      }
                   }
@@ -753,14 +750,14 @@
                "dLat": {
                   "type": "number"
                },
-               "dLon": {
+               "dLong": {
                   "type": "number"
                },
                "forcastDays": {
                   "type": "integer"
                },
                "geoLocation": {
-                  "$ref": "#/components/schemas/geoLocation"
+                  "$ref": "#/components/schemas/geoJSONpoint"
                }
             }
          },
@@ -841,7 +838,7 @@
                            "format": "date-time"
                         },
                         "geoLocation": {
-                           "$ref": "#/components/schemas/geoLocation"
+                           "$ref": "#/components/schemas/geoJSONpoint"
                         }
                      }
                   }
@@ -1106,7 +1103,23 @@
                }
             }
          },
-         "geoLocation": {
+         "geoJSONpoint": {
+            "type": "object",
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
+                  }
+               }
+            }
+         },
+         "geoJSONpolygon": {
             "type": "object",
             "properties": {
                "type": {
@@ -1120,8 +1133,7 @@
                         "type": "number",
                         "minItems": 2,
                         "maxItems": 2
-                     },
-                     "uniqueItems": true
+                     }
                   }
                }
             }

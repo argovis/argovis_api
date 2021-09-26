@@ -61,7 +61,7 @@ exports.findStormNameList = function() {
  * tropical cyclones at a given date-time
  *
  * date Date date-time formatted string
- * returns tcSchema
+ * returns List
  **/
 exports.findTCbyDate = function(date) {
   return new Promise(function(resolve, reject) {
@@ -79,11 +79,10 @@ exports.findTCbyDate = function(date) {
  *
  * startDate Date date-time formatted string indicating the beginning of a time period
  * endDate Date date-time formatted string indicating the end of a time period
- * returns tcSchema
+ * returns List
  **/
 exports.findTCbyDateRange = function(startDate,endDate) {
   return new Promise(function(resolve, reject) {
-
     // limit to 3 months worth of cyclones per request
     const sDate = moment(startDate, 'YYYY-MM-DDTHH:mm:ss')
     const eDate = moment(endDate, 'YYYY-MM-DDTHH:mm:ss')
@@ -113,11 +112,10 @@ exports.findTCbyDateRange = function(startDate,endDate) {
  *
  * name String name of tropical cyclone
  * year BigDecimal year of tropical cyclone
- * returns tcSchema
+ * returns List
  **/
 exports.findTCbyNameYear = function(name,year) {
   return new Promise(function(resolve, reject) {
-
     const tc_name = name.toUpperCase()
 
     const query = tcTraj.find({name: tc_name, year: year})

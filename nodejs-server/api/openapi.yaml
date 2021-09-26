@@ -290,7 +290,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/tcSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/tcSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -346,7 +349,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/tcSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/tcSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -432,7 +438,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/tcSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/tcSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -969,7 +978,7 @@ components:
         shapeId:
           type: integer
         geoLocation:
-          $ref: '#/components/schemas/geoLocation'
+          $ref: '#/components/schemas/geoJSONpolygon'
         date_formateed:
           type: string
           format: date
@@ -989,7 +998,7 @@ components:
       required:
       - _id
       - dLat
-      - dLon
+      - dLong
       - features
       - forcastDays
       - geoLocation
@@ -1003,39 +1012,31 @@ components:
           type: string
         dLat:
           type: number
-        dLon:
+        dLong:
           type: number
         forcastDays:
           type: integer
         geoLocation:
-          $ref: '#/components/schemas/geoLocation'
+          $ref: '#/components/schemas/geoJSONpoint'
       example:
         features:
         - geometry:
             coordinates:
-            - - 0.80082819046101150206595775671303272247314453125
-              - 0.80082819046101150206595775671303272247314453125
-            - - 0.80082819046101150206595775671303272247314453125
-              - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
             type: type
           type: type
+          properties: {}
         - geometry:
             coordinates:
-            - - 0.80082819046101150206595775671303272247314453125
-              - 0.80082819046101150206595775671303272247314453125
-            - - 0.80082819046101150206595775671303272247314453125
-              - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
             type: type
           type: type
+          properties: {}
         dLat: 6.02745618307040320615897144307382404804229736328125
-        geoLocation:
-          coordinates:
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          type: type
-        dLon: 1.46581298050294517310021547018550336360931396484375
+        dLong: 1.46581298050294517310021547018550336360931396484375
+        geoLocation: null
         _id: _id
         forcastDays: 5
     tcSchema:
@@ -1080,10 +1081,8 @@ components:
           pres: 7.061401241503109105224211816675961017608642578125
           geoLocation:
             coordinates:
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
+            - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
             type: type
           season: 9.301444243932575517419536481611430644989013671875
           lon: 5.63737665663332876420099637471139430999755859375
@@ -1096,10 +1095,8 @@ components:
           pres: 7.061401241503109105224211816675961017608642578125
           geoLocation:
             coordinates:
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
-            - - 6.02745618307040320615897144307382404804229736328125
-              - 6.02745618307040320615897144307382404804229736328125
+            - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
             type: type
           season: 9.301444243932575517419536481611430644989013671875
           lon: 5.63737665663332876420099637471139430999755859375
@@ -1320,7 +1317,7 @@ components:
         trend: trend
         model: model
         measurement: measurement
-    geoLocation:
+    geoJSONpoint:
       type: object
       properties:
         type:
@@ -1328,7 +1325,22 @@ components:
         coordinates:
           type: array
           items:
-            uniqueItems: true
+            maxItems: 2
+            minItems: 2
+            type: number
+      example:
+        coordinates:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
+        type: type
+    geoJSONpolygon:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
             type: array
             items:
               maxItems: 2
@@ -1351,42 +1363,23 @@ components:
           type: integer
         message:
           type: string
-    CovarSchema_geometry:
-      type: object
-      properties:
-        type:
-          type: string
-        coordinates:
-          type: array
-          items:
-            type: array
-            items:
-              maxItems: 2
-              minItems: 2
-              type: number
-      example:
-        coordinates:
-        - - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-        - - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-        type: type
     CovarSchema_features:
       type: object
       properties:
         geometry:
-          $ref: '#/components/schemas/CovarSchema_geometry'
+          $ref: '#/components/schemas/geoJSONpoint'
         type:
           type: string
+        properties:
+          type: object
       example:
         geometry:
           coordinates:
-          - - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
-          - - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
           type: type
         type: type
+        properties: {}
     tcSchema_trajData:
       required:
       - class
@@ -1418,16 +1411,14 @@ components:
           type: string
           format: date-time
         geoLocation:
-          $ref: '#/components/schemas/geoLocation'
+          $ref: '#/components/schemas/geoJSONpoint'
       example:
         date: date
         pres: 7.061401241503109105224211816675961017608642578125
         geoLocation:
           coordinates:
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
           type: type
         season: 9.301444243932575517419536481611430644989013671875
         lon: 5.63737665663332876420099637471139430999755859375
