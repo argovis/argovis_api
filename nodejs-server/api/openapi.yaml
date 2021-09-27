@@ -483,7 +483,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridMeta'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GridMeta'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -577,7 +580,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RasterGrid'
+                type: array
+                items:
+                  $ref: '#/components/schemas/RasterGrid'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -671,7 +677,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/nonUniformGrid'
+                type: array
+                items:
+                  $ref: '#/components/schemas/nonUniformGrid'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -745,7 +754,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridCoordSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GridCoordSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -787,7 +799,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GridSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -847,7 +862,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/gridParams'
+                type: array
+                items:
+                  $ref: '#/components/schemas/gridParams'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -939,7 +957,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GridSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/RasterParam'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -1114,8 +1135,7 @@ components:
       - presLevels
       type: object
       properties:
-        _id:
-          type: string
+        _id: {}
         presLevels:
           type: array
           items:
@@ -1137,11 +1157,11 @@ components:
         - 2000-01-23T04:56:07.000+00:00
         - 2000-01-23T04:56:07.000+00:00
         maxDate: 2000-01-23T04:56:07.000+00:00
-        _id: _id
+        _id: ""
         presLevels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125
-    RasterGrid:
+    RasterParam:
       required:
       - _id
       - cellXSize
@@ -1150,7 +1170,6 @@ components:
       - nRows
       - noDataValue
       - pres
-      - time
       - xllCorner
       - yllCorner
       - zs
@@ -1160,15 +1179,9 @@ components:
           type: string
         pres:
           type: number
-        cellXSize:
-          type: number
-          nullable: true
-        cellYSize:
-          type: number
-          nullable: true
-        noDataValue:
-          type: number
-          nullable: true
+        cellXSize: {}
+        cellYSize: {}
+        noDataValue: {}
         zs:
           type: array
           items:
@@ -1189,27 +1202,31 @@ components:
           type: string
         param:
           type: string
-        date:
-          type: string
-          format: date-time
       example:
-        date: 2000-01-23T04:56:07.000+00:00
         gridName: gridName
         pres: 0.80082819046101150206595775671303272247314453125
         units: units
-        cellXSize: 6.02745618307040320615897144307382404804229736328125
+        cellXSize: ""
         measurement: measurement
-        nCols: 7
-        yllCorner: 3.61607674925191080461672754609026014804840087890625
-        nRows: 2
+        nCols: 5
+        yllCorner: 2.3021358869347654518833223846741020679473876953125
+        nRows: 1
         param: param
-        xllCorner: 9.301444243932575517419536481611430644989013671875
-        noDataValue: 5.962133916683182377482808078639209270477294921875
+        xllCorner: 5.63737665663332876420099637471139430999755859375
+        noDataValue: ""
         zs:
-        - 5.63737665663332876420099637471139430999755859375
-        - 5.63737665663332876420099637471139430999755859375
+        - 6.02745618307040320615897144307382404804229736328125
+        - 6.02745618307040320615897144307382404804229736328125
         _id: _id
-        cellYSize: 1.46581298050294517310021547018550336360931396484375
+        cellYSize: ""
+    RasterGrid:
+      allOf:
+      - $ref: '#/components/schemas/RasterParam'
+      - type: object
+        properties:
+          date:
+            type: string
+            format: date-time
     ancestorGrid:
       required:
       - NODATA_value
@@ -1248,11 +1265,9 @@ components:
           type: string
         cellsize:
           type: number
-        NODATA_value:
-          type: number
+        NODATA_value: {}
       description: ancestor object describing common grid-like properties
     GridSchema:
-      description: grid document as it appears in the database
       allOf:
       - $ref: '#/components/schemas/ancestorGrid'
       - type: object
@@ -1277,8 +1292,7 @@ components:
       - lons
       type: object
       properties:
-        _id:
-          type: string
+        _id: {}
         lats:
           type: array
           items:
@@ -1297,7 +1311,7 @@ components:
         lons:
         - 6.02745618307040320615897144307382404804229736328125
         - 6.02745618307040320615897144307382404804229736328125
-        _id: _id
+        _id: ""
     gridParams:
       type: object
       properties:
@@ -1434,8 +1448,7 @@ components:
           type: number
         lon:
           type: number
-        value:
-          type: number
+        value: {}
   responses:
     badRequest:
       description: Bad Request

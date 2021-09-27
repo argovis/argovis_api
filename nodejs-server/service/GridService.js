@@ -10,7 +10,7 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
  * returns a single grid by name
  *
  * gridName String name of the gridded product
- * returns GridSchema
+ * returns List
  **/
 exports.findGrid = function(gridName) {
   return new Promise(function(resolve, reject) {
@@ -35,7 +35,7 @@ exports.findGrid = function(gridName) {
  * gridName String name of the gridded product
  * presLevel BigDecimal pressure level (dbar)
  * param String tbd
- * returns gridParams
+ * returns List
  **/
 exports.findGridParam = function(gridName,presLevel,param) {
   return new Promise(function(resolve, reject) {
@@ -56,11 +56,10 @@ exports.findGridParam = function(gridName,presLevel,param) {
  * gridName String name of the gridded product
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
- * returns GridCoordSchema
+ * returns List
  **/
 exports.gridCoords = function(gridName,latRange,lonRange) {
   return new Promise(function(resolve, reject) {
-
     let agg = [
         {$match: {gridName: gridName}},
         {$unwind: "$lats"},
@@ -84,7 +83,7 @@ exports.gridCoords = function(gridName,latRange,lonRange) {
  * metadata from grid unique dates, pres levels
  *
  * gridName String name of the gridded product
- * returns GridMeta
+ * returns List
  **/
 exports.gridmeta = function(gridName) {
   return new Promise(function(resolve, reject) {
@@ -117,7 +116,7 @@ exports.gridmeta = function(gridName) {
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
  * date Date date-time formatted string
- * returns nonUniformGrid
+ * returns List
  **/
 exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
@@ -229,7 +228,7 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
  * latRange List Latitude range (-90 to 90 degrees)
  * lonRange List Longitude range (-180 to 180 degrees)
  * date Date date-time formatted string
- * returns RasterGrid
+ * returns List
  **/
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
