@@ -68,12 +68,12 @@ exports.gridCoords = function(gridName,latRange,lonRange) {
   "gridName" : "gridName",
   "lats" : [ 0.8008281904610115, 0.8008281904610115 ],
   "lons" : [ 6.027456183070403, 6.027456183070403 ],
-  "_id" : ""
+  "_id" : "_id"
 }, {
   "gridName" : "gridName",
   "lats" : [ 0.8008281904610115, 0.8008281904610115 ],
   "lons" : [ 6.027456183070403, 6.027456183070403 ],
-  "_id" : ""
+  "_id" : "_id"
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -97,13 +97,13 @@ exports.gridmeta = function(gridName) {
   "minDate" : "2000-01-23T04:56:07.000+00:00",
   "dates" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "maxDate" : "2000-01-23T04:56:07.000+00:00",
-  "_id" : "",
+  "_id" : "_id",
   "presLevels" : [ 0.8008281904610115, 0.8008281904610115 ]
 }, {
   "minDate" : "2000-01-23T04:56:07.000+00:00",
   "dates" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "maxDate" : "2000-01-23T04:56:07.000+00:00",
-  "_id" : "",
+  "_id" : "_id",
   "presLevels" : [ 0.8008281904610115, 0.8008281904610115 ]
 } ];
     if (Object.keys(examples).length > 0) {
@@ -178,32 +178,32 @@ exports.windowGridParam = function(gridName,presLevel,latRange,lonRange,param) {
   "gridName" : "gridName",
   "pres" : 0.8008281904610115,
   "units" : "units",
-  "cellXSize" : "",
+  "cellXSize" : 6.027456183070403,
   "measurement" : "measurement",
-  "nCols" : 5,
-  "yllCorner" : 2.3021358869347655,
-  "nRows" : 1,
+  "nCols" : 7,
+  "yllCorner" : 3.616076749251911,
+  "nRows" : 2,
   "param" : "param",
-  "xllCorner" : 5.637376656633329,
-  "noDataValue" : "",
-  "zs" : [ 6.027456183070403, 6.027456183070403 ],
+  "xllCorner" : 9.301444243932576,
+  "noDataValue" : 5.962133916683182,
+  "zs" : [ 5.637376656633329, 5.637376656633329 ],
   "_id" : "_id",
-  "cellYSize" : ""
+  "cellYSize" : 1.4658129805029452
 }, {
   "gridName" : "gridName",
   "pres" : 0.8008281904610115,
   "units" : "units",
-  "cellXSize" : "",
+  "cellXSize" : 6.027456183070403,
   "measurement" : "measurement",
-  "nCols" : 5,
-  "yllCorner" : 2.3021358869347655,
-  "nRows" : 1,
+  "nCols" : 7,
+  "yllCorner" : 3.616076749251911,
+  "nRows" : 2,
   "param" : "param",
-  "xllCorner" : 5.637376656633329,
-  "noDataValue" : "",
-  "zs" : [ 6.027456183070403, 6.027456183070403 ],
+  "xllCorner" : 9.301444243932576,
+  "noDataValue" : 5.962133916683182,
+  "zs" : [ 5.637376656633329, 5.637376656633329 ],
   "_id" : "_id",
-  "cellYSize" : ""
+  "cellYSize" : 1.4658129805029452
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);

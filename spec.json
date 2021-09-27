@@ -876,10 +876,9 @@
             ],
             "properties": {
                "_id": {
-                  "anyOf": [
-                    {"type": "string"},
-                    {"type": "null"}
-               ]},
+                  "type": "string",
+                  "nullable": true
+               },
                "presLevels": {
                   "type": "array",
                   "items": {
@@ -925,20 +924,17 @@
                   "type": "number"
                },
                "cellXSize": {
-                  "anyOf": [
-                    {"type": "number"},
-                    {"type": "null"}
-               ]},
+                  "type": "number",
+                  "nullable": true
+               },
                "cellYSize": {
-                  "anyOf": [
-                    {"type": "number"},
-                    {"type": "null"}
-               ]},
+                  "type": "number",
+                  "nullable": true
+               },
                "noDataValue": {
-                  "anyOf": [
-                    {"type": "number"},
-                    {"type": "null"}
-               ]},
+                  "type": "number",
+                  "nullable": true
+               },
                "zs": {
                   "type": "array",
                   "items": {
@@ -1024,10 +1020,8 @@
                            "type": "number"
                         },
                         "value": {
-                           "anyOf": [
-                              {"type": "number"},
-                              {"type": "null"}
-                           ]
+                           "type": "number",
+                           "nullable": true
                         }
                      }
                   }
@@ -1055,10 +1049,9 @@
                   "type": "number"
                },
                "NODATA_value": {
-                  "anyOf": [
-                    {"type": "string"},
-                    {"type": "null"}
-               ]}
+                  "type": "string",
+                  "nullable": true
+               }
             }
          },
          "GridSchema": {
@@ -1105,10 +1098,9 @@
             ],
             "properties": {
                "_id": {
-                  "anyOf": [
-                    {"type": "string"},
-                    {"type": "null"}
-               ]},
+                  "type": "string",
+                  "nullable": true
+               },
                "lats": {
                   "type": "array",
                   "items": {

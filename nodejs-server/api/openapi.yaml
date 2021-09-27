@@ -1136,9 +1136,8 @@ components:
       type: object
       properties:
         _id:
-          anyOf:
-          - type: string
-          - type: "null"
+          type: string
+          nullable: true
         presLevels:
           type: array
           items:
@@ -1160,7 +1159,7 @@ components:
         - 2000-01-23T04:56:07.000+00:00
         - 2000-01-23T04:56:07.000+00:00
         maxDate: 2000-01-23T04:56:07.000+00:00
-        _id: ""
+        _id: _id
         presLevels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125
@@ -1183,17 +1182,14 @@ components:
         pres:
           type: number
         cellXSize:
-          anyOf:
-          - type: number
-          - type: "null"
+          type: number
+          nullable: true
         cellYSize:
-          anyOf:
-          - type: number
-          - type: "null"
+          type: number
+          nullable: true
         noDataValue:
-          anyOf:
-          - type: number
-          - type: "null"
+          type: number
+          nullable: true
         zs:
           type: array
           items:
@@ -1218,19 +1214,19 @@ components:
         gridName: gridName
         pres: 0.80082819046101150206595775671303272247314453125
         units: units
-        cellXSize: ""
+        cellXSize: 6.02745618307040320615897144307382404804229736328125
         measurement: measurement
-        nCols: 5
-        yllCorner: 2.3021358869347654518833223846741020679473876953125
-        nRows: 1
+        nCols: 7
+        yllCorner: 3.61607674925191080461672754609026014804840087890625
+        nRows: 2
         param: param
-        xllCorner: 5.63737665663332876420099637471139430999755859375
-        noDataValue: ""
+        xllCorner: 9.301444243932575517419536481611430644989013671875
+        noDataValue: 5.962133916683182377482808078639209270477294921875
         zs:
-        - 6.02745618307040320615897144307382404804229736328125
-        - 6.02745618307040320615897144307382404804229736328125
+        - 5.63737665663332876420099637471139430999755859375
+        - 5.63737665663332876420099637471139430999755859375
         _id: _id
-        cellYSize: ""
+        cellYSize: 1.46581298050294517310021547018550336360931396484375
     RasterGrid:
       allOf:
       - $ref: '#/components/schemas/RasterParam'
@@ -1278,9 +1274,8 @@ components:
         cellsize:
           type: number
         NODATA_value:
-          anyOf:
-          - type: string
-          - type: "null"
+          type: string
+          nullable: true
       description: ancestor object describing common grid-like properties
     GridSchema:
       allOf:
@@ -1308,9 +1303,8 @@ components:
       type: object
       properties:
         _id:
-          anyOf:
-          - type: string
-          - type: "null"
+          type: string
+          nullable: true
         lats:
           type: array
           items:
@@ -1329,7 +1323,7 @@ components:
         lons:
         - 6.02745618307040320615897144307382404804229736328125
         - 6.02745618307040320615897144307382404804229736328125
-        _id: ""
+        _id: _id
     gridParams:
       type: object
       properties:
@@ -1467,9 +1461,8 @@ components:
         lon:
           type: number
         value:
-          anyOf:
-          - type: number
-          - type: "null"
+          type: number
+          nullable: true
   responses:
     badRequest:
       description: Bad Request
