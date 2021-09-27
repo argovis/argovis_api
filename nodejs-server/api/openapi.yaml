@@ -1135,9 +1135,7 @@ components:
       - presLevels
       type: object
       properties:
-        _id:
-          type: string
-          nullable: true
+        _id: {}
         presLevels:
           type: array
           items:
@@ -1159,7 +1157,7 @@ components:
         - 2000-01-23T04:56:07.000+00:00
         - 2000-01-23T04:56:07.000+00:00
         maxDate: 2000-01-23T04:56:07.000+00:00
-        _id: _id
+        _id: ""
         presLevels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125

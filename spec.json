@@ -876,8 +876,7 @@
             ],
             "properties": {
                "_id": {
-                  "type": "string",
-                  "nullable": true
+                  "type": ["string", "null"]
                },
                "presLevels": {
                   "type": "array",
