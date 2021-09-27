@@ -923,16 +923,13 @@
                   "type": "number"
                },
                "cellXSize": {
-                  "type": "number",
-                  "nullable": true
+                  "type": ["number", "null"]
                },
                "cellYSize": {
-                  "type": "number",
-                  "nullable": true
+                  "type": ["number", "null"]
                },
                "noDataValue": {
-                  "type": "number",
-                  "nullable": true
+                  "type": ["number", "null"]
                },
                "zs": {
                   "type": "array",
@@ -1019,8 +1016,7 @@
                            "type": "number"
                         },
                         "value": {
-                           "type": "number",
-                           "nullable": true
+                           "type": ["number", "null"]
                         }
                      }
                   }
@@ -1048,8 +1044,7 @@
                   "type": "number"
                },
                "NODATA_value": {
-                  "type": "string",
-                  "nullable": true
+                  "type": ["string", "null"]
                }
             }
          },
@@ -1097,8 +1092,7 @@
             ],
             "properties": {
                "_id": {
-                  "type": "string",
-                  "nullable": true
+                  "type": ["string", "null"]
                },
                "lats": {
                   "type": "array",

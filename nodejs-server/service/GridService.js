@@ -68,12 +68,12 @@ exports.gridCoords = function(gridName,latRange,lonRange) {
   "gridName" : "gridName",
   "lats" : [ 0.8008281904610115, 0.8008281904610115 ],
   "lons" : [ 6.027456183070403, 6.027456183070403 ],
-  "_id" : "_id"
+  "_id" : ""
 }, {
   "gridName" : "gridName",
   "lats" : [ 0.8008281904610115, 0.8008281904610115 ],
   "lons" : [ 6.027456183070403, 6.027456183070403 ],
-  "_id" : "_id"
+  "_id" : ""
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -178,32 +178,32 @@ exports.windowGridParam = function(gridName,presLevel,latRange,lonRange,param) {
   "gridName" : "gridName",
   "pres" : 0.8008281904610115,
   "units" : "units",
-  "cellXSize" : 6.027456183070403,
+  "cellXSize" : "",
   "measurement" : "measurement",
-  "nCols" : 7,
-  "yllCorner" : 3.616076749251911,
-  "nRows" : 2,
+  "nCols" : 5,
+  "yllCorner" : 2.3021358869347655,
+  "nRows" : 1,
   "param" : "param",
-  "xllCorner" : 9.301444243932576,
-  "noDataValue" : 5.962133916683182,
-  "zs" : [ 5.637376656633329, 5.637376656633329 ],
+  "xllCorner" : 5.637376656633329,
+  "noDataValue" : "",
+  "zs" : [ 6.027456183070403, 6.027456183070403 ],
   "_id" : "_id",
-  "cellYSize" : 1.4658129805029452
+  "cellYSize" : ""
 }, {
   "gridName" : "gridName",
   "pres" : 0.8008281904610115,
   "units" : "units",
-  "cellXSize" : 6.027456183070403,
+  "cellXSize" : "",
   "measurement" : "measurement",
-  "nCols" : 7,
-  "yllCorner" : 3.616076749251911,
-  "nRows" : 2,
+  "nCols" : 5,
+  "yllCorner" : 2.3021358869347655,
+  "nRows" : 1,
   "param" : "param",
-  "xllCorner" : 9.301444243932576,
-  "noDataValue" : 5.962133916683182,
-  "zs" : [ 5.637376656633329, 5.637376656633329 ],
+  "xllCorner" : 5.637376656633329,
+  "noDataValue" : "",
+  "zs" : [ 6.027456183070403, 6.027456183070403 ],
   "_id" : "_id",
-  "cellYSize" : 1.4658129805029452
+  "cellYSize" : ""
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
