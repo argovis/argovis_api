@@ -408,7 +408,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridMeta"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/GridMeta"
+                           }
                         }
                      }
                   }
@@ -455,7 +458,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/RasterGrid"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/RasterGrid"
+                           }
                         }
                      }
                   }
@@ -502,7 +508,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/nonUniformGrid"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/nonUniformGrid"
+                           }
                         }
                      }
                   }
@@ -543,7 +552,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridCoordSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/GridCoordSchema"
+                           }
                         }
                      }
                   }
@@ -578,7 +590,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/GridSchema"
+                           }
                         }
                      }
                   }
@@ -619,7 +634,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/gridParams"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/gridParams"
+                           }
                         }
                      }
                   }
@@ -666,7 +684,10 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/GridSchema"
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/RasterParam"
+                           }
                         }
                      }
                   }
@@ -855,7 +876,7 @@
             ],
             "properties": {
                "_id": {
-                  "type": "string"
+                  "type": ["string", "null"]
                },
                "presLevels": {
                   "type": "array",
@@ -880,7 +901,7 @@
                }
             }
          },
-         "RasterGrid": {
+         "RasterParam": {
             "type": "object",
             "required": [
                "_id",
@@ -892,8 +913,7 @@
                "nRows",
                "nCols",
                "xllCorner",
-               "yllCorner",
-               "time"
+               "yllCorner"
             ],
             "properties": {
                "_id": {
@@ -903,16 +923,13 @@
                   "type": "number"
                },
                "cellXSize": {
-                  "type": "number",
-                  "nullable": true
+                  "type": ["number", "null"]
                },
                "cellYSize": {
-                  "type": "number",
-                  "nullable": true
+                  "type": ["number", "null"]
                },
                "noDataValue": {
-                  "type": "number",
-                  "nullable": true
+                  "type": ["number", "null"]
                },
                "zs": {
                   "type": "array",
@@ -943,12 +960,24 @@
                },
                "param": {
                   "type": "string"
-               },
-               "date": {
-                  "type": "string",
-                  "format": "date-time"
                }
             }
+         },
+         "RasterGrid": {
+            "allOf": [
+               {
+                  "$ref": "#/components/schemas/RasterParam"
+               },
+               {
+                  "type": "object",
+                  "properties": {
+                     "date": {
+                        "type": "string",
+                        "format": "date-time"
+                     }
+                  }
+               }
+            ]
          },
          "ancestorGrid": {
             "type": "object",
@@ -987,7 +1016,7 @@
                            "type": "number"
                         },
                         "value": {
-                           "type": "number"
+                           "type": ["number", "null"]
                         }
                      }
                   }
@@ -1015,12 +1044,11 @@
                   "type": "number"
                },
                "NODATA_value": {
-                  "type": "number"
+                  "type": ["string", "null"]
                }
             }
          },
          "GridSchema": {
-            "description": "grid document as it appears in the database",
             "allOf": [
                {
                   "$ref": "#/components/schemas/ancestorGrid"
@@ -1064,7 +1092,7 @@
             ],
             "properties": {
                "_id": {
-                  "type": "string"
+                  "type": ["string", "null"]
                },
                "lats": {
                   "type": "array",
