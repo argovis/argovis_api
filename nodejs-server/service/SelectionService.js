@@ -20,6 +20,11 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
         {$match:  {date: {$lte: endDate, $gte: startDate}}},
         {$project: HELPER_CONST.MAP_META_AGGREGATE},
     ]);
+    query.exec(function (err, meta) {
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(meta.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        resolve(meta);
+    })
   });
 }
 

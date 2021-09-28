@@ -1227,7 +1227,6 @@
                "dac",
                "date",
                "max_pres",
-               "measurements",
                "lat",
                "lon",
                "platform_number",
@@ -1391,6 +1390,7 @@
                   "properties": {
                      "measurements": {
                         "type": "array",
+                        "required": true,
                         "items": {
                            "type": "object",
                            "properties": {
@@ -1529,6 +1529,12 @@
                },
                "DIRECTION": {
                   "type": "string"
+               },
+               "containsBGC": {
+                  "type": "boolean"
+               },
+               "isDeep": {
+                  "type": "boolean"
                }
             }
          },
