@@ -7,6 +7,9 @@ module.exports.selectionProfileList = function selectionProfileList (req, res, n
   Selection.selectionProfileList(presRange, ids)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
