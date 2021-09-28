@@ -1,4 +1,4 @@
-module.exports.MAP_META_AGGREGATE = {_id: '$platform_number',
+module.exports.MAP_META_AGGREGATE = {_id: {$toString: '$platform_number'},
     'platform_number': 1,
     'date': 1,
     'cycle_number': 1,
