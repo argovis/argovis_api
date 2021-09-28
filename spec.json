@@ -49,6 +49,10 @@
       {
          "name": "grid",
          "description": "Gridded products derived from Argo floats, simulation, or satalite product"
+      },
+      {
+         "name": "selection",
+         "description": "Geospatial selection of argo floats"
       }
    ],
    "paths": {
@@ -703,6 +707,47 @@
                }
             }
          }
+      },
+      "/selection": {
+         "get": {
+            "tags": [
+               "selection"
+            ],
+            "summary": "Get a list of profiles by ID, keeping only levels within a range of pressures.",
+            "operationId": "selectionProfileList",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/idList"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/Profile"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
       }
    },
    "components": {
@@ -1131,6 +1176,285 @@
                }
             }
          },
+         "ProfileMeta": {
+            "type": "object",
+            "required": [
+               "_id",
+               "nc_url",
+               "position_qc",
+               "cycle_number",
+               "dac",
+               "date",
+               "max_pres",
+               "measurements",
+               "lat",
+               "lon",
+               "platform_number",
+               "geoLocation",
+               "station_parameters"
+            ],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "nc_url": {
+                  "type": "string"
+               },
+               "position_qc": {
+                  "type": "integer"
+               },
+               "cycle_number": {
+                  "type": "integer"
+               },
+               "dac": {
+                  "type": "string"
+               },
+               "date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "date_added": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "date_qc": {
+                  "type": "integer"
+               },
+               "max_pres": {
+                  "type": "number"
+               },
+               "bgcMeasKeys": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "lat": {
+                  "type": "number"
+               },
+               "lon": {
+                  "type": "number"
+               },
+               "platform_number": {
+                  "type": "integer"
+               },
+               "geoLocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+                },
+               "station_parameters": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "station_parameters_in_nc": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "VERTICAL_SAMPLING_SCHEME": {
+                  "type": "string"
+               },
+               "PI_NAME": {
+                  "type": "string"
+               },
+               "WMO_INST_TYPE": {
+                  "type": "string"
+               },
+               "POSITIONING_SYSTEM": {
+                  "type": "string"
+               },
+               "DATA_MODE": {
+                  "type": "string"
+               },
+               "PARAMETER_DATA_MODE": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "DATA_CENTRE": {
+                  "type": "string"
+               },
+               "DIRECTION": {
+                  "type": "string"
+               },
+               "PLATFORM_TYPE": {
+                  "type": "string"
+               },
+               "pres_max_for_TEMP": {
+                  "type": "number"
+               },
+               "pres_max_for_PSAL": {
+                  "type": "number"
+               },
+               "pres_min_for_TEMP": {
+                  "type": "number"
+               },
+               "pres_min_for_PSAL": {
+                  "type": "number"
+               },
+               "containsBGC": {
+                  "type": "boolean"
+               },
+               "isDeep": {
+                  "type": "boolean"
+               },
+               "BASIN": {
+                  "type": "number"
+               },
+               "url": {
+                  "type": "string"
+               },
+               "core_data_mode": {
+                  "type": "string"
+               },
+               "jcommopsPlatform": {
+                  "type": "string"
+               },
+               "euroargoPlatform": {
+                  "type": "string"
+               },
+               "formatted_station_parameters": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "roundLat": {
+                  "type": "string"
+               },
+               "roundLon": {
+                  "type": "string"
+               },
+               "strLat": {
+                  "type": "string"
+               },
+               "strLon": {
+                  "type": "string"
+               },
+               "date_formatted": {
+                  "type": "string",
+                  "format": "date"
+               }
+            }
+         },
+         "Profile": {
+            "allOf": [
+               {
+                  "$ref": "#/components/schemas/ProfileMeta"
+               },
+               {
+                  "type": "object",
+                  "properties": {
+                     "measurements": {
+                        "type": "array",
+                        "items": {
+                           "type": "object",
+                           "properties": {
+                              "pres": {
+                                 "type": "number"
+                              },
+                              "temp": {
+                                 "type": "number"
+                              },
+                              "psal": {
+                                 "type": "number"
+                              }
+                           }
+                        }
+                     },
+                     "bgcMeas": {
+                        "$ref": "#/components/schemas/bgcMeasurements"
+                     }
+                  }
+               }
+            ]
+         },
+         "bgcMeasurements": {
+            "type": "object",
+            "properties": {
+               "pres": {
+                  "type": "number"
+               },
+               "pres_qc": {
+                  "type": "integer"
+               },
+               "temp": {
+                  "type": "number"
+               },
+               "temp_qc": {
+                  "type": "integer"
+               },
+               "psal": {
+                  "type": "number"
+               },
+               "psal_qc": {
+                  "type": "integer"
+               },
+               "cndx": {
+                  "type": "number"
+               },
+               "cndc_qc": {
+                  "type": "integer"
+               },
+               "doxy": {
+                  "type": "number"
+               },
+               "doxy_qc": {
+                  "type": "integer"
+               },
+               "chla": {
+                  "type": "number"
+               },
+               "chla_qc": {
+                  "type": "integer"
+               },
+               "cdom": {
+                  "type": "number"
+               },
+               "cdom_qc": {
+                  "type": "integer"
+               },
+               "nitrate": {
+                  "type": "number"
+               },
+               "nitrate_qc": {
+                  "type": "integer"
+               },
+               "bbp700": {
+                  "type": "number"
+               },
+               "bbp700_qc": {
+                  "type": "integer"
+               },
+               "down_irradiance412": {
+                  "type": "number"
+               },
+               "down_irradiance412_qc": {
+                  "type": "integer"
+               },
+               "down_irradiance442": {
+                  "type": "number"
+               },
+               "down_irradiance442_qc": {
+                  "type": "integer"
+               },
+               "down_irradiance490": {
+                  "type": "number"
+               },
+               "down_irradiance490_qc": {
+                  "type": "integer"
+               },
+               "downwelling_par": {
+                  "type": "number"
+               },
+               "downwelling_par_qc": {
+                  "type": "string"
+               }
+            }
+         },
          "geoJSONpoint": {
             "type": "object",
             "properties": {
@@ -1371,6 +1695,40 @@
             "schema": {
                "type": "string",
                "example": ""
+            }
+         },
+         "presRange": {
+            "in": "query",
+            "name": "presRange",
+            "required": true,
+            "description": "Pressure range",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
+         "idList": {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "description": "List of profile IDs",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "string"
+               },
+               "example": "4902911_0,4902911_97"
             }
          },
          "lat": {
