@@ -7,6 +7,9 @@ module.exports.selectionGlobalMapProfiles = function selectionGlobalMapProfiles 
   Selection.selectionGlobalMapProfiles(startDate, endDate)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);

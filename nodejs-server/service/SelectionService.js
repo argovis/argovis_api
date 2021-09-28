@@ -12,35 +12,14 @@ const HELPER_CONST = require('../helpers/profileHelperConstants')
  **/
 exports.selectionGlobalMapProfiles = function(startDate,endDate) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "date" : "2000-01-23T04:56:07.000+00:00",
-  "cycle_number" : 0,
-  "geoLocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "DATA_MODE" : "DATA_MODE",
-  "DIRECTION" : "DIRECTION",
-  "platform_number" : 6,
-  "_id" : "_id"
-}, {
-  "date" : "2000-01-23T04:56:07.000+00:00",
-  "cycle_number" : 0,
-  "geoLocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "DATA_MODE" : "DATA_MODE",
-  "DIRECTION" : "DIRECTION",
-  "platform_number" : 6,
-  "_id" : "_id"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    startDate = new Date(startDate)
+    endDate = new Date(endDate)
+    if ((endDate - startDate)/3600000 > 72) reject({"code": 400, "message": "Please request <= 72 hours of data at a time."});
+
+    const query = Profile.aggregate([
+        {$match:  {date: {$lte: endDate, $gte: startDate}}},
+        {$project: HELPER_CONST.MAP_META_AGGREGATE},
+    ]);
   });
 }
 
