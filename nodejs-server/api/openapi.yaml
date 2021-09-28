@@ -1465,7 +1465,6 @@ components:
       - lat
       - lon
       - max_pres
-      - measurements
       - nc_url
       - platform_number
       - position_qc
@@ -1661,6 +1660,10 @@ components:
           type: integer
         DIRECTION:
           type: string
+        containsBGC:
+          type: boolean
+        isDeep:
+          type: boolean
       example:
         date: 2000-01-23T04:56:07.000+00:00
         cycle_number: 0
@@ -1671,7 +1674,9 @@ components:
           type: type
         DATA_MODE: DATA_MODE
         DIRECTION: DIRECTION
+        isDeep: true
         platform_number: 6
+        containsBGC: true
         _id: _id
     geoJSONpoint:
       type: object

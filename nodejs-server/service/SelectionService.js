@@ -20,7 +20,9 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
   },
   "DATA_MODE" : "DATA_MODE",
   "DIRECTION" : "DIRECTION",
+  "isDeep" : true,
   "platform_number" : 6,
+  "containsBGC" : true,
   "_id" : "_id"
 }, {
   "date" : "2000-01-23T04:56:07.000+00:00",
@@ -31,7 +33,9 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
   },
   "DATA_MODE" : "DATA_MODE",
   "DIRECTION" : "DIRECTION",
+  "isDeep" : true,
   "platform_number" : 6,
+  "containsBGC" : true,
   "_id" : "_id"
 } ];
     if (Object.keys(examples).length > 0) {
