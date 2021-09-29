@@ -1628,7 +1628,7 @@ components:
           type: integer
         cndx:
           type: number
-        cndc_qc:
+        cndx_qc:
           type: integer
         doxy:
           type: number
