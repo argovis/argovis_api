@@ -1104,6 +1104,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Selection
+  /selection/overview:
+    get:
+      tags:
+      - selection
+      summary: Provides a summary of the profile database.
+      operationId: selectionOverview
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/profileCollectionSummary'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Selection
 components:
   schemas:
     arShapeSchema:
@@ -1678,6 +1713,30 @@ components:
         platform_number: 6
         containsBGC: true
         _id: _id
+    profileCollectionSummary:
+      type: object
+      properties:
+        numberOfProfiles:
+          type: integer
+        dacs:
+          type: array
+          items:
+            type: string
+        numberDeep:
+          type: integer
+        numberBgc:
+          type: integer
+        lastAdded:
+          type: string
+          format: date-time
+      example:
+        numberBgc: 1
+        dacs:
+        - dacs
+        - dacs
+        lastAdded: 2000-01-23T04:56:07.000+00:00
+        numberDeep: 6
+        numberOfProfiles: 0
     geoJSONpoint:
       type: object
       properties:
