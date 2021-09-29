@@ -1116,10 +1116,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/profileCollectionSummary'
-                x-content-type: application/json
+                $ref: '#/components/schemas/profileCollectionSummary'
         "400":
           description: Bad Request
           content:
