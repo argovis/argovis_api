@@ -36,25 +36,21 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
  **/
 exports.selectionOverview = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "numberBgc" : 1,
-  "dacs" : [ "dacs", "dacs" ],
-  "lastAdded" : "2000-01-23T04:56:07.000+00:00",
-  "numberDeep" : 6,
-  "numberOfProfiles" : 0
-}, {
-  "numberBgc" : 1,
-  "dacs" : [ "dacs", "dacs" ],
-  "lastAdded" : "2000-01-23T04:56:07.000+00:00",
-  "numberDeep" : 6,
-  "numberOfProfiles" : 0
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
+    Promise.all([
+        Profile.estimatedDocumentCount({}),
+        Profile.distinct('dac'),
+        Profile.find({'isDeep':true}).countDocuments(),
+        Profile.find({'containsBGC':true}).countDocuments(),
+        Profile.aggregate([{ $sort: { date: -1 } }, {$project: {'date_added': 1}}, { $limit : 1 }])
+    ]).then( ([ numberOfProfiles, dacs, numberDeep, numberBgc, lastAdded ]) => {
+        const date = lastAdded[0].date_added
+        let overviewData = {'numberOfProfiles': numberOfProfiles, 'dacs': dacs, 'numberDeep': numberDeep, 'numberBgc': numberBgc, 'lastAdded': lastAdded[0]['date_added']}
+        resolve(overviewData);
+    }).catch(error => {
+        reject({"code": 500, "message": "Server error"});
+    });
+
   });
 }
 

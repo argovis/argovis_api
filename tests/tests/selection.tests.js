@@ -30,6 +30,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
         expect(response.status).to.eql(400);
       });
+    });
+
+    describe("GET /selection/overview", function () {
+      it("describes the profile content of the db", async function () {
+        const response = await request.get("/selection/overview");
+        expect(response.body).to.be.jsonSchema(schema.paths['/selection/overview'].get.responses['200'].content['application/json'].schema);
+      });
     });    
   }
 })

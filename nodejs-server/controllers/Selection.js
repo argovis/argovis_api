@@ -20,6 +20,9 @@ module.exports.selectionOverview = function selectionOverview (req, res, next) {
   Selection.selectionOverview()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
