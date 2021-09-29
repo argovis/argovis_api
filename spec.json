@@ -789,6 +789,39 @@
                }
             }
          }
+      },
+      "/selection/overview": {
+         "get": {
+            "tags": [
+               "selection"
+            ],
+            "summary": "Provides a summary of the profile database.",
+            "operationId": "selectionOverview",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/profileCollectionSummary"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
       }
    },
    "components": {
@@ -1535,6 +1568,30 @@
                },
                "isDeep": {
                   "type": "boolean"
+               }
+            }
+         },
+         "profileCollectionSummary": {
+            "type": "object",
+            "properties": {
+               "numberOfProfiles": {
+                  "type": "integer"
+               },
+               "dacs": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "numberDeep": {
+                  "type": "integer"
+               },
+               "numberBgc": {
+                  "type": "integer"
+               },
+               "lastAdded": {
+                  "type": "string",
+                  "format": "date-time"
                }
             }
          },
