@@ -803,10 +803,7 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/profileCollectionSummary"
-                           }
+                           "$ref": "#/components/schemas/profileCollectionSummary"
                         }
                      }
                   }

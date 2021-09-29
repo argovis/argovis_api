@@ -32,11 +32,10 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
 /**
  * Provides a summary of the profile database.
  *
- * returns List
+ * returns profileCollectionSummary
  **/
 exports.selectionOverview = function() {
   return new Promise(function(resolve, reject) {
-
     Promise.all([
         Profile.estimatedDocumentCount({}),
         Profile.distinct('dac'),
