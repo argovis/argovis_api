@@ -1980,18 +1980,11 @@
          "polygon": {
             "in": "query",
             "name": "polygon",
-            "description": "array of [lon, lat] vertices describing a polygon",
+            "description": "array of [lon, lat] vertices describing a polygon; final point must match initial point",
             "allowReserved": true,
             "schema": {
-               "type": "array",
-               "items": {
-                  "type": "array",
-                  "items": {
-                     "type": "number",
-                     "minItems": 2,
-                     "maxItems": 2
-                  }
-               }
+               "type": "string",
+               "example": "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
             }
          },
          "box": {
@@ -2000,17 +1993,8 @@
             "description": "box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]]",
             "allowReserved": true,
             "schema": {
-               "type": "array",
-               "items": {
-                  "type": "array",
-                  "minItems": 2,
-                  "maxItems": 2,
-                  "items": {
-                     "type": "number",
-                     "minItems": 2,
-                     "maxItems": 2
-                  }
-               }
+               "type": "string",
+               "example": "[[-74.2126,40.5221],[-73.6798,40.9135]]"
             }
          },
          "coreMeasurements": {

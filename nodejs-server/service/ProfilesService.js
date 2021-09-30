@@ -6,8 +6,8 @@
  *
  * startDate Date date-time formatted string indicating the beginning of a time period
  * endDate Date date-time formatted string indicating the end of a time period
- * polygon List array of [lon, lat] vertices describing a polygon (optional)
- * box List box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
+ * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
+ * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * ids List List of profile IDs (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)

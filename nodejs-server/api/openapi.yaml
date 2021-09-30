@@ -1170,19 +1170,15 @@ paths:
           example: 2010-01-01T00:00:00Z
       - name: polygon
         in: query
-        description: "array of [lon, lat] vertices describing a polygon"
+        description: "array of [lon, lat] vertices describing a polygon; final point\
+          \ must match initial point"
         required: false
         style: form
         explode: true
         allowReserved: true
         schema:
-          type: array
-          items:
-            type: array
-            items:
-              maxItems: 2
-              minItems: 2
-              type: number
+          type: string
+          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
       - name: box
         in: query
         description: "box described as [[lower left lon, lower left lat], [upper right\
@@ -1192,15 +1188,8 @@ paths:
         explode: true
         allowReserved: true
         schema:
-          type: array
-          items:
-            maxItems: 2
-            minItems: 2
-            type: array
-            items:
-              maxItems: 2
-              minItems: 2
-              type: number
+          type: string
+          example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
       - name: ids
         in: query
         description: List of profile IDs
@@ -2438,19 +2427,15 @@ components:
     polygon:
       name: polygon
       in: query
-      description: "array of [lon, lat] vertices describing a polygon"
+      description: "array of [lon, lat] vertices describing a polygon; final point\
+        \ must match initial point"
       required: false
       style: form
       explode: true
       allowReserved: true
       schema:
-        type: array
-        items:
-          type: array
-          items:
-            maxItems: 2
-            minItems: 2
-            type: number
+        type: string
+        example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
     box:
       name: box
       in: query
@@ -2461,15 +2446,8 @@ components:
       explode: true
       allowReserved: true
       schema:
-        type: array
-        items:
-          maxItems: 2
-          minItems: 2
-          type: array
-          items:
-            maxItems: 2
-            minItems: 2
-            type: number
+        type: string
+        example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
     coreMeasurements:
       name: coreMeasurements
       in: query
