@@ -25,13 +25,31 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
     let aggPipeline = [{$match:  {date: {$lte: endDate, $gte: startDate}}}];
 
     if (ids){
-      console.log(ids, typeof ids, typeof ids[0])
       aggPipeline.push({$match: {_id: { $in: ids}}})
     }
 
     if(platforms) {
-      console.log(platforms, typeof platforms, typeof platforms[0])
       aggPipeline.push({$match: {platform_number: { $in: platforms}}})
+    }
+
+    if(polygon) {
+      console.log(polygon)
+    }
+
+    if(box) {
+      console.log(box)
+    }
+
+    if(presRange) {
+      console.log(presRange)
+    }
+
+    if(coreMeasurements) {
+      console.log(coreMeasurements)
+    }
+
+    if(bgcMeasurements) {
+      console.log.bgcMeasurements
     }
 
     const query = Profile.aggregate(aggPipeline);
