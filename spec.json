@@ -1474,13 +1474,13 @@
                "coreMeas": {
                   "type": "array",
                   "items": {
-                     "$ref": "#/components/schemas/coreMeasurements"
+                     "$ref": "#/components/schemas/coreMeasurement"
                   }          
                },
                "bgcMeas": {
                   "type": "array",
                   "items": {
-                     "$ref": "#/components/schemas/bgcMeasurements"
+                     "$ref": "#/components/schemas/bgcMeasurement"
                   }
                }
             }
