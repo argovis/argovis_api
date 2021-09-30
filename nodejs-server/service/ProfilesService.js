@@ -18,11 +18,21 @@ const Profile = require('../models/profile');
 exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
 
-    let startDate = new Date(startDate);
-    let endDate = new Date(endDate);
-    if ((endDate - startDate)/3600000 > 72) reject({"code": 400, "message": "Please request <= 72 hours of data at a time."});
+    startDate = new Date(startDate);
+    endDate = new Date(endDate);
+    if ((endDate - startDate)/3600000/24 > 90) reject({"code": 400, "message": "Please request <= 90 days of data at a time."});
 
     let aggPipeline = [{$match:  {date: {$lte: endDate, $gte: startDate}}}];
+
+    if (ids){
+      console.log(ids, typeof ids, typeof ids[0])
+      aggPipeline.push({$match: {_id: { $in: ids}}})
+    }
+
+    if(platforms) {
+      console.log(platforms, typeof platforms, typeof platforms[0])
+      aggPipeline.push({$match: {platform_number: { $in: platforms}}})
+    }
 
     const query = Profile.aggregate(aggPipeline);
 
