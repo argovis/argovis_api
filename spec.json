@@ -51,6 +51,10 @@
          "description": "Gridded products derived from Argo floats, simulation, or satalite product"
       },
       {
+         "name": "profiles",
+         "description": "Profile data, including BCG and profile metadata"
+      },
+      {
          "name": "selection",
          "description": "Geospatial selection of argo floats"
       }
@@ -819,6 +823,65 @@
                }
             }
          }
+      },
+      "/profiles": {
+         "get": {
+            "tags": [
+               "profiles"
+            ],
+            "summary": "Search, reduce and download profile data.",
+            "operationId": "profile",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
+                  "$ref": "#/components/parameters/idList"
+               },
+               {
+                  "$ref": "#/components/parameters/platformList"
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/coreMeasurements"
+               },
+               {
+                  "$ref": "#/components/parameters/bgcMeasurements"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/Profile"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
       }
    },
    "components": {
@@ -1436,6 +1499,15 @@
                }
             }               
          },
+         "coreMeasurementKey": {
+            "type": "string",
+            "enum": [
+               "pres",
+               "temp",
+               "psal",
+               "all"
+            ]
+         },
          "bgcMeasurement": {
             "type": "object",
             "properties": {
@@ -1518,6 +1590,38 @@
                   "type": "string"
                }
             }
+         },
+         "bgcMeasurementKey": {
+            "type": "string",
+            "enum": [
+               "pres",
+               "pres_qc",
+               "temp",
+               "temp_qc",
+               "psal",
+               "psal_qc",
+               "cndx",
+               "cndx_qc",
+               "doxy",
+               "doxy_qc",
+               "chla",
+               "chla_qc",
+               "cdom",
+               "cdom_qc",
+               "nitrate",
+               "nitrate_qc",
+               "bbp700",
+               "bbp700_qc",
+               "down_irradiance412",
+               "down_irradiance412_qc",
+               "down_irradiance442",
+               "down_irradiance442_qc",
+               "down_irradiance490",
+               "down_irradiance490_qc",
+               "downwelling_par",
+               "downwelling_par_qc",
+               "all"
+            ]
          },
          "MapMeta": {
             "type": "object",
@@ -1830,7 +1934,6 @@
          "presRange": {
             "in": "query",
             "name": "presRange",
-            "required": true,
             "description": "Pressure range",
             "style": "form",
             "explode": false,
@@ -1848,7 +1951,6 @@
          "idList": {
             "in": "query",
             "name": "ids",
-            "required": true,
             "description": "List of profile IDs",
             "style": "form",
             "explode": false,
@@ -1859,6 +1961,92 @@
                   "type": "string"
                },
                "example": "4902911_0,4902911_97"
+            }
+         },
+         "platformList": {
+            "in": "query",
+            "name": "platforms",
+            "description": "List of platform IDs",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "string"
+               }
+            }
+         },
+         "polygon": {
+            "in": "query",
+            "name": "polygon",
+            "description": "array of [lon, lat] vertices describing a polygon",
+            "allowReserved": true,
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "array",
+                        "items": {
+                           "type": "number",
+                           "minItems": 2,
+                           "maxItems": 2
+                        }
+                     }
+                  }
+               }
+            }
+         },
+         "box": {
+            "in": "query",
+            "name": "box",
+            "description": "box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]]",
+            "allowReserved": true,
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                           "type": "number",
+                           "minItems": 2,
+                           "maxItems": 2
+                        }
+                     }
+                  }
+               }
+            }
+         },
+         "coreMeasurements": {
+            "in": "query",
+            "name": "coreMeasurements",
+            "description": "Keys of core measurements to include",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/components/schemas/coreMeasurementKey"
+               }
+            }
+         },
+         "bgcMeasurements": {
+            "in": "query",
+            "name": "bgcMeasurements",
+            "description": "Keys of BGC measurements to include",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/components/schemas/bgcMeasurementKey"
+               }
             }
          },
          "lat": {

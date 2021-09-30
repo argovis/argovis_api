@@ -57,8 +57,8 @@ exports.selectionOverview = function() {
 /**
  * Get a list of profiles by ID, keeping only levels within a range of pressures.
  *
- * presRange List Pressure range
- * ids List List of profile IDs
+ * presRange List Pressure range (optional)
+ * ids List List of profile IDs (optional)
  * returns List
  **/
 exports.selectionProfileList = function(presRange,ids) {
