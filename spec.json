@@ -1247,7 +1247,7 @@
                }
             }
          },
-         "ProfileMeta": {
+         "Profile": {
             "type": "object",
             "required": [
                "_id",
@@ -1407,43 +1407,36 @@
                "date_formatted": {
                   "type": "string",
                   "format": "date"
+               },
+               "coreMeas": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/coreMeasurements"
+                  }          
+               },
+               "bgcMeas": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/bgcMeasurements"
+                  }
                }
             }
          },
-         "Profile": {
-            "allOf": [
-               {
-                  "$ref": "#/components/schemas/ProfileMeta"
+         "coreMeasurement":{
+            "type": "object",
+            "properties": {
+               "pres": {
+                  "type": "number"
                },
-               {
-                  "type": "object",
-                  "properties": {
-                     "measurements": {
-                        "type": "array",
-                        "required": true,
-                        "items": {
-                           "type": "object",
-                           "properties": {
-                              "pres": {
-                                 "type": "number"
-                              },
-                              "temp": {
-                                 "type": "number"
-                              },
-                              "psal": {
-                                 "type": "number"
-                              }
-                           }
-                        }
-                     },
-                     "bgcMeas": {
-                        "$ref": "#/components/schemas/bgcMeasurements"
-                     }
-                  }
+               "temp": {
+                  "type": "number"
+               },
+               "psal": {
+                  "type": "number"
                }
-            ]
+            }               
          },
-         "bgcMeasurements": {
+         "bgcMeasurement": {
             "type": "object",
             "properties": {
                "pres": {

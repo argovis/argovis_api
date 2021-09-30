@@ -1487,7 +1487,7 @@ components:
         trend: trend
         model: model
         measurement: measurement
-    ProfileMeta:
+    Profile:
       required:
       - _id
       - cycle_number
@@ -1600,18 +1600,87 @@ components:
         date_formatted:
           type: string
           format: date
-    Profile:
-      allOf:
-      - $ref: '#/components/schemas/ProfileMeta'
-      - type: object
-        properties:
-          measurements:
-            type: array
-            items:
-              $ref: '#/components/schemas/Profile_measurements'
-          bgcMeas:
+        coreMeas:
+          type: array
+          items:
+            $ref: '#/components/schemas/coreMeasurements'
+        bgcMeas:
+          type: array
+          items:
             $ref: '#/components/schemas/bgcMeasurements'
-    bgcMeasurements:
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        date_qc: 1
+        euroargoPlatform: euroargoPlatform
+        dac: dac
+        lon: 2.3021358869347654518833223846741020679473876953125
+        WMO_INST_TYPE: WMO_INST_TYPE
+        station_parameters_in_nc:
+        - station_parameters_in_nc
+        - station_parameters_in_nc
+        roundLat: roundLat
+        strLon: strLon
+        station_parameters:
+        - station_parameters
+        - station_parameters
+        pres_min_for_PSAL: 4.1456080298839363962315474054776132106781005859375
+        PLATFORM_TYPE: PLATFORM_TYPE
+        bgcMeas:
+        - "{}"
+        - "{}"
+        date_formatted: 2000-01-23
+        isDeep: true
+        platform_number: 7
+        BASIN: 7.3862819483858839220147274318151175975799560546875
+        lat: 5.63737665663332876420099637471139430999755859375
+        VERTICAL_SAMPLING_SCHEME: VERTICAL_SAMPLING_SCHEME
+        pres_max_for_TEMP: 9.301444243932575517419536481611430644989013671875
+        roundLon: roundLon
+        bgcMeasKeys:
+        - bgcMeasKeys
+        - bgcMeasKeys
+        position_qc: 0
+        DIRECTION: DIRECTION
+        pres_max_for_PSAL: 3.61607674925191080461672754609026014804840087890625
+        POSITIONING_SYSTEM: POSITIONING_SYSTEM
+        DATA_CENTRE: DATA_CENTRE
+        coreMeas:
+        - "{}"
+        - "{}"
+        url: url
+        nc_url: nc_url
+        PARAMETER_DATA_MODE:
+        - PARAMETER_DATA_MODE
+        - PARAMETER_DATA_MODE
+        date_added: 2000-01-23T04:56:07.000+00:00
+        cycle_number: 6
+        PI_NAME: PI_NAME
+        pres_min_for_TEMP: 2.027123023002321833274663731572218239307403564453125
+        geoLocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        DATA_MODE: DATA_MODE
+        jcommopsPlatform: jcommopsPlatform
+        core_data_mode: core_data_mode
+        formatted_station_parameters:
+        - formatted_station_parameters
+        - formatted_station_parameters
+        max_pres: 5.962133916683182377482808078639209270477294921875
+        containsBGC: true
+        strLat: strLat
+        _id: _id
+    coreMeasurement:
+      type: object
+      properties:
+        pres:
+          type: number
+        temp:
+          type: number
+        psal:
+          type: number
+    bgcMeasurement:
       type: object
       properties:
         pres:
@@ -1852,15 +1921,6 @@ components:
         lon:
           type: number
         value: {}
-    Profile_measurements:
-      type: object
-      properties:
-        pres:
-          type: number
-        temp:
-          type: number
-        psal:
-          type: number
   responses:
     badRequest:
       description: Bad Request
