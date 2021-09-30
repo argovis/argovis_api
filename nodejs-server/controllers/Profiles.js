@@ -7,6 +7,9 @@ module.exports.profile = function profile (req, res, next, startDate, endDate, p
   Profiles.profile(startDate, endDate, polygon, box, ids, platforms, presRange, coreMeasurements, bgcMeasurements)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
