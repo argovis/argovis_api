@@ -15,7 +15,7 @@ const Profile = require('../models/profile');
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns Profile
  **/
- exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
 
     let startDate = new Date(startDate);
@@ -33,6 +33,5 @@ const Profile = require('../models/profile');
     })
   }
 )}
-
 
 
