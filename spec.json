@@ -1982,18 +1982,14 @@
             "name": "polygon",
             "description": "array of [lon, lat] vertices describing a polygon",
             "allowReserved": true,
-            "content": {
-               "application/json": {
-                  "schema": {
-                     "type": "array",
-                     "items": {
-                        "type": "array",
-                        "items": {
-                           "type": "number",
-                           "minItems": 2,
-                           "maxItems": 2
-                        }
-                     }
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "array",
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
                   }
                }
             }
@@ -2003,20 +1999,16 @@
             "name": "box",
             "description": "box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]]",
             "allowReserved": true,
-            "content": {
-               "application/json": {
-                  "schema": {
-                     "type": "array",
-                     "items": {
-                        "type": "array",
-                        "minItems": 2,
-                        "maxItems": 2,
-                        "items": {
-                           "type": "number",
-                           "minItems": 2,
-                           "maxItems": 2
-                        }
-                     }
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
                   }
                }
             }

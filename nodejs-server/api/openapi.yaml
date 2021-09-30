@@ -1175,17 +1175,14 @@ paths:
         style: form
         explode: true
         allowReserved: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: array
-                items:
-                  maxItems: 2
-                  minItems: 2
-                  type: number
-              x-content-type: application/json
+        schema:
+          type: array
+          items:
+            type: array
+            items:
+              maxItems: 2
+              minItems: 2
+              type: number
       - name: box
         in: query
         description: "box described as [[lower left lon, lower left lat], [upper right\
@@ -1194,19 +1191,16 @@ paths:
         style: form
         explode: true
         allowReserved: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                maxItems: 2
-                minItems: 2
-                type: array
-                items:
-                  maxItems: 2
-                  minItems: 2
-                  type: number
-              x-content-type: application/json
+        schema:
+          type: array
+          items:
+            maxItems: 2
+            minItems: 2
+            type: array
+            items:
+              maxItems: 2
+              minItems: 2
+              type: number
       - name: ids
         in: query
         description: List of profile IDs
@@ -2449,17 +2443,14 @@ components:
       style: form
       explode: true
       allowReserved: true
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              type: array
-              items:
-                maxItems: 2
-                minItems: 2
-                type: number
-            x-content-type: application/json
+      schema:
+        type: array
+        items:
+          type: array
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
     box:
       name: box
       in: query
@@ -2469,19 +2460,16 @@ components:
       style: form
       explode: true
       allowReserved: true
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              maxItems: 2
-              minItems: 2
-              type: array
-              items:
-                maxItems: 2
-                minItems: 2
-                type: number
-            x-content-type: application/json
+      schema:
+        type: array
+        items:
+          maxItems: 2
+          minItems: 2
+          type: array
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
     coreMeasurements:
       name: coreMeasurements
       in: query
