@@ -1952,8 +1952,6 @@
             "in": "query",
             "name": "ids",
             "description": "List of profile IDs",
-            "style": "form",
-            "explode": false,
             "allowReserved": true,
             "schema": {
                "type": "array",
@@ -1967,13 +1965,11 @@
             "in": "query",
             "name": "platforms",
             "description": "List of platform IDs",
-            "style": "form",
-            "explode": false,
             "allowReserved": true,
             "schema": {
                "type": "array",
                "items": {
-                  "type": "string"
+                  "type": "integer"
                }
             }
          },
