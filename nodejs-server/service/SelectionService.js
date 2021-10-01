@@ -156,14 +156,7 @@ exports.selectionProfileList = function(presRange,ids) {
   "lat" : 5.637376656633329,
   "VERTICAL_SAMPLING_SCHEME" : "VERTICAL_SAMPLING_SCHEME",
   "pres_max_for_TEMP" : 9.301444243932576,
-  "roundLon" : "roundLon",
-  "bgcMeasKeys" : [ "bgcMeasKeys", "bgcMeasKeys" ],
-  "position_qc" : 0,
-  "DIRECTION" : "DIRECTION",
-  "pres_max_for_PSAL" : 3.616076749251911,
-  "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
-  "DATA_CENTRE" : "DATA_CENTRE",
-  "coreMeas" : [ {
+  "measurements" : [ {
     "temp" : 1.0246457001441578,
     "pres" : 1.2315135367772556,
     "psal" : 1.4894159098541704
@@ -172,6 +165,13 @@ exports.selectionProfileList = function(presRange,ids) {
     "pres" : 1.2315135367772556,
     "psal" : 1.4894159098541704
   } ],
+  "roundLon" : "roundLon",
+  "bgcMeasKeys" : [ "bgcMeasKeys", "bgcMeasKeys" ],
+  "position_qc" : 0,
+  "DIRECTION" : "DIRECTION",
+  "pres_max_for_PSAL" : 3.616076749251911,
+  "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
+  "DATA_CENTRE" : "DATA_CENTRE",
   "url" : "url",
   "nc_url" : "nc_url",
   "PARAMETER_DATA_MODE" : [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ],
@@ -266,14 +266,7 @@ exports.selectionProfileList = function(presRange,ids) {
   "lat" : 5.637376656633329,
   "VERTICAL_SAMPLING_SCHEME" : "VERTICAL_SAMPLING_SCHEME",
   "pres_max_for_TEMP" : 9.301444243932576,
-  "roundLon" : "roundLon",
-  "bgcMeasKeys" : [ "bgcMeasKeys", "bgcMeasKeys" ],
-  "position_qc" : 0,
-  "DIRECTION" : "DIRECTION",
-  "pres_max_for_PSAL" : 3.616076749251911,
-  "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
-  "DATA_CENTRE" : "DATA_CENTRE",
-  "coreMeas" : [ {
+  "measurements" : [ {
     "temp" : 1.0246457001441578,
     "pres" : 1.2315135367772556,
     "psal" : 1.4894159098541704
@@ -282,6 +275,13 @@ exports.selectionProfileList = function(presRange,ids) {
     "pres" : 1.2315135367772556,
     "psal" : 1.4894159098541704
   } ],
+  "roundLon" : "roundLon",
+  "bgcMeasKeys" : [ "bgcMeasKeys", "bgcMeasKeys" ],
+  "position_qc" : 0,
+  "DIRECTION" : "DIRECTION",
+  "pres_max_for_PSAL" : 3.616076749251911,
+  "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
+  "DATA_CENTRE" : "DATA_CENTRE",
   "url" : "url",
   "nc_url" : "nc_url",
   "PARAMETER_DATA_MODE" : [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ],
