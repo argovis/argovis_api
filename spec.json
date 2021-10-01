@@ -1471,7 +1471,7 @@
                   "type": "string",
                   "format": "date"
                },
-               "coreMeas": {
+               "measurements": {
                   "type": "array",
                   "items": {
                      "$ref": "#/components/schemas/coreMeasurement"
