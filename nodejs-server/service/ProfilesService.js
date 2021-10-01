@@ -1,5 +1,6 @@
 'use strict';
 const Profile = require('../models/profile');
+const GJV = require('geojson-validation');
 
 /**
  * Search, reduce and download profile data.
@@ -32,16 +33,55 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
       aggPipeline.push({$match: {platform_number: { $in: platforms}}})
     }
 
+    if(polygon && box) reject({"code": 400, "message": "Please specify only one of polygon or box."});
     if(polygon) {
-      console.log(polygon)
+      // sanitation
+      try {
+        polygon = JSON.parse(polygon);
+      } catch (e) {
+        reject({"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"});
+      }
+
+      polygon = {
+        "type": "Polygon",
+        "coordinates": [polygon]
+      }
+      if(!GJV.valid(polygon)) reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
+      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$geometry: polygon}}}})
     }
 
     if(box) {
-      console.log(box)
+      // sanitation
+      try {
+        box = JSON.parse(box);
+      } catch (e) {
+        reject({"code": 400, "message": "Box region wasn't proper JSON; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"});
+      }
+      if(box.length != 2 || 
+         box[0].length != 2 || 
+         box[1].length != 2 || 
+         typeof box[0][0] != 'number' ||
+         typeof box[0][1] != 'number' ||
+         typeof box[1][0] != 'number' || 
+         typeof box[1][1] != 'number') {
+        reject({"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"});
+      }
+
+      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$box: box}}}})
     }
 
     if(presRange) {
-      console.log(presRange)
+      aggPipeline.push({
+        $filter: {
+            input: '$measurements',
+            as: 'item',
+            cond: { 
+                $and: [
+                    {$gt: ['$$item.pres', presRange[0]]},
+                    {$lt: ['$$item.pres', presRange[1]]}
+                ]},
+        },
+      })
     }
 
     if(coreMeasurements) {
