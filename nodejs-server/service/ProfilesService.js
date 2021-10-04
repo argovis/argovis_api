@@ -71,35 +71,94 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
     }
 
     if(presRange) {
-      aggPipeline.push({
-        $filter: {
-            input: '$measurements',
-            as: 'item',
-            cond: { 
-                $and: [
-                    {$gt: ['$$item.pres', presRange[0]]},
-                    {$lt: ['$$item.pres', presRange[1]]}
-                ]},
-        },
-      })
+      aggPipeline.push(pressureWindow('measurements', presRange[0], presRange[1]))
+      aggPipeline.push(pressureWindow('bgcMeas', presRange[0], presRange[1]))
     }
 
-    if(coreMeasurements) {
-      console.log(coreMeasurements)
+    if(coreMeasurements && !coreMeasurements.includes('all')) {
+      if (!coreMeasurements.includes('pres')) coreMeasurements.push('pres')
+      aggPipeline.push(reduce_meas(coreMeasurements, 'measurements'))
     }
 
-    if(bgcMeasurements) {
-      console.log.bgcMeasurements
+    if(bgcMeasurements && !bgcMeasurements.includes('all')) {
+      if (!bgcMeasurements.includes('pres')) bgcMeasurements.push('pres')
+      aggPipeline.push(reduce_meas(bgcMeasurements, 'bcgMeas'))
     }
 
     const query = Profile.aggregate(aggPipeline);
 
     query.exec(function (err, profiles) {
       if (err) reject({"code": 500, "message": "Server error"});
+
+      if(coreMeasurements && !bgcMeasurements){
+        // keep only profiles that have some requested core measurement
+        profiles = profiles.filter(item => (item.measurements !== null && item.measurements.length!=0))
+      }
+      if(!coreMeasurements && bgcMeasurements){
+        // keep only profiles that have some requested bgc measurement
+        profiles = profiles.filter(item => (item.bgcMeas !== null && item.bgcMeas.length!=0))
+      }
+      if(coreMeasurements && bgcMeasurements){
+        // keep only profiles that have at least one of a requested core or bgc measurement
+        profiles = profiles.filter(item => ((item.measurements !== null && item.measurements.length!=0)) || (item.bgcMeas !== null && item.bgcMeas.length!=0))
+      }
+
       if(profiles.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+      
       resolve(profiles);
     })
   }
 )}
 
+// helpers /////////////////////////////////////
+
+const pressureWindow = function(measType, minPres, maxPres){
+  // measType == 'measurements' or 'bgcMeas'
+
+  const pWindow = {
+    $addFields: {
+      measurements: {
+        $filter: {
+          input: "$".concat(measType),
+          as: "m",
+          cond: {$and: [
+            {$gt: ['$$m.pres', minPres]},
+            {$lt: ['$$m.pres', maxPres]}
+          ]},
+        }
+      }
+    }
+  }
+
+  return pWindow
+}
+
+const reduce_meas = function(keys, meas) {
+  // meas == 'measurements' or 'bgcMeas'
+  // keys == list of keys to keep from meas.
+  let newObj = {}
+  let idx = 0
+  for (idx=0; idx<keys.length; idx++) {
+      const key = keys[idx]
+      const item = '$$item.'.concat(key)
+      newObj[key] = item
+      if(meas=='bgcMeas'){
+        const item_qc = item.concat('_qc')
+        newObj[key+'_qc'] = item_qc
+      }
+  }
+  console.log(newObj)
+  const reduceArray = {
+                      $addFields: {
+                          [meas]: {
+                              $map: {
+                                  input: "$".concat(meas),
+                                  as: "item",
+                                  in: newObj
+                              }
+                          }
+                      }
+                  }
+  return reduceArray
+}
 
