@@ -6,7 +6,7 @@
  *
  * returns List
  **/
-exports.bGCplatformList = function() {
+exports.bgcPlatformList = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ 0.8008281904610115, 0.8008281904610115 ];

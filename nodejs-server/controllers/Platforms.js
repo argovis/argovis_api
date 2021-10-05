@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Platforms = require('../service/PlatformsService');
 
-module.exports.bGCplatformList = function bGCplatformList (req, res, next) {
-  Platforms.bGCplatformList()
+module.exports.bgcPlatformList = function bgcPlatformList (req, res, next) {
+  Platforms.bgcPlatformList()
     .then(function (response) {
       utils.writeJson(res, response);
     })
