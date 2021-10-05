@@ -2,6 +2,24 @@
 
 
 /**
+ * Lists all platforms that report BGC data.
+ *
+ * returns List
+ **/
+exports.bGCplatformList = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ 0.8008281904610115, 0.8008281904610115 ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Provides a list of all platforms with their most recent known report and position.
  *
  * returns platformRecent
