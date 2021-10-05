@@ -951,8 +951,40 @@
                }
             }
          }
+      },
+      "/platforms/bgcList": {
+         "get": {
+            "tags": [
+               "platforms"
+            ],
+            "summary": "Lists all platforms that report BGC data.",
+            "operationId": "BGCplatformList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "number"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
       }
-
    },
    "components": {
       "schemas": {
