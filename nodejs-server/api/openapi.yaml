@@ -1281,8 +1281,17 @@ paths:
     get:
       tags:
       - platforms
-      summary: Provides a list of all platforms with some metadata.
-      operationId: platformMetaList
+      summary: Provides metadata for a specified platform.
+      operationId: platformMeta
+      parameters:
+      - name: platform
+        in: query
+        description: platform ID
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
       responses:
         "200":
           description: OK
@@ -2599,6 +2608,15 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/bgcMeasurementKey'
+    platform:
+      name: platform
+      in: query
+      description: platform ID
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: integer
     lat:
       name: lat
       in: path
