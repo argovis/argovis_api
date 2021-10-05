@@ -1281,7 +1281,40 @@ paths:
     get:
       tags:
       - platforms
-      summary: Provides a summary of platforms.
+      summary: Provides a list of all platforms with some metadata.
+      operationId: platformMetaList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platformMeta'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Platforms
+  /platforms/mostRecent:
+    get:
+      tags:
+      - platforms
+      summary: Provides a list of all platforms with their most recent known report
+        and position.
       operationId: platformList
       responses:
         "200":
@@ -1289,7 +1322,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/platformStub'
+                $ref: '#/components/schemas/platformRecent'
         "400":
           description: Bad Request
           content:
@@ -2030,7 +2063,37 @@ components:
       - downwelling_par
       - downwelling_par_qc
       - all
-    platformStub:
+    platformMeta:
+      type: object
+      properties:
+        _id:
+          type: number
+        platform_number:
+          type: number
+        most_recent_date:
+          type: string
+          format: date-time
+        most_recent_date_added:
+          type: string
+          format: date-time
+        number_of_profiles:
+          type: integer
+        POSITIONING_SYSTEM:
+          type: string
+        PI_NAME:
+          type: string
+        dac:
+          type: string
+      example:
+        PI_NAME: PI_NAME
+        most_recent_date: 2000-01-23T04:56:07.000+00:00
+        most_recent_date_added: 2000-01-23T04:56:07.000+00:00
+        dac: dac
+        platform_number: 6.02745618307040320615897144307382404804229736328125
+        number_of_profiles: 1
+        POSITIONING_SYSTEM: POSITIONING_SYSTEM
+        _id: 0.80082819046101150206595775671303272247314453125
+    platformRecent:
       type: object
       properties:
         _id:

@@ -12,3 +12,13 @@ module.exports.platformList = function platformList (req, res, next) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.platformMetaList = function platformMetaList (req, res, next) {
+  Platforms.platformMetaList()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
