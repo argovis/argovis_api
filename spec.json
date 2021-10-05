@@ -794,36 +794,6 @@
             }
          }
       },
-      "/selection/overview": {
-         "get": {
-            "tags": [
-               "selection"
-            ],
-            "summary": "Provides a summary of the profile database.",
-            "operationId": "selectionOverview",
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "$ref": "#/components/schemas/profileCollectionSummary"
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
       "/profiles": {
          "get": {
             "tags": [
@@ -867,6 +837,36 @@
                      "application/json": {
                         "schema": {
                            "$ref": "#/components/schemas/Profile"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/profiles/overview": {
+         "get": {
+            "tags": [
+               "selection"
+            ],
+            "summary": "Provides a summary of the profile database.",
+            "operationId": "selectionOverview",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/profileCollectionSummary"
                         }
                      }
                   }

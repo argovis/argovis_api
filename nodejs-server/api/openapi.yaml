@@ -1106,38 +1106,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Selection
-  /selection/overview:
-    get:
-      tags:
-      - selection
-      summary: Provides a summary of the profile database.
-      operationId: selectionOverview
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/profileCollectionSummary'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Selection
   /profiles:
     get:
       tags:
@@ -1275,6 +1243,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Profiles
+  /profiles/overview:
+    get:
+      tags:
+      - selection
+      summary: Provides a summary of the profile database.
+      operationId: selectionOverview
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/profileCollectionSummary'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Selection
 components:
   schemas:
     arShapeSchema:
