@@ -6,7 +6,7 @@ const Profile = require('../models/profile')
  *
  * returns List
  **/
-exports.bGCplatformList = function() {
+exports.bgcPlatformList = function() {
   return new Promise(function(resolve, reject) {
     const query = Profile.aggregate([
         {$match: {containsBGC: true}}, 

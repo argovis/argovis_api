@@ -1356,7 +1356,7 @@ paths:
       tags:
       - platforms
       summary: Lists all platforms that report BGC data.
-      operationId: BGCplatformList
+      operationId: bgcPlatformList
       responses:
         "200":
           description: OK
