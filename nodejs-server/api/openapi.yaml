@@ -33,6 +33,8 @@ tags:
     \ product"
 - name: profiles
   description: "Profile data, including BCG and profile metadata"
+- name: platforms
+  description: Platform metadata
 - name: selection
   description: Geospatial selection of argo floats
 paths:
@@ -1248,7 +1250,7 @@ paths:
       tags:
       - profiles
       summary: Provides a summary of the profile database.
-      operationId: selectionOverview
+      operationId: profilesOverview
       responses:
         "200":
           description: OK
@@ -1275,6 +1277,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Profiles
+  /platforms:
+    get:
+      tags:
+      - platforms
+      summary: Provides a summary of the profile database.
+      operationId: platformList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platformStub'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Platforms
 components:
   schemas:
     arShapeSchema:
@@ -1996,6 +2030,36 @@ components:
       - downwelling_par
       - downwelling_par_qc
       - all
+    platformStub:
+      type: object
+      properties:
+        _id:
+          type: number
+        platform_number:
+          type: number
+        most_recent_date:
+          type: date
+          format: date-time
+        number_of_profiles:
+          type: integer
+        cycle_number:
+          type: integer
+        geoLocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        dac:
+          type: string
+      example:
+        cycle_number: 5
+        most_recent_date: ""
+        geoLocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        dac: dac
+        platform_number: 6.02745618307040320615897144307382404804229736328125
+        number_of_profiles: 1
+        _id: 0.80082819046101150206595775671303272247314453125
     MapMeta:
       required:
       - DATA_MODE

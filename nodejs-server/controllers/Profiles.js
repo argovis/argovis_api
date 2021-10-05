@@ -16,8 +16,8 @@ module.exports.profile = function profile (req, res, next, startDate, endDate, p
     });
 };
 
-module.exports.selectionOverview = function selectionOverview (req, res, next) {
-  Profiles.selectionOverview()
+module.exports.profilesOverview = function profilesOverview (req, res, next) {
+  Profiles.profilesOverview()
     .then(function (response) {
       utils.writeJson(res, response);
     },
