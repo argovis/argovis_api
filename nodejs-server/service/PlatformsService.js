@@ -8,13 +8,15 @@ const Profile = require('../models/profile')
  **/
 exports.bGCplatformList = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ 0.8008281904610115, 0.8008281904610115 ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = Profile.aggregate([
+        {$match: {containsBGC: true}}, 
+        {$group: { _id: '$platform_number', platform_number: {$first: '$platform_number'}}}
+    ])
+    query.exec(function (err, platforms) {
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(platforms.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        resolve(platforms);
+    })
   });
 }
 
