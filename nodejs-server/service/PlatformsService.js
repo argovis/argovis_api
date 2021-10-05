@@ -31,11 +31,12 @@ exports.platformList = function() {
 
 
 /**
- * Provides a list of all platforms with some metadata.
+ * Provides metadata for a specified platform.
  *
+ * platform Integer platform ID
  * returns platformMeta
  **/
-exports.platformMetaList = function() {
+exports.platformMeta = function(platform) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {

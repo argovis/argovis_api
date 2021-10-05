@@ -892,8 +892,13 @@
             "tags": [
                "platforms"
             ],
-            "summary": "Provides a list of all platforms with some metadata.",
-            "operationId": "platformMetaList",
+            "summary": "Provides metadata for a specified platform.",
+            "operationId": "platformMeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/platform"
+               }
+            ],
             "responses": {
                "200": {
                   "description": "OK",
@@ -2146,6 +2151,15 @@
                "items": {
                   "$ref": "#/components/schemas/bgcMeasurementKey"
                }
+            }
+         },
+         "platform": {
+            "in": "query",
+            "name": "platform",
+            "required": true,
+            "description": "platform ID",
+            "schema": {
+               "type": "integer"
             }
          },
          "lat": {
