@@ -2,13 +2,12 @@
 const Profile = require('../models/profile')
 
 /**
- * Provides a summary of the profile database.
+ * Provides a summary of platforms.
  *
  * returns platformStub
  **/
 exports.platformList = function() {
   return new Promise(function(resolve, reject) {
-
     const query = Profile.aggregate([
       {$group: {_id: '$platform_number',
                 platform_number: {$first: '$platform_number'},
