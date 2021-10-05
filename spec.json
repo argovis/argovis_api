@@ -856,7 +856,7 @@
       "/profiles/overview": {
          "get": {
             "tags": [
-               "selection"
+               "profiles"
             ],
             "summary": "Provides a summary of the profile database.",
             "operationId": "selectionOverview",
