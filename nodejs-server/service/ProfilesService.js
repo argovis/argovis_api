@@ -19,17 +19,25 @@ const GJV = require('geojson-validation');
 exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
 
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
+    if(startDate) startDate = new Date(startDate);
+    if(endDate) endDate = new Date(endDate);
     if (
       (endDate - startDate)/3600000/24 > 90 &&
-      (!ids || ids.length >1) &&
+      (!ids || ids.length >100) &&
       (!platforms || platforms.length>1)) {
 
-      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR a single profile ID."});
+      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
     } 
 
-    let aggPipeline = [{$match:  {date: {$lte: endDate, $gte: startDate}}}];
+    let aggPipeline = []
+
+    if (startDate){
+      aggPipeline.push({$match:  {date: {$gte: startDate}}})
+    }
+
+    if(endDate){
+      aggPipeline.push({$match:  {date: {$lte: endDate}}})
+    }
 
     if (ids){
       aggPipeline.push({$match: {_id: { $in: ids}}})
