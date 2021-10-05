@@ -1668,7 +1668,7 @@
                   "type": "number"
                },
                "most_recent_date": {
-                  "type": "date",
+                  "type": "string",
                   "format": "date-time"
                },
                "number_of_profiles": {

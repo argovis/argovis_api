@@ -11,7 +11,7 @@ exports.platformList = function() {
     var examples = {};
     examples['application/json'] = {
   "cycle_number" : 5,
-  "most_recent_date" : "",
+  "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
   "geoLocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
