@@ -1246,7 +1246,7 @@ paths:
   /profiles/overview:
     get:
       tags:
-      - selection
+      - profiles
       summary: Provides a summary of the profile database.
       operationId: selectionOverview
       responses:
@@ -1274,7 +1274,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Selection
+      x-swagger-router-controller: Profiles
 components:
   schemas:
     arShapeSchema:

@@ -30,31 +30,6 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
 
 
 /**
- * Provides a summary of the profile database.
- *
- * returns profileCollectionSummary
- **/
-exports.selectionOverview = function() {
-  return new Promise(function(resolve, reject) {
-    Promise.all([
-        Profile.estimatedDocumentCount({}),
-        Profile.distinct('dac'),
-        Profile.find({'isDeep':true}).countDocuments(),
-        Profile.find({'containsBGC':true}).countDocuments(),
-        Profile.aggregate([{ $sort: { date: -1 } }, {$project: {'date_added': 1}}, { $limit : 1 }])
-    ]).then( ([ numberOfProfiles, dacs, numberDeep, numberBgc, lastAdded ]) => {
-        const date = lastAdded[0].date_added
-        let overviewData = {'numberOfProfiles': numberOfProfiles, 'dacs': dacs, 'numberDeep': numberDeep, 'numberBgc': numberBgc, 'lastAdded': lastAdded[0]['date_added']}
-        resolve(overviewData);
-    }).catch(error => {
-        reject({"code": 500, "message": "Server error"});
-    });
-
-  });
-}
-
-
-/**
  * Get a list of profiles by ID, keeping only levels within a range of pressures.
  *
  * presRange List Pressure range (optional)

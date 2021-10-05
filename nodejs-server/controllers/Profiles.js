@@ -15,3 +15,16 @@ module.exports.profile = function profile (req, res, next, startDate, endDate, p
       utils.writeJson(res, response);
     });
 };
+
+module.exports.selectionOverview = function selectionOverview (req, res, next) {
+  Profiles.selectionOverview()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
