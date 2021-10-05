@@ -15,7 +15,7 @@ exports.bgcPlatformList = function() {
     query.exec(function (err, platforms) {
         if (err) reject({"code": 500, "message": "Server error"});
         if(platforms.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
-        resolve(platforms);
+        resolve(Array.from(platforms, x => x.platform_number));
     })
   });
 }
