@@ -5,8 +5,8 @@ const GJV = require('geojson-validation');
 /**
  * Search, reduce and download profile data.
  *
- * startDate Date date-time formatted string indicating the beginning of a time period
- * endDate Date date-time formatted string indicating the end of a time period
+ * startDate Date date-time formatted string indicating the beginning of a time period (optional)
+ * endDate Date date-time formatted string indicating the end of a time period (optional)
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * ids List List of profile IDs (optional)

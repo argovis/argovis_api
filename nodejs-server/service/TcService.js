@@ -77,8 +77,8 @@ exports.findTCbyDate = function(date) {
 /**
  * tropical cyclones intersecting a time period
  *
- * startDate Date date-time formatted string indicating the beginning of a time period
- * endDate Date date-time formatted string indicating the end of a time period
+ * startDate Date date-time formatted string indicating the beginning of a time period (optional)
+ * endDate Date date-time formatted string indicating the end of a time period (optional)
  * returns List
  **/
 exports.findTCbyDateRange = function(startDate,endDate) {

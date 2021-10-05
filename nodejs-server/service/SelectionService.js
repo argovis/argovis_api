@@ -6,8 +6,8 @@ const HELPER_CONST = require('../helpers/profileHelperConstants')
 /**
  * Get a list of profile metadata for all profiles in a given time window.
  *
- * startDate Date date-time formatted string indicating the beginning of a time period
- * endDate Date date-time formatted string indicating the end of a time period
+ * startDate Date date-time formatted string indicating the beginning of a time period (optional)
+ * endDate Date date-time formatted string indicating the end of a time period (optional)
  * returns List
  **/
 exports.selectionGlobalMapProfiles = function(startDate,endDate) {
