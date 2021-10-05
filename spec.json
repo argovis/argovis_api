@@ -1778,7 +1778,7 @@
          "startDate": {
             "in": "query",
             "name": "startDate",
-            "required": true,
+            "required": false,
             "description": "date-time formatted string indicating the beginning of a time period",
             "allowReserved": true,
             "schema": {
@@ -1790,7 +1790,7 @@
          "endDate": {
             "in": "query",
             "name": "endDate",
-            "required": true,
+            "required": false,
             "description": "date-time formatted string indicating the end of a time period",
             "allowReserved": true,
             "schema": {

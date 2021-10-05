@@ -328,7 +328,7 @@ paths:
         in: query
         description: date-time formatted string indicating the beginning of a time
           period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -339,7 +339,7 @@ paths:
       - name: endDate
         in: query
         description: date-time formatted string indicating the end of a time period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -1058,7 +1058,7 @@ paths:
         in: query
         description: date-time formatted string indicating the beginning of a time
           period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -1069,7 +1069,7 @@ paths:
       - name: endDate
         in: query
         description: date-time formatted string indicating the end of a time period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -1149,7 +1149,7 @@ paths:
         in: query
         description: date-time formatted string indicating the beginning of a time
           period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -1160,7 +1160,7 @@ paths:
       - name: endDate
         in: query
         description: date-time formatted string indicating the end of a time period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -2241,7 +2241,7 @@ components:
       name: startDate
       in: query
       description: date-time formatted string indicating the beginning of a time period
-      required: true
+      required: false
       style: form
       explode: true
       allowReserved: true
@@ -2253,7 +2253,7 @@ components:
       name: endDate
       in: query
       description: date-time formatted string indicating the end of a time period
-      required: true
+      required: false
       style: form
       explode: true
       allowReserved: true
