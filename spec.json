@@ -55,6 +55,10 @@
          "description": "Profile data, including BCG and profile metadata"
       },
       {
+         "name": "platforms",
+         "description": "Platform metadata"
+      },
+      {
          "name": "selection",
          "description": "Geospatial selection of argo floats"
       }
@@ -859,7 +863,7 @@
                "profiles"
             ],
             "summary": "Provides a summary of the profile database.",
-            "operationId": "selectionOverview",
+            "operationId": "profilesOverview",
             "responses": {
                "200": {
                   "description": "OK",
@@ -882,7 +886,38 @@
                }
             }
          }
+      },
+      "/platforms": {
+         "get": {
+            "tags": [
+               "platforms"
+            ],
+            "summary": "Provides a summary of the profile database.",
+            "operationId": "platformList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/platformStub"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
       }
+
    },
    "components": {
       "schemas": {
@@ -1622,6 +1657,33 @@
                "downwelling_par_qc",
                "all"
             ]
+         },
+         "platformStub": {
+            "type": "object",
+            "properties": {
+               "_id": {
+                  "type": "number"
+               },
+               "platform_number": {
+                  "type": "number"
+               },
+               "most_recent_date": {
+                  "type": "date",
+                  "format": "date-time"
+               },
+               "number_of_profiles": {
+                  "type": "integer"
+               },
+               "cycle_number": {
+                  "type": "integer"
+               },
+               "geoLocation": {
+                  "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "dac": {
+                  "type": "string"
+               }
+            }
          },
          "MapMeta": {
             "type": "object",

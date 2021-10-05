@@ -143,7 +143,7 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
  *
  * returns profileCollectionSummary
  **/
-exports.selectionOverview = function() {
+exports.profilesOverview = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
