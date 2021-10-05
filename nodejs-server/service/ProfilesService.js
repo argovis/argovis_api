@@ -21,7 +21,13 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
 
     startDate = new Date(startDate);
     endDate = new Date(endDate);
-    if ((endDate - startDate)/3600000/24 > 90) reject({"code": 400, "message": "Please request <= 90 days of data at a time."});
+    if (
+      (endDate - startDate)/3600000/24 > 90 &&
+      (!ids || ids.length >1) &&
+      (!platforms || platforms.length>1)) {
+
+      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR a single profile ID."});
+    } 
 
     let aggPipeline = [{$match:  {date: {$lte: endDate, $gte: startDate}}}];
 
@@ -78,11 +84,15 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
     if(coreMeasurements && !coreMeasurements.includes('all')) {
       if (!coreMeasurements.includes('pres')) coreMeasurements.push('pres')
       aggPipeline.push(reduce_meas(coreMeasurements, 'measurements'))
+    } else if(!coreMeasurements){
+      aggPipeline.push({$project: {measurements: 0}})
     }
 
     if(bgcMeasurements && !bgcMeasurements.includes('all')) {
       if (!bgcMeasurements.includes('pres')) bgcMeasurements.push('pres')
-      aggPipeline.push(reduce_meas(bgcMeasurements, 'bcgMeas'))
+      aggPipeline.push(reduce_meas(bgcMeasurements, 'bgcMeas'))
+    } else if(!bgcMeasurements){
+      aggPipeline.push({$project: {bgcMeas: 0}})
     }
 
     const query = Profile.aggregate(aggPipeline);
