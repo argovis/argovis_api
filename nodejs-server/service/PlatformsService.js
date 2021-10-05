@@ -9,9 +9,10 @@ const Profile = require('../models/profile')
 exports.platformList = function() {
   return new Promise(function(resolve, reject) {
     const query = Profile.aggregate([
+      {$sort: { 'date':-1}},
       {$group: {_id: '$platform_number',
                 platform_number: {$first: '$platform_number'},
-                most_recent_date: {$first: '$date'},
+                most_recent_date: {$max: '$date'},
                 number_of_profiles: {$sum: 1},
                 cycle_number: {$first: '$cycle_number'},
                 geoLocation: {$first: '$geoLocation'}, 

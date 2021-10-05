@@ -2038,7 +2038,7 @@ components:
         platform_number:
           type: number
         most_recent_date:
-          type: date
+          type: string
           format: date-time
         number_of_profiles:
           type: integer
@@ -2050,7 +2050,7 @@ components:
           type: string
       example:
         cycle_number: 5
-        most_recent_date: ""
+        most_recent_date: 2000-01-23T04:56:07.000+00:00
         geoLocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
