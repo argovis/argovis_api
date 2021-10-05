@@ -137,3 +137,27 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
   });
 }
 
+
+/**
+ * Provides a summary of the profile database.
+ *
+ * returns profileCollectionSummary
+ **/
+exports.selectionOverview = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "numberBgc" : 1,
+  "dacs" : [ "dacs", "dacs" ],
+  "lastAdded" : "2000-01-23T04:56:07.000+00:00",
+  "numberDeep" : 6,
+  "numberOfProfiles" : 0
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+

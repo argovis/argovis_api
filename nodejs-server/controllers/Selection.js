@@ -13,16 +13,6 @@ module.exports.selectionGlobalMapProfiles = function selectionGlobalMapProfiles 
     });
 };
 
-module.exports.selectionOverview = function selectionOverview (req, res, next) {
-  Selection.selectionOverview()
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
-
 module.exports.selectionProfileList = function selectionProfileList (req, res, next, presRange, ids) {
   Selection.selectionProfileList(presRange, ids)
     .then(function (response) {
