@@ -892,7 +892,37 @@
             "tags": [
                "platforms"
             ],
-            "summary": "Provides a summary of platforms.",
+            "summary": "Provides a list of all platforms with some metadata.",
+            "operationId": "platformMetaList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/platformMeta"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/platforms/mostRecent": {
+         "get": {
+            "tags": [
+               "platforms"
+            ],
+            "summary": "Provides a list of all platforms with their most recent known report and position.",
             "operationId": "platformList",
             "responses": {
                "200": {
@@ -900,7 +930,7 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "$ref": "#/components/schemas/platformStub"
+                           "$ref": "#/components/schemas/platformRecent"
                         }
                      }
                   }
@@ -1658,7 +1688,38 @@
                "all"
             ]
          },
-         "platformStub": {
+         "platformMeta": {
+            "type": "object",
+            "properties": {
+               "_id": {
+                  "type": "number"
+               },
+               "platform_number": {
+                  "type": "number"
+               },
+               "most_recent_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "most_recent_date_added": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "number_of_profiles": {
+                  "type": "integer"
+               },
+               "POSITIONING_SYSTEM": {
+                  "type": "string"
+               },
+               "PI_NAME": {
+                  "type": "string"
+               },
+               "dac": {
+                  "type": "string"
+               }
+            }
+         },
+         "platformRecent": {
             "type": "object",
             "properties": {
                "_id": {
