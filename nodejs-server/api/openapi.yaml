@@ -1281,7 +1281,7 @@ paths:
     get:
       tags:
       - platforms
-      summary: Provides a summary of the profile database.
+      summary: Provides a summary of platforms.
       operationId: platformList
       responses:
         "200":
