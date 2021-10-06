@@ -2189,7 +2189,7 @@
             "schema": {
                "type": "array",
                "items": {
-                  "type": "integer"
+                  "type": "string"
                }
             }
          },
@@ -2247,7 +2247,7 @@
             "required": true,
             "description": "platform ID",
             "schema": {
-               "type": "integer"
+               "type": "string"
             }
          },
          "lat": {

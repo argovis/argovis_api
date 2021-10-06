@@ -1184,7 +1184,7 @@ paths:
         schema:
           type: array
           items:
-            type: integer
+            type: string
       - name: presRange
         in: query
         description: Pressure range
@@ -1293,7 +1293,7 @@ paths:
         style: form
         explode: true
         schema:
-          type: integer
+          type: string
       responses:
         "200":
           description: OK
@@ -2648,7 +2648,7 @@ components:
       schema:
         type: array
         items:
-          type: integer
+          type: string
     polygon:
       name: polygon
       in: query
@@ -2705,7 +2705,7 @@ components:
       style: form
       explode: true
       schema:
-        type: integer
+        type: string
     lat:
       name: lat
       in: path
