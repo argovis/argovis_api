@@ -59,6 +59,10 @@
          "description": "Platform metadata"
       },
       {
+         "name": "dacs",
+         "description": "Summary and metadata for data assembly centers represented in the dataset"
+      },
+      {
          "name": "selection",
          "description": "Geospatial selection of argo floats"
       }
@@ -984,6 +988,40 @@
                }
             }
          }
+      },
+      "/dacs": {
+         "get": {
+            "tags": [
+               "dacs"
+            ],
+            "summary": "Summary data for all DACs in the database.",
+            "operationId": "dacList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/dacStub"
+                           }
+                        }
+
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
       }
    },
    "components": {
@@ -1777,6 +1815,24 @@
                },
                "geoLocation": {
                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "dac": {
+                  "type": "string"
+               }
+            }
+         },
+         "dacStub": {
+            "type": "object",
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "number_of_profiles": {
+                  "type": "integer"
+               },
+               "most_recent_date": {
+                  "type": "string",
+                  "format": "date-time"
                },
                "dac": {
                   "type": "string"
