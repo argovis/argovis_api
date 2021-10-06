@@ -51,7 +51,7 @@ exports.platformList = function() {
 /**
  * Provides metadata for a specified platform.
  *
- * platform String platform ID
+ * platform BigDecimal platform ID
  * returns platformMeta
  **/
 exports.platformMeta = function(platform) {
