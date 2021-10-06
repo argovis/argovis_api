@@ -1,5 +1,5 @@
 'use strict';
-
+const Profile = require('../models/profile')
 
 /**
  * Summary data for all DACs in the database.
@@ -8,23 +8,21 @@
  **/
 exports.dacList = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
-  "dac" : "dac",
-  "number_of_profiles" : 0,
-  "_id" : "_id"
-}, {
-  "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
-  "dac" : "dac",
-  "number_of_profiles" : 0,
-  "_id" : "_id"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = Profile.aggregate([
+      {$sort: { 'date':-1}},
+      {$group: {_id: '$dac',
+               'number_of_profiles': {$sum:1},
+               'most_recent_date': {$first: '$date'},
+               'dac': {$first: '$dac'}
+              }, 
+      },
+      {$sort: {'number_of_profiles':-1}},
+    ]);
+    query.exec(function (err, dacs) {
+        if (err) reject({"code": 500, "message": "Server error"});
+        if(dacs.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        resolve(dacs);
+    })
   });
 }
 
