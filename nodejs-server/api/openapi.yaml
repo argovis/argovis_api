@@ -35,6 +35,8 @@ tags:
   description: "Profile data, including BCG and profile metadata"
 - name: platforms
   description: Platform metadata
+- name: dacs
+  description: Summary and metadata for data assembly centers represented in the dataset
 - name: selection
   description: Geospatial selection of argo floats
 paths:
@@ -1386,6 +1388,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Platforms
+  /dacs:
+    get:
+      tags:
+      - dacs
+      summary: Summary data for all DACs in the database.
+      operationId: dacList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/dacStub'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Dacs
 components:
   schemas:
     arShapeSchema:
@@ -2167,6 +2204,23 @@ components:
         platform_number: 6.02745618307040320615897144307382404804229736328125
         number_of_profiles: 1
         _id: 0.80082819046101150206595775671303272247314453125
+    dacStub:
+      type: object
+      properties:
+        _id:
+          type: string
+        number_of_profiles:
+          type: integer
+        most_recent_date:
+          type: string
+          format: date-time
+        dac:
+          type: string
+      example:
+        most_recent_date: 2000-01-23T04:56:07.000+00:00
+        dac: dac
+        number_of_profiles: 0
+        _id: _id
     MapMeta:
       required:
       - DATA_MODE
