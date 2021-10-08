@@ -29,83 +29,20 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
       return; 
     } 
 
-    let aggPipeline = []
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,ids,platforms,presRange)
 
-    if (startDate){
-      aggPipeline.push({$match:  {date: {$gte: startDate}}})
-    }
-
-    if(endDate){
-      aggPipeline.push({$match:  {date: {$lte: endDate}}})
-    }
-
-    if (ids){
-      aggPipeline.push({$match: {_id: { $in: ids}}})
-    }
-
-    if(platforms) {
-      aggPipeline.push({$match: {platform_number: { $in: platforms}}})
-    }
-
-    if(polygon && box){
-      reject({"code": 400, "message": "Please specify only one of polygon or box."});
+    if('code' in aggPipeline){
+      reject(aggPipeline);
       return;
     }
-    if(polygon) {
-      // sanitation
-      try {
-        polygon = JSON.parse(polygon);
-      } catch (e) {
-        reject({"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"});
-        return;
-      }
 
-      polygon = {
-        "type": "Polygon",
-        "coordinates": [polygon]
-      }
-
-      if(!GJV.valid(polygon)){
-        reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
-        return;
-      }
-      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$geometry: polygon}}}})
-    }
-
-    if(box) {
-      // sanitation
-      try {
-        box = JSON.parse(box);
-      } catch (e) {
-        reject({"code": 400, "message": "Box region wasn't proper JSON; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"});
-        return;
-      }
-      if(box.length != 2 || 
-         box[0].length != 2 || 
-         box[1].length != 2 || 
-         typeof box[0][0] != 'number' ||
-         typeof box[0][1] != 'number' ||
-         typeof box[1][0] != 'number' || 
-         typeof box[1][1] != 'number') {
-        reject({"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"});
-        return;
-      }
-
-      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$box: box}}}})
-    }
-
-    if(presRange) {
-      aggPipeline.push(pressureWindow('measurements', presRange[0], presRange[1]))
-      aggPipeline.push(pressureWindow('bgcMeas', presRange[0], presRange[1]))
-    }
-
+    // measurement filtering: drop keys from measurements and bgcMeas if not desired
     if(coreMeasurements && !coreMeasurements.includes('all')) {
       if (!coreMeasurements.includes('pres')) coreMeasurements.push('pres')
       aggPipeline.push(reduce_meas(coreMeasurements, 'measurements'))
     } else if(!coreMeasurements){
       aggPipeline.push({$project: {measurements: 0}})
     }
-
     if(bgcMeasurements && !bgcMeasurements.includes('all')) {
       if (!bgcMeasurements.includes('pres')) bgcMeasurements.push('pres')
       aggPipeline.push(reduce_meas(bgcMeasurements, 'bgcMeas'))
@@ -123,15 +60,16 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => (item.measurements !== null && item.measurements.length!=0))
+        profiles = profiles.filter(item => ('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0))))
       }
       if(!coreMeasurements && bgcMeasurements){
         // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => (item.bgcMeas !== null && item.bgcMeas.length!=0))
+        profiles = profiles.filter(item => ('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
       }
       if(coreMeasurements && bgcMeasurements){
         // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => ((item.measurements !== null && item.measurements.length!=0)) || (item.bgcMeas !== null && item.bgcMeas.length!=0))
+        profiles = profiles.filter(item => (('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
+                                           (('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
       }
 
       if(profiles.length == 0) {
@@ -160,13 +98,57 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
  **/
 exports.profileList = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    if(startDate) startDate = new Date(startDate);
+    if(endDate) endDate = new Date(endDate);
+
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,ids,platforms,presRange)
+
+    if('code' in aggPipeline){
+      reject(aggPipeline);
+      return;
     }
+
+    // measurement filtering: drop keys from measurements and bgcMeas if not desired
+    if(coreMeasurements && !coreMeasurements.includes('all')) {
+      aggPipeline.push(reduce_meas(coreMeasurements, 'measurements'))
+    } else if(!coreMeasurements){
+      aggPipeline.push({$project: {measurements: 0}})
+    }
+    if(bgcMeasurements && !bgcMeasurements.includes('all')) {
+      aggPipeline.push(reduce_meas(bgcMeasurements, 'bgcMeas'))
+    } else if(!bgcMeasurements){
+      aggPipeline.push({$project: {bgcMeas: 0}})
+    }
+
+    const query = Profile.aggregate(aggPipeline);
+
+    query.exec(function (err, profiles) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+
+      if(coreMeasurements && !bgcMeasurements){
+        // keep only profiles that have some requested core measurement
+        profiles = profiles.filter(item => ('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0))))
+      }
+      if(!coreMeasurements && bgcMeasurements){
+        // keep only profiles that have some requested bgc measurement
+        profiles = profiles.filter(item => ('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
+      }
+      if(coreMeasurements && bgcMeasurements){
+        // keep only profiles that have at least one of a requested core or bgc measurement
+        profiles = profiles.filter(item => (('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
+                                           (('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
+      }
+
+      if(profiles.length == 0) {
+        reject({"code": 404, "message": "Not found: No matching results found in database."});
+        return;
+      }
+
+      resolve(Array.from(profiles, x => x._id))
+    })
   });
 }
 
@@ -233,7 +215,7 @@ const reduce_meas = function(keys, meas) {
         newObj[key+'_qc'] = item_qc
       }
   }
-  console.log(newObj)
+
   const reduceArray = {
                       $addFields: {
                           [meas]: {
@@ -246,4 +228,76 @@ const reduce_meas = function(keys, meas) {
                       }
                   }
   return reduceArray
+}
+
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ids,platforms,presRange){
+    // return an aggregation pipeline array that describes how we want to filter eligible profiles
+    // in case of error, return the object to pass to reject().
+
+    let aggPipeline = []
+
+    if (startDate){
+      aggPipeline.push({$match:  {date: {$gte: startDate}}})
+    }
+
+    if(endDate){
+      aggPipeline.push({$match:  {date: {$lte: endDate}}})
+    }
+
+    if (ids){
+      aggPipeline.push({$match: {_id: { $in: ids}}})
+    }
+
+    if(platforms) {
+      aggPipeline.push({$match: {platform_number: { $in: platforms}}})
+    }
+
+    if(polygon && box){
+      return {"code": 400, "message": "Please specify only one of polygon or box."};
+    }
+    if(polygon) {
+      // sanitation
+      try {
+        polygon = JSON.parse(polygon);
+      } catch (e) {
+        return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
+      }
+
+      polygon = {
+        "type": "Polygon",
+        "coordinates": [polygon]
+      }
+
+      if(!GJV.valid(polygon)){
+        return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
+      }
+      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$geometry: polygon}}}})
+    }
+
+    if(box) {
+      // sanitation
+      try {
+        box = JSON.parse(box);
+      } catch (e) {
+        return {"code": 400, "message": "Box region wasn't proper JSON; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
+      }
+      if(box.length != 2 || 
+         box[0].length != 2 || 
+         box[1].length != 2 || 
+         typeof box[0][0] != 'number' ||
+         typeof box[0][1] != 'number' ||
+         typeof box[1][0] != 'number' || 
+         typeof box[1][1] != 'number') {
+        return {"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
+      }
+
+      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$box: box}}}})
+    }
+
+    if(presRange) {
+      aggPipeline.push(pressureWindow('measurements', presRange[0], presRange[1]))
+      aggPipeline.push(pressureWindow('bgcMeas', presRange[0], presRange[1]))
+    }
+
+    return aggPipeline
 }

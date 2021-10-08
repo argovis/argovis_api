@@ -71,6 +71,27 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/profiles/overview");
         expect(response.body).to.be.jsonSchema(schema.paths['/profiles/overview'].get.responses['200'].content['application/json'].schema);   
       });
+    }); 
+
+    describe("GET /profiles/listID", function () {
+      it("lists the IDs of profiles matching a search", async function () {
+        const response = await request.get("/profiles/listID?bgcMeasurements=all");
+        expect(response.body[0]).to.eql('337566314.951_213')  
+      });
+    }); 
+
+    describe("GET /profiles/listID", function () {
+      it("lists the IDs of profiles matching a search", async function () {
+        const response = await request.get("/profiles/listID?coreMeasurements=psal");
+        expect(response.body).to.have.members([ '4902911_0', '4902911_10', '4902911_11', '337566314.951_213' ])
+      });
+    }); 
+
+    describe("GET /profiles/listID", function () {
+      it("lists the IDs of profiles matching a search", async function () {
+        const response = await request.get("/profiles/listID?coreMeasurements=psal&bgcMeasurements=all");
+        expect(response.body).to.have.members([ '4902911_0', '4902911_10', '4902911_11', '337566314.951_213' ])
+      });
     });    
   }
 })

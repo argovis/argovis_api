@@ -20,6 +20,9 @@ module.exports.profileList = function profileList (req, res, next, startDate, en
   Profiles.profileList(startDate, endDate, polygon, box, ids, platforms, presRange, coreMeasurements, bgcMeasurements)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
