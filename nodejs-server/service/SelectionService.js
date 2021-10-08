@@ -4,8 +4,8 @@
 /**
  * Get a list of profile metadata for all profiles in a given time window.
  *
- * startDate Date date-time formatted string indicating the beginning of a time period
- * endDate Date date-time formatted string indicating the end of a time period
+ * startDate Date date-time formatted string indicating the beginning of a time period (optional)
+ * endDate Date date-time formatted string indicating the end of a time period (optional)
  * returns List
  **/
 exports.selectionGlobalMapProfiles = function(startDate,endDate) {
@@ -38,50 +38,6 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
   "containsBGC" : true,
   "_id" : "_id"
 } ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
-
-/**
- * Provides a summary of the profile database.
- *
- * returns profileCollectionSummary
- **/
-exports.selectionOverview = function() {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "numberBgc" : 1,
-  "dacs" : [ "dacs", "dacs" ],
-  "lastAdded" : "2000-01-23T04:56:07.000+00:00",
-  "numberDeep" : 6,
-  "numberOfProfiles" : 0
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
-
-/**
- * Get a list of profiles by ID, keeping only levels within a range of pressures.
- *
- * presRange List Pressure range
- * ids List List of profile IDs
- * returns List
- **/
-exports.selectionProfileList = function(presRange,ids) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {

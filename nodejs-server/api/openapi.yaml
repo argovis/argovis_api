@@ -31,6 +31,12 @@ tags:
 - name: grid
   description: "Gridded products derived from Argo floats, simulation, or satalite\
     \ product"
+- name: profiles
+  description: "Profile data, including BCG and profile metadata"
+- name: platforms
+  description: Platform metadata
+- name: dacs
+  description: Summary and metadata for data assembly centers represented in the dataset
 - name: selection
   description: Geospatial selection of argo floats
 paths:
@@ -326,7 +332,7 @@ paths:
         in: query
         description: date-time formatted string indicating the beginning of a time
           period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -337,7 +343,7 @@ paths:
       - name: endDate
         in: query
         description: date-time formatted string indicating the end of a time period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -982,69 +988,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
-  /selection:
-    get:
-      tags:
-      - selection
-      summary: "Get a list of profiles by ID, keeping only levels within a range of\
-        \ pressures."
-      operationId: selectionProfileList
-      parameters:
-      - name: presRange
-        in: query
-        description: Pressure range
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "10,20.1"
-          items:
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: ids
-        in: query
-        description: List of profile IDs
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "4902911_0,4902911_97"
-          items:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Profile'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Selection
   /selection/globalMapProfiles:
     get:
       tags:
@@ -1056,7 +999,7 @@ paths:
         in: query
         description: date-time formatted string indicating the beginning of a time
           period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -1067,7 +1010,7 @@ paths:
       - name: endDate
         in: query
         description: date-time formatted string indicating the end of a time period
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -1104,12 +1047,292 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Selection
-  /selection/overview:
+  /profiles:
     get:
       tags:
-      - selection
+      - profiles
+      summary: "Search, reduce and download profile data."
+      operationId: profile
+      parameters:
+      - name: startDate
+        in: query
+        description: date-time formatted string indicating the beginning of a time
+          period
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: date-time formatted string indicating the end of a time period
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon; final point\
+          \ must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+      - name: box
+        in: query
+        description: "box described as [[lower left lon, lower left lat], [upper right\
+          \ lon, upper right lat]]"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+      - name: ids
+        in: query
+        description: List of profile IDs
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "4902911_0,4902911_97"
+          items:
+            type: string
+      - name: platforms
+        in: query
+        description: List of platform IDs
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: number
+      - name: presRange
+        in: query
+        description: Pressure range
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: coreMeasurements
+        in: query
+        description: Keys of core measurements to include
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/coreMeasurementKey'
+      - name: bgcMeasurements
+        in: query
+        description: Keys of BGC measurements to include
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/bgcMeasurementKey'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /profiles/listID:
+    get:
+      tags:
+      - profiles
+      summary: List profile IDs that match a search
+      operationId: profileList
+      parameters:
+      - name: startDate
+        in: query
+        description: date-time formatted string indicating the beginning of a time
+          period
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: date-time formatted string indicating the end of a time period
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon; final point\
+          \ must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+      - name: box
+        in: query
+        description: "box described as [[lower left lon, lower left lat], [upper right\
+          \ lon, upper right lat]]"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+      - name: ids
+        in: query
+        description: List of profile IDs
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "4902911_0,4902911_97"
+          items:
+            type: string
+      - name: platforms
+        in: query
+        description: List of platform IDs
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: number
+      - name: presRange
+        in: query
+        description: Pressure range
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: coreMeasurements
+        in: query
+        description: Keys of core measurements to include
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/coreMeasurementKey'
+      - name: bgcMeasurements
+        in: query
+        description: Keys of BGC measurements to include
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/bgcMeasurementKey'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /profiles/overview:
+    get:
+      tags:
+      - profiles
       summary: Provides a summary of the profile database.
-      operationId: selectionOverview
+      operationId: profilesOverview
       responses:
         "200":
           description: OK
@@ -1135,7 +1358,154 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Selection
+      x-swagger-router-controller: Profiles
+  /platforms:
+    get:
+      tags:
+      - platforms
+      summary: Provides metadata for a specified platform.
+      operationId: platformMeta
+      parameters:
+      - name: platform
+        in: query
+        description: platform ID
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/platformMeta'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Platforms
+  /platforms/mostRecent:
+    get:
+      tags:
+      - platforms
+      summary: Provides a list of all platforms with their most recent known report
+        and position.
+      operationId: platformList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/platformRecent'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Platforms
+  /platforms/bgcList:
+    get:
+      tags:
+      - platforms
+      summary: Lists all platforms that report BGC data.
+      operationId: bgcPlatformList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Platforms
+  /dacs:
+    get:
+      tags:
+      - dacs
+      summary: Summary data for all DACs in the database.
+      operationId: dacList
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/dacStub'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Dacs
 components:
   schemas:
     arShapeSchema:
@@ -1487,7 +1857,7 @@ components:
         trend: trend
         model: model
         measurement: measurement
-    ProfileMeta:
+    Profile:
       required:
       - _id
       - cycle_number
@@ -1600,18 +1970,152 @@ components:
         date_formatted:
           type: string
           format: date
-    Profile:
-      allOf:
-      - $ref: '#/components/schemas/ProfileMeta'
-      - type: object
-        properties:
-          measurements:
-            type: array
-            items:
-              $ref: '#/components/schemas/Profile_measurements'
-          bgcMeas:
-            $ref: '#/components/schemas/bgcMeasurements'
-    bgcMeasurements:
+        measurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/coreMeasurement'
+        bgcMeas:
+          type: array
+          items:
+            $ref: '#/components/schemas/bgcMeasurement'
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        date_qc: 1
+        euroargoPlatform: euroargoPlatform
+        dac: dac
+        lon: 2.3021358869347654518833223846741020679473876953125
+        WMO_INST_TYPE: WMO_INST_TYPE
+        station_parameters_in_nc:
+        - station_parameters_in_nc
+        - station_parameters_in_nc
+        roundLat: roundLat
+        strLon: strLon
+        station_parameters:
+        - station_parameters
+        - station_parameters
+        pres_min_for_PSAL: 4.1456080298839363962315474054776132106781005859375
+        PLATFORM_TYPE: PLATFORM_TYPE
+        bgcMeas:
+        - psal_qc: 9
+          pres: 6.8468526983526398765889098285697400569915771484375
+          pres_qc: 7
+          doxy_qc: 9
+          nitrate: 2.884162126668780246063761296682059764862060546875
+          down_irradiance412_qc: 3
+          cndx: 9.3693102714106686335071572102606296539306640625
+          cdom: 6.96511769763884558415156789124011993408203125
+          bbp700: 6.87805222012787620400331434211693704128265380859375
+          psal: 5.02500479152029466689555192715488374233245849609375
+          nitrate_qc: 6
+          down_irradiance442: 3.093745262666447448651751983561553061008453369140625
+          temp: 1.173074250955943309548956676735542714595794677734375
+          doxy: 8.7620420127490010742121739895083010196685791015625
+          cndx_qc: 6
+          downwelling_par: 6.51918095101838179772357761976309120655059814453125
+          cdom_qc: 1
+          chla: 6.438423552598546706349225132726132869720458984375
+          down_irradiance490: 0.885137473901165261480628032586537301540374755859375
+          downwelling_par_qc: downwelling_par_qc
+          chla_qc: 3
+          down_irradiance490_qc: 7
+          down_irradiance412: 6.70401929795003592715829654480330646038055419921875
+          down_irradiance442_qc: 7
+          temp_qc: 4
+          bbp700_qc: 5
+        - psal_qc: 9
+          pres: 6.8468526983526398765889098285697400569915771484375
+          pres_qc: 7
+          doxy_qc: 9
+          nitrate: 2.884162126668780246063761296682059764862060546875
+          down_irradiance412_qc: 3
+          cndx: 9.3693102714106686335071572102606296539306640625
+          cdom: 6.96511769763884558415156789124011993408203125
+          bbp700: 6.87805222012787620400331434211693704128265380859375
+          psal: 5.02500479152029466689555192715488374233245849609375
+          nitrate_qc: 6
+          down_irradiance442: 3.093745262666447448651751983561553061008453369140625
+          temp: 1.173074250955943309548956676735542714595794677734375
+          doxy: 8.7620420127490010742121739895083010196685791015625
+          cndx_qc: 6
+          downwelling_par: 6.51918095101838179772357761976309120655059814453125
+          cdom_qc: 1
+          chla: 6.438423552598546706349225132726132869720458984375
+          down_irradiance490: 0.885137473901165261480628032586537301540374755859375
+          downwelling_par_qc: downwelling_par_qc
+          chla_qc: 3
+          down_irradiance490_qc: 7
+          down_irradiance412: 6.70401929795003592715829654480330646038055419921875
+          down_irradiance442_qc: 7
+          temp_qc: 4
+          bbp700_qc: 5
+        date_formatted: 2000-01-23
+        isDeep: true
+        platform_number: 7
+        BASIN: 7.3862819483858839220147274318151175975799560546875
+        lat: 5.63737665663332876420099637471139430999755859375
+        VERTICAL_SAMPLING_SCHEME: VERTICAL_SAMPLING_SCHEME
+        pres_max_for_TEMP: 9.301444243932575517419536481611430644989013671875
+        measurements:
+        - temp: 1.024645700144157789424070870154537260532379150390625
+          pres: 1.231513536777255612975068288506008684635162353515625
+          psal: 1.489415909854170383397331534069962799549102783203125
+        - temp: 1.024645700144157789424070870154537260532379150390625
+          pres: 1.231513536777255612975068288506008684635162353515625
+          psal: 1.489415909854170383397331534069962799549102783203125
+        roundLon: roundLon
+        bgcMeasKeys:
+        - bgcMeasKeys
+        - bgcMeasKeys
+        position_qc: 0
+        DIRECTION: DIRECTION
+        pres_max_for_PSAL: 3.61607674925191080461672754609026014804840087890625
+        POSITIONING_SYSTEM: POSITIONING_SYSTEM
+        DATA_CENTRE: DATA_CENTRE
+        url: url
+        nc_url: nc_url
+        PARAMETER_DATA_MODE:
+        - PARAMETER_DATA_MODE
+        - PARAMETER_DATA_MODE
+        date_added: 2000-01-23T04:56:07.000+00:00
+        cycle_number: 6
+        PI_NAME: PI_NAME
+        pres_min_for_TEMP: 2.027123023002321833274663731572218239307403564453125
+        geoLocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        DATA_MODE: DATA_MODE
+        jcommopsPlatform: jcommopsPlatform
+        core_data_mode: core_data_mode
+        formatted_station_parameters:
+        - formatted_station_parameters
+        - formatted_station_parameters
+        max_pres: 5.962133916683182377482808078639209270477294921875
+        containsBGC: true
+        strLat: strLat
+        _id: _id
+    coreMeasurement:
+      type: object
+      properties:
+        pres:
+          type: number
+        temp:
+          type: number
+        psal:
+          type: number
+      example:
+        temp: 1.024645700144157789424070870154537260532379150390625
+        pres: 1.231513536777255612975068288506008684635162353515625
+        psal: 1.489415909854170383397331534069962799549102783203125
+    coreMeasurementKey:
+      type: string
+      enum:
+      - pres
+      - temp
+      - psal
+      - all
+    bgcMeasurement:
       type: object
       properties:
         pres:
@@ -1666,6 +2170,140 @@ components:
           type: number
         downwelling_par_qc:
           type: string
+      example:
+        psal_qc: 9
+        pres: 6.8468526983526398765889098285697400569915771484375
+        pres_qc: 7
+        doxy_qc: 9
+        nitrate: 2.884162126668780246063761296682059764862060546875
+        down_irradiance412_qc: 3
+        cndx: 9.3693102714106686335071572102606296539306640625
+        cdom: 6.96511769763884558415156789124011993408203125
+        bbp700: 6.87805222012787620400331434211693704128265380859375
+        psal: 5.02500479152029466689555192715488374233245849609375
+        nitrate_qc: 6
+        down_irradiance442: 3.093745262666447448651751983561553061008453369140625
+        temp: 1.173074250955943309548956676735542714595794677734375
+        doxy: 8.7620420127490010742121739895083010196685791015625
+        cndx_qc: 6
+        downwelling_par: 6.51918095101838179772357761976309120655059814453125
+        cdom_qc: 1
+        chla: 6.438423552598546706349225132726132869720458984375
+        down_irradiance490: 0.885137473901165261480628032586537301540374755859375
+        downwelling_par_qc: downwelling_par_qc
+        chla_qc: 3
+        down_irradiance490_qc: 7
+        down_irradiance412: 6.70401929795003592715829654480330646038055419921875
+        down_irradiance442_qc: 7
+        temp_qc: 4
+        bbp700_qc: 5
+    bgcMeasurementKey:
+      type: string
+      enum:
+      - pres
+      - pres_qc
+      - temp
+      - temp_qc
+      - psal
+      - psal_qc
+      - cndx
+      - cndx_qc
+      - doxy
+      - doxy_qc
+      - chla
+      - chla_qc
+      - cdom
+      - cdom_qc
+      - nitrate
+      - nitrate_qc
+      - bbp700
+      - bbp700_qc
+      - down_irradiance412
+      - down_irradiance412_qc
+      - down_irradiance442
+      - down_irradiance442_qc
+      - down_irradiance490
+      - down_irradiance490_qc
+      - downwelling_par
+      - downwelling_par_qc
+      - all
+    platformMeta:
+      type: object
+      properties:
+        _id:
+          type: number
+        platform_number:
+          type: number
+        most_recent_date:
+          type: string
+          format: date-time
+        most_recent_date_added:
+          type: string
+          format: date-time
+        number_of_profiles:
+          type: integer
+        POSITIONING_SYSTEM:
+          type: string
+        PI_NAME:
+          type: string
+        dac:
+          type: string
+      example:
+        PI_NAME: PI_NAME
+        most_recent_date: 2000-01-23T04:56:07.000+00:00
+        most_recent_date_added: 2000-01-23T04:56:07.000+00:00
+        dac: dac
+        platform_number: 6.02745618307040320615897144307382404804229736328125
+        number_of_profiles: 1
+        POSITIONING_SYSTEM: POSITIONING_SYSTEM
+        _id: 0.80082819046101150206595775671303272247314453125
+    platformRecent:
+      type: object
+      properties:
+        _id:
+          type: number
+        platform_number:
+          type: number
+        most_recent_date:
+          type: string
+          format: date-time
+        number_of_profiles:
+          type: integer
+        cycle_number:
+          type: integer
+        geoLocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        dac:
+          type: string
+      example:
+        cycle_number: 5
+        most_recent_date: 2000-01-23T04:56:07.000+00:00
+        geoLocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        dac: dac
+        platform_number: 6.02745618307040320615897144307382404804229736328125
+        number_of_profiles: 1
+        _id: 0.80082819046101150206595775671303272247314453125
+    dacStub:
+      type: object
+      properties:
+        _id:
+          type: string
+        number_of_profiles:
+          type: integer
+        most_recent_date:
+          type: string
+          format: date-time
+        dac:
+          type: string
+      example:
+        most_recent_date: 2000-01-23T04:56:07.000+00:00
+        dac: dac
+        number_of_profiles: 0
+        _id: _id
     MapMeta:
       required:
       - DATA_MODE
@@ -1852,15 +2490,6 @@ components:
         lon:
           type: number
         value: {}
-    Profile_measurements:
-      type: object
-      properties:
-        pres:
-          type: number
-        temp:
-          type: number
-        psal:
-          type: number
   responses:
     badRequest:
       description: Bad Request
@@ -1920,7 +2549,7 @@ components:
       name: startDate
       in: query
       description: date-time formatted string indicating the beginning of a time period
-      required: true
+      required: false
       style: form
       explode: true
       allowReserved: true
@@ -1932,7 +2561,7 @@ components:
       name: endDate
       in: query
       description: date-time formatted string indicating the end of a time period
-      required: true
+      required: false
       style: form
       explode: true
       allowReserved: true
@@ -2067,7 +2696,7 @@ components:
       name: presRange
       in: query
       description: Pressure range
-      required: true
+      required: false
       style: form
       explode: false
       allowReserved: true
@@ -2082,7 +2711,7 @@ components:
       name: ids
       in: query
       description: List of profile IDs
-      required: true
+      required: false
       style: form
       explode: false
       allowReserved: true
@@ -2091,6 +2720,75 @@ components:
         example: "4902911_0,4902911_97"
         items:
           type: string
+    platformList:
+      name: platforms
+      in: query
+      description: List of platform IDs
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        items:
+          type: number
+    polygon:
+      name: polygon
+      in: query
+      description: "array of [lon, lat] vertices describing a polygon; final point\
+        \ must match initial point"
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+    box:
+      name: box
+      in: query
+      description: "box described as [[lower left lon, lower left lat], [upper right\
+        \ lon, upper right lat]]"
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+    coreMeasurements:
+      name: coreMeasurements
+      in: query
+      description: Keys of core measurements to include
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/coreMeasurementKey'
+    bgcMeasurements:
+      name: bgcMeasurements
+      in: query
+      description: Keys of BGC measurements to include
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/bgcMeasurementKey'
+    platform:
+      name: platform
+      in: query
+      description: platform ID
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: number
     lat:
       name: lat
       in: path
