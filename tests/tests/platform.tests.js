@@ -16,6 +16,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/platforms?platform=4902911");
         expect(response.body).to.be.jsonSchema(schema.paths['/platforms'].get.responses['200'].content['application/json'].schema);   
       });
+    }); 
+
+    describe("GET /platforms/mostRecent", function () {
+      it("summarizes profile collection", async function () {
+        const response = await request.get("/platforms/mostRecent");
+        expect(response.body).to.be.jsonSchema(schema.paths['/platforms/mostRecent'].get.responses['200'].content['application/json'].schema);   
+      });
     });    
   }
 })
