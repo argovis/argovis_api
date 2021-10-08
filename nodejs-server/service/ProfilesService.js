@@ -159,7 +159,7 @@ const pressureWindow = function(measType, minPres, maxPres){
 
   const pWindow = {
     $addFields: {
-      measurements: {
+      [measType]: {
         $filter: {
           input: "$".concat(measType),
           as: "m",
