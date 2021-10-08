@@ -720,47 +720,6 @@
             }
          }
       },
-      "/selection": {
-         "get": {
-            "tags": [
-               "selection"
-            ],
-            "summary": "Get a list of profiles by ID, keeping only levels within a range of pressures.",
-            "operationId": "selectionProfileList",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/presRange"
-               },
-               {
-                  "$ref": "#/components/parameters/idList"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/Profile"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
       "/selection/globalMapProfiles": {
          "get": {
             "tags": [
