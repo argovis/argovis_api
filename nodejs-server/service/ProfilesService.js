@@ -60,16 +60,16 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => ('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0))))
       }
       if(!coreMeasurements && bgcMeasurements){
         // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => ('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
       }
       if(coreMeasurements && bgcMeasurements){
         // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => (('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
-                                           (('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
+        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
+                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
       }
 
       if(profiles.length == 0) {
@@ -130,16 +130,16 @@ exports.profileList = function(startDate,endDate,polygon,box,ids,platforms,presR
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => ('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0))))
       }
       if(!coreMeasurements && bgcMeasurements){
         // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => ('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
       }
       if(coreMeasurements && bgcMeasurements){
         // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => (('measurements' in item && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
-                                           (('bgcMeas' in item && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
+        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
+                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
       }
 
       if(profiles.length == 0) {

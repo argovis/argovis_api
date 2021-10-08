@@ -74,24 +74,31 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /profiles/listID", function () {
-      it("lists the IDs of profiles matching a search", async function () {
+      it("lists the IDs of any profile with BGC data", async function () {
         const response = await request.get("/profiles/listID?bgcMeasurements=all");
         expect(response.body[0]).to.eql('337566314.951_213')  
       });
     }); 
 
     describe("GET /profiles/listID", function () {
-      it("lists the IDs of profiles matching a search", async function () {
+      it("lists the IDs of any profile with a core salinity measurement", async function () {
         const response = await request.get("/profiles/listID?coreMeasurements=psal");
         expect(response.body).to.have.members([ '4902911_0', '4902911_10', '4902911_11', '337566314.951_213' ])
       });
     }); 
 
     describe("GET /profiles/listID", function () {
-      it("lists the IDs of profiles matching a search", async function () {
+      it("lists the IDs of any profile with BGC data or a core salinity measurement", async function () {
         const response = await request.get("/profiles/listID?coreMeasurements=psal&bgcMeasurements=all");
         expect(response.body).to.have.members([ '4902911_0', '4902911_10', '4902911_11', '337566314.951_213' ])
       });
-    });    
+    });
+
+    describe("GET /profiles/listID", function () {
+      it("fails to find any dissolved oxygen in BGC measurements", async function () {
+        const response = await request.get("/profiles/listID?&bgcMeasurements=doxy");
+        expect(response.status).to.eql(404);
+      });
+    });        
   }
 })
