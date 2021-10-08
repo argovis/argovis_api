@@ -14,7 +14,7 @@ const GJV = require('geojson-validation');
  * presRange List Pressure range (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
- * returns Profile
+ * returns List
  **/
 exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
