@@ -1273,7 +1273,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/platformRecent'
+                type: array
+                items:
+                  $ref: '#/components/schemas/platformRecent'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
