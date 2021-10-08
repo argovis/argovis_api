@@ -823,6 +823,68 @@
             }
          }
       },
+      "/profiles/listID": {
+         "get": {
+            "tags": [
+               "profiles"
+            ],
+            "summary": "List profile IDs that match a search",
+            "operationId": "profileList",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
+                  "$ref": "#/components/parameters/idList"
+               },
+               {
+                  "$ref": "#/components/parameters/platformList"
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/coreMeasurements"
+               },
+               {
+                  "$ref": "#/components/parameters/bgcMeasurements"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/profiles/overview": {
          "get": {
             "tags": [
