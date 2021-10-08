@@ -14,8 +14,14 @@ exports.findARbyDate = function(date) {
     // perform DB query, error 500 if it fails or 404 if no results.
     const query = arShapes.find({date: date});
     query.exec(function (err, arShapes) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(arShapes.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err) { 
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        if(arShapes.length == 0) {
+          reject({"code": 404, "message": "Not found: No matching results found in database."});
+          return;
+        }
         resolve(arShapes);
     })
   });
@@ -31,13 +37,19 @@ exports.findARbyDate = function(date) {
 exports.findARbyID = function(_id) {
   return new Promise(function(resolve, reject) {
     // confirm arguments are reasonable, otherwise error 400.
-    if(!RegExp('^[0-9]+_[0-9]+$').test(String(_id))) reject({"code": 400, "message": "Bad request: Valid ID parameters match '^[0-9]+_[0-9]+$'."})
+    if(!RegExp('^[0-9]+_[0-9]+$').test(String(_id))){
+      reject({"code": 400, "message": "Bad request: Valid ID parameters match '^[0-9]+_[0-9]+$'."});
+      return;
+    }
 
     // perform DB query, error 500 if it fails or 404 if no results.
     const query = arShapes.find({_id: _id})
     query.exec(function (err, arShapes) {
         if (err) reject({"code": 500, "message": "Server error"});
-        if(arShapes.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if(arShapes.length == 0){
+          reject({"code": 404, "message": "Not found: No matching results found in database."});
+          return;
+        }
         resolve(arShapes);
     })
   });
@@ -55,7 +67,10 @@ exports.findOneAR = function() {
     // perform DB query, error 500 if it fails or 404 if no results.
     const query = arShapes.findOne()
     query.exec(function (err, arShapes) {
-        if (err) reject({"code": 500, "message": "Server error"});
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
         if (arShapes == null) reject({"code": 404, "message": "Not found: No matching results found in database."});
         resolve(arShapes);
     })

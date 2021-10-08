@@ -14,15 +14,24 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
   return new Promise(function(resolve, reject) {
     startDate = new Date(startDate)
     endDate = new Date(endDate)
-    if ((endDate - startDate)/3600000 > 72) reject({"code": 400, "message": "Please request <= 72 hours of data at a time."});
+    if ((endDate - startDate)/3600000 > 72){
+      reject({"code": 400, "message": "Please request <= 72 hours of data at a time."});
+      return;
+    }
 
     const query = Profile.aggregate([
         {$match:  {date: {$lte: endDate, $gte: startDate}}},
         {$project: HELPER_CONST.MAP_META_AGGREGATE},
     ]);
     query.exec(function (err, meta) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(meta.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        if(meta.length == 0){
+          reject({"code": 404, "message": "Not found: No matching results found in database."});
+          return;
+        }
         resolve(meta);
     })
   });

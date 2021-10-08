@@ -18,15 +18,15 @@ const GJV = require('geojson-validation');
  **/
 exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
-
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
     if (
-      (endDate - startDate)/3600000/24 > 90 &&
+      (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
       (!ids || ids.length >100) &&
       (!platforms || platforms.length>1)) {
 
       reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
+      return; 
     } 
 
     let aggPipeline = []
@@ -47,20 +47,28 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
       aggPipeline.push({$match: {platform_number: { $in: platforms}}})
     }
 
-    if(polygon && box) reject({"code": 400, "message": "Please specify only one of polygon or box."});
+    if(polygon && box){
+      reject({"code": 400, "message": "Please specify only one of polygon or box."});
+      return;
+    }
     if(polygon) {
       // sanitation
       try {
         polygon = JSON.parse(polygon);
       } catch (e) {
         reject({"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"});
+        return;
       }
 
       polygon = {
         "type": "Polygon",
         "coordinates": [polygon]
       }
-      if(!GJV.valid(polygon)) reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
+
+      if(!GJV.valid(polygon)){
+        reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
+        return;
+      }
       aggPipeline.push({$match: {geoLocation: {$geoWithin: {$geometry: polygon}}}})
     }
 
@@ -70,6 +78,7 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
         box = JSON.parse(box);
       } catch (e) {
         reject({"code": 400, "message": "Box region wasn't proper JSON; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"});
+        return;
       }
       if(box.length != 2 || 
          box[0].length != 2 || 
@@ -79,6 +88,7 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
          typeof box[1][0] != 'number' || 
          typeof box[1][1] != 'number') {
         reject({"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"});
+        return;
       }
 
       aggPipeline.push({$match: {geoLocation: {$geoWithin: {$box: box}}}})
@@ -106,7 +116,10 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
     const query = Profile.aggregate(aggPipeline);
 
     query.exec(function (err, profiles) {
-      if (err) reject({"code": 500, "message": "Server error"});
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
@@ -121,7 +134,10 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
         profiles = profiles.filter(item => ((item.measurements !== null && item.measurements.length!=0)) || (item.bgcMeas !== null && item.bgcMeas.length!=0))
       }
 
-      if(profiles.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+      if(profiles.length == 0) {
+        reject({"code": 404, "message": "Not found: No matching results found in database."});
+        return;
+      }
       
       resolve(profiles);
     })
@@ -147,6 +163,7 @@ exports.profilesOverview = function() {
         resolve(overviewData);
     }).catch(error => {
         reject({"code": 500, "message": "Server error"});
+        return;
     });
 
   });

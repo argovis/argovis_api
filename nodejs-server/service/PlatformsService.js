@@ -13,8 +13,14 @@ exports.bgcPlatformList = function() {
         {$group: { _id: '$platform_number', platform_number: {$first: '$platform_number'}}}
     ])
     query.exec(function (err, platforms) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(platforms.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        if(platforms.length == 0){
+          reject({"code": 404, "message": "Not found: No matching results found in database."});
+          return;
+        }
         resolve(Array.from(platforms, x => x.platform_number));
     })
   });
@@ -42,8 +48,14 @@ exports.platformList = function() {
     ])
 
     query.exec(function (err, platformStubs) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(platformStubs.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        if(platformStubs.length == 0){
+          reject({"code": 404, "message": "Not found: No matching results found in database."});
+          return;
+        }
         resolve(platformStubs);
     })
   });
@@ -72,8 +84,14 @@ exports.platformMeta = function(platform) {
     ])
 
     query.exec(function (err, platformMeta) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(platformMeta.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        if(platformMeta.length == 0){
+          reject({"code": 404, "message": "Not found: No matching results found in database."});
+          return;
+        }
         resolve(platformMeta);
     })
   });

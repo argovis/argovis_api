@@ -16,5 +16,61 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
       });
     });
+
+    describe("GET /profiles", function () {
+      it("searches for profiles by date and geo", async function () {
+        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-03-30T00:00:00.000Z&polygon=[[-54.228515625,41.50857729743935],[-57.919921875,36.1733569352216],[-51.328125,36.10237644873644],[-54.228515625,41.50857729743935]]");
+        expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("gets only pressure measurements", async function () {
+        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-03-30T00:00:00.000Z&polygon=[[-54.228515625,41.50857729743935],[-57.919921875,36.1733569352216],[-51.328125,36.10237644873644],[-54.228515625,41.50857729743935]]&coreMeasurements=pres");
+        expect(Object.keys(response.body[0].measurements[0])).to.have.members(['pres']);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("fails on too long a date range", async function () {
+        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-04-01T00:00:00.000Z");
+        expect(response.status).to.eql(400);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("gets profiles for one platform", async function () {
+        const response = await request.get("/profiles?platforms=4902911");
+        expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("fails on too many platforms", async function () {
+        const response = await request.get("/profiles?platforms=4902911,9999");
+        expect(response.status).to.eql(400);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("fails with an unclosed polygon", async function () {
+        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-03-30T00:00:00.000Z&polygon=[[-54.228515625,41.50857729743935],[-57.919921875,36.1733569352216],[-51.328125,36.10237644873644],[-54.228515625,41.50857729743936]]");
+        expect(response.status).to.eql(400);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("cuts off pressures greater than 100", async function () {
+        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-03-30T00:00:00.000Z&polygon=[[-54.228515625,41.50857729743935],[-57.919921875,36.1733569352216],[-51.328125,36.10237644873644],[-54.228515625,41.50857729743935]]&coreMeasurements=all&presRange=0,100");
+        expect(response.body[0].measurements[response.body[0].measurements.length-1].pres).to.be.lessThan(100)
+      });
+    });
+
+    describe("GET /profiles/overview", function () {
+      it("summarizes profile collection", async function () {
+        const response = await request.get("/profiles/overview");
+        expect(response.body).to.be.jsonSchema(schema.paths['/profiles/overview'].get.responses['200'].content['application/json'].schema);   
+      });
+    });    
   }
 })

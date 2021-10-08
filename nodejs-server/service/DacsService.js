@@ -19,8 +19,14 @@ exports.dacList = function() {
       {$sort: {'number_of_profiles':-1}},
     ]);
     query.exec(function (err, dacs) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(dacs.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        if(dacs.length == 0){
+          reject({"code": 404, "message": "Not found: No matching results found in database."});
+          return;
+        }
         resolve(dacs);
     })
   });

@@ -11,8 +11,14 @@ exports.findOneTC = function() {
   return new Promise(function(resolve, reject) {
     const query = tcTraj.findOne()
     query.exec(function (err, tcTraj) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if (tcTraj == null) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if (tcTraj == null){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(tcTraj);
     })
   });
@@ -49,8 +55,14 @@ exports.findStormNameList = function() {
               ]
     const query = tcTraj.aggregate(agg)
     query.exec(function (err, tcTraj) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(tcTraj.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(tcTraj.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(tcTraj.map(function(el) { return el._id }));
     })
   });
@@ -67,8 +79,14 @@ exports.findTCbyDate = function(date) {
   return new Promise(function(resolve, reject) {
     const query = tcTraj.find({startDate: {$lte: date}, endDate: {$gte: date}});
     query.exec(function (err, tcTraj) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(tcTraj.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(tcTraj.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(tcTraj);
     })
   });
@@ -90,6 +108,7 @@ exports.findTCbyDateRange = function(startDate,endDate) {
     const monthDiff = Math.floor(moment.duration(dateDiff).asMonths())
     if (monthDiff > 3) {
         reject({"code": 400, "message": "Query timespan exceeds 3 months; please search for a smaller period."})
+        return;
     }
 
     const query = tcTraj.find({$or: [
@@ -100,8 +119,14 @@ exports.findTCbyDateRange = function(startDate,endDate) {
       );
 
     query.exec(function (err, tcTraj) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(tcTraj.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(tcTraj.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(tcTraj);
     })
   });
@@ -120,8 +145,14 @@ exports.findTCbyNameYear = function(name,year) {
 
     const query = tcTraj.find({name: tc_name, year: year})
     query.exec(function (err, tcTraj) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(tcTraj.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(tcTraj.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(tcTraj);
     })
   });
