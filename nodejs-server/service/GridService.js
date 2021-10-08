@@ -15,14 +15,23 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
 exports.findGrid = function(gridName) {
   return new Promise(function(resolve, reject) {
     const GridModel = Grid.get_grid_model(gridName)
-    if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
+    if(GridModel == null){
+        reject({"code": 400, "message": "No valid grid named " + gridName});
+        return;
+    }
     const query = GridModel.aggregate([
         {$match: {gridName: gridName}},
         {$limit: 1}
     ])
     query.exec(function (err, grid) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(grid.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(grid.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(grid);
     })
   });
@@ -42,8 +51,14 @@ exports.findGridParam = function(gridName,presLevel,param) {
     const query = GridParameter.find({pres: presLevel, gridName: gridName, param: param}, {model: 1, param:1, measurement: 1, trend: 1, pres: 1});
     query.limit(1)
     query.exec(function (err, gridparam) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(gridparam.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(gridparam.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(gridparam);
     })
   });
@@ -71,8 +86,14 @@ exports.gridCoords = function(gridName,latRange,lonRange) {
     ]
     const query = Grid.grid_coords.aggregate(agg)
     query.exec(function (err, gridcoords) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(gridcoords.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(gridcoords.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(gridcoords);
     })
   });
@@ -88,7 +109,10 @@ exports.gridCoords = function(gridName,latRange,lonRange) {
 exports.gridmeta = function(gridName) {
   return new Promise(function(resolve, reject) {
     const GridModel = Grid.get_grid_model(gridName);
-    if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
+    if(GridModel == null){
+        reject({"code": 400, "message": "No valid grid named " + gridName});
+        return;
+    }
     const query = GridModel.aggregate( [
         {$match: {gridName: gridName}},
         {$group: datePresGrouping},
@@ -100,8 +124,14 @@ exports.gridmeta = function(gridName) {
         {$group: {_id: null, "dates": {$push: "$dates"}, minDate: {$min: '$dates'}, maxDate: {$max: '$dates'}, presLevels: {$first: '$presLevels'}}},
     ])
     query.exec(function (err, gridmeta) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(gridmeta.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(gridmeta.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(gridmeta);
     })
   });
@@ -121,7 +151,10 @@ exports.gridmeta = function(gridName) {
 exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
     const GridModel = Grid.get_grid_model(gridName)
-    if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
+    if(GridModel == null){
+        reject({"code": 400, "message": "No valid grid named " + gridName});
+        return;
+    }
     let agg = []
     date = new Date(date)
     agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
@@ -212,8 +245,14 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
     agg.push(reduce_proj)
     const query = GridModel.aggregate(agg)
     query.exec(function (err, griddata) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(griddata.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(griddata.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(griddata);
     })
   });
@@ -233,15 +272,24 @@ exports.nonuniformGridWindow = function(gridName,presLevel,latRange,lonRange,dat
 exports.uniformGridWindow = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
     const GridModel = Grid.get_grid_model(gridName)
-    if(GridModel == null) reject({"code": 400, "message": "No valid grid named " + gridName});
+    if(GridModel == null){
+        reject({"code": 400, "message": "No valid grid named " + gridName});
+        return;
+    }
     let agg = []
     date = new Date(date)
     agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
     agg = add_grid_projection(agg, latRange, lonRange)
     const query = GridModel.aggregate(agg)
     query.exec(function (err, uniformGridWindow) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(uniformGridWindow.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(uniformGridWindow.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(uniformGridWindow);
     })
   });
@@ -264,8 +312,14 @@ exports.windowGridParam = function(gridName,presLevel,latRange,lonRange,param) {
     agg = add_param_projection(agg, latRange, lonRange)
     const query = GridParameter.aggregate(agg);
     query.exec(function (err, gridparam) {
-        if (err) reject({"code": 500, "message": "Server error"});
-        if(gridparam.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(gridparam.length == 0){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
         resolve(gridparam);
     })
   });

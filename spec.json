@@ -51,6 +51,18 @@
          "description": "Gridded products derived from Argo floats, simulation, or satalite product"
       },
       {
+         "name": "profiles",
+         "description": "Profile data, including BCG and profile metadata"
+      },
+      {
+         "name": "platforms",
+         "description": "Platform metadata"
+      },
+      {
+         "name": "dacs",
+         "description": "Summary and metadata for data assembly centers represented in the dataset"
+      },
+      {
          "name": "selection",
          "description": "Geospatial selection of argo floats"
       }
@@ -708,47 +720,6 @@
             }
          }
       },
-      "/selection": {
-         "get": {
-            "tags": [
-               "selection"
-            ],
-            "summary": "Get a list of profiles by ID, keeping only levels within a range of pressures.",
-            "operationId": "selectionProfileList",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/presRange"
-               },
-               {
-                  "$ref": "#/components/parameters/idList"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/Profile"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
       "/selection/globalMapProfiles": {
          "get": {
             "tags": [
@@ -790,13 +761,137 @@
             }
          }
       },
-      "/selection/overview": {
+      "/profiles": {
          "get": {
             "tags": [
-               "selection"
+               "profiles"
+            ],
+            "summary": "Search, reduce and download profile data.",
+            "operationId": "profile",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
+                  "$ref": "#/components/parameters/idList"
+               },
+               {
+                  "$ref": "#/components/parameters/platformList"
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/coreMeasurements"
+               },
+               {
+                  "$ref": "#/components/parameters/bgcMeasurements"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/Profile"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/profiles/listID": {
+         "get": {
+            "tags": [
+               "profiles"
+            ],
+            "summary": "List profile IDs that match a search",
+            "operationId": "profileList",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
+                  "$ref": "#/components/parameters/idList"
+               },
+               {
+                  "$ref": "#/components/parameters/platformList"
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/coreMeasurements"
+               },
+               {
+                  "$ref": "#/components/parameters/bgcMeasurements"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/profiles/overview": {
+         "get": {
+            "tags": [
+               "profiles"
             ],
             "summary": "Provides a summary of the profile database.",
-            "operationId": "selectionOverview",
+            "operationId": "profilesOverview",
             "responses": {
                "200": {
                   "description": "OK",
@@ -805,6 +900,141 @@
                         "schema": {
                            "$ref": "#/components/schemas/profileCollectionSummary"
                         }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/platforms": {
+         "get": {
+            "tags": [
+               "platforms"
+            ],
+            "summary": "Provides metadata for a specified platform.",
+            "operationId": "platformMeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/platform"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "$ref": "#/components/schemas/platformMeta"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/platforms/mostRecent": {
+         "get": {
+            "tags": [
+               "platforms"
+            ],
+            "summary": "Provides a list of all platforms with their most recent known report and position.",
+            "operationId": "platformList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/platformRecent"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/platforms/bgcList": {
+         "get": {
+            "tags": [
+               "platforms"
+            ],
+            "summary": "Lists all platforms that report BGC data.",
+            "operationId": "bgcPlatformList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "number"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/dacs": {
+         "get": {
+            "tags": [
+               "dacs"
+            ],
+            "summary": "Summary data for all DACs in the database.",
+            "operationId": "dacList",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/dacStub"
+                           }
+                        }
+
                      }
                   }
                },
@@ -1247,7 +1477,7 @@
                }
             }
          },
-         "ProfileMeta": {
+         "Profile": {
             "type": "object",
             "required": [
                "_id",
@@ -1407,43 +1637,45 @@
                "date_formatted": {
                   "type": "string",
                   "format": "date"
+               },
+               "measurements": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/coreMeasurement"
+                  }          
+               },
+               "bgcMeas": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/bgcMeasurement"
+                  }
                }
             }
          },
-         "Profile": {
-            "allOf": [
-               {
-                  "$ref": "#/components/schemas/ProfileMeta"
+         "coreMeasurement":{
+            "type": "object",
+            "properties": {
+               "pres": {
+                  "type": "number"
                },
-               {
-                  "type": "object",
-                  "properties": {
-                     "measurements": {
-                        "type": "array",
-                        "required": true,
-                        "items": {
-                           "type": "object",
-                           "properties": {
-                              "pres": {
-                                 "type": "number"
-                              },
-                              "temp": {
-                                 "type": "number"
-                              },
-                              "psal": {
-                                 "type": "number"
-                              }
-                           }
-                        }
-                     },
-                     "bgcMeas": {
-                        "$ref": "#/components/schemas/bgcMeasurements"
-                     }
-                  }
+               "temp": {
+                  "type": "number"
+               },
+               "psal": {
+                  "type": "number"
                }
+            }               
+         },
+         "coreMeasurementKey": {
+            "type": "string",
+            "enum": [
+               "pres",
+               "temp",
+               "psal",
+               "all"
             ]
          },
-         "bgcMeasurements": {
+         "bgcMeasurement": {
             "type": "object",
             "properties": {
                "pres": {
@@ -1522,6 +1754,114 @@
                   "type": "number"
                },
                "downwelling_par_qc": {
+                  "type": "string"
+               }
+            }
+         },
+         "bgcMeasurementKey": {
+            "type": "string",
+            "enum": [
+               "pres",
+               "pres_qc",
+               "temp",
+               "temp_qc",
+               "psal",
+               "psal_qc",
+               "cndx",
+               "cndx_qc",
+               "doxy",
+               "doxy_qc",
+               "chla",
+               "chla_qc",
+               "cdom",
+               "cdom_qc",
+               "nitrate",
+               "nitrate_qc",
+               "bbp700",
+               "bbp700_qc",
+               "down_irradiance412",
+               "down_irradiance412_qc",
+               "down_irradiance442",
+               "down_irradiance442_qc",
+               "down_irradiance490",
+               "down_irradiance490_qc",
+               "downwelling_par",
+               "downwelling_par_qc",
+               "all"
+            ]
+         },
+         "platformMeta": {
+            "type": "object",
+            "properties": {
+               "_id": {
+                  "type": "number"
+               },
+               "platform_number": {
+                  "type": "number"
+               },
+               "most_recent_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "most_recent_date_added": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "number_of_profiles": {
+                  "type": "integer"
+               },
+               "POSITIONING_SYSTEM": {
+                  "type": "string"
+               },
+               "PI_NAME": {
+                  "type": "string"
+               },
+               "dac": {
+                  "type": "string"
+               }
+            }
+         },
+         "platformRecent": {
+            "type": "object",
+            "properties": {
+               "_id": {
+                  "type": "number"
+               },
+               "platform_number": {
+                  "type": "number"
+               },
+               "most_recent_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "number_of_profiles": {
+                  "type": "integer"
+               },
+               "cycle_number": {
+                  "type": "integer"
+               },
+               "geoLocation": {
+                  "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "dac": {
+                  "type": "string"
+               }
+            }
+         },
+         "dacStub": {
+            "type": "object",
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "number_of_profiles": {
+                  "type": "integer"
+               },
+               "most_recent_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "dac": {
                   "type": "string"
                }
             }
@@ -1681,7 +2021,7 @@
          "startDate": {
             "in": "query",
             "name": "startDate",
-            "required": true,
+            "required": false,
             "description": "date-time formatted string indicating the beginning of a time period",
             "allowReserved": true,
             "schema": {
@@ -1693,7 +2033,7 @@
          "endDate": {
             "in": "query",
             "name": "endDate",
-            "required": true,
+            "required": false,
             "description": "date-time formatted string indicating the end of a time period",
             "allowReserved": true,
             "schema": {
@@ -1837,7 +2177,6 @@
          "presRange": {
             "in": "query",
             "name": "presRange",
-            "required": true,
             "description": "Pressure range",
             "style": "form",
             "explode": false,
@@ -1855,7 +2194,6 @@
          "idList": {
             "in": "query",
             "name": "ids",
-            "required": true,
             "description": "List of profile IDs",
             "style": "form",
             "explode": false,
@@ -1866,6 +2204,77 @@
                   "type": "string"
                },
                "example": "4902911_0,4902911_97"
+            }
+         },
+         "platformList": {
+            "in": "query",
+            "name": "platforms",
+            "description": "List of platform IDs",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number"
+               }
+            }
+         },
+         "polygon": {
+            "in": "query",
+            "name": "polygon",
+            "description": "array of [lon, lat] vertices describing a polygon; final point must match initial point",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+            }
+         },
+         "box": {
+            "in": "query",
+            "name": "box",
+            "description": "box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]]",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+            }
+         },
+         "coreMeasurements": {
+            "in": "query",
+            "name": "coreMeasurements",
+            "description": "Keys of core measurements to include",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/components/schemas/coreMeasurementKey"
+               }
+            }
+         },
+         "bgcMeasurements": {
+            "in": "query",
+            "name": "bgcMeasurements",
+            "description": "Keys of BGC measurements to include",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "$ref": "#/components/schemas/bgcMeasurementKey"
+               }
+            }
+         },
+         "platform": {
+            "in": "query",
+            "name": "platform",
+            "required": true,
+            "description": "platform ID",
+            "schema": {
+               "type": "number"
             }
          },
          "lat": {

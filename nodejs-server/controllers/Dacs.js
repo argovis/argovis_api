@@ -1,10 +1,10 @@
 'use strict';
 
 var utils = require('../utils/writer.js');
-var Selection = require('../service/SelectionService');
+var Dacs = require('../service/DacsService');
 
-module.exports.selectionGlobalMapProfiles = function selectionGlobalMapProfiles (req, res, next, startDate, endDate) {
-  Selection.selectionGlobalMapProfiles(startDate, endDate)
+module.exports.dacList = function dacList (req, res, next) {
+  Dacs.dacList()
     .then(function (response) {
       utils.writeJson(res, response);
     },
@@ -15,4 +15,3 @@ module.exports.selectionGlobalMapProfiles = function selectionGlobalMapProfiles 
       utils.writeJson(res, response);
     });
 };
-

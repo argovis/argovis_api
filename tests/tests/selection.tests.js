@@ -10,13 +10,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
     console.error(err);
   }
   else {
-    describe("GET /selection", function () {
-      it("get a few profiles by ID", async function () {
-        const response = await request.get("/selection?presRange=10,20&ids=4902911_0,4902911_107");    
-        expect(response.body).to.be.jsonSchema(schema.paths['/selection'].get.responses['200'].content['application/json'].schema);
-      });
-    });
-
     describe("GET /selection/globalMapProfiles", function () {
       it("get global metadata over a time period", async function () {
         const response = await request.get("/selection/globalMapProfiles?startDate=2020-03-21T00:00:00Z&endDate=2020-03-22T00:00:00Z");    
@@ -30,14 +23,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
         expect(response.status).to.eql(400);
       });
-    });
-
-    describe("GET /selection/overview", function () {
-      it("describes the profile content of the db", async function () {
-        const response = await request.get("/selection/overview");
-        expect(response.body).to.be.jsonSchema(schema.paths['/selection/overview'].get.responses['200'].content['application/json'].schema);
-      });
-    });    
+    });  
   }
 })
 
