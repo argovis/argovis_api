@@ -30,7 +30,7 @@ exports.bgcPlatformList = function() {
 /**
  * Provides a list of all platforms with their most recent known report and position.
  *
- * returns platformRecent
+ * returns List
  **/
 exports.platformList = function() {
   return new Promise(function(resolve, reject) {
