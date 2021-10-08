@@ -92,7 +92,7 @@ exports.platformMeta = function(platform) {
           reject({"code": 404, "message": "Not found: No matching results found in database."});
           return;
         }
-        resolve(platformMeta);
+        resolve(platformMeta[0]);
     })
   });
 }
