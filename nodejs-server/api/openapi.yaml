@@ -2126,6 +2126,7 @@ components:
           type: string
     goshipBgcMeasurement: {}
     bgcMeasurementKey:
+      type: string
       oneOf:
       - $ref: '#/components/schemas/argoBgcMeasurementKey'
       - $ref: '#/components/schemas/goshipBgcMeasurementKey'
