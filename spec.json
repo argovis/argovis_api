@@ -1676,6 +1676,16 @@
             ]
          },
          "bgcMeasurement": {
+            "allOf": [
+               {
+                  "$ref": "#/components/schemas/argoBgcMeasurement"
+               },
+               {
+                  "$ref": "#/components/schemas/goshipBgcMeasurement"
+               }
+            ]
+         },
+         "argoBgcMeasurement": {
             "type": "object",
             "properties": {
                "pres": {
@@ -1758,7 +1768,62 @@
                }
             }
          },
-         "bgcMeasurementKey": {
+         "goshipBgcMeasurement": {
+               "pres": {
+                  "type": "string"
+               },
+               "pres_qc": {
+                  "type": "string"
+               },
+               "psal_btl": {
+                  "type": "string"
+               },
+               "psal_btl_qc": {
+                  "type": "string"
+               },
+               "psal_ctd": {
+                  "type": "string"
+               },
+               "psal_ctd_qc": {
+                  "type": "string"
+               },
+               "temp_btl": {
+                  "type": "string"
+               },
+               "temp_btl_qc": {
+                  "type": "string"
+               },
+               "temp_ctd": {
+                  "type": "string"
+               },
+               "temp_ctd_qc": {
+                  "type": "string"
+               },
+               "doxy_btl": {
+                  "type": "string"
+               },
+               "doxy_btl_qc": {
+                  "type": "string"
+               },
+               "doxy_ctd": {
+                  "type": "string"
+               },
+               "doxy_ctd_qc": {
+                  "type": "string"
+               }
+
+         },
+         "bgcMeasurementKey":{
+            "allOf": [
+               {
+                  "$ref": "#/components/schemas/argoBgcMeasurementKey"
+               },
+               {
+                  "$ref": "#/components/schemas/goshipBgcMeasurementKey"
+               }
+            ] 
+         },
+         "argoBgcMeasurementKey": {
             "type": "string",
             "enum": [
                "pres",
@@ -1788,6 +1853,25 @@
                "downwelling_par",
                "downwelling_par_qc",
                "all"
+            ]
+         },
+         "goshipBgcMeasurementKey": {
+            "type": "string",
+            "enum": [
+               "pres",
+               "pres_qc",
+               "psal_btl",
+               "psal_btl_qc",
+               "psal_ctd",
+               "psal_ctd_qc",
+               "temp_btl",
+               "temp_btl_qc",
+               "temp_ctd",
+               "temp_ctd_qc",
+               "doxy_btl",
+               "doxy_btl_qc",
+               "doxy_ctd",
+               "doxy_ctd_qc"
             ]
          },
          "platformMeta": {
