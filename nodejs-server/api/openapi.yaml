@@ -1996,58 +1996,8 @@ components:
         pres_min_for_PSAL: 4.1456080298839363962315474054776132106781005859375
         PLATFORM_TYPE: PLATFORM_TYPE
         bgcMeas:
-        - psal_qc: 9
-          pres: 6.8468526983526398765889098285697400569915771484375
-          pres_qc: 7
-          doxy_qc: 9
-          nitrate: 2.884162126668780246063761296682059764862060546875
-          down_irradiance412_qc: 3
-          cndx: 9.3693102714106686335071572102606296539306640625
-          cdom: 6.96511769763884558415156789124011993408203125
-          bbp700: 6.87805222012787620400331434211693704128265380859375
-          psal: 5.02500479152029466689555192715488374233245849609375
-          nitrate_qc: 6
-          down_irradiance442: 3.093745262666447448651751983561553061008453369140625
-          temp: 1.173074250955943309548956676735542714595794677734375
-          doxy: 8.7620420127490010742121739895083010196685791015625
-          cndx_qc: 6
-          downwelling_par: 6.51918095101838179772357761976309120655059814453125
-          cdom_qc: 1
-          chla: 6.438423552598546706349225132726132869720458984375
-          down_irradiance490: 0.885137473901165261480628032586537301540374755859375
-          downwelling_par_qc: downwelling_par_qc
-          chla_qc: 3
-          down_irradiance490_qc: 7
-          down_irradiance412: 6.70401929795003592715829654480330646038055419921875
-          down_irradiance442_qc: 7
-          temp_qc: 4
-          bbp700_qc: 5
-        - psal_qc: 9
-          pres: 6.8468526983526398765889098285697400569915771484375
-          pres_qc: 7
-          doxy_qc: 9
-          nitrate: 2.884162126668780246063761296682059764862060546875
-          down_irradiance412_qc: 3
-          cndx: 9.3693102714106686335071572102606296539306640625
-          cdom: 6.96511769763884558415156789124011993408203125
-          bbp700: 6.87805222012787620400331434211693704128265380859375
-          psal: 5.02500479152029466689555192715488374233245849609375
-          nitrate_qc: 6
-          down_irradiance442: 3.093745262666447448651751983561553061008453369140625
-          temp: 1.173074250955943309548956676735542714595794677734375
-          doxy: 8.7620420127490010742121739895083010196685791015625
-          cndx_qc: 6
-          downwelling_par: 6.51918095101838179772357761976309120655059814453125
-          cdom_qc: 1
-          chla: 6.438423552598546706349225132726132869720458984375
-          down_irradiance490: 0.885137473901165261480628032586537301540374755859375
-          downwelling_par_qc: downwelling_par_qc
-          chla_qc: 3
-          down_irradiance490_qc: 7
-          down_irradiance412: 6.70401929795003592715829654480330646038055419921875
-          down_irradiance442_qc: 7
-          temp_qc: 4
-          bbp700_qc: 5
+        - ""
+        - ""
         date_formatted: 2000-01-23
         isDeep: true
         platform_number: 7
@@ -2116,6 +2066,10 @@ components:
       - psal
       - all
     bgcMeasurement:
+      oneOf:
+      - $ref: '#/components/schemas/argoBgcMeasurement'
+      - $ref: '#/components/schemas/goshipBgcMeasurement'
+    argoBgcMeasurement:
       type: object
       properties:
         pres:
@@ -2170,34 +2124,13 @@ components:
           type: number
         downwelling_par_qc:
           type: string
-      example:
-        psal_qc: 9
-        pres: 6.8468526983526398765889098285697400569915771484375
-        pres_qc: 7
-        doxy_qc: 9
-        nitrate: 2.884162126668780246063761296682059764862060546875
-        down_irradiance412_qc: 3
-        cndx: 9.3693102714106686335071572102606296539306640625
-        cdom: 6.96511769763884558415156789124011993408203125
-        bbp700: 6.87805222012787620400331434211693704128265380859375
-        psal: 5.02500479152029466689555192715488374233245849609375
-        nitrate_qc: 6
-        down_irradiance442: 3.093745262666447448651751983561553061008453369140625
-        temp: 1.173074250955943309548956676735542714595794677734375
-        doxy: 8.7620420127490010742121739895083010196685791015625
-        cndx_qc: 6
-        downwelling_par: 6.51918095101838179772357761976309120655059814453125
-        cdom_qc: 1
-        chla: 6.438423552598546706349225132726132869720458984375
-        down_irradiance490: 0.885137473901165261480628032586537301540374755859375
-        downwelling_par_qc: downwelling_par_qc
-        chla_qc: 3
-        down_irradiance490_qc: 7
-        down_irradiance412: 6.70401929795003592715829654480330646038055419921875
-        down_irradiance442_qc: 7
-        temp_qc: 4
-        bbp700_qc: 5
+    goshipBgcMeasurement: {}
     bgcMeasurementKey:
+      type: string
+      oneOf:
+      - $ref: '#/components/schemas/argoBgcMeasurementKey'
+      - $ref: '#/components/schemas/goshipBgcMeasurementKey'
+    argoBgcMeasurementKey:
       type: string
       enum:
       - pres
@@ -2227,6 +2160,23 @@ components:
       - downwelling_par
       - downwelling_par_qc
       - all
+    goshipBgcMeasurementKey:
+      type: string
+      enum:
+      - pres
+      - pres_qc
+      - psal_btl
+      - psal_btl_qc
+      - psal_ctd
+      - psal_ctd_qc
+      - temp_btl
+      - temp_btl_qc
+      - temp_ctd
+      - temp_ctd_qc
+      - doxy_btl
+      - doxy_btl_qc
+      - doxy_ctd
+      - doxy_ctd_qc
     platformMeta:
       type: object
       properties:
