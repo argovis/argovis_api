@@ -1814,7 +1814,7 @@
 
          },
          "bgcMeasurementKey":{
-            "allOf": [
+            "oneOf": [
                {
                   "$ref": "#/components/schemas/argoBgcMeasurementKey"
                },
