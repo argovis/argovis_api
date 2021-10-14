@@ -2349,15 +2349,7 @@
             "schema": {
                "type": "array",
                "items": {
-                  "type": "string",
-                  "oneOf": [
-                     {
-                        "$ref": "#/components/schemas/argoBgcMeasurementKey"
-                     },
-                     {
-                        "$ref": "#/components/schemas/goshipBgcMeasurementKey"
-                     }
-                  ] 
+                  "$ref": "#/components/schemas/bgcMeasurementKey"
                }
             }
          },

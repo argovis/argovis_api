@@ -1157,10 +1157,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            oneOf:
-            - $ref: '#/components/schemas/argoBgcMeasurementKey'
-            - $ref: '#/components/schemas/goshipBgcMeasurementKey'
+            $ref: '#/components/schemas/bgcMeasurementKey'
       responses:
         "200":
           description: OK
@@ -1300,10 +1297,7 @@ paths:
         schema:
           type: array
           items:
-            type: string
-            oneOf:
-            - $ref: '#/components/schemas/argoBgcMeasurementKey'
-            - $ref: '#/components/schemas/goshipBgcMeasurementKey'
+            $ref: '#/components/schemas/bgcMeasurementKey'
       responses:
         "200":
           description: OK
@@ -2735,10 +2729,7 @@ components:
       schema:
         type: array
         items:
-          type: string
-          oneOf:
-          - $ref: '#/components/schemas/argoBgcMeasurementKey'
-          - $ref: '#/components/schemas/goshipBgcMeasurementKey'
+          $ref: '#/components/schemas/bgcMeasurementKey'
     platform:
       name: platform
       in: query
