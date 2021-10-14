@@ -25,7 +25,7 @@ http.createServer(app).listen(serverPort, function () {
 
 // mongodb config and connection //////////////////
 mongoose.Promise = global.Promise;
-const mongoDB = "mongodb://database/argo" // EV this later
+const mongoDB = "mongodb://database/goship" // EV this later
 const mongooseOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
