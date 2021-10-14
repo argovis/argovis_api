@@ -1239,18 +1239,6 @@ paths:
         schema:
           type: string
           example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
-      - name: ids
-        in: query
-        description: List of profile IDs
-        required: false
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "4902911_0,4902911_97"
-          items:
-            type: string
       - name: platforms
         in: query
         description: List of platform IDs

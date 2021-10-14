@@ -844,9 +844,6 @@
                   "$ref": "#/components/parameters/box"
                },
                {
-                  "$ref": "#/components/parameters/idList"
-               },
-               {
                   "$ref": "#/components/parameters/platformList"
                },
                {
