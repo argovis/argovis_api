@@ -101,14 +101,13 @@ exports.profileList = function(startDate,endDate,polygon,box,platforms,presRange
     if(endDate) endDate = new Date(endDate);
     if (
       (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
-      (!ids || ids.length >100) &&
       (!platforms || platforms.length>1)) {
 
-      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
+      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform."});
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,ids,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,null,platforms,presRange)
 
     if('code' in aggPipeline){
       reject(aggPipeline);

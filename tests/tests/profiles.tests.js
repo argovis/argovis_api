@@ -75,28 +75,28 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles/listID", function () {
       it("lists the IDs of any profile with BGC data", async function () {
-        const response = await request.get("/profiles/listID?bgcMeasurements=all");
+        const response = await request.get("/profiles/listID?startDate=2019-07-04T03:03:00Z&endDate=2019-09-04T03:03:00Z&bgcMeasurements=all");
         expect(response.body[0]).to.eql('337566314.951_213')  
       });
     }); 
 
     describe("GET /profiles/listID", function () {
       it("lists the IDs of any profile with a core salinity measurement", async function () {
-        const response = await request.get("/profiles/listID?coreMeasurements=psal");
-        expect(response.body).to.have.members([ '4902911_0', '4902911_10', '4902911_11', '337566314.951_213' ])
+        const response = await request.get("/profiles/listID?startDate=2017-04-23T03:40:19Z&endDate=2017-07-06T18:50:38.002Z&coreMeasurements=psal");
+        expect(response.body).to.have.members([ '4902911_0', '4902911_10', '4902911_11' ])
       });
     }); 
 
     describe("GET /profiles/listID", function () {
       it("lists the IDs of any profile with BGC data or a core salinity measurement", async function () {
-        const response = await request.get("/profiles/listID?coreMeasurements=psal&bgcMeasurements=all");
-        expect(response.body).to.have.members([ '4902911_0', '4902911_10', '4902911_11', '337566314.951_213' ])
+        const response = await request.get("/profiles/listID?startDate=2019-07-04T03:03:00Z&endDate=2019-09-04T03:03:00Z&coreMeasurements=psal&bgcMeasurements=all");
+        expect(response.body).to.have.members(['337566314.951_213'])
       });
     });
 
     describe("GET /profiles/listID", function () {
       it("fails to find any dissolved oxygen in BGC measurements", async function () {
-        const response = await request.get("/profiles/listID?&bgcMeasurements=doxy");
+        const response = await request.get("/profiles/listID?startDate=2019-07-04T03:03:00Z&endDate=2019-09-04T03:03:00Z&bgcMeasurements=doxy");
         expect(response.status).to.eql(404);
       });
     });        
