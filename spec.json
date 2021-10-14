@@ -1676,7 +1676,7 @@
             ]
          },
          "bgcMeasurement": {
-            "allOf": [
+            "oneOf": [
                {
                   "$ref": "#/components/schemas/argoBgcMeasurement"
                },
