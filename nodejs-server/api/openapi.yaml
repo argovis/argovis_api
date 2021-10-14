@@ -2066,7 +2066,7 @@ components:
       - psal
       - all
     bgcMeasurement:
-      allOf:
+      oneOf:
       - $ref: '#/components/schemas/argoBgcMeasurement'
       - $ref: '#/components/schemas/goshipBgcMeasurement'
     argoBgcMeasurement:
