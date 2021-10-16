@@ -159,7 +159,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Ar
-  /covarGrid/{lat}/{lon}/{forcastDays}:
+  /covarGrid:
     get:
       tags:
       - covar
@@ -167,33 +167,33 @@ paths:
       operationId: findCovar
       parameters:
       - name: lat
-        in: path
+        in: query
         description: latitude (degrees) of Argo float location
         required: true
-        style: simple
-        explode: false
+        style: form
+        explode: true
         schema:
           maximum: 90
           minimum: -90
           type: number
           example: 5.25
       - name: lon
-        in: path
+        in: query
         description: longitude (degrees) of Argo float location
         required: true
-        style: simple
-        explode: false
+        style: form
+        explode: true
         schema:
           maximum: 180
           minimum: -180
           type: number
           example: -20.33
       - name: forcastDays
-        in: path
+        in: query
         description: number of days over which to project Argo float drift
         required: true
-        style: simple
-        explode: false
+        style: form
+        explode: true
         schema:
           maximum: 1800
           minimum: 60
@@ -2729,11 +2729,11 @@ components:
         type: number
     lat:
       name: lat
-      in: path
+      in: query
       description: latitude (degrees) of Argo float location
       required: true
-      style: simple
-      explode: false
+      style: form
+      explode: true
       schema:
         maximum: 90
         minimum: -90
@@ -2741,11 +2741,11 @@ components:
         example: 5.25
     lon:
       name: lon
-      in: path
+      in: query
       description: longitude (degrees) of Argo float location
       required: true
-      style: simple
-      explode: false
+      style: form
+      explode: true
       schema:
         maximum: 180
         minimum: -180
@@ -2753,11 +2753,11 @@ components:
         example: -20.33
     forcastDays:
       name: forcastDays
-      in: path
+      in: query
       description: number of days over which to project Argo float drift
       required: true
-      style: simple
-      explode: false
+      style: form
+      explode: true
       schema:
         maximum: 1800
         minimum: 60

@@ -168,7 +168,7 @@
             }
          }
       },
-      "/covarGrid/{lat}/{lon}/{forcastDays}": {
+      "/covarGrid": {
          "get": {
             "tags": [
                "covar"
@@ -2360,7 +2360,7 @@
             }
          },
          "lat": {
-            "in": "path",
+            "in": "query",
             "name": "lat",
             "required": true,
             "description": "latitude (degrees) of Argo float location",
@@ -2372,7 +2372,7 @@
             }
          },
          "lon": {
-            "in": "path",
+            "in": "query",
             "name": "lon",
             "required": true,
             "description": "longitude (degrees) of Argo float location",
@@ -2384,7 +2384,7 @@
             }
          },
          "forcastDays": {
-            "in": "path",
+            "in": "query",
             "name": "forcastDays",
             "required": true,
             "description": "number of days over which to project Argo float drift",
