@@ -995,7 +995,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "type": "number"
+                              "anyOf": [ {"type": "string"}, {"type": "number"}]
                            }
                         }
                      }
@@ -1533,7 +1533,7 @@
                   "type": "number"
                },
                "platform_number": {
-                  "type": "integer"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "geoLocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
@@ -1876,10 +1876,10 @@
             "type": "object",
             "properties": {
                "_id": {
-                  "type": "number"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "platform_number": {
-                  "type": "number"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "most_recent_date": {
                   "type": "string",
@@ -1907,10 +1907,10 @@
             "type": "object",
             "properties": {
                "_id": {
-                  "type": "number"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "platform_number": {
-                  "type": "number"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "most_recent_date": {
                   "type": "string",
@@ -1977,7 +1977,7 @@
                   "type": "integer"
                },
                "platform_number": {
-                  "type": "integer"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "DIRECTION": {
                   "type": "string"
@@ -2298,7 +2298,7 @@
             "schema": {
                "type": "array",
                "items": {
-                  "type": "number"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                }
             }
          },
@@ -2356,7 +2356,7 @@
             "required": true,
             "description": "platform ID",
             "schema": {
-               "type": "number"
+               "anyOf": [ {"type": "string"}, {"type": "number"}]
             }
          },
          "lat": {
