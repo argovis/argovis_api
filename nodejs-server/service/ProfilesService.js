@@ -255,7 +255,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,id
     }
 
     if(platforms) {
-      let pform = platforms.concat(platforms.map(x => Number(x)))
+      let pform = platforms.concat(platforms.map(x => Number(x))).filter(x => !Number.isNaN(x))
       aggPipeline.push({$match: {platform_number: { $in: pform}}})
     }
 
