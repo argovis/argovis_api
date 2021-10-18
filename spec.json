@@ -1533,7 +1533,7 @@
                   "type": "number"
                },
                "platform_number": {
-                  "type": "integer"
+                  "type": "string"
                },
                "geoLocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
@@ -1879,7 +1879,7 @@
                   "type": "number"
                },
                "platform_number": {
-                  "type": "number"
+                  "type": "string"
                },
                "most_recent_date": {
                   "type": "string",
@@ -1910,7 +1910,7 @@
                   "type": "number"
                },
                "platform_number": {
-                  "type": "number"
+                  "type": "string"
                },
                "most_recent_date": {
                   "type": "string",
@@ -1977,7 +1977,7 @@
                   "type": "integer"
                },
                "platform_number": {
-                  "type": "integer"
+                  "type": "string"
                },
                "DIRECTION": {
                   "type": "string"
@@ -2298,7 +2298,7 @@
             "schema": {
                "type": "array",
                "items": {
-                  "type": "number"
+                  "type": "string"
                }
             }
          },
@@ -2356,7 +2356,7 @@
             "required": true,
             "description": "platform ID",
             "schema": {
-               "type": "number"
+               "type": "string"
             }
          },
          "lat": {
