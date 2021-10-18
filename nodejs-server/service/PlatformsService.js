@@ -9,7 +9,7 @@
 exports.bgcPlatformList = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ 0.8008281904610115, 0.8008281904610115 ];
+    examples['application/json'] = [ "", "" ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
@@ -28,27 +28,27 @@ exports.platformList = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "cycle_number" : 5,
+  "cycle_number" : 6,
   "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
   "geoLocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   },
   "dac" : "dac",
-  "platform_number" : 6.027456183070403,
-  "number_of_profiles" : 1,
-  "_id" : 0.8008281904610115
+  "platform_number" : "",
+  "number_of_profiles" : 0,
+  "_id" : ""
 }, {
-  "cycle_number" : 5,
+  "cycle_number" : 6,
   "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
   "geoLocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   },
   "dac" : "dac",
-  "platform_number" : 6.027456183070403,
-  "number_of_profiles" : 1,
-  "_id" : 0.8008281904610115
+  "platform_number" : "",
+  "number_of_profiles" : 0,
+  "_id" : ""
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -62,7 +62,7 @@ exports.platformList = function() {
 /**
  * Provides metadata for a specified platform.
  *
- * platform BigDecimal platform ID
+ * platform platform platform ID
  * returns platformMeta
  **/
 exports.platformMeta = function(platform) {
@@ -73,10 +73,10 @@ exports.platformMeta = function(platform) {
   "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
   "most_recent_date_added" : "2000-01-23T04:56:07.000+00:00",
   "dac" : "dac",
-  "platform_number" : 6.027456183070403,
-  "number_of_profiles" : 1,
+  "platform_number" : "",
+  "number_of_profiles" : 0,
   "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
-  "_id" : 0.8008281904610115
+  "_id" : ""
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
