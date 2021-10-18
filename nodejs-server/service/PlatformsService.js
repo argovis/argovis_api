@@ -62,7 +62,7 @@ exports.platformList = function() {
 /**
  * Provides metadata for a specified platform.
  *
- * platform String platform ID
+ * platform platform platform ID
  * returns platformMeta
  **/
 exports.platformMeta = function(platform) {
@@ -73,10 +73,10 @@ exports.platformMeta = function(platform) {
   "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
   "most_recent_date_added" : "2000-01-23T04:56:07.000+00:00",
   "dac" : "dac",
-  "platform_number" : "platform_number",
+  "platform_number" : "",
   "number_of_profiles" : 0,
   "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
-  "_id" : "_id"
+  "_id" : ""
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
