@@ -1907,10 +1907,10 @@
             "type": "object",
             "properties": {
                "_id": {
-                  "type": "string"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "platform_number": {
-                  "type": "string"
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
                },
                "most_recent_date": {
                   "type": "string",

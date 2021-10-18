@@ -2199,9 +2199,13 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          anyOf:
+          - type: string
+          - type: number
         platform_number:
-          type: string
+          anyOf:
+          - type: string
+          - type: number
         most_recent_date:
           type: string
           format: date-time
@@ -2222,9 +2226,9 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           type: type
         dac: dac
-        platform_number: platform_number
+        platform_number: ""
         number_of_profiles: 0
-        _id: _id
+        _id: ""
     dacStub:
       type: object
       properties:
