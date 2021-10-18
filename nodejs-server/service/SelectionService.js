@@ -21,7 +21,7 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
   "DATA_MODE" : "DATA_MODE",
   "DIRECTION" : "DIRECTION",
   "isDeep" : true,
-  "platform_number" : 6,
+  "platform_number" : "platform_number",
   "containsBGC" : true,
   "_id" : "_id"
 }, {
@@ -34,7 +34,7 @@ exports.selectionGlobalMapProfiles = function(startDate,endDate) {
   "DATA_MODE" : "DATA_MODE",
   "DIRECTION" : "DIRECTION",
   "isDeep" : true,
-  "platform_number" : 6,
+  "platform_number" : "platform_number",
   "containsBGC" : true,
   "_id" : "_id"
 } ];

@@ -29,30 +29,30 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
   "roundLat" : "roundLat",
   "strLon" : "strLon",
   "station_parameters" : [ "station_parameters", "station_parameters" ],
-  "pres_min_for_PSAL" : 4.145608029883936,
+  "pres_min_for_PSAL" : 2.027123023002322,
   "PLATFORM_TYPE" : "PLATFORM_TYPE",
   "bgcMeas" : [ "", "" ],
   "date_formatted" : "2000-01-23",
   "isDeep" : true,
-  "platform_number" : 7,
-  "BASIN" : 7.386281948385884,
+  "platform_number" : "platform_number",
+  "BASIN" : 4.145608029883936,
   "lat" : 5.637376656633329,
   "VERTICAL_SAMPLING_SCHEME" : "VERTICAL_SAMPLING_SCHEME",
-  "pres_max_for_TEMP" : 9.301444243932576,
+  "pres_max_for_TEMP" : 7.061401241503109,
   "measurements" : [ {
-    "temp" : 1.0246457001441578,
-    "pres" : 1.2315135367772556,
-    "psal" : 1.4894159098541704
+    "temp" : 1.2315135367772556,
+    "pres" : 7.386281948385884,
+    "psal" : 1.0246457001441578
   }, {
-    "temp" : 1.0246457001441578,
-    "pres" : 1.2315135367772556,
-    "psal" : 1.4894159098541704
+    "temp" : 1.2315135367772556,
+    "pres" : 7.386281948385884,
+    "psal" : 1.0246457001441578
   } ],
   "roundLon" : "roundLon",
   "bgcMeasKeys" : [ "bgcMeasKeys", "bgcMeasKeys" ],
   "position_qc" : 0,
   "DIRECTION" : "DIRECTION",
-  "pres_max_for_PSAL" : 3.616076749251911,
+  "pres_max_for_PSAL" : 9.301444243932576,
   "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
   "DATA_CENTRE" : "DATA_CENTRE",
   "url" : "url",
@@ -61,7 +61,7 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
   "date_added" : "2000-01-23T04:56:07.000+00:00",
   "cycle_number" : 6,
   "PI_NAME" : "PI_NAME",
-  "pres_min_for_TEMP" : 2.027123023002322,
+  "pres_min_for_TEMP" : 3.616076749251911,
   "geoLocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -85,30 +85,30 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
   "roundLat" : "roundLat",
   "strLon" : "strLon",
   "station_parameters" : [ "station_parameters", "station_parameters" ],
-  "pres_min_for_PSAL" : 4.145608029883936,
+  "pres_min_for_PSAL" : 2.027123023002322,
   "PLATFORM_TYPE" : "PLATFORM_TYPE",
   "bgcMeas" : [ "", "" ],
   "date_formatted" : "2000-01-23",
   "isDeep" : true,
-  "platform_number" : 7,
-  "BASIN" : 7.386281948385884,
+  "platform_number" : "platform_number",
+  "BASIN" : 4.145608029883936,
   "lat" : 5.637376656633329,
   "VERTICAL_SAMPLING_SCHEME" : "VERTICAL_SAMPLING_SCHEME",
-  "pres_max_for_TEMP" : 9.301444243932576,
+  "pres_max_for_TEMP" : 7.061401241503109,
   "measurements" : [ {
-    "temp" : 1.0246457001441578,
-    "pres" : 1.2315135367772556,
-    "psal" : 1.4894159098541704
+    "temp" : 1.2315135367772556,
+    "pres" : 7.386281948385884,
+    "psal" : 1.0246457001441578
   }, {
-    "temp" : 1.0246457001441578,
-    "pres" : 1.2315135367772556,
-    "psal" : 1.4894159098541704
+    "temp" : 1.2315135367772556,
+    "pres" : 7.386281948385884,
+    "psal" : 1.0246457001441578
   } ],
   "roundLon" : "roundLon",
   "bgcMeasKeys" : [ "bgcMeasKeys", "bgcMeasKeys" ],
   "position_qc" : 0,
   "DIRECTION" : "DIRECTION",
-  "pres_max_for_PSAL" : 3.616076749251911,
+  "pres_max_for_PSAL" : 9.301444243932576,
   "POSITIONING_SYSTEM" : "POSITIONING_SYSTEM",
   "DATA_CENTRE" : "DATA_CENTRE",
   "url" : "url",
@@ -117,7 +117,7 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
   "date_added" : "2000-01-23T04:56:07.000+00:00",
   "cycle_number" : 6,
   "PI_NAME" : "PI_NAME",
-  "pres_min_for_TEMP" : 2.027123023002322,
+  "pres_min_for_TEMP" : 3.616076749251911,
   "geoLocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"

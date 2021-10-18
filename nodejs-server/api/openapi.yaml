@@ -1121,7 +1121,7 @@ paths:
         schema:
           type: array
           items:
-            type: number
+            type: string
       - name: presRange
         in: query
         description: Pressure range
@@ -1249,7 +1249,7 @@ paths:
         schema:
           type: array
           items:
-            type: number
+            type: string
       - name: presRange
         in: query
         description: Pressure range
@@ -1361,7 +1361,7 @@ paths:
         style: form
         explode: true
         schema:
-          type: number
+          type: string
       responses:
         "200":
           description: OK
@@ -1890,7 +1890,7 @@ components:
         lon:
           type: number
         platform_number:
-          type: integer
+          type: string
         geoLocation:
           $ref: '#/components/schemas/geoJSONpoint'
         station_parameters:
@@ -1981,32 +1981,32 @@ components:
         station_parameters:
         - station_parameters
         - station_parameters
-        pres_min_for_PSAL: 4.1456080298839363962315474054776132106781005859375
+        pres_min_for_PSAL: 2.027123023002321833274663731572218239307403564453125
         PLATFORM_TYPE: PLATFORM_TYPE
         bgcMeas:
         - ""
         - ""
         date_formatted: 2000-01-23
         isDeep: true
-        platform_number: 7
-        BASIN: 7.3862819483858839220147274318151175975799560546875
+        platform_number: platform_number
+        BASIN: 4.1456080298839363962315474054776132106781005859375
         lat: 5.63737665663332876420099637471139430999755859375
         VERTICAL_SAMPLING_SCHEME: VERTICAL_SAMPLING_SCHEME
-        pres_max_for_TEMP: 9.301444243932575517419536481611430644989013671875
+        pres_max_for_TEMP: 7.061401241503109105224211816675961017608642578125
         measurements:
-        - temp: 1.024645700144157789424070870154537260532379150390625
-          pres: 1.231513536777255612975068288506008684635162353515625
-          psal: 1.489415909854170383397331534069962799549102783203125
-        - temp: 1.024645700144157789424070870154537260532379150390625
-          pres: 1.231513536777255612975068288506008684635162353515625
-          psal: 1.489415909854170383397331534069962799549102783203125
+        - temp: 1.231513536777255612975068288506008684635162353515625
+          pres: 7.3862819483858839220147274318151175975799560546875
+          psal: 1.024645700144157789424070870154537260532379150390625
+        - temp: 1.231513536777255612975068288506008684635162353515625
+          pres: 7.3862819483858839220147274318151175975799560546875
+          psal: 1.024645700144157789424070870154537260532379150390625
         roundLon: roundLon
         bgcMeasKeys:
         - bgcMeasKeys
         - bgcMeasKeys
         position_qc: 0
         DIRECTION: DIRECTION
-        pres_max_for_PSAL: 3.61607674925191080461672754609026014804840087890625
+        pres_max_for_PSAL: 9.301444243932575517419536481611430644989013671875
         POSITIONING_SYSTEM: POSITIONING_SYSTEM
         DATA_CENTRE: DATA_CENTRE
         url: url
@@ -2017,7 +2017,7 @@ components:
         date_added: 2000-01-23T04:56:07.000+00:00
         cycle_number: 6
         PI_NAME: PI_NAME
-        pres_min_for_TEMP: 2.027123023002321833274663731572218239307403564453125
+        pres_min_for_TEMP: 3.61607674925191080461672754609026014804840087890625
         geoLocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
@@ -2043,9 +2043,9 @@ components:
         psal:
           type: number
       example:
-        temp: 1.024645700144157789424070870154537260532379150390625
-        pres: 1.231513536777255612975068288506008684635162353515625
-        psal: 1.489415909854170383397331534069962799549102783203125
+        temp: 1.231513536777255612975068288506008684635162353515625
+        pres: 7.3862819483858839220147274318151175975799560546875
+        psal: 1.024645700144157789424070870154537260532379150390625
     coreMeasurementKey:
       type: string
       enum:
@@ -2171,7 +2171,7 @@ components:
         _id:
           type: number
         platform_number:
-          type: number
+          type: string
         most_recent_date:
           type: string
           format: date-time
@@ -2191,8 +2191,8 @@ components:
         most_recent_date: 2000-01-23T04:56:07.000+00:00
         most_recent_date_added: 2000-01-23T04:56:07.000+00:00
         dac: dac
-        platform_number: 6.02745618307040320615897144307382404804229736328125
-        number_of_profiles: 1
+        platform_number: platform_number
+        number_of_profiles: 6
         POSITIONING_SYSTEM: POSITIONING_SYSTEM
         _id: 0.80082819046101150206595775671303272247314453125
     platformRecent:
@@ -2201,7 +2201,7 @@ components:
         _id:
           type: number
         platform_number:
-          type: number
+          type: string
         most_recent_date:
           type: string
           format: date-time
@@ -2214,7 +2214,7 @@ components:
         dac:
           type: string
       example:
-        cycle_number: 5
+        cycle_number: 1
         most_recent_date: 2000-01-23T04:56:07.000+00:00
         geoLocation:
           coordinates:
@@ -2222,8 +2222,8 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           type: type
         dac: dac
-        platform_number: 6.02745618307040320615897144307382404804229736328125
-        number_of_profiles: 1
+        platform_number: platform_number
+        number_of_profiles: 6
         _id: 0.80082819046101150206595775671303272247314453125
     dacStub:
       type: object
@@ -2265,7 +2265,7 @@ components:
         cycle_number:
           type: integer
         platform_number:
-          type: integer
+          type: string
         DIRECTION:
           type: string
         containsBGC:
@@ -2283,7 +2283,7 @@ components:
         DATA_MODE: DATA_MODE
         DIRECTION: DIRECTION
         isDeep: true
-        platform_number: 6
+        platform_number: platform_number
         containsBGC: true
         _id: _id
     profileCollectionSummary:
@@ -2669,7 +2669,7 @@ components:
       schema:
         type: array
         items:
-          type: number
+          type: string
     polygon:
       name: polygon
       in: query
@@ -2726,7 +2726,7 @@ components:
       style: form
       explode: true
       schema:
-        type: number
+        type: string
     lat:
       name: lat
       in: query
