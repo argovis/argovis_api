@@ -995,7 +995,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "type": "number"
+                              "type": "string"
                            }
                         }
                      }
@@ -1876,7 +1876,7 @@
             "type": "object",
             "properties": {
                "_id": {
-                  "type": "number"
+                  "type": "string"
                },
                "platform_number": {
                   "type": "string"
@@ -1907,7 +1907,7 @@
             "type": "object",
             "properties": {
                "_id": {
-                  "type": "number"
+                  "type": "string"
                },
                "platform_number": {
                   "type": "string"
