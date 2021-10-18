@@ -2054,7 +2054,7 @@ components:
       - psal
       - all
     bgcMeasurement:
-      oneOf:
+      anyOf:
       - $ref: '#/components/schemas/argoBgcMeasurement'
       - $ref: '#/components/schemas/goshipBgcMeasurement'
     argoBgcMeasurement:
@@ -2115,7 +2115,7 @@ components:
     goshipBgcMeasurement: {}
     bgcMeasurementKey:
       type: string
-      oneOf:
+      anyOf:
       - $ref: '#/components/schemas/argoBgcMeasurementKey'
       - $ref: '#/components/schemas/goshipBgcMeasurementKey'
     argoBgcMeasurementKey:
