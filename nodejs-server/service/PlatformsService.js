@@ -35,9 +35,9 @@ exports.platformList = function() {
     "type" : "type"
   },
   "dac" : "dac",
-  "platform_number" : "platform_number",
+  "platform_number" : "",
   "number_of_profiles" : 0,
-  "_id" : "_id"
+  "_id" : ""
 }, {
   "cycle_number" : 6,
   "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
@@ -46,9 +46,9 @@ exports.platformList = function() {
     "type" : "type"
   },
   "dac" : "dac",
-  "platform_number" : "platform_number",
+  "platform_number" : "",
   "number_of_profiles" : 0,
-  "_id" : "_id"
+  "_id" : ""
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
