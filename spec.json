@@ -1673,7 +1673,7 @@
             ]
          },
          "bgcMeasurement": {
-            "oneOf": [
+            "anyOf": [
                {
                   "$ref": "#/components/schemas/argoBgcMeasurement"
                },
@@ -1812,7 +1812,7 @@
          },
          "bgcMeasurementKey":{
             "type": "string",
-            "oneOf": [
+            "anyOf": [
                {
                   "$ref": "#/components/schemas/argoBgcMeasurementKey"
                },
