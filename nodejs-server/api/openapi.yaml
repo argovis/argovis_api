@@ -1121,7 +1121,9 @@ paths:
         schema:
           type: array
           items:
-            type: string
+            anyOf:
+            - type: string
+            - type: number
       - name: presRange
         in: query
         description: Pressure range
@@ -1249,7 +1251,9 @@ paths:
         schema:
           type: array
           items:
-            type: string
+            anyOf:
+            - type: string
+            - type: number
       - name: presRange
         in: query
         description: Pressure range
@@ -1361,7 +1365,7 @@ paths:
         style: form
         explode: true
         schema:
-          type: string
+          $ref: '#/components/schemas/platform'
       responses:
         "200":
           description: OK
@@ -1438,7 +1442,9 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  anyOf:
+                  - type: string
+                  - type: number
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -1890,7 +1896,9 @@ components:
         lon:
           type: number
         platform_number:
-          type: string
+          anyOf:
+          - type: string
+          - type: number
         geoLocation:
           $ref: '#/components/schemas/geoJSONpoint'
         station_parameters:
@@ -1988,7 +1996,7 @@ components:
         - ""
         date_formatted: 2000-01-23
         isDeep: true
-        platform_number: platform_number
+        platform_number: ""
         BASIN: 4.1456080298839363962315474054776132106781005859375
         lat: 5.63737665663332876420099637471139430999755859375
         VERTICAL_SAMPLING_SCHEME: VERTICAL_SAMPLING_SCHEME
@@ -2169,9 +2177,13 @@ components:
       type: object
       properties:
         _id:
-          type: string
+          anyOf:
+          - type: string
+          - type: number
         platform_number:
-          type: string
+          anyOf:
+          - type: string
+          - type: number
         most_recent_date:
           type: string
           format: date-time
@@ -2191,10 +2203,10 @@ components:
         most_recent_date: 2000-01-23T04:56:07.000+00:00
         most_recent_date_added: 2000-01-23T04:56:07.000+00:00
         dac: dac
-        platform_number: platform_number
+        platform_number: ""
         number_of_profiles: 0
         POSITIONING_SYSTEM: POSITIONING_SYSTEM
-        _id: _id
+        _id: ""
     platformRecent:
       type: object
       properties:
@@ -2269,7 +2281,9 @@ components:
         cycle_number:
           type: integer
         platform_number:
-          type: string
+          anyOf:
+          - type: string
+          - type: number
         DIRECTION:
           type: string
         containsBGC:
@@ -2287,7 +2301,7 @@ components:
         DATA_MODE: DATA_MODE
         DIRECTION: DIRECTION
         isDeep: true
-        platform_number: platform_number
+        platform_number: ""
         containsBGC: true
         _id: _id
     profileCollectionSummary:
@@ -2360,6 +2374,10 @@ components:
           type: integer
         message:
           type: string
+    platform:
+      anyOf:
+      - type: string
+      - type: number
     CovarSchema_features:
       type: object
       properties:
@@ -2673,7 +2691,9 @@ components:
       schema:
         type: array
         items:
-          type: string
+          anyOf:
+          - type: string
+          - type: number
     polygon:
       name: polygon
       in: query
@@ -2730,7 +2750,7 @@ components:
       style: form
       explode: true
       schema:
-        type: string
+        $ref: '#/components/schemas/platform'
     lat:
       name: lat
       in: query
