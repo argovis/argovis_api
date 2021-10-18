@@ -1438,7 +1438,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: number
+                  type: string
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -2169,7 +2169,7 @@ components:
       type: object
       properties:
         _id:
-          type: number
+          type: string
         platform_number:
           type: string
         most_recent_date:
@@ -2192,14 +2192,14 @@ components:
         most_recent_date_added: 2000-01-23T04:56:07.000+00:00
         dac: dac
         platform_number: platform_number
-        number_of_profiles: 6
+        number_of_profiles: 0
         POSITIONING_SYSTEM: POSITIONING_SYSTEM
-        _id: 0.80082819046101150206595775671303272247314453125
+        _id: _id
     platformRecent:
       type: object
       properties:
         _id:
-          type: number
+          type: string
         platform_number:
           type: string
         most_recent_date:
@@ -2214,7 +2214,7 @@ components:
         dac:
           type: string
       example:
-        cycle_number: 1
+        cycle_number: 6
         most_recent_date: 2000-01-23T04:56:07.000+00:00
         geoLocation:
           coordinates:
@@ -2223,8 +2223,8 @@ components:
           type: type
         dac: dac
         platform_number: platform_number
-        number_of_profiles: 6
-        _id: 0.80082819046101150206595775671303272247314453125
+        number_of_profiles: 0
+        _id: _id
     dacStub:
       type: object
       properties:
