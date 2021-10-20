@@ -151,82 +151,34 @@
             "tags": [
                "tc"
             ],
-            "summary": "one tropical cyclone instance",
-            "operationId": "findOneTC",
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "$ref": "#/components/schemas/tcSchema"
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/tc/findByDate": {
-         "get": {
-            "tags": [
-               "tc"
-            ],
-            "summary": "tropical cyclones at a given date-time",
-            "operationId": "findTCbyDate",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/date"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/tcSchema"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/tc/findByDateRange": {
-         "get": {
-            "tags": [
-               "tc"
-            ],
-            "summary": "tropical cyclones intersecting a time period",
-            "operationId": "findTCbyDateRange",
+            "summary": "Tropical cyclone search and filter.",
+            "operationId": "findTC",
             "parameters": [
                {
                   "$ref": "#/components/parameters/startDate"
                },
                {
                   "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "name": "name",
+                  "in": "query",
+                  "required": false,
+                  "description": "name of tropical cyclone",
+                  "schema": {
+                     "type": "string",
+                     "example": "LANE"
+                  }
+               },
+               {
+                  "name": "year",
+                  "in": "query",
+                  "required": false,
+                  "description": "year of tropical cyclone",
+                  "schema": {
+                     "type": "number",
+                     "example": 2018
+                  }
                }
             ],
             "responses": {
@@ -271,61 +223,6 @@
                            "type": "array",
                            "items": {
                               "type": "string"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/tc/findByNameYear": {
-         "get": {
-            "tags": [
-               "tc"
-            ],
-            "summary": "find a tropical cyclone by name and year",
-            "operationId": "findTCbyNameYear",
-            "parameters": [
-               {
-                  "name": "name",
-                  "in": "query",
-                  "required": true,
-                  "description": "name of tropical cyclone",
-                  "schema": {
-                     "type": "string",
-                     "example": "LANE"
-                  }
-               },
-               {
-                  "name": "year",
-                  "in": "query",
-                  "required": true,
-                  "description": "year of tropical cyclone",
-                  "schema": {
-                     "type": "number",
-                     "example": 2018
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/tcSchema"
                            }
                         }
                      }
