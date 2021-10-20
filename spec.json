@@ -61,10 +61,6 @@
       {
          "name": "dacs",
          "description": "Summary and metadata for data assembly centers represented in the dataset"
-      },
-      {
-         "name": "selection",
-         "description": "Geospatial selection of argo floats"
       }
    ],
    "paths": {
@@ -703,47 +699,6 @@
                            "type": "array",
                            "items": {
                               "$ref": "#/components/schemas/RasterParam"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/selection/globalMapProfiles": {
-         "get": {
-            "tags": [
-               "selection"
-            ],
-            "summary": "Get a list of profile metadata for all profiles in a given time window.",
-            "operationId": "selectionGlobalMapProfiles",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/startDate"
-               },
-               {
-                  "$ref": "#/components/parameters/endDate"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/MapMeta"
                            }
                         }
                      }
@@ -1945,48 +1900,6 @@
                },
                "dac": {
                   "type": "string"
-               }
-            }
-         },
-         "MapMeta": {
-            "type": "object",
-            "required": [
-               "_id",
-               "DATA_MODE",
-               "date",
-               "geoLocation",
-               "cycle_number",
-               "platform_number",
-               "DIRECTION"
-            ],
-            "properties": {
-               "_id": {
-                  "type": "string"
-               },
-               "DATA_MODE": {
-                  "type": "string"
-               },
-               "date": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "geoLocation": {
-                  "$ref": "#/components/schemas/geoJSONpoint"
-               },
-               "cycle_number": {
-                  "type": "integer"
-               },
-               "platform_number": {
-                  "anyOf": [ {"type": "string"}, {"type": "number"}]
-               },
-               "DIRECTION": {
-                  "type": "string"
-               },
-               "containsBGC": {
-                  "type": "boolean"
-               },
-               "isDeep": {
-                  "type": "boolean"
                }
             }
          },
