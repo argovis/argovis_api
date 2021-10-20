@@ -37,8 +37,6 @@ tags:
   description: Platform metadata
 - name: dacs
   description: Summary and metadata for data assembly centers represented in the dataset
-- name: selection
-  description: Geospatial selection of argo floats
 paths:
   /arShapes/findByDate:
     get:
@@ -988,65 +986,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
-  /selection/globalMapProfiles:
-    get:
-      tags:
-      - selection
-      summary: Get a list of profile metadata for all profiles in a given time window.
-      operationId: selectionGlobalMapProfiles
-      parameters:
-      - name: startDate
-        in: query
-        description: date-time formatted string indicating the beginning of a time
-          period
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      - name: endDate
-        in: query
-        description: date-time formatted string indicating the end of a time period
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MapMeta'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Selection
   /profiles:
     get:
       tags:
@@ -2257,52 +2196,6 @@ components:
         most_recent_date: 2000-01-23T04:56:07.000+00:00
         dac: dac
         number_of_profiles: 0
-        _id: _id
-    MapMeta:
-      required:
-      - DATA_MODE
-      - DIRECTION
-      - _id
-      - cycle_number
-      - date
-      - geoLocation
-      - platform_number
-      type: object
-      properties:
-        _id:
-          type: string
-        DATA_MODE:
-          type: string
-        date:
-          type: string
-          format: date-time
-        geoLocation:
-          $ref: '#/components/schemas/geoJSONpoint'
-        cycle_number:
-          type: integer
-        platform_number:
-          anyOf:
-          - type: string
-          - type: number
-        DIRECTION:
-          type: string
-        containsBGC:
-          type: boolean
-        isDeep:
-          type: boolean
-      example:
-        date: 2000-01-23T04:56:07.000+00:00
-        cycle_number: 0
-        geoLocation:
-          coordinates:
-          - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-          type: type
-        DATA_MODE: DATA_MODE
-        DIRECTION: DIRECTION
-        isDeep: true
-        platform_number: ""
-        containsBGC: true
         _id: _id
     profileCollectionSummary:
       type: object
