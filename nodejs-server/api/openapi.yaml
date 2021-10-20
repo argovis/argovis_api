@@ -182,87 +182,8 @@ paths:
     get:
       tags:
       - tc
-      summary: one tropical cyclone instance
-      operationId: findOneTC
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/tcSchema'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Tc
-  /tc/findByDate:
-    get:
-      tags:
-      - tc
-      summary: tropical cyclones at a given date-time
-      operationId: findTCbyDate
-      parameters:
-      - name: date
-        in: query
-        description: date-time formatted string
-        required: true
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/tcSchema'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Tc
-  /tc/findByDateRange:
-    get:
-      tags:
-      - tc
-      summary: tropical cyclones intersecting a time period
-      operationId: findTCbyDateRange
+      summary: Tropical cyclone search and filter.
+      operationId: findTC
       parameters:
       - name: startDate
         in: query
@@ -287,6 +208,24 @@ paths:
           type: string
           format: date-time
           example: 2010-01-01T00:00:00Z
+      - name: name
+        in: query
+        description: name of tropical cyclone
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: LANE
+      - name: year
+        in: query
+        description: year of tropical cyclone
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 2018
       responses:
         "200":
           description: OK
@@ -331,60 +270,6 @@ paths:
                 type: array
                 items:
                   type: string
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Tc
-  /tc/findByNameYear:
-    get:
-      tags:
-      - tc
-      summary: find a tropical cyclone by name and year
-      operationId: findTCbyNameYear
-      parameters:
-      - name: name
-        in: query
-        description: name of tropical cyclone
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: LANE
-      - name: year
-        in: query
-        description: year of tropical cyclone
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 2018
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/tcSchema'
                 x-content-type: application/json
         "400":
           description: Bad Request
