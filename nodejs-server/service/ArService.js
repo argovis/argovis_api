@@ -19,7 +19,7 @@ exports.findAR = function(date,_id) {
       filter = {_id: _id}
     }
 
-    const.query = arShapes.find(filter)
+    const query = arShapes.find(filter)
     query.exec(function (err, arShapes) {
         if (err){
           reject({"code": 500, "message": "Server error"});
