@@ -72,7 +72,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/arShapeSchema'
+                type: array
+                items:
+                  $ref: '#/components/schemas/arShapeSchema'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
