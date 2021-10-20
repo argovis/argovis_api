@@ -38,18 +38,18 @@ tags:
 - name: dacs
   description: Summary and metadata for data assembly centers represented in the dataset
 paths:
-  /arShapes/findByDate:
+  /ar:
     get:
       tags:
       - ar
-      summary: shapes representing atmospheric rivers at a given date-time
-      operationId: findARbyDate
+      summary: Find and filter atmo river shapes.
+      operationId: findAR
       parameters:
       - name: date
         in: query
         description: three hour increments starting at 2004-01-01T00:00:00 and ending
           at 2017-04-02T03:00:00
-        required: true
+        required: false
         style: form
         explode: true
         allowReserved: true
@@ -57,80 +57,15 @@ paths:
           type: string
           format: date-time
           example: 2010-01-01T00:00:00Z
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/arShapeSchema'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Ar
-  /arShapes/findByID:
-    get:
-      tags:
-      - ar
-      summary: shapes representing atmospheric rivers with a given ID
-      operationId: findARbyID
-      parameters:
       - name: _id
         in: query
         description: ID of an atmospheric river object
-        required: true
+        required: false
         style: form
         explode: true
         schema:
           type: string
           example: 1_262992
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/arShapeSchema'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Ar
-  /arShapes:
-    get:
-      tags:
-      - ar
-      summary: one instance of a shape representing an atmospheric river
-      operationId: findOneAR
       responses:
         "200":
           description: OK
@@ -2368,7 +2303,7 @@ components:
       in: query
       description: three hour increments starting at 2004-01-01T00:00:00 and ending
         at 2017-04-02T03:00:00
-      required: true
+      required: false
       style: form
       explode: true
       allowReserved: true
@@ -2380,7 +2315,7 @@ components:
       name: _id
       in: query
       description: ID of an atmospheric river object
-      required: true
+      required: false
       style: form
       explode: true
       schema:
