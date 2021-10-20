@@ -1,5 +1,6 @@
 'use strict';
 const arShapes = require('../models/arShapes');
+const helpers = require('./helpers')
 
 exports.findAR = function(date,_id) {
   return new Promise(function(resolve, reject) {
@@ -20,14 +21,7 @@ exports.findAR = function(date,_id) {
     }
 
     const query = arShapes.find(filter)
-    query.exec(function (err, arShapes) {
-        if (err){
-          reject({"code": 500, "message": "Server error"});
-          return;
-        }
-        if (arShapes.length == 0) reject({"code": 404, "message": "Not found: No matching results found in database."});
-        resolve(arShapes);
-    })
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 

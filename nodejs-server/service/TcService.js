@@ -1,6 +1,7 @@
 'use strict';
 const tcTraj = require('../models/tcTraj');
 const moment = require('moment');
+const helpers = require('./helpers')
 
 /**
  * returns a list of tropical cyclone names and years
@@ -32,17 +33,10 @@ exports.findStormNameList = function() {
 
               ]
     const query = tcTraj.aggregate(agg)
-    query.exec(function (err, tcTraj) {
-        if (err){
-            reject({"code": 500, "message": "Server error"});
-            return;
-        }
-        if(tcTraj.length == 0){
-            reject({"code": 404, "message": "Not found: No matching results found in database."});
-            return;
-        }
-        resolve(tcTraj.map(function(el) { return el._id }));
-    })
+    let postprocess = function(data) {
+        return data.map(function(d) { return d._id })
+    }
+    query.exec(helpers.queryCallback.bind(null,postprocess, resolve, reject))
   });
 }
 
@@ -92,16 +86,7 @@ exports.findTC = function(startDate,endDate,name,year) {
     }
 
     const query = tcTraj.find(filter)
-    query.exec(function (err, tcTraj) {
-        if (err){
-            reject({"code": 500, "message": "Server error"});
-            return;
-        }
-        if(tcTraj.length == 0){
-            reject({"code": 404, "message": "Not found: No matching results found in database."});
-            return;
-        }
-        resolve(tcTraj);
-    })
+
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
