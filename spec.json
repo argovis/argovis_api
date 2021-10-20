@@ -64,83 +64,21 @@
       }
    ],
    "paths": {
-      "/arShapes/findByDate": {
+      "/ar": {
          "get": {
             "tags": [
                "ar"
             ],
-            "summary": "shapes representing atmospheric rivers at a given date-time",
-            "operationId": "findARbyDate",
+            "summary": "Find and filter atmo river shapes.",
+            "operationId": "findAR",   
             "parameters": [
                {
                   "$ref": "#/components/parameters/arDate"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "$ref": "#/components/schemas/arShapeSchema"
-                        }
-                     }
-                  }
                },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/arShapes/findByID": {
-         "get": {
-            "tags": [
-               "ar"
-            ],
-            "summary": "shapes representing atmospheric rivers with a given ID",
-            "operationId": "findARbyID",
-            "parameters": [
                {
                   "$ref": "#/components/parameters/arID"
                }
             ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "$ref": "#/components/schemas/arShapeSchema"
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/arShapes": {
-         "get": {
-            "tags": [
-               "ar"
-            ],
-            "summary": "one instance of a shape representing an atmospheric river",
-            "operationId": "findOneAR",
             "responses": {
                "200": {
                   "description": "OK",
@@ -1982,7 +1920,7 @@
          "arDate": {
             "in": "query",
             "name": "date",
-            "required": true,
+            "required": false,
             "description": "three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00",
             "allowReserved": true,
             "schema": {
@@ -1994,7 +1932,7 @@
          "arID": {
             "in": "query",
             "name": "_id",
-            "required": true,
+            "required": false,
             "description": "ID of an atmospheric river object",
             "schema": {
                "type": "string",
