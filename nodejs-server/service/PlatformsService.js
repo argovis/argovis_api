@@ -1,5 +1,6 @@
 'use strict';
 const Profile = require('../models/profile')
+const helpers = require('./helpers')
 
 /**
  * Lists all platforms that report BGC data.
@@ -23,6 +24,10 @@ exports.bgcPlatformList = function() {
         }
         resolve(Array.from(platforms, x => x.platform_number));
     })
+    let postprocess = function(data) {
+        return Array.from(data, x => x.platform_number)
+    }
+    query.exec(helpers.queryCallback.bind(null,postprocess, resolve, reject))
   });
 }
 
@@ -46,18 +51,7 @@ exports.platformList = function() {
               }
       }
     ])
-
-    query.exec(function (err, platformStubs) {
-        if (err){
-          reject({"code": 500, "message": "Server error"});
-          return;
-        }
-        if(platformStubs.length == 0){
-          reject({"code": 404, "message": "Not found: No matching results found in database."});
-          return;
-        }
-        resolve(platformStubs);
-    })
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
@@ -94,6 +88,10 @@ exports.platformMeta = function(platform) {
         }
         resolve(platformMeta[0]);
     })
+    let postprocess = function(data){
+      return data[0]
+    }
+    query.exec(helpers.queryCallback.bind(null,postprocess, resolve, reject))
   });
 }
 
