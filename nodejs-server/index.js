@@ -6,6 +6,7 @@ var oas3Tools = require('oas3-tools');
 var mongoose = require('mongoose');
 var debug = require('debug')('app');
 var serverPort = 8080;
+var tokenbucket = require('./middleware/ratelimiter/tokenbucket')
 
 // swaggerRouter configuration
 var options = {
@@ -16,6 +17,15 @@ var options = {
 
 var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
 var app = expressAppConfig.getApp();
+
+// custom middleware injection ///////////
+app.use(tokenbucket.tokenbucket)
+
+const stack = app._router.stack;
+const lastEntries = stack.splice(app._router.stack.length - 1);  // since we're adding 1 custom middleware
+const firstEntries = stack.splice(0, 5); // adding our middleware after the first 5, tbd constraints
+app._router.stack = [...firstEntries, ...lastEntries, ...stack];
+// end custom middleware injection ///////////////
 
 // Initialize the Swagger middleware
 http.createServer(app).listen(serverPort, function () {
