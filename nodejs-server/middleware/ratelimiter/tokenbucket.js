@@ -27,6 +27,7 @@ module.exports.tokenbucket = function (req, res, next) {
       	.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t)})
       	.then(() => {return {"key": req.headers['x-argokey'], "ntokens": bucketsize, "lastUpdate": t}})
 		} else {
+			// found the user's usage data in redis and can just hand it back.
 			return {"key": req.headers['x-argokey'], "ntokens": Number(userbucket.ntokens), "lastUpdate": Number(userbucket.lastUpdate)}
 		}
 	})
@@ -37,7 +38,7 @@ module.exports.tokenbucket = function (req, res, next) {
 		if(tokensnow > 0){
 			hsetAsync(userbucket.key, "ntokens", Math.max(tokensnow-1,0), "lastUpdate", t).then(next())
 		} else {
-			throw({"code": 403, "message": "You have temporarily exceeded your API request limit. Try limiting your requests to small bursts, or one / second long term."})
+			throw({"code": 403, "message": "You have temporarily exceeded your API request limit. Try again in a minute, but limit your requests to small bursts, or one request per second long term."})
 		}
 	})
 	.catch(err => {
