@@ -24,14 +24,18 @@ module.exports.tokenbucket = function (req, res, next) {
 		if(userbucket == null){
       // need to go find key in mongo and populate redis
       return new Promise(lookup.bind(null, req.headers['x-argokey']))
-      	.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t)})
-      	.then(() => {return {"key": req.headers['x-argokey'], "ntokens": bucketsize, "lastUpdate": t}})
+      	.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t, "superuser", user.tokenvalid==9999)})
+      	.then(() => {return {"key": req.headers['x-argokey'], "ntokens": bucketsize, "lastUpdate": t, "superuser": user.tokenvalid==9999}})
 		} else {
 			// found the user's usage data in redis and can just hand it back.
-			return {"key": req.headers['x-argokey'], "ntokens": Number(userbucket.ntokens), "lastUpdate": Number(userbucket.lastUpdate)}
+			return {"key": req.headers['x-argokey'], "ntokens": Number(userbucket.ntokens), "lastUpdate": Number(userbucket.lastUpdate), "superuser": userbucket.superuser==='true'}
 		}
 	})
 	.then(userbucket => {
+		if(userbucket.superuser) {
+			next()
+			return
+		}
 		let d = new Date()
 		let t = d.getTime()
 		let tokensnow = Math.min(userbucket.ntokens + Math.round((t - userbucket.lastUpdate)/tokenrespawntime), bucketsize)
