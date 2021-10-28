@@ -13,7 +13,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /dacs", function () {
       it("summarizes dacs across the profile collection", async function () {
-        const response = await request.get("/dacs");
+        const response = await request.get("/dacs").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/dacs'].get.responses['200'].content['application/json'].schema);   
       });
     }); 

@@ -12,14 +12,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
   else {
     describe("GET /covarGrid/-58/98/140", function () {
       it("returns one covar grid result", async function () {
-        const response = await request.get("/covarGrid?lat=-58&lon=98&forcastDays=140");    
+        const response = await request.get("/covarGrid?lat=-58&lon=98&forcastDays=140").set({'x-argokey': 'developer'});    
         expect(response.body).to.be.jsonSchema(schema.paths['/covarGrid'].get.responses['200'].content['application/json'].schema);
       });
     });
 
     describe("GET /covarGrid/98/-58/140", function () {
       it("errors on invalid lat", async function () {
-        const response = await request.get("/covarGrid?lat=98&lon=-58&forcastDays=140");    
+        const response = await request.get("/covarGrid?lat=98&lon=-58&forcastDays=140").set({'x-argokey': 'developer'});    
 
         expect(response.status).to.eql(400);
       });
@@ -27,7 +27,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /covarGrid/0/0/240", function () {
       it("returns a 404", async function () {
-        const response = await request.get("/covarGrid?lat=0&lon=0&forcastDays=240");    
+        const response = await request.get("/covarGrid?lat=0&lon=0&forcastDays=240").set({'x-argokey': 'developer'});    
 
         expect(response.status).to.eql(404);
       });
