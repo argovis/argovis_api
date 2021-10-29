@@ -45,6 +45,9 @@ const get_grid_model = function(gridName) {
     else if  (gridName.includes('rgTempTotal')) {
         GridModel = this.rgTempTotal
     }
+    else if  (gridName.includes('rgTempMean')) {
+        GridModel = this.rgTempMean
+    }
     else if  (gridName.includes('rgPsalAnom')) {
         GridModel = this.rgPsalAnom
     }
@@ -79,6 +82,7 @@ module.exports = {}
 module.exports.ksTempAnom = mongoose.model('ksTempAnom', GridSchema, 'ksTempAnom');
 module.exports.rgTempAnom = mongoose.model('rgTempAnom', GridSchema, 'rgTempAnom');
 module.exports.rgTempTotal = mongoose.model('rgTempTotal', GridSchema, 'rgTempTotal');
+module.exports.rgTempMean = mongoose.model('rgTempMean', GridSchema, 'rgTempMean');
 module.exports.rgPsalAnom = mongoose.model('rgPsalAnom', GridSchema, 'rgPsalAnom');
 module.exports.rgPsalTotal = mongoose.model('rgPsalTotal', GridSchema, 'rgPsalTotal');
 module.exports.ksTempMean = mongoose.model('ksTempMean', GridSchema, 'ksTempMean')
