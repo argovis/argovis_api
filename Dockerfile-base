@@ -1,0 +1,4 @@
+FROM node:16.8.0 as build
+WORKDIR /app
+COPY nodejs-server/package.json .
+RUN npm install
