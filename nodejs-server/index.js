@@ -40,7 +40,8 @@ const mongooseOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   keepAlive: 1,
-  connectTimeoutMS: 30000
+  connectTimeoutMS: 30000,
+  maxPoolSize: 2
 };
 
 mongoose.connect(mongoDB, mongooseOptions)
