@@ -31,7 +31,17 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,ids,platforms,presRange)
+    if((center && box) || (center && polygon) || (box && polygon)){
+      reject({"code": 400, "message": "Please request only one of box, polygon or center."});
+      return; 
+    }
+
+    if((center && !radius) || (!center && radius)){
+      reject({"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."});
+      return; 
+    }
+
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,radius,center,ids,platforms,presRange)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
