@@ -575,6 +575,12 @@
                   "$ref": "#/components/parameters/box"
                },
                {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
                   "$ref": "#/components/parameters/idList"
                },
                {
@@ -2071,6 +2077,32 @@
             "schema": {
                "type": "string",
                "example": "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+            }
+         },
+         "center": {
+            "in": "query",
+            "name": "center",
+            "description": "center to measure max radius from",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
+         "radius": {
+            "in": "query",
+            "name": "radius",
+            "description": "km from centerpoint",
+            "schema": {
+               "type": "number",
+               "example": 0
             }
          },
          "coreMeasurements": {

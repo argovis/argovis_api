@@ -8,6 +8,8 @@
  * endDate Date date-time formatted string indicating the end of a time period (optional)
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
+ * center List center to measure max radius from (optional)
+ * radius BigDecimal km from centerpoint (optional)
  * ids List List of profile IDs (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
@@ -15,7 +17,7 @@
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
