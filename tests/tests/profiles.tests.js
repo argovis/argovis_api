@@ -66,6 +66,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /profiles", function () {
+      it("should find 3 profiles within a 100 km of this point", async function () {
+        const response = await request.get("/profiles?startDate=2017-04-24T00:00:00Z&endDate=2017-07-06T00:00:00Z&center=-74.79661,34.92019&radius=100").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3)
+      });
+    });
+
     describe("GET /profiles/overview", function () {
       it("summarizes profile collection", async function () {
         const response = await request.get("/profiles/overview").set({'x-argokey': 'developer'});

@@ -31,17 +31,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return; 
     } 
 
-    if((center && box) || (center && polygon) || (box && polygon)){
-      reject({"code": 400, "message": "Please request only one of box, polygon or center."});
-      return; 
-    }
-
-    if((center && !radius) || (!center && radius)){
-      reject({"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."});
-      return; 
-    }
-
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,radius,center,ids,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -121,7 +111,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,platf
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,null,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,presRange)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -250,11 +240,28 @@ const reduce_meas = function(keys, meas) {
   return reduceArray
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ids,platforms,presRange){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
+    // sanity checks
+    if((center && box) || (center && polygon) || (box && polygon)){
+      reject({"code": 400, "message": "Please request only one of box, polygon or center."});
+      return; 
+    }
+
+    if((center && !radius) || (!center && radius)){
+      reject({"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."});
+      return; 
+    }
+
     let aggPipeline = []
+
+    if(center && radius) {
+      // $geoNear must be first in the aggregation pipeline
+      aggPipeline.push({$geoNear: { near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
+      aggPipeline.push({ $unset: "distcalculated" })
+    }
 
     if (startDate){
       aggPipeline.push({$match:  {date: {$gte: startDate}}})
@@ -273,9 +280,6 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,id
       aggPipeline.push({$match: {platform_number: { $in: pform}}})
     }
 
-    if(polygon && box){
-      return {"code": 400, "message": "Please specify only one of polygon or box."};
-    }
     if(polygon) {
       // sanitation
       try {
