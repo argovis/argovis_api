@@ -1,6 +1,7 @@
 'use strict';
 const covar = require('../models/covar');
 const GJV = require('geojson-validation');
+const pointInPolygon = require('@turf/boolean-point-in-polygon').default;
 
 /**
  * Probability distribution field for a float at point lat-lon after forcastDays.
@@ -52,13 +53,38 @@ exports.findCovar = function(lat,lon,forcastDays) {
  **/
 exports.integralCovar = function(lat,lon,forcastDays,polygon) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = 0.8008281904610115;
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+
+    var point = {"type": "Point", "coordinates": [lon,lat]};
+    if (!GJV.valid(point) || !GJV.isPoint(point)){
+        reject({"code": 400, "message": "Invalid lat/lon."});
+        return;
     }
+
+    const query = covar.findOne({forcastDays: forcastDays, geoLocation: {
+                                $near: {
+                                    $geometry: point
+                                    //$maxDistance: radius
+                                }
+                            }
+                            });
+
+    query.exec(function (err, covars) {
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if (covars == null){
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+        }
+
+        polygon = {
+            "type": "Polygon",
+            "coordinates": [JSON.parse(polygon)]
+        }
+        let p = covars.features.map(x => x.properties.Probability*(pointInPolygon(x.geometry, polygon) ? 1:0)).reduce((a, b) => a + b, 0)
+        resolve({"integral":p});
+    })
+
   });
 }
-

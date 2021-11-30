@@ -12,6 +12,7 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
+    "@turf/boolean-point-in-polygon": "^6.5.0",
     "connect": "^3.2.0",
     "cors": "^2.8.5",
     "debug": "3.1.0",

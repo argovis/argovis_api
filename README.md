@@ -38,7 +38,7 @@ When all tests on the `server` branch are passing, releases may be made with the
 
 In general, the base image for the API shouldn't change often; it is meant to capture package dependencies, and should be as stable as possible. But, when dependencies need an update (most typically after `package.json` changes), follow this procedure.
 
-1. Build a new base image, tagged with the build date:  `docker image build -f Dockerfile-base -t argovis/api:base-yymmdd`
+1. Build a new base image, tagged with the build date:  `docker image build -f Dockerfile-base -t argovis/api:base-yymmdd .`
 
 2. Update `Dockerfile` to build from your new base image (very first `FROM` line).
 
