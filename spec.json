@@ -146,6 +146,50 @@
             }
          }
       },
+      "/covarIntegral": {
+         "get": {
+            "tags": [
+               "covar"
+            ],
+            "summary": "Integral of probability distribution field over a region for a float starting at point lat-lon after forcastDays.",
+            "operationId": "findCovar",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/lat"
+               },
+               {
+                  "$ref": "#/components/parameters/lon"
+               },
+               {
+                  "$ref": "#/components/parameters/forcastDays"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "number"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/tc": {
          "get": {
             "tags": [

@@ -41,3 +41,25 @@ exports.findCovar = function(lat,lon,forcastDays) {
   });
 }
 
+
+/**
+ * Integral of probability distribution field over a region for a float starting at point lat-lon after forcastDays.
+ *
+ * lat BigDecimal latitude (degrees) of Argo float location
+ * lon BigDecimal longitude (degrees) of Argo float location
+ * forcastDays BigDecimal number of days over which to project Argo float drift
+ * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
+ * returns BigDecimal
+ **/
+exports.findCovar_0 = function(lat,lon,forcastDays,polygon) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = 0.8008281904610115;
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
