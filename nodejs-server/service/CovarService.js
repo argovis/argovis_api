@@ -51,7 +51,7 @@ exports.findCovar = function(lat,lon,forcastDays) {
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
  * returns BigDecimal
  **/
-exports.findCovar_0 = function(lat,lon,forcastDays,polygon) {
+exports.integralCovar = function(lat,lon,forcastDays,polygon) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = 0.8008281904610115;
