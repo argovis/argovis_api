@@ -861,6 +861,29 @@ paths:
         schema:
           type: string
           example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+      - name: center
+        in: query
+        description: center to measure max radius from
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 0
       - name: ids
         in: query
         description: List of profile IDs
@@ -1003,6 +1026,29 @@ paths:
         schema:
           type: string
           example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+      - name: center
+        in: query
+        description: center to measure max radius from
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 0
       - name: platforms
         in: query
         description: List of platform IDs
@@ -2434,6 +2480,31 @@ components:
       schema:
         type: string
         example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+    center:
+      name: center
+      in: query
+      description: center to measure max radius from
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    radius:
+      name: radius
+      in: query
+      description: km from centerpoint
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 0
     coreMeasurements:
       name: coreMeasurements
       in: query

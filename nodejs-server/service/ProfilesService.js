@@ -9,6 +9,8 @@ const GJV = require('geojson-validation');
  * endDate Date date-time formatted string indicating the end of a time period (optional)
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
+ * center List center to measure max radius from (optional)
+ * radius BigDecimal km from centerpoint (optional)
  * ids List List of profile IDs (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
@@ -16,7 +18,7 @@ const GJV = require('geojson-validation');
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -29,7 +31,7 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,ids,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -89,13 +91,15 @@ exports.profile = function(startDate,endDate,polygon,box,ids,platforms,presRange
  * endDate Date date-time formatted string indicating the end of a time period (optional)
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
+ * center List center to measure max radius from (optional)
+ * radius BigDecimal km from centerpoint (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -107,7 +111,7 @@ exports.profileList = function(startDate,endDate,polygon,box,platforms,presRange
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,null,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,presRange)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -236,11 +240,28 @@ const reduce_meas = function(keys, meas) {
   return reduceArray
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ids,platforms,presRange){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
+    // sanity checks
+    if((center && box) || (center && polygon) || (box && polygon)){
+      reject({"code": 400, "message": "Please request only one of box, polygon or center."});
+      return; 
+    }
+
+    if((center && !radius) || (!center && radius)){
+      reject({"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."});
+      return; 
+    }
+
     let aggPipeline = []
+
+    if(center && radius) {
+      // $geoNear must be first in the aggregation pipeline
+      aggPipeline.push({$geoNear: { near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
+      aggPipeline.push({ $unset: "distcalculated" })
+    }
 
     if (startDate){
       aggPipeline.push({$match:  {date: {$gte: startDate}}})
@@ -259,9 +280,6 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,id
       aggPipeline.push({$match: {platform_number: { $in: pform}}})
     }
 
-    if(polygon && box){
-      return {"code": 400, "message": "Please specify only one of polygon or box."};
-    }
     if(polygon) {
       // sanitation
       try {
