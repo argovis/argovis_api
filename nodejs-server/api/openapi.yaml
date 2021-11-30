@@ -253,8 +253,7 @@ paths:
           content:
             application/json:
               schema:
-                type: number
-                x-content-type: application/json
+                $ref: '#/components/schemas/inline_response_200'
         "400":
           description: Bad Request
           content:
@@ -2232,6 +2231,15 @@ components:
           type: integer
         message:
           type: string
+    inline_response_200:
+      required:
+      - integral
+      type: object
+      properties:
+        integral:
+          type: integer
+      example:
+        integral: 0
     platform:
       anyOf:
       - type: string

@@ -49,12 +49,14 @@ exports.findCovar = function(lat,lon,forcastDays) {
  * lon BigDecimal longitude (degrees) of Argo float location
  * forcastDays BigDecimal number of days over which to project Argo float drift
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
- * returns BigDecimal
+ * returns inline_response_200
  **/
 exports.integralCovar = function(lat,lon,forcastDays,polygon) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = 0.8008281904610115;
+    examples['application/json'] = {
+  "integral" : 0
+};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {

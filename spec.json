@@ -173,7 +173,15 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "type": "number"
+                           "type": "object",
+                           "required": [
+                              "integral"
+                           ],
+                           "properties": {
+                              "integral": {
+                                 "type": "integer"
+                              }
+                           }
                         }
                      }
                   }
@@ -686,7 +694,7 @@
                {
                   "$ref": "#/components/parameters/box"
                },
-{
+               {
                   "$ref": "#/components/parameters/center"
                },
                {
