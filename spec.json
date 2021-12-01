@@ -642,6 +642,9 @@
                   "$ref": "#/components/parameters/presRange"
                },
                {
+                  "$ref": "#/components/parameters/dac"
+               },
+               {
                   "$ref": "#/components/parameters/coreMeasurements"
                },
                {
@@ -2086,6 +2089,15 @@
                   "maxItems": 2
                },
                "example": "10,20.1"
+            }
+         },
+         "dac": {
+            "in": "query",
+            "name": "param",
+            "description": "Data Assembly Center",
+            "schema": {
+               "type": "string",
+               "example": ""
             }
          },
          "idList": {
