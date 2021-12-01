@@ -1018,7 +1018,7 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
-      - name: param
+      - name: dac
         in: query
         description: Data Assembly Center
         required: false
@@ -1153,7 +1153,7 @@ paths:
         schema:
           type: number
           example: 0
-      - name: param
+      - name: dac
         in: query
         description: Data Assembly Center
         required: false
@@ -2552,7 +2552,7 @@ components:
           minItems: 2
           type: number
     dac:
-      name: param
+      name: dac
       in: query
       description: Data Assembly Center
       required: false
