@@ -704,6 +704,9 @@
                   "$ref": "#/components/parameters/radius"
                },
                {
+                  "$ref": "#/components/parameters/dac"
+               },
+               {
                   "$ref": "#/components/parameters/platformList"
                },
                {
