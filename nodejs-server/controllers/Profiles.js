@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Profiles = require('../service/ProfilesService');
 
-module.exports.profile = function profile (req, res, next, startDate, endDate, polygon, box, center, radius, ids, platforms, presRange, coreMeasurements, bgcMeasurements) {
-  Profiles.profile(startDate, endDate, polygon, box, center, radius, ids, platforms, presRange, coreMeasurements, bgcMeasurements)
+module.exports.profile = function profile (req, res, next, startDate, endDate, polygon, box, center, radius, ids, platforms, presRange, dac, coreMeasurements, bgcMeasurements) {
+  Profiles.profile(startDate, endDate, polygon, box, center, radius, ids, platforms, presRange, dac, coreMeasurements, bgcMeasurements)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -13,8 +13,8 @@ module.exports.profile = function profile (req, res, next, startDate, endDate, p
     });
 };
 
-module.exports.profileList = function profileList (req, res, next, startDate, endDate, polygon, box, center, radius, platforms, presRange, coreMeasurements, bgcMeasurements) {
-  Profiles.profileList(startDate, endDate, polygon, box, center, radius, platforms, presRange, coreMeasurements, bgcMeasurements)
+module.exports.profileList = function profileList (req, res, next, startDate, endDate, polygon, box, center, radius, dac, platforms, presRange, coreMeasurements, bgcMeasurements) {
+  Profiles.profileList(startDate, endDate, polygon, box, center, radius, dac, platforms, presRange, coreMeasurements, bgcMeasurements)
     .then(function (response) {
       utils.writeJson(res, response);
     })

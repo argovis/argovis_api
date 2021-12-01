@@ -642,6 +642,9 @@
                   "$ref": "#/components/parameters/presRange"
                },
                {
+                  "$ref": "#/components/parameters/dac"
+               },
+               {
                   "$ref": "#/components/parameters/coreMeasurements"
                },
                {
@@ -699,6 +702,9 @@
                },
                {
                   "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/dac"
                },
                {
                   "$ref": "#/components/parameters/platformList"
@@ -2086,6 +2092,15 @@
                   "maxItems": 2
                },
                "example": "10,20.1"
+            }
+         },
+         "dac": {
+            "in": "query",
+            "name": "dac",
+            "description": "Data Assembly Center",
+            "schema": {
+               "type": "string",
+               "example": ""
             }
          },
          "idList": {
