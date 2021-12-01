@@ -14,12 +14,12 @@ const GJV = require('geojson-validation');
  * ids List List of profile IDs (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
- * param String Data Assembly Center (optional)
+ * dac String Data Assembly Center (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,param,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -94,14 +94,14 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
- * param String Data Assembly Center (optional)
+ * dac String Data Assembly Center (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,param,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
