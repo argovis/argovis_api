@@ -73,6 +73,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /profiles", function () {
+      it("should only return CCHDO profiles", async function () {
+        const response = await request.get("/profiles?ids=4902911_107,337566314.951_213&dac=CCHDO").set({'x-argokey': 'developer'});
+        dacs = response.body.map(p => p.dac)
+        s = new Set(dacs)
+        expect(Array.from(s)).to.eql(['CCHDO'])
+      });
+    });
+
     describe("GET /profiles/overview", function () {
       it("summarizes profile collection", async function () {
         const response = await request.get("/profiles/overview").set({'x-argokey': 'developer'});

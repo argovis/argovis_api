@@ -14,11 +14,12 @@ const GJV = require('geojson-validation');
  * ids List List of profile IDs (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
+ * dac String Data Assembly Center (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -31,7 +32,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -93,13 +94,14 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
+ * dac String Data Assembly Center (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,platforms,presRange,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -111,7 +113,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,platf
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,presRange,dac)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -240,7 +242,7 @@ const reduce_meas = function(keys, meas) {
   return reduceArray
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -322,6 +324,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     if(presRange) {
       aggPipeline.push(pressureWindow('measurements', presRange[0], presRange[1]))
       aggPipeline.push(pressureWindow('bgcMeas', presRange[0], presRange[1]))
+    }
+
+    if(dac){
+      aggPipeline.push({ $match : { dac : dac } })
     }
 
     return aggPipeline
