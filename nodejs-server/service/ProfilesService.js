@@ -32,7 +32,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -113,7 +113,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,p
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,presRange)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,presRange,dac)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -242,7 +242,7 @@ const reduce_meas = function(keys, meas) {
   return reduceArray
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -324,6 +324,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     if(presRange) {
       aggPipeline.push(pressureWindow('measurements', presRange[0], presRange[1]))
       aggPipeline.push(pressureWindow('bgcMeas', presRange[0], presRange[1]))
+    }
+
+    if(dac){
+      aggPipeline.push({ $match : { dac : dac } })
     }
 
     return aggPipeline
