@@ -13,11 +13,12 @@
  * ids List List of profile IDs (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
+ * param String Data Assembly Center (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,param,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

@@ -1018,6 +1018,15 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
+      - name: param
+        in: query
+        description: Data Assembly Center
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: ""
       - name: coreMeasurements
         in: query
         description: Keys of core measurements to include
@@ -2533,6 +2542,16 @@ components:
           maxItems: 2
           minItems: 2
           type: number
+    dac:
+      name: param
+      in: query
+      description: Data Assembly Center
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: ""
     idList:
       name: ids
       in: query
