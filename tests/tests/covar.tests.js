@@ -33,11 +33,11 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    describe("GET /covarIntegral", function () {
+    describe("GET /covarSum", function () {
       it("sums up part of a covar grid", async function () {
-        const response = await request.get("/covarIntegral?lon=98&lat=-58&forcastDays=140&polygon=[[-56.2,99],[-55.8,99],[-55.8,103],[-56.2,103],[-56.2,99]]").set({'x-argokey': 'developer'});    
+        const response = await request.get("/covarSum?lon=98&lat=-58&forcastDays=140&polygon=[[-56.2,99],[-55.8,99],[-55.8,103],[-56.2,103],[-56.2,99]]").set({'x-argokey': 'developer'});    
 
-        expect(response.body.integral).to.eql(0.14285714285714285+0.07142857142857142);
+        expect(response.body.sum).to.eql(0.14285714285714285+0.07142857142857142);
       });
     });
   }

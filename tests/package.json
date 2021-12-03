@@ -10,6 +10,7 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "chai": "^4.3.4",
+    "chai-almost": "^1.0.1",
     "chai-json-schema": "^1.5.1",
     "mocha": "^9.1.1",
     "supertest": "^6.1.6"
