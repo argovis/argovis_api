@@ -43,7 +43,7 @@ exports.findCovar = function(lat,lon,forcastDays) {
 
 
 /**
- * Integral of probability distribution field over a region for a float starting at point lat-lon after forcastDays.
+ * Sum of probability distribution field over a region for a float starting at point lat-lon after forcastDays.
  *
  * lat BigDecimal latitude (degrees) of Argo float location
  * lon BigDecimal longitude (degrees) of Argo float location
@@ -51,11 +51,11 @@ exports.findCovar = function(lat,lon,forcastDays) {
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
  * returns inline_response_200
  **/
-exports.integralCovar = function(lat,lon,forcastDays,polygon) {
+exports.sumCovar = function(lat,lon,forcastDays,polygon) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "integral" : 0
+  "sum" : 0
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
