@@ -13,8 +13,8 @@ module.exports.findCovar = function findCovar (req, res, next, lat, lon, forcast
     });
 };
 
-module.exports.integralCovar = function integralCovar (req, res, next, lat, lon, forcastDays, polygon) {
-  Covar.integralCovar(lat, lon, forcastDays, polygon)
+module.exports.sumCovar = function sumCovar (req, res, next, lat, lon, forcastDays, polygon) {
+  Covar.sumCovar(lat, lon, forcastDays, polygon)
     .then(function (response) {
       utils.writeJson(res, response);
     })
