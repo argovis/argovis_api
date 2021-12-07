@@ -24,7 +24,6 @@ const stack = app._router.stack;
 const lastEntries = stack.splice(app._router.stack.length - 1);  // since we're adding 1 custom middleware
 const firstEntries = stack.splice(0, 15); // adding our middleware after the first 15, tbd constraints (putting it after the first 5-10 breaks /docs)
 app._router.stack = [...firstEntries, ...lastEntries, ...stack];
-console.log(app._router.stack)
 // end custom middleware injection ///////////////
 
 // Initialize the Swagger middleware
