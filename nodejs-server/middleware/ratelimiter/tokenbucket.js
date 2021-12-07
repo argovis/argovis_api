@@ -17,6 +17,12 @@ module.exports.tokenbucket = function (req, res, next) {
 	let bucketsize = 10
 	let tokenrespawntime = 1000
 
+	// allow all requests to docs
+	if(req['url'] == '/docs/'){
+		next()
+		return
+	}
+
 	hgetallAsync(req.headers['x-argokey'])
 	.then(userbucket => {
 		let d = new Date()
