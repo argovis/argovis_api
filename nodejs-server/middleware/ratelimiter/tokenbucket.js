@@ -16,6 +16,10 @@ module.exports.tokenbucket = function (req, res, next) {
 
 	let bucketsize = 10
 	let tokenrespawntime = 1000
+	let argokey = 'guest'
+	if(req.headers['x-argokey']){
+		argokey = req.headers['x-argokey']
+	}
 
 	// allow all requests to docs
 	if(req['url'] == '/docs/'){
@@ -23,18 +27,18 @@ module.exports.tokenbucket = function (req, res, next) {
 		return
 	}
 
-	hgetallAsync(req.headers['x-argokey'])
+	hgetallAsync(argokey)
 	.then(userbucket => {
 		let d = new Date()
 		let t = d.getTime()
 		if(userbucket == null){
-      // need to go find key in mongo and populate redis
-      return new Promise(lookup.bind(null, req.headers['x-argokey']))
-      	.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t, "superuser", user.tokenvalid==9999)})
-      	.then(() => {return {"key": req.headers['x-argokey'], "ntokens": bucketsize, "lastUpdate": t, "superuser": user.tokenvalid==9999}})
+     		// need to go find key in mongo and populate redis
+      		return new Promise(lookup.bind(null, argokey))
+      		.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t, "superuser", user.tokenvalid==9999)})
+      		.then(() => {return {"key": argokey, "ntokens": bucketsize, "lastUpdate": t, "superuser": user.tokenvalid==9999}})
 		} else {
 			// found the user's usage data in redis and can just hand it back.
-			return {"key": req.headers['x-argokey'], "ntokens": Number(userbucket.ntokens), "lastUpdate": Number(userbucket.lastUpdate), "superuser": userbucket.superuser==='true'}
+			return {"key": argokey, "ntokens": Number(userbucket.ntokens), "lastUpdate": Number(userbucket.lastUpdate), "superuser": userbucket.superuser==='true'}
 		}
 	})
 	.then(userbucket => {
