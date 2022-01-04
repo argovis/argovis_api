@@ -645,6 +645,9 @@
                   "$ref": "#/components/parameters/dac"
                },
                {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
                   "$ref": "#/components/parameters/coreMeasurements"
                },
                {
@@ -2101,6 +2104,15 @@
             "schema": {
                "type": "string",
                "example": ""
+            }
+         },
+         "compression": {
+            "in": "query",
+            "name": "compression",
+            "description": "Data compression strategy",
+            "schema": {
+               "type": "string",
+               "example": "basic-minification"
             }
          },
          "idList": {

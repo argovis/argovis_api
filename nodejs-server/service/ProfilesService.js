@@ -14,11 +14,12 @@
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
+ * compression String Data compression strategy (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,compression,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
