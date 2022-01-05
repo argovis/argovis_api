@@ -1,6 +1,7 @@
 'use strict';
 const Profile = require('../models/profile');
 const GJV = require('geojson-validation');
+const helpers = require('./helpers')
 
 /**
  * Search, reduce and download profile data.
@@ -15,11 +16,12 @@ const GJV = require('geojson-validation');
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
+ * compression String Data compression strategy (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,compression,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -60,6 +62,11 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
         reject({"code": 500, "message": "Server error"});
         return;
       }
+
+      // for(let i=0; i<profiles.length; i++){
+      //   if(profiles[i].measurements && Array.isArray(profiles[i].measurements[0]) ) profiles[i].measurements = profiles[i].measurements.map(m => helpers.arrayinflate(profiles[i].station_parameters, m))
+      //   if(profiles[i].bgcMeas && Array.isArray(profiles[i].bgcMeas[0])) profiles[i].bgcMeas = profiles[i].bgcMeas.map(m => helpers.arrayinflate(profiles[i].bgcMeasKeys.concat(profiles[i].bgcMeasKeys.map(k=>k+'_qc')), m))
+      // }
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
@@ -290,6 +297,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
       }
 
+      if(!helpers.validlonlat(polygon)){
+        return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+      }
+
       polygon = {
         "type": "Polygon",
         "coordinates": [polygon]
@@ -298,6 +309,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
       if(!GJV.valid(polygon)){
         return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
       }
+
       aggPipeline.push({$match: {geoLocation: {$geoWithin: {$geometry: polygon}}}})
     }
 
@@ -316,6 +328,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
          typeof box[1][0] != 'number' || 
          typeof box[1][1] != 'number') {
         return {"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
+      }
+
+      if(!helpers.validlonlat(box)){
+        return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
       }
 
       aggPipeline.push({$match: {geoLocation: {$geoWithin: {$box: box}}}})
