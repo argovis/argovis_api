@@ -63,10 +63,10 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
         return;
       }
 
-      for(let i=0; i<profiles.length; i++){
-        if(profiles[i].measurements && Array.isArray(profiles[i].measurements[0]) ) profiles[i].measurements = profiles[i].measurements.map(m => arrayinflate(profiles[i].station_parameters, m))
-        if(profiles[i].bgcMeas && Array.isArray(profiles[i].bgcMeas[0])) profiles[i].bgcMeas = profiles[i].bgcMeas.map(m => arrayinflate(profiles[i].bgcMeasKeys.concat(profiles[i].bgcMeasKeys.map(k=>k+'_qc')), m))
-      }
+      // for(let i=0; i<profiles.length; i++){
+      //   if(profiles[i].measurements && Array.isArray(profiles[i].measurements[0]) ) profiles[i].measurements = profiles[i].measurements.map(m => helpers.arrayinflate(profiles[i].station_parameters, m))
+      //   if(profiles[i].bgcMeas && Array.isArray(profiles[i].bgcMeas[0])) profiles[i].bgcMeas = profiles[i].bgcMeas.map(m => helpers.arrayinflate(profiles[i].bgcMeasKeys.concat(profiles[i].bgcMeasKeys.map(k=>k+'_qc')), m))
+      // }
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
@@ -91,14 +91,6 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
     })
   }
 )}
-
-const arrayinflate = function(keys, measarray){
-  let meas = {}
-  for(let i=0; i<keys.length; i++){
-    meas[keys[i]] = measarray[i]
-  }
-  return meas
-}
 
 /**
  * List profile IDs that match a search

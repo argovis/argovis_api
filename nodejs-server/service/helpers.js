@@ -37,6 +37,14 @@ module.exports.geoWeightedSum = function(terms){
     return sum
 }
 
+module.exports.arrayinflate = function(keys, measarray){
+  let meas = {}
+  for(let i=0; i<keys.length; i++){
+    meas[keys[i]] = measarray[i]
+  }
+  return meas
+}
+
 module.exports.validlonlat = function(shape){
     // shape: array of lon lat arrays, [[lon 0, lat 0], [lon 1, lat 1], [lon 2, lat 2]...]
     // returns true if all longitudes are in -180 to 180 and all latitudes are in -90 to 90, as required by mongo's geojson representation.
