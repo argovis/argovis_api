@@ -1,6 +1,7 @@
 'use strict';
 const Profile = require('../models/profile');
 const GJV = require('geojson-validation');
+const helpers = require('./helpers')
 
 /**
  * Search, reduce and download profile data.
@@ -304,6 +305,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
       }
 
+      if(!helpers.validlonlat(polygon)){
+        return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+      }
+
       polygon = {
         "type": "Polygon",
         "coordinates": [polygon]
@@ -312,6 +317,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
       if(!GJV.valid(polygon)){
         return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
       }
+
       aggPipeline.push({$match: {geoLocation: {$geoWithin: {$geometry: polygon}}}})
     }
 
@@ -330,6 +336,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
          typeof box[1][0] != 'number' || 
          typeof box[1][1] != 'number') {
         return {"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
+      }
+
+      if(!helpers.validlonlat(box)){
+        return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
       }
 
       aggPipeline.push({$match: {geoLocation: {$geoWithin: {$box: box}}}})

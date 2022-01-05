@@ -32,5 +32,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(sum).to.almost.equal(2*Math.PI)  
       });
     }); 
+
+    describe("validlonlat", function () {
+      it("flags an invalid longitude", async function () {
+        points = [[-185.2236986,70.1153552],[-183.9932299,56.4218209],[-155.5166674,56.7123646],[-154.1104174,69.8748184],[-185.2236986,70.1153552]]
+        expect(helpers.validlonlat(points)).to.be.false  
+      });
+    }); 
   }
 })
