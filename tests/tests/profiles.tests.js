@@ -122,6 +122,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/profiles?startDate=2019-07-04T03:03:00Z&endDate=2019-09-04T03:03:00Z&bgcMeasurements=doxy").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
+    });   
+
+    describe("GET /profiles", function () {
+      it("finds a core temperature measurement on the given day", async function () {
+        const response = await request.get("/profiles?startDate=2019-12-03T00:00:00Z&endDate=2019-12-04T00:00:00Z&coreMeasurements=temp").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(200);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("fails to find a core salinity measurement on the given day", async function () {
+        const response = await request.get("/profiles?startDate=2019-12-03T00:00:00Z&endDate=2019-12-04T00:00:00Z&coreMeasurements=psal").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
     });        
   }
 })
