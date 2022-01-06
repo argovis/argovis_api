@@ -136,6 +136,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/profiles?startDate=2019-12-03T00:00:00Z&endDate=2019-12-04T00:00:00Z&coreMeasurements=psal").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
+    });
+
+    describe("GET /profiles", function () {
+      it("drops profile that doesn't have any of the requested measurements", async function () {
+        const response = await request.get("/profiles?ids=6902908_119D&coreMeasurements=psal&bgcMeasurements=doxy_btl").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
     });        
   }
 })
