@@ -52,7 +52,7 @@
       },
       {
          "name": "profiles",
-         "description": "Profile data, including BCG and profile metadata"
+         "description": "Profile data, including BGC and profile metadata"
       },
       {
          "name": "platforms",
@@ -643,6 +643,9 @@
                },
                {
                   "$ref": "#/components/parameters/dac"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
                },
                {
                   "$ref": "#/components/parameters/coreMeasurements"
@@ -1431,7 +1434,10 @@
                "PARAMETER_DATA_MODE": {
                   "type": "array",
                   "items": {
-                     "type": "string"
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
                   }
                },
                "DATA_CENTRE": {
@@ -2101,6 +2107,15 @@
             "schema": {
                "type": "string",
                "example": ""
+            }
+         },
+         "compression": {
+            "in": "query",
+            "name": "compression",
+            "description": "Data compression strategy",
+            "schema": {
+               "type": "string",
+               "example": "basic-minification"
             }
          },
          "idList": {

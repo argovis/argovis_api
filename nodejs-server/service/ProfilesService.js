@@ -14,11 +14,12 @@
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
+ * compression String Data compression strategy (optional)
  * coreMeasurements List Keys of core measurements to include (optional)
  * bgcMeasurements List Keys of BGC measurements to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,compression,coreMeasurements,bgcMeasurements) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -60,7 +61,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "DATA_CENTRE" : "DATA_CENTRE",
   "url" : "url",
   "nc_url" : "nc_url",
-  "PARAMETER_DATA_MODE" : [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ],
+  "PARAMETER_DATA_MODE" : [ [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ], [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ] ],
   "date_added" : "2000-01-23T04:56:07.000+00:00",
   "cycle_number" : 6,
   "PI_NAME" : "PI_NAME",
@@ -116,7 +117,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "DATA_CENTRE" : "DATA_CENTRE",
   "url" : "url",
   "nc_url" : "nc_url",
-  "PARAMETER_DATA_MODE" : [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ],
+  "PARAMETER_DATA_MODE" : [ [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ], [ "PARAMETER_DATA_MODE", "PARAMETER_DATA_MODE" ] ],
   "date_added" : "2000-01-23T04:56:07.000+00:00",
   "cycle_number" : 6,
   "PI_NAME" : "PI_NAME",
