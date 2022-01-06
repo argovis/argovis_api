@@ -32,7 +32,7 @@ tags:
   description: "Gridded products derived from Argo floats, simulation, or satalite\
     \ product"
 - name: profiles
-  description: "Profile data, including BCG and profile metadata"
+  description: "Profile data, including BGC and profile metadata"
 - name: platforms
   description: Platform metadata
 - name: dacs
@@ -1852,7 +1852,9 @@ components:
         PARAMETER_DATA_MODE:
           type: array
           items:
-            type: string
+            type: array
+            items:
+              type: string
         DATA_CENTRE:
           type: string
         DIRECTION:
@@ -1950,8 +1952,10 @@ components:
         url: url
         nc_url: nc_url
         PARAMETER_DATA_MODE:
-        - PARAMETER_DATA_MODE
-        - PARAMETER_DATA_MODE
+        - - PARAMETER_DATA_MODE
+          - PARAMETER_DATA_MODE
+        - - PARAMETER_DATA_MODE
+          - PARAMETER_DATA_MODE
         date_added: 2000-01-23T04:56:07.000+00:00
         cycle_number: 6
         PI_NAME: PI_NAME
