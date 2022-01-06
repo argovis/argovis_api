@@ -41,6 +41,16 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return;
     }
 
+    // will need original measurement requests later, copy before mutating
+    let origCoreMeasurements = []
+    let origBgcMeasurements = []
+    if(coreMeasurements) {
+      origCoreMeasurements = JSON.parse(JSON.stringify(coreMeasurements))
+    }
+    if(bgcMeasurements) {
+      origBgcMeasurements = JSON.parse(JSON.stringify(bgcMeasurements))
+    }
+
     // measurement filtering: drop keys from measurements and bgcMeas if not desired
     if(coreMeasurements && !coreMeasurements.includes('all')) {
       if (!coreMeasurements.includes('pres')) coreMeasurements.push('pres')
@@ -70,16 +80,16 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), origCoreMeasurements)) || origCoreMeasurements.includes('all') )))
       }
       if(!coreMeasurements && bgcMeasurements){
         // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), origBgcMeasurements)) || origBgcMeasurements.includes('all')) ))
       }
       if(coreMeasurements && bgcMeasurements){
         // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
-                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
+        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), origCoreMeasurements)) || origCoreMeasurements.includes('all') ) )) || 
+                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), origBgcMeasurements)) || origBgcMeasurements.includes('all')) )))
       }
 
       if(profiles.length == 0) {
@@ -149,16 +159,16 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,p
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), coreMeasurements)) || coreMeasurements.includes('all') )))
       }
       if(!coreMeasurements && bgcMeasurements){
         // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), bgcMeasurements)) || bgcMeasurements.includes('all')) ))
       }
       if(coreMeasurements && bgcMeasurements){
         // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
-                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
+        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), coreMeasurements)) || coreMeasurements.includes('all') ) )) || 
+                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), bgcMeasurements)) || bgcMeasurements.includes('all')) )))
       }
 
       if(profiles.length == 0) {

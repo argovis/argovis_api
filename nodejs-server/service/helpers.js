@@ -52,3 +52,8 @@ module.exports.validlonlat = function(shape){
     return shape.every(point => point[0] >= -180 && point[0] <= 180 && point[1] >= -90 && point[1] <= 90)
 
 }
+
+module.exports.intersects = function(arrayA, arrayB){
+    // returns true if arrayA and arrayB have at least one element in common
+    return arrayA.filter(value => arrayB.includes(value)).length > 0
+}
