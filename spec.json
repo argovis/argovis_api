@@ -52,7 +52,7 @@
       },
       {
          "name": "profiles",
-         "description": "Profile data, including BCG and profile metadata"
+         "description": "Profile data, including BGC and profile metadata"
       },
       {
          "name": "platforms",
@@ -1434,7 +1434,10 @@
                "PARAMETER_DATA_MODE": {
                   "type": "array",
                   "items": {
-                     "type": "string"
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
                   }
                },
                "DATA_CENTRE": {
