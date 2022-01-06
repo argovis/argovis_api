@@ -115,6 +115,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/profiles/listID?startDate=2019-07-04T03:03:00Z&endDate=2019-09-04T03:03:00Z&bgcMeasurements=doxy").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
+    });  
+
+    describe("GET /profiles", function () {
+      it("fails to find any dissolved oxygen in BGC measurements", async function () {
+        const response = await request.get("/profiles?startDate=2019-07-04T03:03:00Z&endDate=2019-09-04T03:03:00Z&bgcMeasurements=doxy").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
     });        
   }
 })
