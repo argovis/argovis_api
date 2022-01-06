@@ -159,16 +159,16 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,p
 
       if(coreMeasurements && !bgcMeasurements){
         // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), coreMeasurements)) || coreMeasurements.includes('all') )))
       }
       if(!coreMeasurements && bgcMeasurements){
         // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0))))
+        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), bgcMeasurements)) || bgcMeasurements.includes('all')) ))
       }
       if(coreMeasurements && bgcMeasurements){
         // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => Object.keys(elt).length!=0)))) || 
-                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => Object.keys(elt).length!=0)))))
+        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), coreMeasurements)) || coreMeasurements.includes('all') ) )) || 
+                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), bgcMeasurements)) || bgcMeasurements.includes('all')) )))
       }
 
       if(profiles.length == 0) {
