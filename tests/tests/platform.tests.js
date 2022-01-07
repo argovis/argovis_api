@@ -25,6 +25,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /platforms/mostRecent", function () {
+      it("provides recent status info for selected platforms", async function () {
+        const response = await request.get("/platforms/mostRecent?platforms=4902911,6902908").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/platforms/mostRecent'].get.responses['200'].content['application/json'].schema);   
+      });
+    });
+
     describe("GET /platforms/bgcList", function () {
       it("lists all platforms that provide BGC data", async function () {
         const response = await request.get("/platforms/bgcList").set({'x-argokey': 'developer'});
