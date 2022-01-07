@@ -33,11 +33,13 @@ exports.bgcPlatformList = function() {
 
 
 /**
- * Provides a list of all platforms with their most recent known report and position.
+ * Provides a list of platforms (all by default) with their most recent known report and position. Can filter down to only those platforms with their latest profile within a polygon.
  *
+ * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
+ * platforms List List of platform IDs (optional)
  * returns List
  **/
-exports.platformList = function() {
+exports.platformList = function(polygon,platforms) {
   return new Promise(function(resolve, reject) {
     const query = Profile.aggregate([
       {$sort: { 'date':-1}},
