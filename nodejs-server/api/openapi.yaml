@@ -1327,21 +1327,9 @@ paths:
       tags:
       - platforms
       summary: Provides a list of platforms (all by default) with their most recent
-        known report and position. Can filter down to only those platforms with their
-        latest profile within a polygon.
+        known report and position.
       operationId: platformList
       parameters:
-      - name: polygon
-        in: query
-        description: "array of [lon, lat] vertices describing a polygon; final point\
-          \ must match initial point"
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
       - name: platforms
         in: query
         description: List of platform IDs
