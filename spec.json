@@ -818,8 +818,13 @@
             "tags": [
                "platforms"
             ],
-            "summary": "Provides a list of all platforms with their most recent known report and position.",
+            "summary": "Provides a list of platforms (all by default) with their most recent known report and position.",
             "operationId": "platformList",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/platformList"
+               }
+            ],
             "responses": {
                "200": {
                   "description": "OK",

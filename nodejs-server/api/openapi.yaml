@@ -1326,9 +1326,23 @@ paths:
     get:
       tags:
       - platforms
-      summary: Provides a list of all platforms with their most recent known report
-        and position.
+      summary: Provides a list of platforms (all by default) with their most recent
+        known report and position.
       operationId: platformList
+      parameters:
+      - name: platforms
+        in: query
+        description: List of platform IDs
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            anyOf:
+            - type: string
+            - type: number
       responses:
         "200":
           description: OK

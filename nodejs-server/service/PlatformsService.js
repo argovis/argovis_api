@@ -20,11 +20,12 @@ exports.bgcPlatformList = function() {
 
 
 /**
- * Provides a list of all platforms with their most recent known report and position.
+ * Provides a list of platforms (all by default) with their most recent known report and position.
  *
+ * platforms List List of platform IDs (optional)
  * returns List
  **/
-exports.platformList = function() {
+exports.platformList = function(platforms) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
