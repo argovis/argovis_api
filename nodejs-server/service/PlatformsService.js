@@ -33,24 +33,37 @@ exports.bgcPlatformList = function() {
 
 
 /**
- * Provides a list of all platforms with their most recent known report and position.
+ * Provides a list of platforms (all by default) with their most recent known report and position.
  *
+ * platforms List List of platform IDs (optional)
  * returns List
  **/
-exports.platformList = function() {
+exports.platformList = function(platforms) {
   return new Promise(function(resolve, reject) {
-    const query = Profile.aggregate([
-      {$sort: { 'date':-1}},
-      {$group: {_id: '$platform_number',
-                platform_number: {$first: '$platform_number'},
-                most_recent_date: {$max: '$date'},
-                number_of_profiles: {$sum: 1},
-                cycle_number: {$first: '$cycle_number'},
-                geoLocation: {$first: '$geoLocation'}, 
-                dac: {$first: '$dac'}
-              }
-      }
-    ])
+
+    let aggPipeline = []
+
+    // focus on a list of platforms, if provided
+    if(platforms) {
+      let pform = platforms.concat(platforms.map(x => Number(x))).filter(x => !Number.isNaN(x))
+      aggPipeline.push({$match: {platform_number: { $in: pform}}})
+    }
+
+    // sort everyting remaining by date
+    aggPipeline.push({$sort: { 'date':-1}})
+
+    // group by platform and find the latest for each
+    aggPipeline.push({$group: { _id: '$platform_number',
+                                platform_number: {$first: '$platform_number'},
+                                most_recent_date: {$max: '$date'},
+                                number_of_profiles: {$sum: 1},
+                                cycle_number: {$first: '$cycle_number'},
+                                geoLocation: {$first: '$geoLocation'}, 
+                                dac: {$first: '$dac'}
+                              }
+                    })
+
+    const query = Profile.aggregate(aggPipeline)
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
