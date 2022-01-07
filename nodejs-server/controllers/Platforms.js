@@ -13,8 +13,8 @@ module.exports.bgcPlatformList = function bgcPlatformList (req, res, next) {
     });
 };
 
-module.exports.platformList = function platformList (req, res, next, polygon, platforms) {
-  Platforms.platformList(polygon, platforms)
+module.exports.platformList = function platformList (req, res, next, platforms) {
+  Platforms.platformList(platforms)
     .then(function (response) {
       utils.writeJson(res, response);
     })

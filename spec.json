@@ -818,12 +818,9 @@
             "tags": [
                "platforms"
             ],
-            "summary": "Provides a list of platforms (all by default) with their most recent known report and position. Can filter down to only those platforms with their latest profile within a polygon.",
+            "summary": "Provides a list of platforms (all by default) with their most recent known report and position.",
             "operationId": "platformList",
             "parameters": [
-               {
-                  "$ref": "#/components/parameters/polygon"
-               },
                {
                   "$ref": "#/components/parameters/platformList"
                }
