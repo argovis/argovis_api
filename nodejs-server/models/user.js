@@ -9,7 +9,8 @@ var userSchema = Schema(
     last: {type: String, required: true},
     key: {type: String, required: true},
     email: {type: String, required: true},
-    tokenvalid: {type: Number, required: true}
+    tokenValid: {type: Number, required: true},
+    affiliation: {type: String, required: false}
   }
 );
 
