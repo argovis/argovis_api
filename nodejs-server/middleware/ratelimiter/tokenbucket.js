@@ -34,8 +34,8 @@ module.exports.tokenbucket = function (req, res, next) {
 		if(userbucket == null){
      		// need to go find key in mongo and populate redis
       		return new Promise(lookup.bind(null, argokey))
-      		.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t, "superuser", user.tokenvalid==9999)})
-      		.then(() => {return {"key": argokey, "ntokens": bucketsize, "lastUpdate": t, "superuser": user.tokenvalid==9999}})
+      		.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t, "superuser", user.tokenValid==9999)})
+      		.then(() => {return {"key": argokey, "ntokens": bucketsize, "lastUpdate": t, "superuser": user.tokenValid==9999}})
 		} else {
 			// found the user's usage data in redis and can just hand it back.
 			return {"key": argokey, "ntokens": Number(userbucket.ntokens), "lastUpdate": Number(userbucket.lastUpdate), "superuser": userbucket.superuser==='true'}
@@ -73,11 +73,11 @@ let lookup = function(apikey, resolve, reject){
         	reject({"code": 404, "message": "Not found: User key not found in database."});
         	return;
     	}
-    	if(!user[0].toObject().tokenvalid){
-    		reject({"code": 403, "message": "API token not valid - did you confirm your email address?"})
+    	if(!user[0].toObject().tokenValid){
+    		reject({"code": 403, "message": "API token has been deactivated; please contact argovis@colorado.edu for assistance."})
     		return;
     	}
-    
+
     	resolve(user[0].toObject())
   	})
 }
