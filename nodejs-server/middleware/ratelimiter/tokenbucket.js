@@ -13,9 +13,9 @@ const user = require('../../models/user');
 module.exports = {}
 
 module.exports.tokenbucket = function (req, res, next) {
-
-	let bucketsize = 10
-	let tokenrespawntime = 1000
+	let bucketsize = 100
+	let tokenrespawntime = 500
+	let requestCost = 1 //default cost, for metadata-only requests
 	let argokey = 'guest'
 	if(req.headers['x-argokey']){
 		argokey = req.headers['x-argokey']
@@ -49,10 +49,11 @@ module.exports.tokenbucket = function (req, res, next) {
 		let d = new Date()
 		let t = d.getTime()
 		let tokensnow = Math.min(userbucket.ntokens + Math.round((t - userbucket.lastUpdate)/tokenrespawntime), bucketsize)
-		if(tokensnow > 0){
-			hsetAsync(userbucket.key, "ntokens", Math.max(tokensnow-1,0), "lastUpdate", t).then(next())
+		requestCost = cost(req['url'])
+		if(tokensnow-requestCost >= 0){
+			hsetAsync(userbucket.key, "ntokens", Math.max(tokensnow-requestCost,0), "lastUpdate", t).then(next())
 		} else {
-			throw({"code": 403, "message": "You have temporarily exceeded your API request limit. Try again in a minute, but limit your requests to small bursts, or one request per second long term."})
+			throw({"code": 403, "message": "You have temporarily exceeded your API request limit. Try again in a minute, but limit your requests to small bursts, or wait a few seconds between requests long term."})
 		}
 	})
 	.catch(err => {
@@ -80,4 +81,16 @@ let lookup = function(apikey, resolve, reject){
 
     	resolve(user[0].toObject())
   	})
+}
+
+let cost = function(url){
+	// make routes that return full profiles or grids more expensive than metadata-only requests
+    let c = 1
+    let highCostRoutes = ['coreMeasurements', 'bgcMeas', 'grid', 'covar']
+
+    if(highCostRoutes.some(x => url.includes(x))){
+    	c = 20 // tuned to allow a large request every 10s, which is about how long a 20 MB (approx one day of full profiles) will take to download on a typical 15 Mbit pipe, thus accommodating sync but not huge async requests.
+    }
+
+    return c
 }
