@@ -22,7 +22,7 @@ var geolocation = Schema({
 
 var datakey = Schema({
   type: String,
-  enum: ['pres','temp','psal','cndx','doxy','chla','cdom','nitrate','bbp700','down_irradiance412','down_irradiance442','down_irradiance490','downwelling_par','doxy_molar','pres_qc','temp_qc','psal_qc','cndx_qc','doxy_qc','chla_qc','cdom_qc','nitrate_qc','bbp700_qc','down_irradiance412_qc','down_irradiance442_qc','down_irradiance490_qc','downwelling_par_qc','doxy_molar_qc', 'temp_synth', 'temp_synth_qc', 'psal_synth', 'psal_stynth_qc']
+  enum: ['pres','temp','psal','cndx','doxy','chla','cdom','nitrate','bbp700','down_irradiance412','down_irradiance442','down_irradiance490','downwelling_par','doxy_molar','pres_qc','temp_qc','psal_qc','cndx_qc','doxy_qc','chla_qc','cdom_qc','nitrate_qc','bbp700_qc','down_irradiance412_qc','down_irradiance442_qc','down_irradiance490_qc','downwelling_par_qc', 'molar_doxy', 'molar_doxy_qc', 'temp_synth', 'temp_synth_qc', 'psal_synth', 'psal_stynth_qc']
 })
 
 var ProfileSchema = Schema(
