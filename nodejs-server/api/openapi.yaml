@@ -2068,6 +2068,18 @@ components:
           type: number
         downwelling_par_qc:
           type: string
+        temp_synth:
+          type: number
+        temp_synth_qc:
+          type: integer
+        psal_synth:
+          type: number
+        psal_synth_qc:
+          type: integer
+        molar_doxy:
+          type: number
+        molar_doxy_qc:
+          type: string
     goshipBgcMeasurement: {}
     bgcMeasurementKey:
       type: string
@@ -2361,6 +2373,7 @@ components:
         lon:
           type: number
         value: {}
+      example: null
   responses:
     badRequest:
       description: Bad Request
