@@ -30,25 +30,25 @@ exports.platformList = function() {
     examples['application/json'] = [ {
   "cycle_number" : 6,
   "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
-  "geoLocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
   "dac" : "dac",
   "platform_number" : "",
   "number_of_profiles" : 0,
-  "_id" : ""
+  "_id" : "",
+  "geolocation" : {
+    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
+    "type" : "type"
+  }
 }, {
   "cycle_number" : 6,
   "most_recent_date" : "2000-01-23T04:56:07.000+00:00",
-  "geoLocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
   "dac" : "dac",
   "platform_number" : "",
   "number_of_profiles" : 0,
-  "_id" : ""
+  "_id" : "",
+  "geolocation" : {
+    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
+    "type" : "type"
+  }
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);

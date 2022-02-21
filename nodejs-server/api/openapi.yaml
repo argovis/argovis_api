@@ -1036,9 +1036,9 @@ paths:
         schema:
           type: string
           example: basic-minification
-      - name: coreMeasurements
+      - name: data
         in: query
-        description: Keys of core measurements to include
+        description: Keys of data to include
         required: false
         style: form
         explode: false
@@ -1046,18 +1046,7 @@ paths:
         schema:
           type: array
           items:
-            $ref: '#/components/schemas/coreMeasurementKey'
-      - name: bgcMeasurements
-        in: query
-        description: Keys of BGC measurements to include
-        required: false
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/bgcMeasurementKey'
+            $ref: '#/components/schemas/dataKey'
       responses:
         "200":
           description: OK
@@ -1198,9 +1187,9 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
-      - name: coreMeasurements
+      - name: data
         in: query
-        description: Keys of core measurements to include
+        description: Keys of data to include
         required: false
         style: form
         explode: false
@@ -1208,18 +1197,7 @@ paths:
         schema:
           type: array
           items:
-            $ref: '#/components/schemas/coreMeasurementKey'
-      - name: bgcMeasurements
-        in: query
-        description: Keys of BGC measurements to include
-        required: false
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          items:
-            $ref: '#/components/schemas/bgcMeasurementKey'
+            $ref: '#/components/schemas/dataKey'
       responses:
         "200":
           description: OK
@@ -1437,7 +1415,7 @@ components:
       - _id
       - date
       - date_formatted
-      - geoLocation
+      - geolocation
       - shapeId
       type: object
       properties:
@@ -1448,7 +1426,7 @@ components:
           format: date-time
         shapeId:
           type: integer
-        geoLocation:
+        geolocation:
           $ref: '#/components/schemas/geoJSONpolygon'
         date_formateed:
           type: string
@@ -1457,14 +1435,14 @@ components:
         date: 2000-01-23T04:56:07.000+00:00
         date_formateed: 2000-01-23
         shapeId: 0
-        geoLocation:
+        _id: _id
+        geolocation:
           coordinates:
           - - 6.02745618307040320615897144307382404804229736328125
             - 6.02745618307040320615897144307382404804229736328125
           - - 6.02745618307040320615897144307382404804229736328125
             - 6.02745618307040320615897144307382404804229736328125
           type: type
-        _id: _id
     CovarSchema:
       required:
       - _id
@@ -1472,7 +1450,7 @@ components:
       - dLong
       - features
       - forcastDays
-      - geoLocation
+      - geolocation
       type: object
       properties:
         features:
@@ -1487,7 +1465,7 @@ components:
           type: number
         forcastDays:
           type: integer
-        geoLocation:
+        geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
       example:
         features:
@@ -1507,9 +1485,9 @@ components:
           properties: {}
         dLat: 6.02745618307040320615897144307382404804229736328125
         dLong: 1.46581298050294517310021547018550336360931396484375
-        geoLocation: null
         _id: _id
         forcastDays: 5
+        geolocation: null
     tcSchema:
       required:
       - _id
@@ -1550,11 +1528,6 @@ components:
         trajData:
         - date: date
           pres: 7.061401241503109105224211816675961017608642578125
-          geoLocation:
-            coordinates:
-            - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
-            type: type
           season: 9.301444243932575517419536481611430644989013671875
           lon: 5.63737665663332876420099637471139430999755859375
           time: 1.46581298050294517310021547018550336360931396484375
@@ -1562,13 +1535,13 @@ components:
           lat: 5.962133916683182377482808078639209270477294921875
           wind: 2.3021358869347654518833223846741020679473876953125
           timestamp: 2000-01-23T04:56:07.000+00:00
+          geolocation:
+            coordinates:
+            - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+            type: type
         - date: date
           pres: 7.061401241503109105224211816675961017608642578125
-          geoLocation:
-            coordinates:
-            - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
-            type: type
           season: 9.301444243932575517419536481611430644989013671875
           lon: 5.63737665663332876420099637471139430999755859375
           time: 1.46581298050294517310021547018550336360931396484375
@@ -1576,6 +1549,11 @@ components:
           lat: 5.962133916683182377482808078639209270477294921875
           wind: 2.3021358869347654518833223846741020679473876953125
           timestamp: 2000-01-23T04:56:07.000+00:00
+          geolocation:
+            coordinates:
+            - 0.80082819046101150206595775671303272247314453125
+            - 0.80082819046101150206595775671303272247314453125
+            type: type
         startDate: 2000-01-23T04:56:07.000+00:00
     GridMeta:
       required:
@@ -1784,325 +1762,186 @@ components:
     Profile:
       required:
       - _id
+      - basin
       - cycle_number
-      - dac
-      - date
-      - geoLocation
-      - lat
-      - lon
-      - max_pres
-      - nc_url
-      - platform_number
-      - position_qc
-      - station_parameters
+      - data_type
+      - date_updated_argovis
+      - date_updated_source
+      - geolocation
+      - platform_wmo_number
+      - source
+      - timestamp
       type: object
       properties:
         _id:
           type: string
-        nc_url:
+        basin:
           type: string
-        position_qc:
-          type: integer
-        cycle_number:
-          type: integer
-        dac:
+        data_type:
           type: string
-        date:
+        doi:
           type: string
-          format: date-time
-        date_added:
-          type: string
-          format: date-time
-        date_qc:
-          type: integer
-        max_pres:
-          type: number
-        bgcMeasKeys:
-          type: array
-          items:
-            type: string
-        lat:
-          type: number
-        lon:
-          type: number
-        platform_number:
-          anyOf:
-          - type: string
-          - type: number
-        geoLocation:
+        geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
-        station_parameters:
-          type: array
-          items:
-            type: string
-        station_parameters_in_nc:
-          type: array
-          items:
-            type: string
-        VERTICAL_SAMPLING_SCHEME:
+        instrument:
           type: string
-        PI_NAME:
-          type: string
-        WMO_INST_TYPE:
-          type: string
-        POSITIONING_SYSTEM:
-          type: string
-        DATA_MODE:
-          type: string
-        PARAMETER_DATA_MODE:
+        data:
           type: array
           items:
             type: array
             items:
-              type: string
-        DATA_CENTRE:
-          type: string
-        DIRECTION:
-          type: string
-        PLATFORM_TYPE:
-          type: string
-        pres_max_for_TEMP:
-          type: number
-        pres_max_for_PSAL:
-          type: number
-        pres_min_for_TEMP:
-          type: number
-        pres_min_for_PSAL:
-          type: number
-        containsBGC:
-          type: boolean
-        isDeep:
-          type: boolean
-        BASIN:
-          type: number
-        url:
-          type: string
-        core_data_mode:
-          type: string
-        jcommopsPlatform:
-          type: string
-        euroargoPlatform:
-          type: string
-        formatted_station_parameters:
+              type: number
+        data_keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataKey'
+        data_keys_source:
           type: array
           items:
             type: string
-        roundLat:
-          type: string
-        roundLon:
-          type: string
-        strLat:
-          type: string
-        strLon:
-          type: string
-        date_formatted:
-          type: string
-          format: date
-        measurements:
+        source:
           type: array
           items:
-            $ref: '#/components/schemas/coreMeasurement'
-        bgcMeas:
+            type: string
+        source_url:
           type: array
           items:
-            $ref: '#/components/schemas/bgcMeasurement'
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+        date_updated_argovis:
+          type: string
+          format: date-time
+        date_updated_source:
+          type: array
+          items:
+            type: string
+            format: date-time
+        pi_name:
+          type: string
+        country:
+          type: string
+        data_center:
+          type: string
+        profile_direction:
+          type: string
+        geolocation_argoqc:
+          type: number
+        timestamp_argoqc:
+          type: number
+        cycle_number:
+          type: number
+        fleetmonitoring:
+          type: string
+        oceanops:
+          type: string
+        data_keys_mode:
+          type: array
+          items:
+            type: string
+        platform_wmo_number:
+          type: number
+        platform_type:
+          type: string
+        positioning_system:
+          type: string
+        vertical_sampling_scheme:
+          type: string
+        wmo_inst_type:
+          type: string
       example:
-        date: 2000-01-23T04:56:07.000+00:00
-        date_qc: 1
-        euroargoPlatform: euroargoPlatform
-        dac: dac
-        lon: 2.3021358869347654518833223846741020679473876953125
-        WMO_INST_TYPE: WMO_INST_TYPE
-        station_parameters_in_nc:
-        - station_parameters_in_nc
-        - station_parameters_in_nc
-        roundLat: roundLat
-        strLon: strLon
-        station_parameters:
-        - station_parameters
-        - station_parameters
-        pres_min_for_PSAL: 2.027123023002321833274663731572218239307403564453125
-        PLATFORM_TYPE: PLATFORM_TYPE
-        bgcMeas:
+        country: country
+        geolocation_argoqc: 6.02745618307040320615897144307382404804229736328125
+        data:
+        - - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+        - - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+        pi_name: pi_name
+        instrument: instrument
+        source:
+        - source
+        - source
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        data_keys_source:
+        - data_keys_source
+        - data_keys_source
+        source_url:
+        - source_url
+        - source_url
+        platform_wmo_number: 5.63737665663332876420099637471139430999755859375
+        platform_type: platform_type
+        fleetmonitoring: fleetmonitoring
+        timestamp: 2000-01-23T04:56:07.000+00:00
+        positioning_system: positioning_system
+        data_keys_mode:
+        - data_keys_mode
+        - data_keys_mode
+        data_center: data_center
+        basin: basin
+        date_updated_source:
+        - 2000-01-23T04:56:07.000+00:00
+        - 2000-01-23T04:56:07.000+00:00
+        vertical_sampling_scheme: vertical_sampling_scheme
+        cycle_number: 5.962133916683182377482808078639209270477294921875
+        wmo_inst_type: wmo_inst_type
+        data_type: data_type
+        timestamp_argoqc: 1.46581298050294517310021547018550336360931396484375
+        data_keys:
         - ""
         - ""
-        date_formatted: 2000-01-23
-        isDeep: true
-        platform_number: ""
-        BASIN: 4.1456080298839363962315474054776132106781005859375
-        lat: 5.63737665663332876420099637471139430999755859375
-        VERTICAL_SAMPLING_SCHEME: VERTICAL_SAMPLING_SCHEME
-        pres_max_for_TEMP: 7.061401241503109105224211816675961017608642578125
-        measurements:
-        - temp: 1.231513536777255612975068288506008684635162353515625
-          pres: 7.3862819483858839220147274318151175975799560546875
-          psal: 1.024645700144157789424070870154537260532379150390625
-        - temp: 1.231513536777255612975068288506008684635162353515625
-          pres: 7.3862819483858839220147274318151175975799560546875
-          psal: 1.024645700144157789424070870154537260532379150390625
-        roundLon: roundLon
-        bgcMeasKeys:
-        - bgcMeasKeys
-        - bgcMeasKeys
-        position_qc: 0
-        DIRECTION: DIRECTION
-        pres_max_for_PSAL: 9.301444243932575517419536481611430644989013671875
-        POSITIONING_SYSTEM: POSITIONING_SYSTEM
-        DATA_CENTRE: DATA_CENTRE
-        url: url
-        nc_url: nc_url
-        PARAMETER_DATA_MODE:
-        - - PARAMETER_DATA_MODE
-          - PARAMETER_DATA_MODE
-        - - PARAMETER_DATA_MODE
-          - PARAMETER_DATA_MODE
-        date_added: 2000-01-23T04:56:07.000+00:00
-        cycle_number: 6
-        PI_NAME: PI_NAME
-        pres_min_for_TEMP: 3.61607674925191080461672754609026014804840087890625
-        geoLocation:
+        _id: _id
+        profile_direction: profile_direction
+        oceanops: oceanops
+        doi: doi
+        geolocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
           - 0.80082819046101150206595775671303272247314453125
           type: type
-        DATA_MODE: DATA_MODE
-        jcommopsPlatform: jcommopsPlatform
-        core_data_mode: core_data_mode
-        formatted_station_parameters:
-        - formatted_station_parameters
-        - formatted_station_parameters
-        max_pres: 5.962133916683182377482808078639209270477294921875
-        containsBGC: true
-        strLat: strLat
-        _id: _id
-    coreMeasurement:
-      type: object
-      properties:
-        pres:
-          type: number
-        temp:
-          type: number
-        psal:
-          type: number
-      example:
-        temp: 1.231513536777255612975068288506008684635162353515625
-        pres: 7.3862819483858839220147274318151175975799560546875
-        psal: 1.024645700144157789424070870154537260532379150390625
-    coreMeasurementKey:
+    dataKey:
+      type: string
+      anyOf:
+      - $ref: '#/components/schemas/argoDataKey'
+      - $ref: '#/components/schemas/goshipDataKey'
+    argoDataKey:
       type: string
       enum:
       - pres
       - temp
       - psal
-      - all
-    bgcMeasurement:
-      anyOf:
-      - $ref: '#/components/schemas/argoBgcMeasurement'
-      - $ref: '#/components/schemas/goshipBgcMeasurement'
-    argoBgcMeasurement:
-      type: object
-      properties:
-        pres:
-          type: number
-        pres_qc:
-          type: integer
-        temp:
-          type: number
-        temp_qc:
-          type: integer
-        psal:
-          type: number
-        psal_qc:
-          type: integer
-        cndx:
-          type: number
-        cndx_qc:
-          type: integer
-        doxy:
-          type: number
-        doxy_qc:
-          type: integer
-        chla:
-          type: number
-        chla_qc:
-          type: integer
-        cdom:
-          type: number
-        cdom_qc:
-          type: integer
-        nitrate:
-          type: number
-        nitrate_qc:
-          type: integer
-        bbp700:
-          type: number
-        bbp700_qc:
-          type: integer
-        down_irradiance412:
-          type: number
-        down_irradiance412_qc:
-          type: integer
-        down_irradiance442:
-          type: number
-        down_irradiance442_qc:
-          type: integer
-        down_irradiance490:
-          type: number
-        down_irradiance490_qc:
-          type: integer
-        downwelling_par:
-          type: number
-        downwelling_par_qc:
-          type: string
-        temp_synth:
-          type: number
-        temp_synth_qc:
-          type: integer
-        psal_synth:
-          type: number
-        psal_synth_qc:
-          type: integer
-        molar_doxy:
-          type: number
-        molar_doxy_qc:
-          type: string
-    goshipBgcMeasurement: {}
-    bgcMeasurementKey:
-      type: string
-      anyOf:
-      - $ref: '#/components/schemas/argoBgcMeasurementKey'
-      - $ref: '#/components/schemas/goshipBgcMeasurementKey'
-    argoBgcMeasurementKey:
-      type: string
-      enum:
-      - pres
-      - pres_qc
-      - temp
-      - temp_qc
-      - psal
-      - psal_qc
       - cndx
-      - cndx_qc
       - doxy
-      - doxy_qc
       - chla
-      - chla_qc
       - cdom
-      - cdom_qc
       - nitrate
-      - nitrate_qc
       - bbp700
-      - bbp700_qc
       - down_irradiance412
-      - down_irradiance412_qc
       - down_irradiance442
-      - down_irradiance442_qc
       - down_irradiance490
-      - down_irradiance490_qc
       - downwelling_par
+      - molar_doxy
+      - temp_synth
+      - psal_synth
+      - pres_qc
+      - temp_qc
+      - psal_qc
+      - cndx_qc
+      - doxy_qc
+      - chla_qc
+      - cdom_qc
+      - nitrate_qc
+      - bbp700_qc
+      - down_irradiance412_qc
+      - down_irradiance442_qc
+      - down_irradiance490_qc
       - downwelling_par_qc
+      - molar_doxy_qc
+      - temp_synth_qc
+      - psal_stynth_qc
       - all
-    goshipBgcMeasurementKey:
+    goshipDataKey:
       type: string
       enum:
       - pres
@@ -2171,22 +2010,22 @@ components:
           type: integer
         cycle_number:
           type: integer
-        geoLocation:
+        geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
         dac:
           type: string
       example:
         cycle_number: 6
         most_recent_date: 2000-01-23T04:56:07.000+00:00
-        geoLocation:
-          coordinates:
-          - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-          type: type
         dac: dac
         platform_number: ""
         number_of_profiles: 0
         _id: ""
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
     dacStub:
       type: object
       properties:
@@ -2308,7 +2147,7 @@ components:
       required:
       - class
       - date
-      - geoLocation
+      - geolocation
       - lat
       - lon
       - time
@@ -2334,16 +2173,11 @@ components:
         timestamp:
           type: string
           format: date-time
-        geoLocation:
+        geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
       example:
         date: date
         pres: 7.061401241503109105224211816675961017608642578125
-        geoLocation:
-          coordinates:
-          - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-          type: type
         season: 9.301444243932575517419536481611430644989013671875
         lon: 5.63737665663332876420099637471139430999755859375
         time: 1.46581298050294517310021547018550336360931396484375
@@ -2351,6 +2185,11 @@ components:
         lat: 5.962133916683182377482808078639209270477294921875
         wind: 2.3021358869347654518833223846741020679473876953125
         timestamp: 2000-01-23T04:56:07.000+00:00
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
     ancestorGrid_data:
       type: object
       properties:
@@ -2673,10 +2512,10 @@ components:
       schema:
         type: number
         example: 0
-    coreMeasurements:
-      name: coreMeasurements
+    data:
+      name: data
       in: query
-      description: Keys of core measurements to include
+      description: Keys of data to include
       required: false
       style: form
       explode: false
@@ -2684,19 +2523,7 @@ components:
       schema:
         type: array
         items:
-          $ref: '#/components/schemas/coreMeasurementKey'
-    bgcMeasurements:
-      name: bgcMeasurements
-      in: query
-      description: Keys of BGC measurements to include
-      required: false
-      style: form
-      explode: false
-      allowReserved: true
-      schema:
-        type: array
-        items:
-          $ref: '#/components/schemas/bgcMeasurementKey'
+          $ref: '#/components/schemas/dataKey'
     platform:
       name: platform
       in: query
