@@ -1510,7 +1510,7 @@
                "downwelling_par_qc",
                "molar_doxy_qc",
                "temp_synth_qc",
-               "psal_stynth_qc",
+               "psal_synth_qc",
                "all"]
          },
          "goshipDataKey": {
