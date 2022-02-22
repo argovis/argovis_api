@@ -38,6 +38,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
     if('code' in aggPipeline){
       reject(aggPipeline);
       return;
+
     }
 
     // will need original measurement requests later, copy before mutating
