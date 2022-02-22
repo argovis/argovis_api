@@ -1353,7 +1353,7 @@
                   "type": "string"
                },
                "basin": {
-                  "type": "string"
+                  "type": "number"
                },
                "data_type": {
                   "type": "string"

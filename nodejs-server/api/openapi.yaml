@@ -1776,7 +1776,7 @@ components:
         _id:
           type: string
         basin:
-          type: string
+          type: number
         data_type:
           type: string
         doi:
@@ -1852,12 +1852,12 @@ components:
           type: string
       example:
         country: country
-        geolocation_argoqc: 6.02745618307040320615897144307382404804229736328125
+        geolocation_argoqc: 1.46581298050294517310021547018550336360931396484375
         data:
-        - - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-        - - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
         pi_name: pi_name
         instrument: instrument
         source:
@@ -1870,7 +1870,7 @@ components:
         source_url:
         - source_url
         - source_url
-        platform_wmo_number: 5.63737665663332876420099637471139430999755859375
+        platform_wmo_number: 2.3021358869347654518833223846741020679473876953125
         platform_type: platform_type
         fleetmonitoring: fleetmonitoring
         timestamp: 2000-01-23T04:56:07.000+00:00
@@ -1879,15 +1879,15 @@ components:
         - data_keys_mode
         - data_keys_mode
         data_center: data_center
-        basin: basin
+        basin: 0.80082819046101150206595775671303272247314453125
         date_updated_source:
         - 2000-01-23T04:56:07.000+00:00
         - 2000-01-23T04:56:07.000+00:00
         vertical_sampling_scheme: vertical_sampling_scheme
-        cycle_number: 5.962133916683182377482808078639209270477294921875
+        cycle_number: 5.63737665663332876420099637471139430999755859375
         wmo_inst_type: wmo_inst_type
         data_type: data_type
-        timestamp_argoqc: 1.46581298050294517310021547018550336360931396484375
+        timestamp_argoqc: 5.962133916683182377482808078639209270477294921875
         data_keys:
         - ""
         - ""
