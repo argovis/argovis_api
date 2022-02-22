@@ -49,7 +49,7 @@ var ProfileSchema = Schema(
     data_keys_source:{
       type: [String],
       required: function() { return this.data.hasOwnProperty('data') }
-    }
+    },
     source: {type: [String], required: true},
     source_url: {type: [String], required: false},
     timestamp: {type: Date, required: true},
@@ -74,5 +74,5 @@ var ProfileSchema = Schema(
 );
 
 //Export model, mongoose automatically looks for the plural of the first input. 'profiles'
-module.exports = mongoose.model('profilesx', ProfileSchema, 'profilesx');
+module.exports = mongoose.model('profiles', ProfileSchema, 'profiles');
 //module.exports = mongoose.model('goship', ProfileSchema, 'goship');

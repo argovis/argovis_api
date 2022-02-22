@@ -12,7 +12,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
   else {
     describe("GET /profiles", function () {
       it("searches for profiles by date", async function () {
-        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-03-30T00:00:00.000Z").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
       });
     });

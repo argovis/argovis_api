@@ -17,11 +17,10 @@ const helpers = require('./helpers')
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
  * compression String Data compression strategy (optional)
- * coreMeasurements List Keys of core measurements to include (optional)
- * bgcMeasurements List Keys of BGC measurements to include (optional)
+ * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,compression,coreMeasurements,bgcMeasurements) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,compression,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -34,7 +33,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,dac)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -42,27 +41,14 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
     }
 
     // will need original measurement requests later, copy before mutating
-    let origCoreMeasurements = []
-    let origBgcMeasurements = []
-    if(coreMeasurements) {
-      origCoreMeasurements = JSON.parse(JSON.stringify(coreMeasurements))
-    }
-    if(bgcMeasurements) {
-      origBgcMeasurements = JSON.parse(JSON.stringify(bgcMeasurements))
+    let origData = []
+    if(data) {
+      origData = JSON.parse(JSON.stringify(data))
     }
 
-    // measurement filtering: drop keys from measurements and bgcMeas if not desired
-    if(coreMeasurements && !coreMeasurements.includes('all')) {
-      if (!coreMeasurements.includes('pres')) coreMeasurements.push('pres')
-      aggPipeline.push(reduce_meas(coreMeasurements, 'measurements'))
-    } else if(!coreMeasurements){
-      aggPipeline.push({$project: {measurements: 0}})
-    }
-    if(bgcMeasurements && !bgcMeasurements.includes('all')) {
-      if (!bgcMeasurements.includes('pres')) bgcMeasurements.push('pres')
-      aggPipeline.push(reduce_meas(bgcMeasurements, 'bgcMeas'))
-    } else if(!bgcMeasurements){
-      aggPipeline.push({$project: {bgcMeas: 0}})
+    // project out data for metadata-only requests
+    if(!data){
+      aggPipeline.push({$project: {data: 0}})
     }
 
     const query = Profile.aggregate(aggPipeline);
@@ -78,18 +64,19 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       //   if(profiles[i].bgcMeas && Array.isArray(profiles[i].bgcMeas[0])) profiles[i].bgcMeas = profiles[i].bgcMeas.map(m => helpers.arrayinflate(profiles[i].bgcMeasKeys.concat(profiles[i].bgcMeasKeys.map(k=>k+'_qc')), m))
       // }
 
-      if(coreMeasurements && !bgcMeasurements){
-        // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), origCoreMeasurements)) || origCoreMeasurements.includes('all') )))
-      }
-      if(!coreMeasurements && bgcMeasurements){
-        // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), origBgcMeasurements)) || origBgcMeasurements.includes('all')) ))
-      }
-      if(coreMeasurements && bgcMeasurements){
-        // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), origCoreMeasurements)) || origCoreMeasurements.includes('all') ) )) || 
-                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), origBgcMeasurements)) || origBgcMeasurements.includes('all')) )))
+      if(data){
+        // filter out measurements the user didn't request
+        if(!data.includes('all')){
+          profiles = profiles.map(x => reduce_data(x, data))
+        }
+
+        // filter out levels that fall outside the pressure range requested
+        if(presRange){
+          profiles = profiles.map(p => variable_bracket.bind(null, 'pressure', presRange[0], presRange[1])(p) )
+        }
+
+        // keep only profiles that have some requested data
+        profiles = profiles.filter(item => ('data' in item && Array.isArray(item.data) && item.data.length > 0  ))
       }
 
       if(profiles.length == 0) {
@@ -114,11 +101,10 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
  * dac String Data Assembly Center (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
- * coreMeasurements List Keys of core measurements to include (optional)
- * bgcMeasurements List Keys of BGC measurements to include (optional)
+ * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,platforms,presRange,coreMeasurements,bgcMeasurements) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,platforms,presRange,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -130,23 +116,16 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,p
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,presRange,dac)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,dac)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
       return;
     }
 
-    // measurement filtering: drop keys from measurements and bgcMeas if not desired
-    if(coreMeasurements && !coreMeasurements.includes('all')) {
-      aggPipeline.push(reduce_meas(coreMeasurements, 'measurements'))
-    } else if(!coreMeasurements){
-      aggPipeline.push({$project: {measurements: 0}})
-    }
-    if(bgcMeasurements && !bgcMeasurements.includes('all')) {
-      aggPipeline.push(reduce_meas(bgcMeasurements, 'bgcMeas'))
-    } else if(!bgcMeasurements){
-      aggPipeline.push({$project: {bgcMeas: 0}})
+    // project out data for metadata-only requests
+    if(!data){
+      aggPipeline.push({$project: {data: 0}})
     }
 
     const query = Profile.aggregate(aggPipeline);
@@ -157,18 +136,19 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,p
         return;
       }
 
-      if(coreMeasurements && !bgcMeasurements){
-        // keep only profiles that have some requested core measurement
-        profiles = profiles.filter(item => ('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), coreMeasurements)) || coreMeasurements.includes('all') )))
-      }
-      if(!coreMeasurements && bgcMeasurements){
-        // keep only profiles that have some requested bgc measurement
-        profiles = profiles.filter(item => ('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), bgcMeasurements)) || bgcMeasurements.includes('all')) ))
-      }
-      if(coreMeasurements && bgcMeasurements){
-        // keep only profiles that have at least one of a requested core or bgc measurement
-        profiles = profiles.filter(item => (('measurements' in item && item.measurements !== null && (item.measurements.some(elt => helpers.intersects(Object.keys(elt), coreMeasurements)) || coreMeasurements.includes('all') ) )) || 
-                                           (('bgcMeas' in item && item.bgcMeas !== null && (item.bgcMeas.some(elt => helpers.intersects(Object.keys(elt), bgcMeasurements)) || bgcMeasurements.includes('all')) )))
+      if(data){
+        // filter out measurements the user didn't request
+        if(!data.includes('all')){
+          profiles = profiles.map(x => reduce_data(x, data))
+        }
+
+        // filter out levels that fall outside the pressure range requested
+        if(presRange){
+          profiles = profiles.map(p => variable_bracket.bind(null, 'pressure', presRange[0], presRange[1])(p) )
+        }
+
+        // keep only profiles that have some requested data
+        profiles = profiles.filter(item => ('data' in item && Array.isArray(item.data) && item.data.length > 0  ))
       }
 
       if(profiles.length == 0) {
@@ -209,7 +189,7 @@ exports.profilesOverview = function() {
 
 // helpers /////////////////////////////////////
 
-const pressureWindow = function(measType, minPres, maxPres){
+const pressureWindow = function(measType, minPres, maxPres){ //todo no longer makes sense with current schema
   // measType == 'measurements' or 'bgcMeas'
 
   const pWindow = {
@@ -230,7 +210,17 @@ const pressureWindow = function(measType, minPres, maxPres){
   return pWindow
 }
 
-const reduce_meas = function(keys, meas) {
+const variable_bracket = function(key, min, max, profile){
+  // given a profile, a data key and a min and max value,
+  // filter out levels in the profile for which the value of the key variable falls outside the [min, max] range.
+
+  column_idx = profile.data_keys.findIndex(elt => elt==key)
+  profile.data = profile.data.filter(level => level[i] < max && level[i]>min)
+
+  return profile
+}
+
+const reduce_meas = function(keys, meas) { // TODO retool this for current packing
   // meas == 'measurements' or 'bgcMeas'
   // keys == list of keys to keep from meas.
   let newObj = {}
@@ -259,7 +249,32 @@ const reduce_meas = function(keys, meas) {
   return reduceArray
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac){
+const reduce_data = function(profile, keys){
+  // profile == profile object returned from mongo
+  // keys == list of keys to keep from profile.data
+  // return the original profile, with p.data and p.data_keys mutated to suit the requested keys
+
+  vars = helpers.zip(profile.data)
+  keepers = profile.data_keys.map(x => keys.includes(x))
+  data = []
+  data_keys = []
+  for(let i=0; i<keepers.length; i++){
+    if(keepers[i]){
+      data.push(vars[i])
+      data_keys.push(profile.data_keys[i])
+    }
+  }
+  profile.data_keys = data_keys
+  profile.data = helpers.zip(data) 
+
+  //filter out levels that have only pressure and qc
+  value_columns = data_keys.map(key => !key.includes('pres') && !key.includes('_qc'))
+  profile.data = profile.data.filter(level => level.filter((val, i) => value_columns[i]).some(e => !isNaN(e)))
+
+  return profile
+}
+
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,dac){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -283,11 +298,11 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     }
 
     if (startDate){
-      aggPipeline.push({$match:  {date: {$gte: startDate}}})
+      aggPipeline.push({$match:  {timestamp: {$gte: startDate}}})
     }
 
     if(endDate){
-      aggPipeline.push({$match:  {date: {$lte: endDate}}})
+      aggPipeline.push({$match:  {timestamp: {$lte: endDate}}})
     }
 
     if (ids){
@@ -296,7 +311,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(platforms) {
       let pform = platforms.concat(platforms.map(x => Number(x))).filter(x => !Number.isNaN(x))
-      aggPipeline.push({$match: {platform_number: { $in: pform}}})
+      aggPipeline.push({$match: {platform_wmo_number: { $in: pform}}})
     }
 
     if(polygon) {
@@ -320,7 +335,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
       }
 
-      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$geometry: polygon}}}})
+      aggPipeline.push({$match: {geolocation: {$geoWithin: {$geometry: polygon}}}})
     }
 
     if(box) {
@@ -344,17 +359,13 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
       }
 
-      aggPipeline.push({$match: {geoLocation: {$geoWithin: {$box: box}}}})
-    }
-
-    if(presRange) {
-      aggPipeline.push(pressureWindow('measurements', presRange[0], presRange[1]))
-      aggPipeline.push(pressureWindow('bgcMeas', presRange[0], presRange[1]))
+      aggPipeline.push({$match: {geolocation: {$geoWithin: {$box: box}}}})
     }
 
     if(dac){
-      aggPipeline.push({ $match : { dac : dac } })
+      aggPipeline.push({ $match : { data_center : dac } })
     }
+    console.log(aggPipeline)
 
     return aggPipeline
 }
