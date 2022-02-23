@@ -73,7 +73,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
 
         // filter out levels that fall outside the pressure range requested
         if(presRange){
-          profiles = profiles.map(p => variable_bracket.bind(null, 'pressure', presRange[0], presRange[1])(p) )
+          profiles = profiles.map(p => variable_bracket.bind(null, 'pres', presRange[0], presRange[1])(p) )
         }
 
         // keep only profiles that have some requested data
@@ -84,7 +84,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
         reject({"code": 404, "message": "Not found: No matching results found in database."});
         return;
       }
-      
+
       resolve(profiles);
     })
   }
@@ -145,7 +145,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,p
 
         // filter out levels that fall outside the pressure range requested
         if(presRange){
-          profiles = profiles.map(p => variable_bracket.bind(null, 'pressure', presRange[0], presRange[1])(p) )
+          profiles = profiles.map(p => variable_bracket.bind(null, 'pres', presRange[0], presRange[1])(p) )
         }
 
         // keep only profiles that have some requested data
@@ -215,8 +215,8 @@ const variable_bracket = function(key, min, max, profile){
   // given a profile, a data key and a min and max value,
   // filter out levels in the profile for which the value of the key variable falls outside the [min, max] range.
 
-  column_idx = profile.data_keys.findIndex(elt => elt==key)
-  profile.data = profile.data.filter(level => level[i] < max && level[i]>min)
+  let column_idx = profile.data_keys.findIndex(elt => elt==key)
+  profile.data = profile.data.filter(level => level[column_idx] < max && level[column_idx]>min)
 
   return profile
 }
@@ -255,21 +255,24 @@ const reduce_data = function(profile, keys){
   // keys == list of keys to keep from profile.data
   // return the original profile, with p.data and p.data_keys mutated to suit the requested keys
 
-  vars = helpers.zip(profile.data)
-  keepers = profile.data_keys.map(x => keys.includes(x))
-  data = []
-  data_keys = []
+  let vars = helpers.zip(profile.data)
+  let keepers = profile.data_keys.map(x => keys.includes(x))
+  let data = []
+  let data_keys = []
   for(let i=0; i<keepers.length; i++){
     if(keepers[i]){
       data.push(vars[i])
       data_keys.push(profile.data_keys[i])
     }
   }
-  profile.data_keys = data_keys
-  profile.data = helpers.zip(data) 
 
-  //filter out levels that have only pressure and qc
-  value_columns = data_keys.map(key => !key.includes('pres') && !key.includes('_qc'))
+  profile.data_keys = data_keys
+  if(data.length > 0) {
+    profile.data = helpers.zip(data) 
+  }
+
+  //filter out levels that have only pressure and qc, unless pres or that qc was specifically requested
+  let value_columns = data_keys.map( key => (!key.includes('pres') && !key.includes('_qc')) || keys.includes(key))
   profile.data = profile.data.filter(level => level.filter((val, i) => value_columns[i]).some(e => !isNaN(e)))
 
   return profile
@@ -366,7 +369,6 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     if(dac){
       aggPipeline.push({ $match : { data_center : dac } })
     }
-    console.log(aggPipeline)
 
     return aggPipeline
 }
