@@ -78,6 +78,11 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
 
         // keep only profiles that have some requested data
         profiles = profiles.filter(item => ('data' in item && Array.isArray(item.data) && item.data.length > 0  ))
+
+        // reinflate data by default
+        if(!compression){
+          profiles = profiles.map(p => reinflate(p))
+        }
       }
 
       if(profiles.length == 0) {
@@ -274,6 +279,24 @@ const reduce_data = function(profile, keys){
   //filter out levels that have only pressure and qc, unless pres or that qc was specifically requested
   let value_columns = data_keys.map( key => (!key.includes('pres') && !key.includes('_qc')) || keys.includes(key))
   profile.data = profile.data.filter(level => level.filter((val, i) => value_columns[i]).some(e => !isNaN(e)))
+
+  return profile
+}
+
+const reinflate = function(profile){
+  // given a profile object with data minified as an array of arrays of floats,
+  // reinflate the data key to it's more traditional list of dictionaries.
+
+  let levelinflate = function(data_keys, level){
+    let l = {}
+    for(let i=0; i<level.length; i++){
+      l[data_keys[i]] = level[i]
+    }
+    return l
+  }
+
+  let data = profile.data.map(level => levelinflate.bind(null, profile.data_keys)(level))
+  profile.data = data
 
   return profile
 }
