@@ -1341,10 +1341,8 @@
                "basin",
                "data_type",
                "geolocation",
-               "source",
                "timestamp",
                "date_updated_argovis",
-               "date_updated_source",
                "cycle_number",
                "platform_wmo_number"
             ],
@@ -1382,24 +1380,6 @@
                      "$ref": "#/components/schemas/dataKey"
                   }
                },
-               "data_keys_source": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               "source": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               "source_url": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
                "timestamp": {
                   "type": "string",
                   "format": "date-time"
@@ -1408,21 +1388,23 @@
                   "type": "string",
                   "format": "date-time"
                },
-               "date_updated_source": {
+               "pi_name": {
                   "type": "array",
                   "items": {
-                     "type": "string",
-                     "format": "date-time"
+                     "type": "string"
                   }
-               },
-               "pi_name": {
-                  "type": "string"
                },
                "country": {
                   "type": "string"
                },
                "data_center": {
                   "type": "string"
+               },
+               "source_info": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/profile_source_info"
+                  }
                },
                "profile_direction": {
                   "type": "string"
@@ -1493,8 +1475,8 @@
                "down_irradiance490",
                "downwelling_par",
                "molar_doxy",
-               "temp_synth",
-               "psal_synth",
+               "temp_sfile",
+               "psal_sfile",
                "pres_qc",
                "temp_qc",
                "psal_qc",
@@ -1509,8 +1491,8 @@
                "down_irradiance490_qc",
                "downwelling_par_qc",
                "molar_doxy_qc",
-               "temp_synth_qc",
-               "psal_synth_qc",
+               "temp_sfile_qc",
+               "psal_sfile_qc",
                "all"]
          },
          "goshipDataKey": {
@@ -1634,6 +1616,7 @@
          },
          "geoJSONpoint": {
             "type": "object",
+            "required": ["type", "coordinates"],
             "properties": {
                "type": {
                   "type": "string"
@@ -1664,6 +1647,31 @@
                         "maxItems": 2
                      }
                   }
+               }
+            }
+         },
+         "profile_source_info": {
+            "type": "object",
+            "required": ["source", "date_updated_source"],
+            "properties": {
+               "data_keys_source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "source_url": {
+                  "type": "string"
+               },
+               "date_updated_source": {
+                  "type": "string",
+                  "format": "date-time"
                }
             }
          },

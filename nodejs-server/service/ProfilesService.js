@@ -25,12 +25,9 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "country" : "country",
   "geolocation_argoqc" : 1.4658129805029452,
   "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
-  "pi_name" : "pi_name",
+  "pi_name" : [ "pi_name", "pi_name" ],
   "instrument" : "instrument",
-  "source" : [ "source", "source" ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_keys_source" : [ "data_keys_source", "data_keys_source" ],
-  "source_url" : [ "source_url", "source_url" ],
   "platform_wmo_number" : 2.3021358869347655,
   "platform_type" : "platform_type",
   "fleetmonitoring" : "fleetmonitoring",
@@ -39,7 +36,6 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
   "data_center" : "data_center",
   "basin" : 0.8008281904610115,
-  "date_updated_source" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 5.637376656633329,
   "wmo_inst_type" : "wmo_inst_type",
@@ -49,6 +45,17 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "oceanops" : "oceanops",
+  "source_info" : [ {
+    "source" : [ "source", "source" ],
+    "data_keys_source" : [ "data_keys_source", "data_keys_source" ],
+    "source_url" : "source_url",
+    "date_updated_source" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "source" : [ "source", "source" ],
+    "data_keys_source" : [ "data_keys_source", "data_keys_source" ],
+    "source_url" : "source_url",
+    "date_updated_source" : "2000-01-23T04:56:07.000+00:00"
+  } ],
   "doi" : "doi",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
@@ -58,12 +65,9 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "country" : "country",
   "geolocation_argoqc" : 1.4658129805029452,
   "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
-  "pi_name" : "pi_name",
+  "pi_name" : [ "pi_name", "pi_name" ],
   "instrument" : "instrument",
-  "source" : [ "source", "source" ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_keys_source" : [ "data_keys_source", "data_keys_source" ],
-  "source_url" : [ "source_url", "source_url" ],
   "platform_wmo_number" : 2.3021358869347655,
   "platform_type" : "platform_type",
   "fleetmonitoring" : "fleetmonitoring",
@@ -72,7 +76,6 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
   "data_center" : "data_center",
   "basin" : 0.8008281904610115,
-  "date_updated_source" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 5.637376656633329,
   "wmo_inst_type" : "wmo_inst_type",
@@ -82,6 +85,17 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "oceanops" : "oceanops",
+  "source_info" : [ {
+    "source" : [ "source", "source" ],
+    "data_keys_source" : [ "data_keys_source", "data_keys_source" ],
+    "source_url" : "source_url",
+    "date_updated_source" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "source" : [ "source", "source" ],
+    "data_keys_source" : [ "data_keys_source", "data_keys_source" ],
+    "source_url" : "source_url",
+    "date_updated_source" : "2000-01-23T04:56:07.000+00:00"
+  } ],
   "doi" : "doi",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
