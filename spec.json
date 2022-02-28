@@ -1425,10 +1425,7 @@
                   "type": "string"
                },
                "data_keys_mode": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
+                  "type": "object"
                },
                "platform_wmo_number":{
                   "type": "number"
