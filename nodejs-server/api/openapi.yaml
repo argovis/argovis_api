@@ -1838,9 +1838,7 @@ components:
         oceanops:
           type: string
         data_keys_mode:
-          type: array
-          items:
-            type: string
+          type: object
         platform_wmo_number:
           type: number
         platform_type:
@@ -1869,9 +1867,7 @@ components:
         fleetmonitoring: fleetmonitoring
         timestamp: 2000-01-23T04:56:07.000+00:00
         positioning_system: positioning_system
-        data_keys_mode:
-        - data_keys_mode
-        - data_keys_mode
+        data_keys_mode: {}
         data_center: data_center
         basin: 0.80082819046101150206595775671303272247314453125
         vertical_sampling_scheme: vertical_sampling_scheme
