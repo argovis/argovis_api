@@ -20,9 +20,16 @@ var geolocation = Schema({
   }
 })
 
+var sourceinfo = Schema({
+  source: {type: [String], required: true},
+  source_url: {type: String, required: false},
+  date_updated_source: {type: Date, required: true},
+  data_keys_source: {type: [String], required: false}
+})
+
 var datakey = Schema({
   type: String,
-  enum: ['pres','temp','psal','cndx','doxy','chla','cdom','nitrate','bbp700','down_irradiance412','down_irradiance442','down_irradiance490','downwelling_par','doxy_molar','pres_qc','temp_qc','psal_qc','cndx_qc','doxy_qc','chla_qc','cdom_qc','nitrate_qc','bbp700_qc','down_irradiance412_qc','down_irradiance442_qc','down_irradiance490_qc','downwelling_par_qc', 'molar_doxy', 'molar_doxy_qc', 'temp_synth', 'temp_synth_qc', 'psal_synth', 'psal_stynth_qc']
+  enum: ['pres','temp','psal','cndx','doxy','chla','cdom','nitrate','bbp700','down_irradiance412','down_irradiance442','down_irradiance490','downwelling_par','doxy_molar','pres_qc','temp_qc','psal_qc','cndx_qc','doxy_qc','chla_qc','cdom_qc','nitrate_qc','bbp700_qc','down_irradiance412_qc','down_irradiance442_qc','down_irradiance490_qc','downwelling_par_qc', 'molar_doxy', 'molar_doxy_qc', 'temp_sfile', 'temp_sfile_qc', 'psal_sfile', 'psal_sfile_qc']
 })
 
 var ProfileSchema = Schema(
@@ -31,7 +38,7 @@ var ProfileSchema = Schema(
     basin: {type: Number, required: true},
     data_type: {type: String, required: true},
     doi: {type: String, required: false},
-    geoLocation: {type: geolocation, required: true},
+    geolocation: {type: geolocation, required: true},
     instrument: {type: String, required: false},
     data: [{
       type: [Number],
@@ -46,18 +53,12 @@ var ProfileSchema = Schema(
       type: [datakey],
       required: function() { return this.data.hasOwnProperty('data') }
     },
-    data_keys_source:{
-      type: [String],
-      required: function() { return this.data.hasOwnProperty('data') }
-    },
-    source: {type: [String], required: true},
-    source_url: {type: [String], required: false},
     timestamp: {type: Date, required: true},
     date_updated_argovis: {type: Date, required: true},
-    date_updated_source: {type: [Date], required: true},
-    pi_name: {type: String, required: false},
+    pi_name: {type: [String], required: false},
     country: {type: String, required: false},
     data_center: {type: String, required: false},
+    source_info: {type: sourceinfo, required: true},
     profile_direction: {type: String, required: false},
     geolocation_argoqc: {type: Number, required: false},
     timestamp_argoqc: {type: Number, required: false},
