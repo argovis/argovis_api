@@ -65,7 +65,7 @@ var ProfileSchema = Schema(
     cycle_number: {type: Number, required: true},
     fleetmonitoring: {type: String, required: false},
     oceanops: {type: String, required: false},
-    data_keys_mode: {type: [String], required: false},
+    data_keys_mode: {type: Map, of: String, required: false},
     platform_wmo_number: {type: Number, required: true},
     platform_type: {type: String, required: false},
     positioning_system: {type: String, required: false},

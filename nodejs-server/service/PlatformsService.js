@@ -10,7 +10,8 @@ const helpers = require('./helpers')
 exports.bgcPlatformList = function() {
   return new Promise(function(resolve, reject) {
     const query = Profile.aggregate([
-        {$match: {source: {$eq: "argo_bgc"}}}, 
+        {$unwind: '$source_info'}, 
+        {$match: {'source_info.source':'argo_bgc' }},
         {$group: { _id: '$platform_wmo_number', platform_wmo_number: {$first: '$platform_wmo_number'}}}
     ])
     query.exec(function (err, platforms) {
