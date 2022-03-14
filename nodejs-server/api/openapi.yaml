@@ -1781,7 +1781,6 @@ components:
       - data_type
       - date_updated_argovis
       - geolocation
-      - platform_wmo_number
       - timestamp
       type: object
       properties:
@@ -1807,6 +1806,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/dataKey'
+        data_warning:
+          type: array
+          items:
+            type: string
         timestamp:
           type: string
           format: date-time
@@ -1839,8 +1842,8 @@ components:
           type: string
         data_keys_mode:
           type: object
-        platform_wmo_number:
-          type: number
+        platform_id:
+          type: string
         platform_type:
           type: string
         positioning_system:
@@ -1862,7 +1865,9 @@ components:
         - pi_name
         instrument: instrument
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
-        platform_wmo_number: 2.3021358869347654518833223846741020679473876953125
+        data_warning:
+        - data_warning
+        - data_warning
         platform_type: platform_type
         fleetmonitoring: fleetmonitoring
         timestamp: 2000-01-23T04:56:07.000+00:00
@@ -1874,6 +1879,7 @@ components:
         cycle_number: 5.63737665663332876420099637471139430999755859375
         wmo_inst_type: wmo_inst_type
         data_type: data_type
+        platform_id: platform_id
         timestamp_argoqc: 5.962133916683182377482808078639209270477294921875
         data_keys:
         - ""
@@ -1912,6 +1918,19 @@ components:
     argoDataKey:
       type: string
       enum:
+      - bbp470
+      - bbp532
+      - bbp700_2
+      - cp660
+      - down_irradiance380
+      - down_irradiance443
+      - down_irradiance490
+      - downwelling_par
+      - ph_in_situ_total
+      - up_radiance412
+      - up_radiance443
+      - up_radiance490
+      - up_radiance555
       - pres
       - temp
       - psal
@@ -1928,22 +1947,35 @@ components:
       - molar_doxy
       - temp_sfile
       - psal_sfile
-      - pres_qc
-      - temp_qc
-      - psal_qc
-      - cndx_qc
-      - doxy_qc
-      - chla_qc
-      - cdom_qc
-      - nitrate_qc
-      - bbp700_qc
-      - down_irradiance412_qc
-      - down_irradiance442_qc
-      - down_irradiance490_qc
-      - downwelling_par_qc
-      - molar_doxy_qc
-      - temp_sfile_qc
-      - psal_sfile_qc
+      - pres_argoqc
+      - temp_argoqc
+      - psal_argoqc
+      - cndx_argoqc
+      - doxy_argoqc
+      - chla_argoqc
+      - cdom_argoqc
+      - nitrate_argoqc
+      - bbp700_argoqc
+      - down_irradiance412_argoqc
+      - down_irradiance442_argoqc
+      - down_irradiance490_argoqc
+      - downwelling_par_argoqc
+      - molar_doxy_argoqc
+      - temp_sfile_argoqc
+      - psal_sfile_argoqc
+      - bbp470_argoqc
+      - bbp532_argoqc
+      - bbp700_2_argoqc
+      - cp660_argoqc
+      - down_irradiance380_argoqc
+      - down_irradiance443_argoqc
+      - down_irradiance490_argoqc
+      - downwelling_par_argoqc
+      - ph_in_situ_total_argoqc
+      - up_radiance412_argoqc
+      - up_radiance443_argoqc
+      - up_radiance490_argoqc
+      - up_radiance555_argoqc
       - all
     goshipDataKey:
       type: string
@@ -2112,7 +2144,6 @@ components:
         type: type
     profile_source_info:
       required:
-      - date_updated_source
       - source
       type: object
       properties:
