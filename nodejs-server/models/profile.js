@@ -23,7 +23,7 @@ var geolocation = Schema({
 var sourceinfo = Schema({
   source: {type: [String], required: true},
   source_url: {type: String, required: false},
-  date_updated_source: {type: Date, required: true},
+  date_updated_source: {type: Date, required: false},
   data_keys_source: {type: [String], required: false}
 })
 
@@ -53,6 +53,7 @@ var ProfileSchema = Schema(
       type: [datakey],
       required: function() { return this.data.hasOwnProperty('data') }
     },
+    data_warning: {type: [String], required: false},
     timestamp: {type: Date, required: true},
     date_updated_argovis: {type: Date, required: true},
     pi_name: {type: [String], required: false},
@@ -66,7 +67,7 @@ var ProfileSchema = Schema(
     fleetmonitoring: {type: String, required: false},
     oceanops: {type: String, required: false},
     data_keys_mode: {type: Map, of: String, required: false},
-    platform_wmo_number: {type: Number, required: true},
+    platform_id: {type: String, required: true},
     platform_type: {type: String, required: false},
     positioning_system: {type: String, required: false},
     vertical_sampling_scheme: {type: String, required: false},
@@ -75,5 +76,5 @@ var ProfileSchema = Schema(
 );
 
 //Export model, mongoose automatically looks for the plural of the first input. 'profiles'
-module.exports = mongoose.model('profilesx', ProfileSchema, 'profilesx');
+module.exports = mongoose.model('profiles', ProfileSchema, 'profiles');
 //module.exports = mongoose.model('goship', ProfileSchema, 'goship');

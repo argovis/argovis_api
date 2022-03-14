@@ -12,7 +12,7 @@ exports.bgcPlatformList = function() {
     const query = Profile.aggregate([
         {$unwind: '$source_info'}, 
         {$match: {'source_info.source':'argo_bgc' }},
-        {$group: { _id: '$platform_wmo_number', platform_wmo_number: {$first: '$platform_wmo_number'}}}
+        {$group: { _id: '$platform_id', platform_id: {$first: '$platform_id'}}}
     ])
     query.exec(function (err, platforms) {
         if (err){
@@ -23,10 +23,10 @@ exports.bgcPlatformList = function() {
           reject({"code": 404, "message": "Not found: No matching results found in database."});
           return;
         }
-        resolve(Array.from(platforms, x => x.platform_wmo_number));
+        resolve(Array.from(platforms, x => x.platform_id));
     })
     let postprocess = function(data) {
-        return Array.from(data, x => x.platform_wmo_number)
+        return Array.from(data, x => x.platform_id)
     }
     query.exec(helpers.queryCallback.bind(null,postprocess, resolve, reject))
   });
@@ -46,16 +46,16 @@ exports.platformList = function(platforms) {
 
     // focus on a list of platforms, if provided
     if(platforms) {
-      let pform = platforms.concat(platforms.map(x => Number(x))).filter(x => !Number.isNaN(x))
-      aggPipeline.push({$match: {platform_wmo_number: { $in: pform}}})
+      let pform = platforms.concat(platforms.map(x => String(x)))
+      aggPipeline.push({$match: {platform_id: { $in: pform}}})
     }
 
     // sort everyting remaining by date
     aggPipeline.push({$sort: { 'timestamp':-1}})
 
     // group by platform and find the latest for each
-    aggPipeline.push({$group: { _id: '$platform_wmo_number',
-                                platform_wmo_number: {$first: '$platform_wmo_number'},
+    aggPipeline.push({$group: { _id: '$platform_id',
+                                platform_id: {$first: '$platform_id'},
                                 most_recent_date: {$max: '$timestamp'},
                                 number_of_profiles: {$sum: 1},
                                 cycle_number: {$first: '$cycle_number'},
@@ -80,8 +80,8 @@ exports.platformMeta = function(platform) {
   return new Promise(function(resolve, reject) {
     const query = Profile.aggregate([
       {$match: {platform_number: platform}},
-      {$group:  { _id: '$platform_wmo_number',
-                  platform_number: {$first: '$platform_wmo_number'},
+      {$group:  { _id: '$platform_id',
+                  platform_number: {$first: '$platform_id'},
                   most_recent_date: {$max: '$timestamp'},
                   most_recent_date_added: {$max: '$date_updated_argovis'},
                   number_of_profiles: {$sum: 1},

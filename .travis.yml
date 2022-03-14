@@ -8,7 +8,7 @@ before_install:
 
 script:
   - docker network create travis
-  - docker container run -d --network travis --name database argovis/testdb:0.3
+  - docker container run -d --network travis --name database argovis/testdb:0.4
   - docker container run -d --network travis --name redis argovis/redis:6.2.6
   - docker image build -t argovis/api:test .
   - docker image build -f Dockerfile-test -t testrunner:dev .
