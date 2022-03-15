@@ -176,10 +176,15 @@ exports.profilesOverview = function() {
   return new Promise(function(resolve, reject) {
     Promise.all([
         Profile.estimatedDocumentCount({}),
-        Profile.distinct('dac'),
-        Profile.find({'isDeep':true}).countDocuments(),
-        Profile.find({'containsBGC':true}).countDocuments(),
-        Profile.aggregate([{ $sort: { date: -1 } }, {$project: {'date_added': 1}}, { $limit : 1 }])
+        Profile.distinct('data_center'),
+        //Profile.find({'isDeep':true}).countDocuments(),
+        //Profile.find({'containsBGC':true}).countDocuments(),
+        Profile.aggregate([
+          {$unwind: '$source_info'},
+          {$match: {'source_info.source':'argo_deep' }},
+          {$group: { _id: '$_id'}},
+        ])
+        Profile.aggregate([{ $sort: { timestamp: -1 } }, {$project: {'date_added': 1}}, { $limit : 1 }])
     ]).then( ([ numberOfProfiles, dacs, numberDeep, numberBgc, lastAdded ]) => {
         const date = lastAdded[0].date_added
         let overviewData = {'numberOfProfiles': numberOfProfiles, 'dacs': dacs, 'numberDeep': numberDeep, 'numberBgc': numberBgc, 'lastAdded': lastAdded[0]['date_added']}
