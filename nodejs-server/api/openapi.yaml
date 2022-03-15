@@ -1906,58 +1906,60 @@ components:
       enum:
       - bbp470
       - bbp532
+      - bbp700
       - bbp700_2
+      - bisulfide
+      - cdom
+      - chla
+      - cndx
       - cp660
       - down_irradiance380
+      - down_irradiance412
+      - down_irradiance442
       - down_irradiance443
       - down_irradiance490
+      - down_irradiance670
       - downwelling_par
+      - doxy
+      - molar_doxy
+      - nitrate
       - ph_in_situ_total
+      - pres
+      - psal
+      - psal_sfile
+      - temp
+      - temp_sfile
+      - turbidity
       - up_radiance412
       - up_radiance443
       - up_radiance490
       - up_radiance555
-      - pres
-      - temp
-      - psal
-      - cndx
-      - doxy
-      - chla
-      - cdom
-      - nitrate
-      - bbp700
-      - down_irradiance412
-      - down_irradiance442
-      - down_irradiance490
-      - downwelling_par
-      - molar_doxy
-      - temp_sfile
-      - psal_sfile
-      - pres_argoqc
-      - temp_argoqc
-      - psal_argoqc
-      - cndx_argoqc
-      - doxy_argoqc
-      - chla_argoqc
-      - cdom_argoqc
-      - nitrate_argoqc
-      - bbp700_argoqc
-      - down_irradiance412_argoqc
-      - down_irradiance442_argoqc
-      - down_irradiance490_argoqc
-      - downwelling_par_argoqc
-      - molar_doxy_argoqc
-      - temp_sfile_argoqc
-      - psal_sfile_argoqc
       - bbp470_argoqc
       - bbp532_argoqc
+      - bbp700_argoqc
       - bbp700_2_argoqc
+      - bisulfide_argoqc
+      - cdom_argoqc
+      - chla_argoqc
+      - cndx_argoqc
       - cp660_argoqc
       - down_irradiance380_argoqc
+      - down_irradiance412_argoqc
+      - down_irradiance442_argoqc
       - down_irradiance443_argoqc
       - down_irradiance490_argoqc
+      - down_irradiance670_argoqc
       - downwelling_par_argoqc
+      - doxy_argoqc
+      - molar_doxy_argoqc
+      - nitrate_argoqc
       - ph_in_situ_total_argoqc
+      - pres_argoqc
+      - psal_argoqc
+      - psal_sfile_argoqc
+      - temp_argoqc
+      - temp_sfile_argoqc
+      - turbidity_argoqc
       - up_radiance412_argoqc
       - up_radiance443_argoqc
       - up_radiance490_argoqc
