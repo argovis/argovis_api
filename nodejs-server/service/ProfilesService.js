@@ -40,12 +40,6 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return;
     }
 
-    // will need original measurement requests later, copy before mutating
-    let origData = []
-    if(data) {
-      origData = JSON.parse(JSON.stringify(data))
-    }
-
     // project out data for metadata-only requests
     if(!data){
       aggPipeline.push({$project: {data: 0}})

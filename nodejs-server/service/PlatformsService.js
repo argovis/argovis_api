@@ -43,7 +43,6 @@ exports.platformList = function(platforms) {
   return new Promise(function(resolve, reject) {
 
     let aggPipeline = []
-
     // focus on a list of platforms, if provided
     if(platforms) {
       let pform = platforms.concat(platforms.map(x => String(x)))
@@ -79,9 +78,9 @@ exports.platformList = function(platforms) {
 exports.platformMeta = function(platform) {
   return new Promise(function(resolve, reject) {
     const query = Profile.aggregate([
-      {$match: {platform_number: platform}},
+      {$match: {platform_id: platform}},
       {$group:  { _id: '$platform_id',
-                  platform_number: {$first: '$platform_id'},
+                  platform_id: {$first: '$platform_id'},
                   most_recent_date: {$max: '$timestamp'},
                   most_recent_date_added: {$max: '$date_updated_argovis'},
                   number_of_profiles: {$sum: 1},
