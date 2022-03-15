@@ -183,11 +183,18 @@ exports.profilesOverview = function() {
           {$unwind: '$source_info'},
           {$match: {'source_info.source':'argo_deep' }},
           {$group: { _id: '$_id'}},
-        ])
+          {$count: "ndeep"}
+        ]),
+        Profile.aggregate([
+          {$unwind: '$source_info'},
+          {$match: {'source_info.source':'argo_bgc' }},
+          {$group: { _id: '$_id'}},
+          {$count: "nbgc"}
+        ]),
         Profile.aggregate([{ $sort: { timestamp: -1 } }, {$project: {'date_added': 1}}, { $limit : 1 }])
     ]).then( ([ numberOfProfiles, dacs, numberDeep, numberBgc, lastAdded ]) => {
         const date = lastAdded[0].date_added
-        let overviewData = {'numberOfProfiles': numberOfProfiles, 'dacs': dacs, 'numberDeep': numberDeep, 'numberBgc': numberBgc, 'lastAdded': lastAdded[0]['date_added']}
+        let overviewData = {'numberOfProfiles': numberOfProfiles, 'dacs': dacs, 'numberDeep': numberDeep[0]['ndeep'], 'numberBgc': numberBgc[0]['nbgc'], 'lastAdded': lastAdded[0]['date_added']}
         resolve(overviewData);
     }).catch(error => {
         reject({"code": 500, "message": "Server error"});

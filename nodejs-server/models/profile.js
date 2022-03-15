@@ -76,5 +76,5 @@ var ProfileSchema = Schema(
 );
 
 //Export model, mongoose automatically looks for the plural of the first input. 'profiles'
-module.exports = mongoose.model('profiles', ProfileSchema, 'profiles');
+module.exports = mongoose.model('profilesx', ProfileSchema, 'profilesx');
 //module.exports = mongoose.model('goship', ProfileSchema, 'goship');
