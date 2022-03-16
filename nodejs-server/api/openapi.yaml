@@ -1922,6 +1922,7 @@ components:
       - down_irradiance670
       - downwelling_par
       - doxy
+      - doxy2
       - molar_doxy
       - nitrate
       - ph_in_situ_total
@@ -1953,6 +1954,7 @@ components:
       - down_irradiance670_argoqc
       - downwelling_par_argoqc
       - doxy_argoqc
+      - doxy2_argoqc
       - molar_doxy_argoqc
       - nitrate_argoqc
       - ph_in_situ_total_argoqc
