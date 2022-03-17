@@ -130,6 +130,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/profiles/listID?startDate=2006-04-16T00:00:00Z&endDate=2006-04-17T00:00:00Z&data=psal").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
-    });   
+    });
+
+    describe("GET /profiles", function () {
+      it("should only return bgc profiles", async function () {
+        const response = await request.get("/profiles?ids=2900448_060,2900448_061,2900448_062,3900321_050&source=argo_bgc").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3)
+      });
+    });
   }
 })
