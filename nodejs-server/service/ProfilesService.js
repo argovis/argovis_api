@@ -231,35 +231,6 @@ const variable_bracket = function(key, min, max, profile){
   return profile
 }
 
-const reduce_meas = function(keys, meas) { // TODO retool this for current packing
-  // meas == 'measurements' or 'bgcMeas'
-  // keys == list of keys to keep from meas.
-  let newObj = {}
-  let idx = 0
-  for (idx=0; idx<keys.length; idx++) {
-      const key = keys[idx]
-      const item = '$$item.'.concat(key)
-      newObj[key] = item
-      if(meas=='bgcMeas'){
-        const item_qc = item.concat('_qc')
-        newObj[key+'_qc'] = item_qc
-      }
-  }
-
-  const reduceArray = {
-                      $addFields: {
-                          [meas]: {
-                              $map: {
-                                  input: "$".concat(meas),
-                                  as: "item",
-                                  in: newObj
-                              }
-                          }
-                      }
-                  }
-  return reduceArray
-}
-
 const reduce_data = function(profile, keys){
   // profile == profile object returned from mongo
   // keys == list of keys to keep from profile.data
