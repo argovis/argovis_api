@@ -10,11 +10,11 @@ const helpers = require('./helpers')
 exports.dacList = function() {
   return new Promise(function(resolve, reject) {
     const query = Profile.aggregate([
-      {$sort: { 'date':-1}},
-      {$group: {_id: '$dac',
+      {$sort: { 'timestamp':-1}},
+      {$group: {_id: '$data_center',
                'number_of_profiles': {$sum:1},
-               'most_recent_date': {$first: '$date'},
-               'dac': {$first: '$dac'}
+               'most_recent_date': {$first: '$timestamp'},
+               'data_center': {$first: '$data_center'}
               }, 
       },
       {$sort: {'number_of_profiles':-1}},

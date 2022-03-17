@@ -19,7 +19,7 @@ exports.findCovar = function(lat,lon,forcastDays) {
         return;
     }
 
-    const query = covar.findOne({forcastDays: forcastDays, geoLocation: {
+    const query = covar.findOne({forcastDays: forcastDays, geolocation: {
                                 $near: {
                                     $geometry: point
                                     //$maxDistance: radius
@@ -59,7 +59,7 @@ exports.sumCovar = function(lat,lon,forcastDays,polygon) {
         return;
     }
 
-    const query = covar.findOne({forcastDays: forcastDays, geoLocation: {
+    const query = covar.findOne({forcastDays: forcastDays, geolocation: {
                                 $near: {
                                     $geometry: point
                                     //$maxDistance: radius

@@ -7,7 +7,7 @@ var arShapesSchema = Schema(
     _id: {type: String, required: true},
     date: {type: Date, required: true},
     shapeId: {type: Number, required: true},
-    geoLocation: {type: Schema.Types.Mixed, required: true},
+    geolocation: {type: Schema.Types.Mixed, required: true},
   },
   {
     toObject: { virtuals: true },

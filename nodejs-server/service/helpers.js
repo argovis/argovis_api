@@ -57,3 +57,9 @@ module.exports.intersects = function(arrayA, arrayB){
     // returns true if arrayA and arrayB have at least one element in common
     return arrayA.filter(value => arrayB.includes(value)).length > 0
 }
+
+module.exports.zip = function(arrays){
+    return arrays[0].map(function(_,i){
+        return arrays.map(function(array){return array[i]})
+    });
+}
