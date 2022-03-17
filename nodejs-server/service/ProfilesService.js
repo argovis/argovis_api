@@ -34,7 +34,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,dac)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -117,7 +117,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
       return; 
     } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,dac)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,dac,source)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -279,7 +279,7 @@ const reinflate = function(profile){
   return profile
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,dac){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -369,6 +369,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(dac){
       aggPipeline.push({ $match : { data_center : dac } })
+    }
+
+    if(source){
+      aggPipeline.push({$match: {'source_info.source': source}})
     }
 
     return aggPipeline
