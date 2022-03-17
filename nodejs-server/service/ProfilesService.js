@@ -59,14 +59,14 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       // }
 
       if(data){
-        // filter out measurements the user didn't request
-        if(!data.includes('all')){
-          profiles = profiles.map(x => reduce_data(x, data))
-        }
-
         // filter out levels that fall outside the pressure range requested
         if(presRange){
           profiles = profiles.map(p => variable_bracket.bind(null, 'pres', presRange[0], presRange[1])(p) )
+        }
+
+        // filter out measurements the user didn't request
+        if(!data.includes('all')){
+          profiles = profiles.map(x => reduce_data(x, data))
         }
 
         // keep only profiles that have some requested data
@@ -136,14 +136,14 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,p
       }
 
       if(data){
-        // filter out measurements the user didn't request
-        if(!data.includes('all')){
-          profiles = profiles.map(x => reduce_data(x, data))
-        }
-
         // filter out levels that fall outside the pressure range requested
         if(presRange){
           profiles = profiles.map(p => variable_bracket.bind(null, 'pres', presRange[0], presRange[1])(p) )
+        }
+
+        // filter out measurements the user didn't request
+        if(!data.includes('all')){
+          profiles = profiles.map(x => reduce_data(x, data))
         }
 
         // keep only profiles that have some requested data
