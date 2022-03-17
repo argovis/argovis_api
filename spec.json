@@ -648,10 +648,7 @@
                   "$ref": "#/components/parameters/compression"
                },
                {
-                  "$ref": "#/components/parameters/coreMeasurements"
-               },
-               {
-                  "$ref": "#/components/parameters/bgcMeasurements"
+                  "$ref": "#/components/parameters/data"
                }
             ],
             "responses": {
@@ -716,10 +713,7 @@
                   "$ref": "#/components/parameters/presRange"
                },
                {
-                  "$ref": "#/components/parameters/coreMeasurements"
-               },
-               {
-                  "$ref": "#/components/parameters/bgcMeasurements"
+                  "$ref": "#/components/parameters/data"
                }
             ],
             "responses": {
@@ -927,7 +921,7 @@
                "_id",
                "date",
                "shapeId",
-               "geoLocation",
+               "geolocation",
                "date_formatted"
             ],
             "properties": {
@@ -941,7 +935,7 @@
                "shapeId": {
                   "type": "integer"
                },
-               "geoLocation": {
+               "geolocation": {
                   "$ref": "#/components/schemas/geoJSONpolygon"
                },
                "date_formateed": {
@@ -958,7 +952,7 @@
                "dLat",
                "forcastDays",
                "dLong",
-               "geoLocation"
+               "geolocation"
             ],
             "properties": {
                "features": {
@@ -991,7 +985,7 @@
                "forcastDays": {
                   "type": "integer"
                },
-               "geoLocation": {
+               "geolocation": {
                   "$ref": "#/components/schemas/geoJSONpoint"
                }
             }
@@ -1041,7 +1035,7 @@
                         "lat",
                         "lon",
                         "timestamp",
-                        "geoLocation"
+                        "geolocation"
                      ],
                      "properties": {
                         "date": {
@@ -1072,7 +1066,7 @@
                            "type": "string",
                            "format": "date-time"
                         },
-                        "geoLocation": {
+                        "geolocation": {
                            "$ref": "#/components/schemas/geoJSONpoint"
                         }
                      }
@@ -1349,385 +1343,198 @@
             "type": "object",
             "required": [
                "_id",
-               "nc_url",
-               "position_qc",
-               "cycle_number",
-               "dac",
-               "date",
-               "max_pres",
-               "lat",
-               "lon",
-               "platform_number",
-               "geoLocation",
-               "station_parameters"
+               "basin",
+               "data_type",
+               "date_updated_argovis",
+               "geolocation",
+               "timestamp",
+               "cycle_number"
             ],
             "properties": {
                "_id": {
                   "type": "string"
                },
-               "nc_url": {
+               "basin": {
+                  "type": "number"
+               },
+               "data_type": {
                   "type": "string"
                },
-               "position_qc": {
-                  "type": "integer"
-               },
-               "cycle_number": {
-                  "type": "integer"
-               },
-               "dac": {
+               "doi": {
                   "type": "string"
                },
-               "date": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "date_added": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "date_qc": {
-                  "type": "integer"
-               },
-               "max_pres": {
-                  "type": "number"
-               },
-               "bgcMeasKeys": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               "lat": {
-                  "type": "number"
-               },
-               "lon": {
-                  "type": "number"
-               },
-               "platform_number": {
-                  "anyOf": [ {"type": "string"}, {"type": "number"}]
-               },
-               "geoLocation": {
+               "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
-                },
-               "station_parameters": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
                },
-               "station_parameters_in_nc": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               "VERTICAL_SAMPLING_SCHEME": {
+                "instrument": {
                   "type": "string"
                },
-               "PI_NAME": {
-                  "type": "string"
-               },
-               "WMO_INST_TYPE": {
-                  "type": "string"
-               },
-               "POSITIONING_SYSTEM": {
-                  "type": "string"
-               },
-               "DATA_MODE": {
-                  "type": "string"
-               },
-               "PARAMETER_DATA_MODE": {
+               "data": {
                   "type": "array",
                   "items": {
                      "type": "array",
                      "items": {
-                        "type": "string"
+                        "type": "number"
                      }
+                  }          
+               },
+               "data_keys": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/dataKey"
                   }
                },
-               "DATA_CENTRE": {
-                  "type": "string"
-               },
-               "DIRECTION": {
-                  "type": "string"
-               },
-               "PLATFORM_TYPE": {
-                  "type": "string"
-               },
-               "pres_max_for_TEMP": {
-                  "type": "number"
-               },
-               "pres_max_for_PSAL": {
-                  "type": "number"
-               },
-               "pres_min_for_TEMP": {
-                  "type": "number"
-               },
-               "pres_min_for_PSAL": {
-                  "type": "number"
-               },
-               "containsBGC": {
-                  "type": "boolean"
-               },
-               "isDeep": {
-                  "type": "boolean"
-               },
-               "BASIN": {
-                  "type": "number"
-               },
-               "url": {
-                  "type": "string"
-               },
-               "core_data_mode": {
-                  "type": "string"
-               },
-               "jcommopsPlatform": {
-                  "type": "string"
-               },
-               "euroargoPlatform": {
-                  "type": "string"
-               },
-               "formatted_station_parameters": {
+               "data_warning": {
                   "type": "array",
                   "items": {
                      "type": "string"
                   }
                },
-               "roundLat": {
-                  "type": "string"
-               },
-               "roundLon": {
-                  "type": "string"
-               },
-               "strLat": {
-                  "type": "string"
-               },
-               "strLon": {
-                  "type": "string"
-               },
-               "date_formatted": {
+               "timestamp": {
                   "type": "string",
-                  "format": "date"
+                  "format": "date-time"
                },
-               "measurements": {
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "pi_name": {
                   "type": "array",
                   "items": {
-                     "$ref": "#/components/schemas/coreMeasurement"
-                  }          
-               },
-               "bgcMeas": {
-                  "type": "array",
-                  "items": {
-                     "$ref": "#/components/schemas/bgcMeasurement"
+                     "type": "string"
                   }
-               }
-            }
-         },
-         "coreMeasurement":{
-            "type": "object",
-            "properties": {
-               "pres": {
+               },
+               "country": {
+                  "type": "string"
+               },
+               "data_center": {
+                  "type": "string"
+               },
+               "source_info": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/profile_source_info"
+                  }
+               },
+               "profile_direction": {
+                  "type": "string"
+               },
+               "geolocation_argoqc": {
                   "type": "number"
                },
-               "temp": {
+               "timestamp_argoqc": {
                   "type": "number"
                },
-               "psal": {
-                  "type": "number"
-               }
-            }               
-         },
-         "coreMeasurementKey": {
-            "type": "string",
-            "enum": [
-               "pres",
-               "temp",
-               "psal",
-               "all"
-            ]
-         },
-         "bgcMeasurement": {
-            "anyOf": [
-               {
-                  "$ref": "#/components/schemas/argoBgcMeasurement"
-               },
-               {
-                  "$ref": "#/components/schemas/goshipBgcMeasurement"
-               }
-            ]
-         },
-         "argoBgcMeasurement": {
-            "type": "object",
-            "properties": {
-               "pres": {
+               "cycle_number": {
                   "type": "number"
                },
-               "pres_qc": {
-                  "type": "integer"
+               "fleetmonitoring": {
+                  "type": "string"
                },
-               "temp": {
-                  "type": "number"
+               "oceanops": {
+                  "type": "string"
                },
-               "temp_qc": {
-                  "type": "integer"
+               "data_keys_mode": {
+                  "type": "object"
                },
-               "psal": {
-                  "type": "number"
+               "platform_id":{
+                  "type": "string"
                },
-               "psal_qc": {
-                  "type": "integer"
+               "platform_type": {
+                  "type": "string"
                },
-               "cndx": {
-                  "type": "number"
+               "positioning_system": {
+                  "type": "string"
                },
-               "cndx_qc": {
-                  "type": "integer"
+               "vertical_sampling_scheme": {
+                  "type": "string"
                },
-               "doxy": {
-                  "type": "number"
-               },
-               "doxy_qc": {
-                  "type": "integer"
-               },
-               "chla": {
-                  "type": "number"
-               },
-               "chla_qc": {
-                  "type": "integer"
-               },
-               "cdom": {
-                  "type": "number"
-               },
-               "cdom_qc": {
-                  "type": "integer"
-               },
-               "nitrate": {
-                  "type": "number"
-               },
-               "nitrate_qc": {
-                  "type": "integer"
-               },
-               "bbp700": {
-                  "type": "number"
-               },
-               "bbp700_qc": {
-                  "type": "integer"
-               },
-               "down_irradiance412": {
-                  "type": "number"
-               },
-               "down_irradiance412_qc": {
-                  "type": "integer"
-               },
-               "down_irradiance442": {
-                  "type": "number"
-               },
-               "down_irradiance442_qc": {
-                  "type": "integer"
-               },
-               "down_irradiance490": {
-                  "type": "number"
-               },
-               "down_irradiance490_qc": {
-                  "type": "integer"
-               },
-               "downwelling_par": {
-                  "type": "number"
-               },
-               "downwelling_par_qc": {
+               "wmo_inst_type": {
                   "type": "string"
                }
             }
          },
-         "goshipBgcMeasurement": {
-               "pres": {
-                  "type": "string"
-               },
-               "pres_qc": {
-                  "type": "string"
-               },
-               "psal_btl": {
-                  "type": "string"
-               },
-               "psal_btl_qc": {
-                  "type": "string"
-               },
-               "psal_ctd": {
-                  "type": "string"
-               },
-               "psal_ctd_qc": {
-                  "type": "string"
-               },
-               "temp_btl": {
-                  "type": "string"
-               },
-               "temp_btl_qc": {
-                  "type": "string"
-               },
-               "temp_ctd": {
-                  "type": "string"
-               },
-               "temp_ctd_qc": {
-                  "type": "string"
-               },
-               "doxy_btl": {
-                  "type": "string"
-               },
-               "doxy_btl_qc": {
-                  "type": "string"
-               },
-               "doxy_ctd": {
-                  "type": "string"
-               },
-               "doxy_ctd_qc": {
-                  "type": "string"
-               }
-
-         },
-         "bgcMeasurementKey":{
+         "dataKey":{
             "type": "string",
             "anyOf": [
                {
-                  "$ref": "#/components/schemas/argoBgcMeasurementKey"
+                  "$ref": "#/components/schemas/argoDataKey"
                },
                {
-                  "$ref": "#/components/schemas/goshipBgcMeasurementKey"
+                  "$ref": "#/components/schemas/goshipDataKey"
                }
             ] 
          },
-         "argoBgcMeasurementKey": {
+         "argoDataKey": {
             "type": "string",
             "enum": [
-               "pres",
-               "pres_qc",
-               "temp",
-               "temp_qc",
-               "psal",
-               "psal_qc",
-               "cndx",
-               "cndx_qc",
-               "doxy",
-               "doxy_qc",
-               "chla",
-               "chla_qc",
-               "cdom",
-               "cdom_qc",
-               "nitrate",
-               "nitrate_qc",
+               "bbp470",
+               "bbp532",
                "bbp700",
-               "bbp700_qc",
+               "bbp700_2",
+               "bisulfide",
+               "cdom",
+               "chla",
+               "cndx",
+               "cp660",
+               "down_irradiance380",
                "down_irradiance412",
-               "down_irradiance412_qc",
                "down_irradiance442",
-               "down_irradiance442_qc",
+               "down_irradiance443",
                "down_irradiance490",
-               "down_irradiance490_qc",
+               "down_irradiance555",
+               "down_irradiance670",
                "downwelling_par",
-               "downwelling_par_qc",
-               "all"
-            ]
+               "doxy",
+               "doxy2",
+               "molar_doxy",
+               "nitrate",
+               "ph_in_situ_total",
+               "pres",
+               "psal",
+               "psal_sfile",
+               "temp",
+               "temp_sfile",
+               "turbidity",
+               "up_radiance412",
+               "up_radiance443",
+               "up_radiance490",
+               "up_radiance555",
+               "bbp470_argoqc",
+               "bbp532_argoqc",
+               "bbp700_argoqc",
+               "bbp700_2_argoqc",
+               "bisulfide_argoqc",
+               "cdom_argoqc",
+               "chla_argoqc",
+               "cndx_argoqc",
+               "cp660_argoqc",
+               "down_irradiance380_argoqc",
+               "down_irradiance412_argoqc",
+               "down_irradiance442_argoqc",
+               "down_irradiance443_argoqc",
+               "down_irradiance490_argoqc",
+               "down_irradiance555_argoqc",
+               "down_irradiance670_argoqc",
+               "downwelling_par_argoqc",
+               "doxy_argoqc",
+               "doxy2_argoqc",
+               "molar_doxy_argoqc",
+               "nitrate_argoqc",
+               "ph_in_situ_total_argoqc",
+               "pres_argoqc",
+               "psal_argoqc",
+               "psal_sfile_argoqc",
+               "temp_argoqc",
+               "temp_sfile_argoqc",
+               "turbidity_argoqc",
+               "up_radiance412_argoqc",
+               "up_radiance443_argoqc",
+               "up_radiance490_argoqc",
+               "up_radiance555_argoqc",
+               "all"]
          },
-         "goshipBgcMeasurementKey": {
+         "goshipDataKey": {
             "type": "string",
             "enum": [
                "pres",
@@ -1796,7 +1603,7 @@
                "cycle_number": {
                   "type": "integer"
                },
-               "geoLocation": {
+               "geolocation": {
                   "$ref": "#/components/schemas/geoJSONpoint"
                },
                "dac": {
@@ -1848,6 +1655,7 @@
          },
          "geoJSONpoint": {
             "type": "object",
+            "required": ["type", "coordinates"],
             "properties": {
                "type": {
                   "type": "string"
@@ -1878,6 +1686,31 @@
                         "maxItems": 2
                      }
                   }
+               }
+            }
+         },
+         "profile_source_info": {
+            "type": "object",
+            "required": ["source"],
+            "properties": {
+               "data_keys_source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "source_url": {
+                  "type": "string"
+               },
+               "date_updated_source": {
+                  "type": "string",
+                  "format": "date-time"
                }
             }
          },
@@ -2198,31 +2031,17 @@
                "example": 0
             }
          },
-         "coreMeasurements": {
+         "data": {
             "in": "query",
-            "name": "coreMeasurements",
-            "description": "Keys of core measurements to include",
+            "name": "data",
+            "description": "Keys of data to include",
             "style": "form",
             "explode": false,
             "allowReserved": true,
             "schema": {
                "type": "array",
                "items": {
-                  "$ref": "#/components/schemas/coreMeasurementKey"
-               }
-            }
-         },
-         "bgcMeasurements": {
-            "in": "query",
-            "name": "bgcMeasurements",
-            "description": "Keys of BGC measurements to include",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
-            "schema": {
-               "type": "array",
-               "items": {
-                  "$ref": "#/components/schemas/bgcMeasurementKey"
+                  "$ref": "#/components/schemas/dataKey"
                }
             }
          },
