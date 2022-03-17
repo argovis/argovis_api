@@ -1032,13 +1032,10 @@ paths:
         description: ""
         required: false
         style: form
-        explode: false
-        allowReserved: true
+        explode: true
         schema:
-          type: array
-          example: "argo_bgc,argo_deep"
-          items:
-            type: string
+          type: string
+          example: argo_bgc
       - name: compression
         in: query
         description: Data compression strategy
@@ -1177,13 +1174,10 @@ paths:
         description: ""
         required: false
         style: form
-        explode: false
-        allowReserved: true
+        explode: true
         schema:
-          type: array
-          example: "argo_bgc,argo_deep"
-          items:
-            type: string
+          type: string
+          example: argo_bgc
       - name: platforms
         in: query
         description: List of platform IDs
@@ -2528,13 +2522,10 @@ components:
       description: ""
       required: false
       style: form
-      explode: false
-      allowReserved: true
+      explode: true
       schema:
-        type: array
-        example: "argo_bgc,argo_deep"
-        items:
-          type: string
+        type: string
+        example: argo_bgc
     compression:
       name: compression
       in: query

@@ -1957,15 +1957,9 @@
             "in": "query",
             "name": "source",
             "description": "",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
             "schema": {
-               "type": "array",
-               "items":{
-                  "type": "string"
-               },
-               "example": "argo_bgc,argo_deep"
+               "type": "string",
+               "example": "argo_bgc"
             } 
          },
          "compression": {
