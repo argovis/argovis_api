@@ -645,6 +645,9 @@
                   "$ref": "#/components/parameters/dac"
                },
                {
+                  "$ref": "#/components/parameters/profileSource" 
+               },
+               {
                   "$ref": "#/components/parameters/compression"
                },
                {
@@ -705,6 +708,9 @@
                },
                {
                   "$ref": "#/components/parameters/dac"
+               },
+               {
+                  "$ref": "#/components/parameters/profileSource" 
                },
                {
                   "$ref": "#/components/parameters/platformList"
@@ -1946,6 +1952,21 @@
                "type": "string",
                "example": ""
             }
+         },
+         "profileSource": {
+            "in": "query",
+            "name": "source",
+            "description": "",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items":{
+                  "type": "string"
+               },
+               "example": "argo_bgc,argo_deep"
+            } 
          },
          "compression": {
             "in": "query",
