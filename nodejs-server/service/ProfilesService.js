@@ -14,11 +14,12 @@
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
+ * source String  (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,source,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -123,12 +124,13 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
  * dac String Data Assembly Center (optional)
+ * source String  (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,platforms,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,platforms,presRange,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ "", "" ];
