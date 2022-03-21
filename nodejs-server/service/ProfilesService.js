@@ -238,6 +238,11 @@ const reduce_data = function(profile, keys){
   // keys == list of keys to keep from profile.data
   // return the original profile, with p.data and p.data_keys mutated to suit the requested keys
 
+  if ( !('data' in profile) || profile.data.length==0) {
+    // nothing to do
+    return profile
+  }
+
   let vars = helpers.zip(profile.data)
   let keepers = profile.data_keys.map(x => keys.includes(x))
   let data = []
