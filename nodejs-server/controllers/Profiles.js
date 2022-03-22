@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Profiles = require('../service/ProfilesService');
 
-module.exports.profile = function profile (req, res, next, startDate, endDate, polygon, box, center, radius, id, platforms, presRange, dac, source, woceline, datakey, compression, data) {
-  Profiles.profile(startDate, endDate, polygon, box, center, radius, id, platforms, presRange, dac, source, woceline, datakey, compression, data)
+module.exports.profile = function profile (req, res, next, startDate, endDate, polygon, box, center, radius, id, platform, presRange, dac, source, woceline, datakey, compression, data) {
+  Profiles.profile(startDate, endDate, polygon, box, center, radius, id, platform, presRange, dac, source, woceline, datakey, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -13,8 +13,8 @@ module.exports.profile = function profile (req, res, next, startDate, endDate, p
     });
 };
 
-module.exports.profileList = function profileList (req, res, next, startDate, endDate, polygon, box, center, radius, dac, source, woceline, datakey, platforms, presRange, data) {
-  Profiles.profileList(startDate, endDate, polygon, box, center, radius, dac, source, woceline, datakey, platforms, presRange, data)
+module.exports.profileList = function profileList (req, res, next, startDate, endDate, polygon, box, center, radius, dac, source, woceline, datakey, platform, presRange, data) {
+  Profiles.profileList(startDate, endDate, polygon, box, center, radius, dac, source, woceline, datakey, platform, presRange, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })

@@ -988,19 +988,14 @@ paths:
         schema:
           type: string
           example: 4902911_0
-      - name: platforms
+      - name: platform
         in: query
-        description: List of platform IDs
+        description: Platform ID
         required: false
         style: form
-        explode: false
-        allowReserved: true
+        explode: true
         schema:
-          type: array
-          items:
-            anyOf:
-            - type: string
-            - type: number
+          type: string
       - name: presRange
         in: query
         description: Pressure range
@@ -1211,19 +1206,14 @@ paths:
         schema:
           type: string
           example: doxy
-      - name: platforms
+      - name: platform
         in: query
-        description: List of platform IDs
+        description: Platform ID
         required: false
         style: form
-        explode: false
-        allowReserved: true
+        explode: true
         schema:
-          type: array
-          items:
-            anyOf:
-            - type: string
-            - type: number
+          type: string
       - name: presRange
         in: query
         description: Pressure range
@@ -2599,6 +2589,15 @@ components:
       schema:
         type: string
         example: 4902911_0
+    profilePlatform:
+      name: platform
+      in: query
+      description: Platform ID
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
     platformList:
       name: platforms
       in: query
