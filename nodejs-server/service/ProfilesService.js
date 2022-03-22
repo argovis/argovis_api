@@ -36,7 +36,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
     //   return; 
     // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source, woceline, datakey)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source, woceline, datavars)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -126,7 +126,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
     //   return; 
     // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline,datakey)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline,datavars)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -298,7 +298,7 @@ const reinflate = function(profile){
   return profile
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline,datakey){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline,datavars){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -397,8 +397,9 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
       aggPipeline.push({$match: {'woce_lines': woceline}})
     }
 
-    if(datakey){
-      aggPipeline.push({$match: {'data_keys': datakey}})
+    if(datavars){
+      console.log('>>>>', datavars)
+      aggPipeline.push({$match: {'data_keys': {"$all": datavars} }})
     }
 
     return aggPipeline
