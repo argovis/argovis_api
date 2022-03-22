@@ -27,16 +27,16 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
-    if (
-      (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
-      (!ids || ids.length >100) &&
-      (!platforms || platforms.length>1)) {
+    // if (
+    //   (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
+    //   (!ids || ids.length >100) &&
+    //   (!platforms || platforms.length>1)) {
 
-      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
-      return; 
-    } 
+    //   reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
+    //   return; 
+    // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source, woceline, datakey)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -54,6 +54,11 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;
+      }
+
+      if(profiles.length > 1000){
+        reject({"code": 400, "message": "Your query is too broad and matched too many profiles; please use the filters to make a narrower request, and feel free to make multiple requests to cover more cases."});
+        return; 
       }
 
       // for(let i=0; i<profiles.length; i++){
@@ -113,15 +118,15 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
-    if (
-      (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
-      (!platforms || platforms.length>1)) {
+    // if (
+    //   (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
+    //   (!platforms || platforms.length>1)) {
 
-      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform."});
-      return; 
-    } 
+    //   reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform."});
+    //   return; 
+    // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,dac,source)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,dac,source,woceline,datakey)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -139,6 +144,11 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;
+      }
+
+      if(profiles.length > 10000){
+        reject({"code": 400, "message": "Your query is too broad and matched too many profiles; please use the filters to make a narrower request, and feel free to make multiple requests to cover more cases."});
+        return; 
       }
 
       if(data){
@@ -288,7 +298,7 @@ const reinflate = function(profile){
   return profile
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source,woceline,datakey){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -382,6 +392,14 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(source){
       aggPipeline.push({$match: {'source_info.source': source}})
+    }
+
+    if(woceline){
+      aggPipeline.push({$match: {'woce_lines': woceline}})
+    }
+
+    if(datakey){
+      aggPipeline.push({$match: {'data_keys': datakey}})
     }
 
     return aggPipeline
