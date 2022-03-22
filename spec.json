@@ -651,7 +651,7 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/datavar" 
+                  "$ref": "#/components/parameters/datavars" 
                },
                {
                   "$ref": "#/components/parameters/compression"
@@ -722,7 +722,7 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/datavar" 
+                  "$ref": "#/components/parameters/datavars" 
                },
                {
                   "$ref": "#/components/parameters/profilePlatform"
@@ -1983,14 +1983,19 @@
                "example": "argo_bgc"
             } 
          },
-         "datavar": {
+         "datavars": {
             "in": "query",
-            "name": "datakey",
-            "description": "",
+            "name": "datavars",
+            "description": "AND list of variables to require in a profile",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
             "schema": {
-               "type": "string",
-               "example": "doxy"
-            } 
+               "type": "array",
+               "items": {
+                  "type": "string"
+               }
+            }
          },
          "compression": {
             "in": "query",

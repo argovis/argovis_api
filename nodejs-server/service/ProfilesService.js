@@ -18,12 +18,12 @@ const helpers = require('./helpers')
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datakey String  (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,datakey,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,datavars,compression,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -108,13 +108,13 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datakey String  (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datakey,platform,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datavars,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
