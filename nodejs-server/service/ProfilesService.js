@@ -13,7 +13,7 @@ const helpers = require('./helpers')
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
  * id String Profile ID (optional)
- * platforms List List of platform IDs (optional)
+ * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
  * source String  (optional)
@@ -23,7 +23,7 @@ const helpers = require('./helpers')
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platforms,presRange,dac,source,woceline,datakey,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,datakey,compression,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
@@ -109,12 +109,12 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * source String  (optional)
  * woceline String  (optional)
  * datakey String  (optional)
- * platforms List List of platform IDs (optional)
+ * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datakey,platforms,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datakey,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);

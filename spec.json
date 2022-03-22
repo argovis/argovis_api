@@ -636,7 +636,7 @@
                   "$ref": "#/components/parameters/profileID"
                },
                {
-                  "$ref": "#/components/parameters/platformList"
+                  "$ref": "#/components/parameters/profilePlatform"
                },
                {
                   "$ref": "#/components/parameters/presRange"
@@ -725,7 +725,7 @@
                   "$ref": "#/components/parameters/datavar" 
                },
                {
-                  "$ref": "#/components/parameters/platformList"
+                  "$ref": "#/components/parameters/profilePlatform"
                },
                {
                   "$ref": "#/components/parameters/presRange"
@@ -2008,6 +2008,14 @@
             "schema": {
                "type": "string",
                "example": "4902911_0"
+            }
+         },
+         "profilePlatform": {
+            "in": "query",
+            "name": "platform",
+            "description": "Platform ID",
+            "schema": {
+               "type": "string"
             }
          },
          "platformList": {
