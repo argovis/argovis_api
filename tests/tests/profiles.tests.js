@@ -32,16 +32,16 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    describe("GET /profiles", function () {
-      it("fails on too long a date range", async function () {
-        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-04-01T00:00:00.000Z&compression=basic").set({'x-argokey': 'developer'});
-        expect(response.status).to.eql(400);
-      });
-    });
+    // describe("GET /profiles", function () {
+    //   it("fails on too long a date range", async function () {
+    //     const response = await request.get("/profiles?startDate=2020-01-01T00:00:00.000Z&endDate=2020-04-01T00:00:00.000Z&compression=basic").set({'x-argokey': 'developer'});
+    //     expect(response.status).to.eql(400);
+    //   });
+    // });
 
     describe("GET /profiles", function () {
       it("gets profiles for one platform", async function () {
-        const response = await request.get("/profiles?platforms=2900448&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?platform=2900448&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
       });
     });
@@ -69,14 +69,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("should find 2 profiles within a 20 km of this point", async function () {
-        const response = await request.get("/profiles?platforms=2900448&center=134.25,36.16&radius=20&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?platform=2900448&center=134.25,36.16&radius=20&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(2)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return KO profiles", async function () {
-        const response = await request.get("/profiles?ids=2900448_060,2900448_061&dac=KO&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?dac=KO&compression=basic").set({'x-argokey': 'developer'});
         dacs = response.body.map(p => p.data_center)
         s = new Set(dacs)
         expect(Array.from(s)).to.eql(['KO'])
@@ -134,9 +134,17 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("should only return bgc profiles", async function () {
-        const response = await request.get("/profiles?ids=2900448_060,2900448_061,2900448_062,3900321_050&source=argo_bgc").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?source=argo_bgc").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
+
+    describe("GET /profiles", function () {
+      it("should only return profiles with doxy", async function () {
+        const response = await request.get("/profiles?datavars=doxy").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3)
+      });
+    });
+
   }
 })

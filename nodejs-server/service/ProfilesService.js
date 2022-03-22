@@ -12,29 +12,31 @@ const helpers = require('./helpers')
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
- * ids List List of profile IDs (optional)
- * platforms List List of platform IDs (optional)
+ * id String Profile ID (optional)
+ * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
  * source String  (optional)
+ * woceline String  (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,source,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,datavars,compression,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
-    if (
-      (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
-      (!ids || ids.length >100) &&
-      (!platforms || platforms.length>1)) {
+    // if (
+    //   (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
+    //   (!ids || ids.length >100) &&
+    //   (!platforms || platforms.length>1)) {
 
-      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
-      return; 
-    } 
+    //   reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
+    //   return; 
+    // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source, woceline, datavars)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -52,6 +54,11 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;
+      }
+
+      if(profiles.length > 1000){
+        reject({"code": 400, "message": "Your query is too broad and matched too many profiles; please use the filters to make a narrower request, and feel free to make multiple requests to cover more cases."});
+        return; 
       }
 
       // for(let i=0; i<profiles.length; i++){
@@ -100,24 +107,26 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
  * radius BigDecimal km from centerpoint (optional)
  * dac String Data Assembly Center (optional)
  * source String  (optional)
- * platforms List List of platform IDs (optional)
+ * woceline String  (optional)
+ * datavars List AND list of variables to require in a profile (optional)
+ * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,platforms,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datavars,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
     if(startDate) startDate = new Date(startDate);
     if(endDate) endDate = new Date(endDate);
-    if (
-      (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
-      (!platforms || platforms.length>1)) {
+    // if (
+    //   (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
+    //   (!platforms || platforms.length>1)) {
 
-      reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform."});
-      return; 
-    } 
+    //   reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform."});
+    //   return; 
+    // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,dac,source)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline,datavars)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -135,6 +144,11 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;
+      }
+
+      if(profiles.length > 10000){
+        reject({"code": 400, "message": "Your query is too broad and matched too many profiles; please use the filters to make a narrower request, and feel free to make multiple requests to cover more cases."});
+        return; 
       }
 
       if(data){
@@ -284,7 +298,7 @@ const reinflate = function(profile){
   return profile
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline,datavars){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -315,13 +329,12 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
       aggPipeline.push({$match:  {timestamp: {$lte: endDate}}})
     }
 
-    if (ids){
-      aggPipeline.push({$match: {_id: { $in: ids}}})
+    if(id){
+      aggPipeline.push({ $match : { _id : id } })
     }
 
-    if(platforms) {
-      let pform = platforms.concat(platforms.map(x => String(x)))
-      aggPipeline.push({$match: {platform_id: { $in: pform}}})
+    if(platform){
+      aggPipeline.push({ $match : { platform_id : String(platform) } })
     }
 
     if(polygon) {
@@ -378,6 +391,15 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(source){
       aggPipeline.push({$match: {'source_info.source': source}})
+    }
+
+    if(woceline){
+      aggPipeline.push({$match: {'woce_lines': woceline}})
+    }
+
+    if(datavars){
+      console.log('>>>>', datavars)
+      aggPipeline.push({$match: {'data_keys': {"$all": datavars} }})
     }
 
     return aggPipeline
