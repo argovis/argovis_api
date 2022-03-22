@@ -651,7 +651,7 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/datakey" 
+                  "$ref": "#/components/parameters/datavar" 
                },
                {
                   "$ref": "#/components/parameters/compression"
@@ -722,7 +722,7 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/datakey" 
+                  "$ref": "#/components/parameters/datavar" 
                },
                {
                   "$ref": "#/components/parameters/platformList"
@@ -1983,9 +1983,9 @@
                "example": "argo_bgc"
             } 
          },
-         "datakey": {
+         "datavar": {
             "in": "query",
-            "name": "source",
+            "name": "datakey",
             "description": "",
             "schema": {
                "type": "string",
