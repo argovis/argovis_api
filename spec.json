@@ -633,10 +633,10 @@
                   "$ref": "#/components/parameters/radius"
                },
                {
-                  "$ref": "#/components/parameters/idList"
+                  "$ref": "#/components/parameters/profileid"
                },
                {
-                  "$ref": "#/components/parameters/platformList"
+                  "$ref": "#/components/parameters/profileplatform"
                },
                {
                   "$ref": "#/components/parameters/presRange"
@@ -651,7 +651,7 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/datavar" 
+                  "$ref": "#/components/parameters/datavars" 
                },
                {
                   "$ref": "#/components/parameters/compression"
@@ -722,10 +722,10 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/datavar" 
+                  "$ref": "#/components/parameters/datavars" 
                },
                {
-                  "$ref": "#/components/parameters/platformList"
+                  "$ref": "#/components/parameters/profileplatform"
                },
                {
                   "$ref": "#/components/parameters/presRange"
@@ -1983,14 +1983,20 @@
                "example": "argo_bgc"
             } 
          },
-         "datavar": {
+         "datavars": {
             "in": "query",
-            "name": "datakey",
-            "description": "",
+            "name": "datavars",
+            "description": "AND list of variables to match",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
             "schema": {
-               "type": "string",
-               "example": "doxy"
-            } 
+               "type": "array",
+               "items": {
+                  "type": "string"
+               },
+               "example": "temp,pres,doxy,turbidity"
+            }
          },
          "compression": {
             "in": "query",
@@ -2001,19 +2007,21 @@
                "example": "basic-minification"
             }
          },
-         "idList": {
+         "profileid": {
             "in": "query",
-            "name": "ids",
-            "description": "List of profile IDs",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
+            "name": "id",
+            "description": "Profile ID",
             "schema": {
-               "type": "array",
-               "items": {
-                  "type": "string"
-               },
-               "example": "4902911_0,4902911_97"
+               "type": "string",
+               "example": "4902911_0"
+            }
+         },
+         "profileplatform": {
+            "in": "query",
+            "name": "platform",
+            "description": "Platform ID",
+            "schema": {
+               "type": "string"
             }
          },
          "platformList": {
