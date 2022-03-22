@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Profiles = require('../service/ProfilesService');
 
-module.exports.profile = function profile (req, res, next, startDate, endDate, polygon, box, center, radius, ids, platforms, presRange, dac, source, woceline, datakey, compression, data) {
-  Profiles.profile(startDate, endDate, polygon, box, center, radius, ids, platforms, presRange, dac, source, woceline, datakey, compression, data)
+module.exports.profile = function profile (req, res, next, startDate, endDate, polygon, box, center, radius, id, platforms, presRange, dac, source, woceline, datakey, compression, data) {
+  Profiles.profile(startDate, endDate, polygon, box, center, radius, id, platforms, presRange, dac, source, woceline, datakey, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     },

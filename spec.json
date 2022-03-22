@@ -633,7 +633,7 @@
                   "$ref": "#/components/parameters/radius"
                },
                {
-                  "$ref": "#/components/parameters/idList"
+                  "$ref": "#/components/parameters/profileID"
                },
                {
                   "$ref": "#/components/parameters/platformList"
@@ -2001,19 +2001,13 @@
                "example": "basic-minification"
             }
          },
-         "idList": {
+         "profileID": {
             "in": "query",
-            "name": "ids",
-            "description": "List of profile IDs",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
+            "name": "id",
+            "description": "Profile ID",
             "schema": {
-               "type": "array",
-               "items": {
-                  "type": "string"
-               },
-               "example": "4902911_0,4902911_97"
+               "type": "string",
+               "example": "4902911_0"
             }
          },
          "platformList": {
