@@ -16,11 +16,12 @@
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
+ * datakey String  (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,source,woceline,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,source,woceline,datakey,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -127,12 +128,13 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
+ * datakey String  (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,platforms,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datakey,platforms,presRange,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ "", "" ];
