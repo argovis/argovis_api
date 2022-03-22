@@ -10,7 +10,7 @@
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
- * ids List List of profile IDs (optional)
+ * id String Profile ID (optional)
  * platforms List List of platform IDs (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
@@ -21,7 +21,7 @@
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,source,woceline,datakey,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platforms,presRange,dac,source,woceline,datakey,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
