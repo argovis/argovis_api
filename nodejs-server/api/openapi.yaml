@@ -979,31 +979,23 @@ paths:
         schema:
           type: number
           example: 0
-      - name: ids
+      - name: id
         in: query
-        description: List of profile IDs
+        description: Profile ID
         required: false
         style: form
-        explode: false
-        allowReserved: true
+        explode: true
         schema:
-          type: array
-          example: "4902911_0,4902911_97"
-          items:
-            type: string
-      - name: platforms
+          type: string
+          example: 4902911_0
+      - name: platform
         in: query
-        description: List of platform IDs
+        description: Platform ID
         required: false
         style: form
-        explode: false
-        allowReserved: true
+        explode: true
         schema:
-          type: array
-          items:
-            anyOf:
-            - type: string
-            - type: number
+          type: string
       - name: presRange
         in: query
         description: Pressure range
@@ -1045,15 +1037,18 @@ paths:
         schema:
           type: string
           example: argo_bgc
-      - name: datakey
+      - name: datavars
         in: query
-        description: ""
+        description: AND list of variables to match
         required: false
         style: form
-        explode: true
+        explode: false
+        allowReserved: true
         schema:
-          type: string
-          example: doxy
+          type: array
+          example: "temp,pres,doxy,turbidity"
+          items:
+            type: string
       - name: compression
         in: query
         description: Data compression strategy
@@ -1205,28 +1200,26 @@ paths:
         schema:
           type: string
           example: argo_bgc
-      - name: datakey
+      - name: datavars
         in: query
-        description: ""
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: doxy
-      - name: platforms
-        in: query
-        description: List of platform IDs
+        description: AND list of variables to match
         required: false
         style: form
         explode: false
         allowReserved: true
         schema:
           type: array
+          example: "temp,pres,doxy,turbidity"
           items:
-            anyOf:
-            - type: string
-            - type: number
+            type: string
+      - name: platform
+        in: query
+        description: Platform ID
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       - name: presRange
         in: query
         description: Pressure range
@@ -2572,16 +2565,19 @@ components:
       schema:
         type: string
         example: argo_bgc
-    datavar:
-      name: datakey
+    datavars:
+      name: datavars
       in: query
-      description: ""
+      description: AND list of variables to match
       required: false
       style: form
-      explode: true
+      explode: false
+      allowReserved: true
       schema:
-        type: string
-        example: doxy
+        type: array
+        example: "temp,pres,doxy,turbidity"
+        items:
+          type: string
     compression:
       name: compression
       in: query
@@ -2592,19 +2588,25 @@ components:
       schema:
         type: string
         example: basic-minification
-    idList:
-      name: ids
+    profileid:
+      name: id
       in: query
-      description: List of profile IDs
+      description: Profile ID
       required: false
       style: form
-      explode: false
-      allowReserved: true
+      explode: true
       schema:
-        type: array
-        example: "4902911_0,4902911_97"
-        items:
-          type: string
+        type: string
+        example: 4902911_0
+    profileplatform:
+      name: platform
+      in: query
+      description: Platform ID
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
     platformList:
       name: platforms
       in: query
