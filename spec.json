@@ -648,6 +648,12 @@
                   "$ref": "#/components/parameters/profileSource" 
                },
                {
+                  "$ref": "#/components/parameters/woceline" 
+               },
+               {
+                  "$ref": "#/components/parameters/datakey" 
+               },
+               {
                   "$ref": "#/components/parameters/compression"
                },
                {
@@ -711,6 +717,12 @@
                },
                {
                   "$ref": "#/components/parameters/profileSource" 
+               },
+               {
+                  "$ref": "#/components/parameters/woceline" 
+               },
+               {
+                  "$ref": "#/components/parameters/datakey" 
                },
                {
                   "$ref": "#/components/parameters/platformList"
@@ -1960,6 +1972,24 @@
             "schema": {
                "type": "string",
                "example": "argo_bgc"
+            } 
+         },
+         "woceline": {
+            "in": "query",
+            "name": "woceline",
+            "description": "",
+            "schema": {
+               "type": "string",
+               "example": "argo_bgc"
+            } 
+         },
+         "datakey": {
+            "in": "query",
+            "name": "source",
+            "description": "",
+            "schema": {
+               "type": "string",
+               "example": "doxy"
             } 
          },
          "compression": {
