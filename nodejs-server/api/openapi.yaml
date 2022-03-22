@@ -1035,6 +1035,15 @@ paths:
         explode: true
         schema:
           type: string
+          example: doxy
+      - name: woceline
+        in: query
+        description: ""
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
           example: argo_bgc
       - name: compression
         in: query
@@ -1170,6 +1179,15 @@ paths:
           type: string
           example: ""
       - name: source
+        in: query
+        description: ""
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: doxy
+      - name: woceline
         in: query
         description: ""
         required: false
@@ -2526,6 +2544,26 @@ components:
       schema:
         type: string
         example: argo_bgc
+    woceline:
+      name: woceline
+      in: query
+      description: ""
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: argo_bgc
+    datakey:
+      name: source
+      in: query
+      description: ""
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: doxy
     compression:
       name: compression
       in: query
