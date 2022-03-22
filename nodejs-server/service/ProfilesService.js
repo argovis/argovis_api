@@ -10,16 +10,18 @@
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
- * ids List List of profile IDs (optional)
- * platforms List List of platform IDs (optional)
+ * id String Profile ID (optional)
+ * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
  * source String  (optional)
+ * woceline String  (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platforms,presRange,dac,source,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,datavars,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -125,12 +127,14 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,ids,platf
  * radius BigDecimal km from centerpoint (optional)
  * dac String Data Assembly Center (optional)
  * source String  (optional)
- * platforms List List of platform IDs (optional)
+ * woceline String  (optional)
+ * datavars List AND list of variables to require in a profile (optional)
+ * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,platforms,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datavars,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ "", "" ];
