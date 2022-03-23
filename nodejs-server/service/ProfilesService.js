@@ -18,7 +18,7 @@ const helpers = require('./helpers')
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datavars List AND list of variables to match (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
@@ -36,7 +36,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
     //   return; 
     // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source, woceline, datakey)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source, woceline, datavars)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -108,7 +108,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datavars List AND list of variables to match (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
@@ -126,7 +126,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
     //   return; 
     // } 
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platforms,dac,source,woceline,datakey)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline,datavars)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -298,7 +298,7 @@ const reinflate = function(profile){
   return profile
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,ids,platforms,dac,source,woceline,datakey){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline,datavars){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -329,13 +329,12 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
       aggPipeline.push({$match:  {timestamp: {$lte: endDate}}})
     }
 
-    if (ids){
-      aggPipeline.push({$match: {_id: { $in: ids}}})
+    if(id){
+      aggPipeline.push({ $match : { _id : id } })
     }
 
-    if(platforms) {
-      let pform = platforms.concat(platforms.map(x => String(x)))
-      aggPipeline.push({$match: {platform_id: { $in: pform}}})
+    if(platform){
+      aggPipeline.push({ $match : { platform_id : String(platform) } })
     }
 
     if(polygon) {
@@ -398,8 +397,9 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
       aggPipeline.push({$match: {'woce_lines': woceline}})
     }
 
-    if(datakey){
-      aggPipeline.push({$match: {'data_keys': datakey}})
+    if(datavars){
+      console.log('>>>>', datavars)
+      aggPipeline.push({$match: {'data_keys': {"$all": datavars} }})
     }
 
     return aggPipeline
