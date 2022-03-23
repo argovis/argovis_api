@@ -16,7 +16,7 @@
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datavars List AND list of variables to match (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
@@ -128,7 +128,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datavars List AND list of variables to match (optional)
+ * datavars List AND list of variables to require in a profile (optional)
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
