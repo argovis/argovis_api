@@ -41,7 +41,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("gets profiles for one platform", async function () {
-        const response = await request.get("/profiles?platform=2900448&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&platform=2900448&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
       });
     });
@@ -69,14 +69,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("should find 2 profiles within a 20 km of this point", async function () {
-        const response = await request.get("/profiles?platform=2900448&center=134.25,36.16&radius=20&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&platform=2900448&center=134.25,36.16&radius=20&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(2)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return KO profiles", async function () {
-        const response = await request.get("/profiles?dac=KO&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&dac=KO&compression=basic").set({'x-argokey': 'developer'});
         dacs = response.body.map(p => p.data_center)
         s = new Set(dacs)
         expect(Array.from(s)).to.eql(['KO'])
@@ -119,7 +119,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /profiles/listID", function () {
-      it("fails to find any nitrate in BGC measurements", async function () {
+      it("fails to find any profile IDs with nitrate in BGC measurements", async function () {
         const response = await request.get("/profiles/listID?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&data=nitrate").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
@@ -134,17 +134,44 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("should only return bgc profiles", async function () {
-        const response = await request.get("/profiles?source=argo_bgc").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&source=argo_bgc").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return profiles with doxy", async function () {
-        const response = await request.get("/profiles?datavars=doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
 
+    describe("GET /profiles", function () {
+      it("should only return profiles with temp", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(4)
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("should only return profiles with temp and doxy", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp,doxy").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3)
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("should only return profiles with temp and doxy", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp&data=doxy").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3)
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("should not return anything due to presRange being empty", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp&presRange=10000,20000").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
   }
 })

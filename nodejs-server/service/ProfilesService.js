@@ -25,26 +25,23 @@ const helpers = require('./helpers')
  **/
 exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,datavars,compression,data) {
   return new Promise(function(resolve, reject) {
-    if(startDate) startDate = new Date(startDate);
-    if(endDate) endDate = new Date(endDate);
-    // if (
-    //   (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
-    //   (!ids || ids.length >100) &&
-    //   (!platforms || platforms.length>1)) {
 
-    //   reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform, OR at most 100 profile IDs."});
-    //   return; 
-    // } 
+    if ((!endDate || !startDate)) {
+      reject({"code": 400, "message": "Please specify at least a date range with startDate and endDate."});
+      return; 
+    } 
+    startDate = new Date(startDate);
+    endDate = new Date(endDate);
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source, woceline, datavars)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
       return;
     }
 
-    // project out data for metadata-only requests
-    if(!data){
+    // project out data here if we definitely don't need it
+    if(!data && !datavars && !presRange){
       aggPipeline.push({$project: {data: 0}})
     }
 
@@ -61,29 +58,11 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
         return; 
       }
 
-      // for(let i=0; i<profiles.length; i++){
-      //   if(profiles[i].measurements && Array.isArray(profiles[i].measurements[0]) ) profiles[i].measurements = profiles[i].measurements.map(m => helpers.arrayinflate(profiles[i].station_parameters, m))
-      //   if(profiles[i].bgcMeas && Array.isArray(profiles[i].bgcMeas[0])) profiles[i].bgcMeas = profiles[i].bgcMeas.map(m => helpers.arrayinflate(profiles[i].bgcMeasKeys.concat(profiles[i].bgcMeasKeys.map(k=>k+'_qc')), m))
-      // }
+      profiles = helpers.filter_data(profiles, data, datavars, presRange)
 
-      if(data){
-        // filter out levels that fall outside the pressure range requested
-        if(presRange){
-          profiles = profiles.map(p => variable_bracket.bind(null, 'pres', presRange[0], presRange[1])(p) )
-        }
-
-        // filter out measurements the user didn't request
-        if(!data.includes('all')){
-          profiles = profiles.map(x => reduce_data(x, data))
-        }
-
-        // keep only profiles that have some requested data
-        profiles = profiles.filter(item => ('data' in item && Array.isArray(item.data) && item.data.length > 0  ))
-
-        // reinflate data by default
-        if(!compression){
-          profiles = profiles.map(p => reinflate(p))
-        }
+      // reinflate data by default
+      if(data && !compression){
+        profiles = profiles.map(p => reinflate(p))
       }
 
       if(profiles.length == 0) {
@@ -116,25 +95,22 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  **/
 exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datavars,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
-    if(startDate) startDate = new Date(startDate);
-    if(endDate) endDate = new Date(endDate);
-    // if (
-    //   (!endDate || !startDate || (endDate - startDate)/3600000/24 > 90) &&
-    //   (!platforms || platforms.length>1)) {
+    if ((!endDate || !startDate)) {
+      reject({"code": 400, "message": "Please specify at least a date range with startDate and endDate."});
+      return; 
+    } 
+    startDate = new Date(startDate);
+    endDate = new Date(endDate);
 
-    //   reject({"code": 400, "message": "Please request <= 90 days of data at a time, OR a single platform."});
-    //   return; 
-    // } 
-
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline,datavars)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
       return;
     }
 
-    // project out data for metadata-only requests
-    if(!data){
+    // project out data here if we definitely don't need it
+    if(!data && !datavars && !presRange){
       aggPipeline.push({$project: {data: 0}})
     }
 
@@ -151,20 +127,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
         return; 
       }
 
-      if(data){
-        // filter out levels that fall outside the pressure range requested
-        if(presRange){
-          profiles = profiles.map(p => variable_bracket.bind(null, 'pres', presRange[0], presRange[1])(p) )
-        }
-
-        // filter out measurements the user didn't request
-        if(!data.includes('all')){
-          profiles = profiles.map(x => reduce_data(x, data))
-        }
-
-        // keep only profiles that have some requested data
-        profiles = profiles.filter(item => ('data' in item && Array.isArray(item.data) && item.data.length > 0  ))
-      }
+      profiles = helpers.filter_data(profiles, data, datavars, presRange)
 
       if(profiles.length == 0) {
         reject({"code": 404, "message": "Not found: No matching results found in database."});
@@ -237,49 +200,6 @@ const pressureWindow = function(measType, minPres, maxPres){ //todo no longer ma
   return pWindow
 }
 
-const variable_bracket = function(key, min, max, profile){
-  // given a profile, a data key and a min and max value,
-  // filter out levels in the profile for which the value of the key variable falls outside the [min, max] range.
-
-  let column_idx = profile.data_keys.findIndex(elt => elt==key)
-  profile.data = profile.data.filter(level => level[column_idx] < max && level[column_idx]>min)
-
-  return profile
-}
-
-const reduce_data = function(profile, keys){
-  // profile == profile object returned from mongo
-  // keys == list of keys to keep from profile.data
-  // return the original profile, with p.data and p.data_keys mutated to suit the requested keys
-
-  if ( !('data' in profile) || profile.data.length==0) {
-    // nothing to do
-    return profile
-  }
-
-  let vars = helpers.zip(profile.data)
-  let keepers = profile.data_keys.map(x => keys.includes(x))
-  let data = []
-  let data_keys = []
-  for(let i=0; i<keepers.length; i++){
-    if(keepers[i]){
-      data.push(vars[i])
-      data_keys.push(profile.data_keys[i])
-    }
-  }
-
-  profile.data_keys = data_keys
-  if(data.length > 0) {
-    profile.data = helpers.zip(data) 
-  }
-
-  //filter out levels that have only pressure and qc, unless pres or that qc was specifically requested
-  let value_columns = data_keys.map( key => (!key.includes('pres') && !key.includes('_qc')) || keys.includes(key))
-  profile.data = profile.data.filter(level => level.filter((val, i) => value_columns[i]).some(e => !isNaN(e)))
-
-  return profile
-}
-
 const reinflate = function(profile){
   // given a profile object with data minified as an array of arrays of floats,
   // reinflate the data key to it's more traditional list of dictionaries.
@@ -298,7 +218,7 @@ const reinflate = function(profile){
   return profile
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline,datavars){
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -395,11 +315,6 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(woceline){
       aggPipeline.push({$match: {'woce_lines': woceline}})
-    }
-
-    if(datavars){
-      console.log('>>>>', datavars)
-      aggPipeline.push({$match: {'data_keys': {"$all": datavars} }})
     }
 
     return aggPipeline
