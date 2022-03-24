@@ -152,6 +152,14 @@ module.exports.filter_data = function(profiles, data, datavars, presRange){
       profiles = profiles.filter(p => ('data' in p) && (p.data.length > 0) )
     }  
 
+    // coerce data and datavars to always have pres, if anything
+    if(data && !data.includes('pres')){
+        data.push('pres')
+    }
+    if(datavars && !datavars.includes('pres')){
+        datavars.push('pres')
+    }
+
     // coerce datavars to be a superset of data, with the exception of 'all'
     if(data && !datavars){
       datavars = data
