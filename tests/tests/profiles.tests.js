@@ -173,5 +173,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.status).to.eql(404);
       });
     });
+
+    describe("GET /profiles", function () {
+      it("should append pres even if not requested", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=doxy").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys).to.have.members(['doxy', 'pres'])
+      });
+    });
   }
 })
