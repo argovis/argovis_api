@@ -166,5 +166,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.length).to.eql(3)
       });
     });
+
+    describe("GET /profiles", function () {
+      it("should not return anything due to presRange being empty", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp&presRange=10000,20000").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
   }
 })
