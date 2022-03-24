@@ -153,7 +153,7 @@ module.exports.filter_data = function(profiles, data, datavars, presRange){
     }  
 
     // coerce data and datavars to always have pres, if anything
-    if(data && !data.includes('pres')){
+    if(data && !data.includes('pres') && !data.includes('all')){
         data.push('pres')
     }
     if(datavars && !datavars.includes('pres')){
@@ -162,7 +162,7 @@ module.exports.filter_data = function(profiles, data, datavars, presRange){
 
     // coerce datavars to be a superset of data, with the exception of 'all'
     if(data && !datavars){
-      datavars = data
+      datavars = JSON.parse(JSON.stringify(data))
     }
     else if(datavars && data){
       datavars = new Set(data.concat(datavars))
@@ -172,10 +172,13 @@ module.exports.filter_data = function(profiles, data, datavars, presRange){
       datavars.splice(datavars.indexOf('all'), 1);
     }  
 
-    if(datavars){
-      // keep only profiles that have all the requested data after the level filter
+    // keep only profiles that have all the requested data after the level filter
+    if(datavars && datavars.length>0){
       profiles = profiles.filter(p => module.exports.has_data(p, datavars) )
-    }  
+    }
+    else if(data && !data.includes('all')){
+      profiles = profiles.filter(p => module.exports.has_data(p, data) )   
+    }
 
     // keep only per-level data requested by the user
     if(data && !data.includes('all')){
