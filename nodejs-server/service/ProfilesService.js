@@ -18,12 +18,11 @@ const helpers = require('./helpers')
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datavars List AND list of variables to require in a profile (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,datavars,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,compression,data) {
   return new Promise(function(resolve, reject) {
 
     if ((!endDate || !startDate)) {
@@ -87,13 +86,12 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * dac String Data Assembly Center (optional)
  * source String  (optional)
  * woceline String  (optional)
- * datavars List AND list of variables to require in a profile (optional)
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,datavars,platform,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
     if ((!endDate || !startDate)) {
       reject({"code": 400, "message": "Please specify at least a date range with startDate and endDate."});
