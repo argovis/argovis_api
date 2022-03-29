@@ -202,5 +202,33 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /profiles", function () {
+      it("should suppress anything with dissolved oxygen", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=pres,psal,~doxy").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("should suppress anything with dissolved oxygen, in isolation", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=~doxy").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("make sure metadata-only interacts nicely with data negation", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=metadata-only,~doxy").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("make sure data=all interacts nicely with data negation", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=all,~doxy").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    });
+
   }
 })

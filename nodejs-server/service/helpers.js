@@ -65,7 +65,7 @@ module.exports.zip = function(arrays){
 }
 
 module.exports.has_data = function(profile, keys, check_levels){
-  // return false if any of the keys in the keys array have no data in profile.data; 
+  // return false if any of the keys in the keys array have no data in profile.data, or if a ~key is present
   // Assume data_keys indicated which variables are present unless check_levels==true
 
   // must be false if no data
@@ -73,10 +73,21 @@ module.exports.has_data = function(profile, keys, check_levels){
     return false
   }
 
-  // collect only actual data keys, not flags thrown in
-  let datakeys = keys.filter(e=>e!='metadata-only')
+  // collect not-keys, and return false if any are present
+  let notkeys = keys.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
+  for(let i=0; i<notkeys.length; i++){
+    if(profile.data_keys.includes(notkeys[i])){
+      return false
+    }
+  }
 
-  // must be false if any requested data key is absent
+  // no further questions if we just want everything except the nots
+  if(keys.includes('all')){
+    return true
+  }
+
+  // collect only actual data keys, not flags or nots, and return false for any profiles that dont have these
+  let datakeys = keys.filter(e => e!='metadata-only' && e.charAt(0)!='~')
   for(let i=0; i<datakeys.length; i++){
     if(!profile.data_keys.includes(datakeys[i])){
       return false
@@ -174,8 +185,8 @@ module.exports.filter_data = function(profiles, data, presRange){
         suppress_pressure = true
     }
 
-    // keep only profiles that have all the requested data after the level filter
-    if(data && !data.includes('all')){
+    // keep only profiles that have all the requested data and none of the not-data after the level filter
+    if(data){
       profiles = profiles.filter(p => module.exports.has_data(p, data, presRange) )   
     }
 
