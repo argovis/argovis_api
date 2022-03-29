@@ -16,7 +16,7 @@ const helpers = require('./helpers')
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
  * dac String Data Assembly Center (optional)
- * source String  (optional)
+ * source List  (optional)
  * woceline String  (optional)
  * compression String Data compression strategy (optional)
  * data List Keys of data to include (optional)
@@ -84,7 +84,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
  * dac String Data Assembly Center (optional)
- * source String  (optional)
+ * source List  (optional)
  * woceline String  (optional)
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
@@ -302,7 +302,16 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     }
 
     if(source){
-      aggPipeline.push({$match: {'source_info.source': source}})
+      let matches = source.filter(e => e.charAt(0)!='~')
+      let negations = source.filter(e => e.charAt(0)=='~').map(x => x.substring(1))
+
+      if(matches.length > 0){
+        aggPipeline.push({$match: {'source_info.source': {'$all': matches}}})
+      }
+
+      if(negations.length > 0){
+        aggPipeline.push({$match: {'source_info.source': {'$nin': negations}}})
+      }
     }
 
     if(woceline){
