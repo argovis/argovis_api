@@ -140,6 +140,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /profiles", function () {
+      it("should only return argo_core profiles that dont have associated argo_bgc", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1)
+      });
+    });
+
+    describe("GET /profiles", function () {
       it("should only return profiles with doxy", async function () {
         const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)

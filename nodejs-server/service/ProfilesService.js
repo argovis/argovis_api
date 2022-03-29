@@ -302,7 +302,16 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     }
 
     if(source){
-      aggPipeline.push({$match: {'source_info.source': source}})
+      let matches = source.filter(e => e.charAt(0)!='~')
+      let negations = source.filter(e => e.charAt(0)=='~').map(x => x.substring(1))
+
+      if(matches.length > 0){
+        aggPipeline.push({$match: {'source_info.source': {'$all': matches}}})
+      }
+
+      if(negations.length > 0){
+        aggPipeline.push({$match: {'source_info.source': {'$nin': negations}}})
+      }
     }
 
     if(woceline){
