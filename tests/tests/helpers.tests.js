@@ -52,7 +52,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("rejects a profile for not having one of the requested variables", async function () {
         keys = ['temp', 'nitrate']
         profile = {'data_keys': ['temp', 'pres'], 'data': [[20,0], [19,10], [10,20]]}
-        expect(helpers.has_data(profile,keys)).to.be.false  
+        expect(helpers.has_data(profile,keys,false)).to.be.false  
       });
     }); 
 
@@ -60,7 +60,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("rejects a profile for having nothing but nan in the requested variable", async function () {
         keys = ['temp', 'nitrate']
         profile = {'data_keys': ['nitrate', 'temp'], 'data': [[Number.NaN,0], [Number.NaN,10], [Number.NaN,20]]}
-        expect(helpers.has_data(profile,keys)).to.be.false  
+        expect(helpers.has_data(profile,keys,true)).to.be.false  
       });
     }); 
 
@@ -68,23 +68,23 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("rejects a profile with some but not all the desired data", async function () {
         keys = ['temp', 'nitrate']
         profile = {'data_keys': ['nitrate', 'pres'], 'data': [[1,0], [2,10], [3,20]]}
-        expect(helpers.has_data(profile,keys)).to.be.false 
+        expect(helpers.has_data(profile,keys,false)).to.be.false 
       });
     }); 
 
     describe("has_data", function () {
       it("accepts a profile with all the desired data", async function () {
-        keys = ['temp', 'nitrate']
-        profile = {'data_keys': ['nitrate', 'temp'], 'data': [[1,0], [2,10], [3,20]]}
-        expect(helpers.has_data(profile,keys)).to.be.true 
+        keys = ['pres', 'nitrate']
+        profile = {'data_keys': ['nitrate', 'pres'], 'data': [[1,0], [2,10], [3,20]]}
+        expect(helpers.has_data(profile,keys,false)).to.be.true 
       });
     }); 
 
     describe("has_data", function () {
       it("handles an empty data array", async function () {
-        keys = ['temp', 'nitrate']
-        profile = {'data_keys': ['nitrate', 'temp'], 'data': []}
-        expect(helpers.has_data(profile,keys)).to.be.false 
+        keys = ['pres', 'nitrate']
+        profile = {'data_keys': ['nitrate', 'pres'], 'data': []}
+        expect(helpers.has_data(profile,keys,true)).to.be.false 
       });
     }); 
   }

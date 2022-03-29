@@ -40,7 +40,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
     }
 
     // project out data here if we definitely don't need it
-    if(!data && !datavars && !presRange){
+    if(!data && !presRange){
       aggPipeline.push({$project: {data: 0}})
     }
 
@@ -57,10 +57,10 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
         return; 
       }
 
-      profiles = helpers.filter_data(profiles, data, datavars, presRange)
+      profiles = helpers.filter_data(profiles, data, presRange)
 
       // reinflate data by default
-      if(data && !compression){
+      if(data && !compression && !data.includes('metadata-only')){
         profiles = profiles.map(p => reinflate(p))
       }
 
@@ -108,7 +108,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
     }
 
     // project out data here if we definitely don't need it
-    if(!data && !datavars && !presRange){
+    if(!data && !presRange){
       aggPipeline.push({$project: {data: 0}})
     }
 
@@ -125,7 +125,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,s
         return; 
       }
 
-      profiles = helpers.filter_data(profiles, data, datavars, presRange)
+      profiles = helpers.filter_data(profiles, data, presRange)
 
       if(profiles.length == 0) {
         reject({"code": 404, "message": "Not found: No matching results found in database."});
