@@ -141,63 +141,35 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("should only return profiles with doxy", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return profiles with temp", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=temp").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(4)
       });
     });
 
     describe("GET /profiles", function () {
-      it("should only return profiles with temp and doxy (pt 1 - nominal case)", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp,doxy").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(3)
-      });
-    });
-
-    describe("GET /profiles", function () {
-      it("should only return profiles with temp and doxy (pt 2 - coerce datavars to a superset of data)", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp&data=doxy").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(3)
-      });
-    });
-
-    describe("GET /profiles", function () {
-      it("should only return profiles with temp and doxy (pt 3 - AND on data if datavars absent)", async function () {
+      it("should only return profiles with temp AND doxy", async function () {
         const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=temp,doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
 
     describe("GET /profiles", function () {
-      it("should handle data=all correctly in isolation", async function () {
+      it("should handle data=all correctly", async function () {
         const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=all").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(4)
       });
     });
 
     describe("GET /profiles", function () {
-      it("should handle data=all correctly in concert with datavars (pt 1)", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=doxy&data=all").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(3)
-      });
-    });
-
-    describe("GET /profiles", function () {
-      it("should handle data=all correctly in concert with datavars (pt 2)", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=doxy&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members([ "doxy", "doxy_argoqc", "pres", "pres_argoqc", "psal", "psal_argoqc", "psal_sfile", "psal_sfile_argoqc", "temp", "temp_argoqc", "temp_sfile", "temp_sfile_argoqc" ])
-      });
-    });
-
-    describe("GET /profiles", function () {
       it("should not return anything due to presRange being empty", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&datavars=temp&presRange=10000,20000").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=temp&presRange=10000,20000").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
@@ -208,5 +180,27 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body[0].data_keys).to.have.members(['doxy', 'pres'])
       });
     });
+
+    describe("GET /profiles", function () {
+      it("should not return a profile if it had coerced pressure alone", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=chla").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("should handle data='metadata-only", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&id=2900448_060&data=metadata-only").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("should suppress levels that don't have a doxy value", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&id=2900448_060&data=doxy").set({'x-argokey': 'developer'});
+        expect(response.body[0].data[1].doxy).to.eql(258.24920654296875);
+      });
+    });
+
   }
 })
