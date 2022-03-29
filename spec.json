@@ -651,9 +651,6 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/datavars" 
-               },
-               {
                   "$ref": "#/components/parameters/compression"
                },
                {
@@ -720,9 +717,6 @@
                },
                {
                   "$ref": "#/components/parameters/woceline" 
-               },
-               {
-                  "$ref": "#/components/parameters/datavars" 
                },
                {
                   "$ref": "#/components/parameters/profilePlatform"
@@ -1552,7 +1546,8 @@
                "up_radiance443_argoqc",
                "up_radiance490_argoqc",
                "up_radiance555_argoqc",
-               "all"]
+               "all",
+               "metadata-only"]
          },
          "goshipDataKey": {
             "type": "string",
@@ -2106,20 +2101,6 @@
                "type": "string",
                "example": "argo_bgc"
             } 
-         },
-         "datavars": {
-            "in": "query",
-            "name": "datavars",
-            "description": "AND list of variables to require in a profile",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
-            "schema": {
-               "type": "array",
-               "items": {
-                  "type": "string"
-               }
-            }
          },
          "compression": {
             "in": "query",
