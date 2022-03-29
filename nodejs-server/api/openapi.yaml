@@ -1024,10 +1024,12 @@ paths:
         description: ""
         required: false
         style: form
-        explode: true
+        explode: false
+        allowReserved: true
         schema:
-          type: string
-          example: argo_bgc
+          type: array
+          items:
+            type: string
       - name: woceline
         in: query
         description: ""
@@ -1175,10 +1177,12 @@ paths:
         description: ""
         required: false
         style: form
-        explode: true
+        explode: false
+        allowReserved: true
         schema:
-          type: string
-          example: argo_bgc
+          type: array
+          items:
+            type: string
       - name: woceline
         in: query
         description: ""
@@ -2720,10 +2724,12 @@ components:
       description: ""
       required: false
       style: form
-      explode: true
+      explode: false
+      allowReserved: true
       schema:
-        type: string
-        example: argo_bgc
+        type: array
+        items:
+          type: string
     woceline:
       name: woceline
       in: query

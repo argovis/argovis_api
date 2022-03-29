@@ -2156,10 +2156,15 @@
             "in": "query",
             "name": "source",
             "description": "",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
             "schema": {
-               "type": "string",
-               "example": "argo_bgc"
-            } 
+               "type": "array",
+               "items": {
+                  "type": "string"
+               }
+            }
          },
          "woceline": {
             "in": "query",
