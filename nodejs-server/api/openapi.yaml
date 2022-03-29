@@ -1948,6 +1948,7 @@ components:
       - bisulfide
       - cdom
       - chla
+      - cndc
       - cndx
       - cp660
       - down_irradiance380
@@ -1981,6 +1982,7 @@ components:
       - bisulfide_argoqc
       - cdom_argoqc
       - chla_argoqc
+      - cndc_argoqc
       - cndx_argoqc
       - cp660_argoqc
       - down_irradiance380_argoqc
