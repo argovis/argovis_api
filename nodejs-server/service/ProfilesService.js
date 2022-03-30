@@ -25,12 +25,16 @@ const helpers = require('./helpers')
 exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,compression,data) {
   return new Promise(function(resolve, reject) {
 
-    if ((!endDate || !startDate)) {
-      reject({"code": 400, "message": "Please specify at least a date range with startDate and endDate."});
+    if((!endDate || !startDate) && !id) {
+      reject({"code": 400, "message": "Please specify at least a date range with startDate AND endDate, OR a single profile id."});
       return; 
-    } 
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
+    }
+    if(startDate){
+      startDate = new Date(startDate);
+    }
+    if(endDate){
+      endDate = new Date(endDate);
+    }
 
     let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline)
 
@@ -93,12 +97,16 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  **/
 exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
-    if ((!endDate || !startDate)) {
-      reject({"code": 400, "message": "Please specify at least a date range with startDate and endDate."});
+    if((!endDate || !startDate) && !id) {
+      reject({"code": 400, "message": "Please specify at least a date range with startDate AND endDate, OR a single profile id."});
       return; 
-    } 
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
+    }
+    if(startDate){
+      startDate = new Date(startDate);
+    }
+    if(endDate){
+      endDate = new Date(endDate);
+    }
 
     let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline)
 
