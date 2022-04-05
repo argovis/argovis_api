@@ -95,3 +95,5 @@ module.exports.sose_si_area_1_day = mongoose.model('sose_si_area_1_day', GridSch
 module.exports.grid_coords = mongoose.model('grid_coords', GridCoordSchema, 'grid_coords')
 module.exports.sose_si_area_1_day_sparse = mongoose.model('sose_si_area_1_day_sparse', GridSchema, 'sose_si_area_1_day_sparse')
 module.exports.get_grid_model = get_grid_model
+
+module.exports.grid = mongoose.model('grids', GridSchema, 'grids');

@@ -59,6 +59,9 @@ module.exports.gridselect = function gridselect (req, res, next, gridName, presL
   Grid.gridselect(gridName, presLevel, latRange, lonRange, date)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);

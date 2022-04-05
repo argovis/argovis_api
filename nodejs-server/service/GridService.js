@@ -111,13 +111,12 @@ exports.gridmeta = function(gridName) {
  **/
 exports.gridselect = function(gridName,presLevel,latRange,lonRange,date) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    let agg = []
+    date = new Date(date)
+    agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
+    agg = add_grid_projection(agg, latRange, lonRange)
+    const query = Grid.grid.aggregate(agg)
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
