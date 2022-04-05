@@ -116,6 +116,29 @@ exports.gridmeta = function(gridName) {
 
 
 /**
+ * uniformly spaced rectangular gridded product selector
+ *
+ * gridName String name of the gridded product
+ * presLevel BigDecimal pressure level (dbar)
+ * latRange List Latitude range (-90 to 90 degrees)
+ * lonRange List Longitude range (-180 to 180 degrees)
+ * date Date date-time formatted string
+ * returns List
+ **/
+exports.gridselect = function(gridName,presLevel,latRange,lonRange,date) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * non uniformly spaced rectangular gridded product
  *
  * gridName String name of the gridded product
