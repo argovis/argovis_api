@@ -292,6 +292,56 @@
             }
          }
       },
+      "/grids":{
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "uniformly spaced rectangular gridded product selector",
+            "operationId": "gridselect",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/gridName"
+               },
+               {
+                  "$ref": "#/components/parameters/presLevel"
+               },
+               {
+                  "$ref": "#/components/parameters/latRange"
+               },
+               {
+                  "$ref": "#/components/parameters/lonRange"
+               },
+               {
+                  "$ref": "#/components/parameters/date"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/RasterGrid"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/griddedProducts/gridMetadata": {
          "get": {
             "tags": [
@@ -2014,6 +2064,16 @@
                "example": "sose_si_area_1_day_sparse"
             }
          },
+         "gridName": {
+            "in": "query",
+            "name": "gridName",
+            "required": true,
+            "description": "name of the gridded product",
+            "schema": {
+               "type": "string",
+               "example": "rgTempTotal"
+            }
+         },
          "presLevelUniform": {
             "in": "query",
             "name": "presLevel",
@@ -2032,6 +2092,16 @@
             "schema": {
                "type": "number",
                "example": 0
+            }
+         },
+         "presLevel": {
+            "in": "query",
+            "name": "presLevel",
+            "required": true,
+            "description": "pressure level (dbar)",
+            "schema": {
+               "type": "number",
+               "example": 10
             }
          },
          "latRangeUniform": {
@@ -2055,6 +2125,26 @@
             }
          },
          "latRangeNonUniform": {
+            "in": "query",
+            "name": "latRange",
+            "required": true,
+            "description": "Latitude range (-90 to 90 degrees)",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "minimum": -90,
+                  "maximum": 90
+               },
+               "example": "-5,5.33"
+            }
+         },
+         "latRange": {
             "in": "query",
             "name": "latRange",
             "required": true,
