@@ -10,6 +10,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
     console.error(err);
   }
   else {
+    describe("GET /grids", function () {
+      it("fetch grid window", async function () {
+        const response = await request.get("/grids?gridName=ksTempTrend2&presLevel=10&latRange=-52,-50&lonRange=21,22&date=2012-09-01T00:00:00Z").set({'x-argokey': 'developer'});    
+        expect(response.body).to.be.jsonSchema(schema.paths['/grids'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
     describe("GET /griddedProducts/gridMetadata", function () {
       it("fetch grid metadata", async function () {
         const response = await request.get("/griddedProducts/gridMetadata?gridName=ksTempTrend2").set({'x-argokey': 'developer'});    

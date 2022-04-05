@@ -385,6 +385,103 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Tc
+  /grids:
+    get:
+      tags:
+      - grid
+      summary: uniformly spaced rectangular gridded product selector
+      operationId: gridselect
+      parameters:
+      - name: gridName
+        in: query
+        description: name of the gridded product
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rgTempTotal
+      - name: presLevel
+        in: query
+        description: pressure level (dbar)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 10
+      - name: latRange
+        in: query
+        description: Latitude range (-90 to 90 degrees)
+        required: true
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "-5,5.33"
+          items:
+            maximum: 90
+            minimum: -90
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: lonRange
+        in: query
+        description: Longitude range (-180 to 180 degrees)
+        required: true
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "0,2.153"
+          items:
+            maximum: 180
+            minimum: -180
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: date
+        in: query
+        description: date-time formatted string
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RasterGrid'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Grid
   /griddedProducts/gridMetadata:
     get:
       tags:
@@ -2590,6 +2687,16 @@ components:
       schema:
         type: string
         example: sose_si_area_1_day_sparse
+    gridName:
+      name: gridName
+      in: query
+      description: name of the gridded product
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: rgTempTotal
     presLevelUniform:
       name: presLevel
       in: query
@@ -2610,6 +2717,16 @@ components:
       schema:
         type: number
         example: 0
+    presLevel:
+      name: presLevel
+      in: query
+      description: pressure level (dbar)
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 10
     latRangeUniform:
       name: latRange
       in: query
@@ -2628,6 +2745,23 @@ components:
           minItems: 2
           type: number
     latRangeNonUniform:
+      name: latRange
+      in: query
+      description: Latitude range (-90 to 90 degrees)
+      required: true
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "-5,5.33"
+        items:
+          maximum: 90
+          minimum: -90
+          maxItems: 2
+          minItems: 2
+          type: number
+    latRange:
       name: latRange
       in: query
       description: Latitude range (-90 to 90 degrees)

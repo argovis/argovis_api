@@ -55,6 +55,19 @@ module.exports.gridmeta = function gridmeta (req, res, next, gridName) {
     });
 };
 
+module.exports.gridselect = function gridselect (req, res, next, gridName, presLevel, latRange, lonRange, date) {
+  Grid.gridselect(gridName, presLevel, latRange, lonRange, date)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.nonuniformGridWindow = function nonuniformGridWindow (req, res, next, gridName, presLevel, latRange, lonRange, date) {
   Grid.nonuniformGridWindow(gridName, presLevel, latRange, lonRange, date)
     .then(function (response) {

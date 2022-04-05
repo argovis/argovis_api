@@ -100,6 +100,28 @@ exports.gridmeta = function(gridName) {
 
 
 /**
+ * uniformly spaced rectangular gridded product selector
+ *
+ * gridName String name of the gridded product
+ * presLevel BigDecimal pressure level (dbar)
+ * latRange List Latitude range (-90 to 90 degrees)
+ * lonRange List Longitude range (-180 to 180 degrees)
+ * date Date date-time formatted string
+ * returns List
+ **/
+exports.gridselect = function(gridName,presLevel,latRange,lonRange,date) {
+  return new Promise(function(resolve, reject) {
+    let agg = []
+    date = new Date(date)
+    agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
+    agg = add_grid_projection(agg, latRange, lonRange)
+    const query = Grid.grid.aggregate(agg)
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+  });
+}
+
+
+/**
  * non uniformly spaced rectangular gridded product
  *
  * gridName String name of the gridded product
