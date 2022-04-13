@@ -1,4 +1,6 @@
-FROM node:16.8.0 as build
+FROM node:17.8.0 as build
 WORKDIR /app
 COPY nodejs-server/package.json .
 RUN npm install
+RUN apt-get update -y
+RUN apt-get install -y zlib1g/stable-security
