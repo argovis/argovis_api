@@ -234,27 +234,13 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     }
 
     let aggPipeline = []
+    let spacetimeMatch = {}
+    let metadataMatch = {}
 
     if(center && radius) {
       // $geoNear must be first in the aggregation pipeline
       aggPipeline.push({$geoNear: { near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
       aggPipeline.push({ $unset: "distcalculated" })
-    }
-
-    if (startDate){
-      aggPipeline.push({$match:  {timestamp: {$gte: startDate}}})
-    }
-
-    if(endDate){
-      aggPipeline.push({$match:  {timestamp: {$lte: endDate}}})
-    }
-
-    if(id){
-      aggPipeline.push({ $match : { _id : id } })
-    }
-
-    if(platform){
-      aggPipeline.push({ $match : { platform_id : String(platform) } })
     }
 
     if(polygon) {
@@ -278,7 +264,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
       }
 
-      aggPipeline.push({$match: {geolocation: {$geoWithin: {$geometry: polygon}}}})
+      spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
     }
 
     if(box) {
@@ -302,11 +288,35 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
       }
 
-      aggPipeline.push({$match: {geolocation: {$geoWithin: {$box: box}}}})
+      spacetimeMatch['geolocation'] = {$geoWithin: {$box: box}}
+    }
+
+    if (startDate){
+      spacetimeMatch['timestamp'] = {$gte: startDate}
+    }
+
+    if(endDate){
+      if(startDate){
+        spacetimeMatch.push({timestamp: {$lte: endDate}})
+        spacetimeMatch['timestamp']['$lte'] = endDate
+      } else {
+        spacetimeMatch['timestamp'] = {$lte: endDate}
+      }
+    }
+
+    aggPipeline.push({$match:spacetimeMatch})
+
+    if(id){
+      metadataMatch['_id'] = id
+    }
+
+    if(platform){
+      metadataMatch['platform_id'] = String(platform)
     }
 
     if(dac){
-      aggPipeline.push({ $match : { data_center : dac } })
+
+      metadataMatch['data_center'] = dac
     }
 
     if(source){
@@ -314,17 +324,23 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
       let negations = source.filter(e => e.charAt(0)=='~').map(x => x.substring(1))
 
       if(matches.length > 0){
-        aggPipeline.push({$match: {'source_info.source': {'$all': matches}}})
+        metadataMatch['source_info.source'] = {'$all': matches}
       }
 
       if(negations.length > 0){
-        aggPipeline.push({$match: {'source_info.source': {'$nin': negations}}})
+        if (matches.length > 0){
+          metadataMatch['source_info.source']['$nin'] = negations
+        } else {
+          metadataMatch['source_info.source'] = {'$nin': negations}
+        }
       }
     }
 
     if(woceline){
-      aggPipeline.push({$match: {'woce_lines': woceline}})
+      metadataMatch['woce_lines'] = woceline
     }
+
+    aggPipeline.push({$match:metadataMatch})
 
     return aggPipeline
 }
