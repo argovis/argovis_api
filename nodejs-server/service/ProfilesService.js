@@ -297,7 +297,6 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(endDate){
       if(startDate){
-        spacetimeMatch.push({timestamp: {$lte: endDate}})
         spacetimeMatch['timestamp']['$lte'] = endDate
       } else {
         spacetimeMatch['timestamp'] = {$lte: endDate}
