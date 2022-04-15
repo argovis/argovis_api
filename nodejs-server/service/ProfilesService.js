@@ -239,7 +239,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(center && radius) {
       // $geoNear must be first in the aggregation pipeline
-      aggPipeline.push({$geoNear: { near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
+      aggPipeline.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
       aggPipeline.push({ $unset: "distcalculated" })
     }
 
