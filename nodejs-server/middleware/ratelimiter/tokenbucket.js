@@ -14,7 +14,7 @@ module.exports = {}
 
 module.exports.tokenbucket = function (req, res, next) {
 	let bucketsize = 100
-	let tokenrespawntime = 500
+	let tokenrespawntime = 500 // ms to respawn one token
 	let requestCost = 1 //default cost, for metadata-only requests
 	let argokey = 'guest'
 	if(req.headers['x-argokey']){
@@ -86,10 +86,10 @@ let lookup = function(apikey, resolve, reject){
 let cost = function(url){
 	// make routes that return full profiles or grids more expensive than metadata-only requests
     let c = 1
-    let highCostRoutes = ['coreMeasurements', 'bgcMeas', 'grid', 'covar']
+    let highCostRoutes = ['data', 'grid', 'covar']
 
-    if(highCostRoutes.some(x => url.includes(x))){
-    	c = 20 // tuned to allow a large request every 10s, which is about how long a 20 MB (approx one day of full profiles) will take to download on a typical 15 Mbit pipe, thus accommodating sync but not huge async requests.
+    if(highCostRoutes.some(x => url.includes(x) && !url.includes('metadata-only'))){
+    	c = 1 // no higher cost tuning for now, raise this price if we get swamped.
     }
 
     return c
