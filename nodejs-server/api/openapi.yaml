@@ -401,15 +401,54 @@ paths:
         schema:
           type: string
           example: rgTempTotal
-      - name: presLevel
+      - name: presRange
         in: query
-        description: pressure level (dbar)
+        description: Pressure range
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon; final point\
+          \ must match initial point"
         required: true
         style: form
         explode: true
+        allowReserved: true
         schema:
-          type: number
-          example: 10
+          type: string
+          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+      - name: startDate
+        in: query
+        description: date-time formatted string indicating the beginning of a time
+          period
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: date-time formatted string indicating the end of a time period
+        required: true
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
       responses:
         "200":
           description: OK
@@ -2672,6 +2711,30 @@ components:
         type: string
         format: date-time
         example: 2010-01-01T00:00:00Z
+    startDateR:
+      name: startDate
+      in: query
+      description: date-time formatted string indicating the beginning of a time period
+      required: true
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    endDateR:
+      name: endDate
+      in: query
+      description: date-time formatted string indicating the end of a time period
+      required: true
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
     gridNameUniform:
       name: gridName
       in: query
@@ -2928,6 +2991,18 @@ components:
       description: "array of [lon, lat] vertices describing a polygon; final point\
         \ must match initial point"
       required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+    polygonR:
+      name: polygon
+      in: query
+      description: "array of [lon, lat] vertices describing a polygon; final point\
+        \ must match initial point"
+      required: true
       style: form
       explode: true
       allowReserved: true

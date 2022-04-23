@@ -43,8 +43,8 @@ module.exports.gridmeta = function gridmeta (req, res, next, gridName) {
     });
 };
 
-module.exports.gridselect = function gridselect (req, res, next, gridName, presLevel) {
-  Grid.gridselect(gridName, presLevel)
+module.exports.gridselect = function gridselect (req, res, next, gridName, polygon, startDate, endDate, presRange) {
+  Grid.gridselect(gridName, polygon, startDate, endDate, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     })
