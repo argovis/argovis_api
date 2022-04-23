@@ -55,8 +55,8 @@ module.exports.gridmeta = function gridmeta (req, res, next, gridName) {
     });
 };
 
-module.exports.gridselect = function gridselect (req, res, next, gridName, presLevel, latRange, lonRange, date) {
-  Grid.gridselect(gridName, presLevel, latRange, lonRange, date)
+module.exports.gridselect = function gridselect (req, res, next, gridName, presLevel) {
+  Grid.gridselect(gridName, presLevel)
     .then(function (response) {
       utils.writeJson(res, response);
     },

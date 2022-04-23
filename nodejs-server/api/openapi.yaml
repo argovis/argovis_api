@@ -389,7 +389,7 @@ paths:
     get:
       tags:
       - grid
-      summary: uniformly spaced rectangular gridded product selector
+      summary: gridded product selector
       operationId: gridselect
       parameters:
       - name: gridName
@@ -410,49 +410,6 @@ paths:
         schema:
           type: number
           example: 10
-      - name: latRange
-        in: query
-        description: Latitude range (-90 to 90 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "-5,5.33"
-          items:
-            maximum: 90
-            minimum: -90
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: lonRange
-        in: query
-        description: Longitude range (-180 to 180 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "0,2.153"
-          items:
-            maximum: 180
-            minimum: -180
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: date
-        in: query
-        description: date-time formatted string
-        required: true
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
       responses:
         "200":
           description: OK
@@ -461,7 +418,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RasterGrid'
+                  $ref: '#/components/schemas/columnGrid'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -1897,6 +1854,36 @@ components:
         trend: trend
         model: model
         measurement: measurement
+    columnGrid:
+      required:
+      - _id
+      - d
+      - g
+      - t
+      type: object
+      properties:
+        _id:
+          type: string
+        g:
+          $ref: '#/components/schemas/geoJSONpoint'
+        t:
+          type: string
+          format: date-time
+        d:
+          type: array
+          items:
+            type: number
+      example:
+        t: 2000-01-23T04:56:07.000+00:00
+        d:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
+        g:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        _id: _id
     Profile:
       required:
       - _id

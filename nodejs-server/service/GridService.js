@@ -100,16 +100,13 @@ exports.gridmeta = function(gridName) {
 
 
 /**
- * uniformly spaced rectangular gridded product selector
+ * gridded product selector
  *
  * gridName String name of the gridded product
  * presLevel BigDecimal pressure level (dbar)
- * latRange List Latitude range (-90 to 90 degrees)
- * lonRange List Longitude range (-180 to 180 degrees)
- * date Date date-time formatted string
  * returns List
  **/
-exports.gridselect = function(gridName,presLevel,latRange,lonRange,date) {
+exports.gridselect = function(gridName,presLevel) {
   return new Promise(function(resolve, reject) {
     let agg = []
     date = new Date(date)

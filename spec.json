@@ -297,7 +297,7 @@
             "tags": [
                "grid"
             ],
-            "summary": "uniformly spaced rectangular gridded product selector",
+            "summary": "gridded product selector",
             "operationId": "gridselect",
             "parameters": [
                {
@@ -307,13 +307,13 @@
                   "$ref": "#/components/parameters/presLevel"
                },
                {
-                  "$ref": "#/components/parameters/latRange"
+                  "$allOf": [{"$ref": "#/components/parameters/polygon"}, {"required": true}] 
                },
                {
-                  "$ref": "#/components/parameters/lonRange"
+                  "$allOf": [{"$ref": "#/components/parameters/startDate"}, {"required": true}] 
                },
                {
-                  "$ref": "#/components/parameters/date"
+                  "$allOf": [{"$ref": "#/components/parameters/endDate"}, {"required": true}] 
                }
             ],
             "responses": {
@@ -324,7 +324,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/RasterGrid"
+                              "$ref": "#/components/schemas/columnGrid"
                            }
                         }
                      }
@@ -1401,6 +1401,28 @@
                }
             }
          },
+         "columnGrid": {
+            "type": "object",
+            "required": ["_id", "g", "t", "d"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "g": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "t": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "d": {
+                  "type": "array",
+                  "items": {
+                     "type": "number"
+                  }
+               }
+            }
+         },
          "Profile": {
             "type": "object",
             "required": [
@@ -2041,7 +2063,6 @@
          "startDate": {
             "in": "query",
             "name": "startDate",
-            "required": false,
             "description": "date-time formatted string indicating the beginning of a time period",
             "allowReserved": true,
             "schema": {
@@ -2053,7 +2074,6 @@
          "endDate": {
             "in": "query",
             "name": "endDate",
-            "required": false,
             "description": "date-time formatted string indicating the end of a time period",
             "allowReserved": true,
             "schema": {
