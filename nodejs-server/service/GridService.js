@@ -3,7 +3,7 @@ const Grid = require('../models/grid');
 const GridParameter = Grid.ksTempParams;
 const moment = require('moment');
 const helpers = require('./helpers')
-
+const GJV = require('geojson-validation');
 
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
 
@@ -111,10 +111,30 @@ exports.gridmeta = function(gridName) {
  **/
 exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
   return new Promise(function(resolve, reject) {
+
+    // sanitation
+    try {
+      polygon = JSON.parse(polygon);
+    } catch (e) {
+      return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
+    }
+    if(!helpers.validlonlat(polygon)){
+      return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+    }
+    polygon = {
+      "type": "Polygon",
+      "coordinates": [polygon]
+    }
+    if(!GJV.valid(polygon)){
+      return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
+    }
+
     let agg = []
     date = new Date(date)
-    agg.push({$match: {pres: presLevel, date: date, gridName: gridName }})
-    agg = add_grid_projection(agg, latRange, lonRange)
+    agg.push({$match: {"t": {$gte: startDate, $lte: endDate},  "g": {$geoWithin: {$geometry: polygon}}}})
+
+
+
     const query = Grid.grid.aggregate(agg)
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
