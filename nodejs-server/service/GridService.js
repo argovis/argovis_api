@@ -42,9 +42,23 @@ exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
       reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
     }
 
-    let query = Grid[gridName].aggregate([{$match: {"g": {$geoWithin: {$geometry: polygon}}, "t": {$gte: startDate, $lte: endDate} }}])
+    Promise.all([
+        Grid[gridName].aggregate([{$match: {"g": {$geoWithin: {$geometry: polygon}}, "t": {$gte: startDate, $lte: endDate} }}]),
+        Grid['grids-meta'].aggregate([{$match:{"_id": gridName}}])
+    ]).then( ([ grids, gridmeta]) => {
 
-    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+        if(presRange){
+            for(let i=0; i<grids.length; i++){
+                grids[i]['d'] = grids[i]['d'].filter((e,i) => gridmeta[0]['levels'][i]>presRange[0] && gridmeta[0]['levels'][i]<presRange[1])
+            }
+            gridmeta[0]['levels'] = gridmeta[0]['levels'].filter(x => x>presRange[0] && x<presRange[1])
+        }
+        grids.unshift(gridmeta)
+        resolve(grids);
+    }).catch(error => {
+        reject({"code": 500, "message": "Server error"});
+        return;
+    });
   });
 }
 
