@@ -18,7 +18,6 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
  **/
 exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
   return new Promise(function(resolve, reject) {
-
     // sanitation
     if(!(gridName in Grid)){
       return {"code": 400, "message": gridName + " is not a supported grid; instead try one of: " + Grid.keys().join()};  
@@ -39,7 +38,7 @@ exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
     if(!GJV.valid(polygon)){
       return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
     }
-
+    console.log(Grid[gridName])
     let query = Grid[gridName].aggregate([{$match: {"g": {$geoWithin: {$geometry: polygon}}, "t": {$gte: startDate, $lte: endDate} }}])
 
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
