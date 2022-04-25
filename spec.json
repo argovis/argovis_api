@@ -297,23 +297,23 @@
             "tags": [
                "grid"
             ],
-            "summary": "uniformly spaced rectangular gridded product selector",
+            "summary": "gridded product selector",
             "operationId": "gridselect",
             "parameters": [
                {
                   "$ref": "#/components/parameters/gridName"
                },
                {
-                  "$ref": "#/components/parameters/presLevel"
+                  "$ref": "#/components/parameters/presRange"
                },
                {
-                  "$ref": "#/components/parameters/latRange"
+                  "$ref": "#/components/parameters/polygonR"
                },
                {
-                  "$ref": "#/components/parameters/lonRange"
+                  "$ref": "#/components/parameters/startDateR"
                },
                {
-                  "$ref": "#/components/parameters/date"
+                  "$ref": "#/components/parameters/endDateR"
                }
             ],
             "responses": {
@@ -324,321 +324,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/RasterGrid"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/griddedProducts/gridMetadata": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "metadata from grid unique dates, pres levels",
-            "operationId": "gridmeta",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/gridNameUniform"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/GridMeta"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/griddedProducts/grid/window": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "uniformly spaced rectangular gridded product selector",
-            "operationId": "uniformGridWindow",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/gridNameUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/presLevelUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/latRangeUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/lonRange"
-               },
-               {
-                  "$ref": "#/components/parameters/date"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/RasterGrid"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/griddedProducts/nonUniformGrid/window": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "non uniformly spaced rectangular gridded product",
-            "operationId": "nonuniformGridWindow",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/gridNameNonUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/presLevelNonUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/latRangeNonUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/lonRange"
-               },
-               {
-                  "$ref": "#/components/parameters/date"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/nonUniformGrid"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/griddedProducts/gridCoords": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "coordinates for gridded product",
-            "operationId": "gridCoords",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/gridNameNonUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/latRangeNonUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/lonRange"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/GridCoordSchema"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/griddedProducts/grid/find": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "returns a single grid by name",
-            "operationId": "findGrid",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/gridNameUniform"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/GridSchema"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/griddedProducts/gridParams/find": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "grid parameter search",
-            "operationId": "findGridParam",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/gridNameUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/presLevelUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/gridParam"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/gridParams"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/griddedProducts/gridParams/window": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "tbd",
-            "operationId": "windowGridParam",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/gridNameUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/presLevelUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/latRangeUniform"
-               },
-               {
-                  "$ref": "#/components/parameters/lonRange"
-               },
-               {
-                  "$ref": "#/components/parameters/gridParam"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/RasterParam"
+                              "$ref": "#/components/schemas/columnGrid"
                            }
                         }
                      }
@@ -1136,268 +822,25 @@
                }
             }
          },
-         "GridMeta": {
+         "columnGrid": {
             "type": "object",
-            "required": [
-               "presLevels",
-               "dates",
-               "minDate",
-               "maxDate"
-            ],
+            "required": ["_id", "g", "t", "d"],
             "properties": {
                "_id": {
-                  "type": ["string", "null"]
+                  "type": "string"
                },
-               "presLevels": {
-                  "type": "array",
-                  "items": {
-                     "type": "number"
-                  }
+               "g": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
                },
-               "dates": {
-                  "type": "array",
-                  "items": {
-                     "type": "string",
-                     "format": "date-time"
-                  }
-               },
-               "minDate": {
+               "t": {
                   "type": "string",
                   "format": "date-time"
                },
-               "maxDate": {
-                  "type": "string",
-                  "format": "date-time"
-               }
-            }
-         },
-         "RasterParam": {
-            "type": "object",
-            "required": [
-               "_id",
-               "pres",
-               "cellXSize",
-               "cellYSize",
-               "noDataValue",
-               "zs",
-               "nRows",
-               "nCols",
-               "xllCorner",
-               "yllCorner"
-            ],
-            "properties": {
-               "_id": {
-                  "type": "string"
-               },
-               "pres": {
-                  "type": "number"
-               },
-               "cellXSize": {
-                  "type": ["number", "null"]
-               },
-               "cellYSize": {
-                  "type": ["number", "null"]
-               },
-               "noDataValue": {
-                  "type": ["number", "null"]
-               },
-               "zs": {
+               "d": {
                   "type": "array",
                   "items": {
                      "type": "number"
                   }
-               },
-               "nRows": {
-                  "type": "integer"
-               },
-               "nCols": {
-                  "type": "integer"
-               },
-               "xllCorner": {
-                  "type": "number"
-               },
-               "yllCorner": {
-                  "type": "number"
-               },
-               "gridName": {
-                  "type": "string"
-               },
-               "units": {
-                  "type": "string"
-               },
-               "measurement": {
-                  "type": "string"
-               },
-               "param": {
-                  "type": "string"
-               }
-            }
-         },
-         "RasterGrid": {
-            "allOf": [
-               {
-                  "$ref": "#/components/schemas/RasterParam"
-               },
-               {
-                  "type": "object",
-                  "properties": {
-                     "date": {
-                        "type": "string",
-                        "format": "date-time"
-                     }
-                  }
-               }
-            ]
-         },
-         "ancestorGrid": {
-            "type": "object",
-            "description": "ancestor object describing common grid-like properties",
-            "required": [
-               "_id",
-               "measurement",
-               "units",
-               "pres",
-               "param",
-               "cellsize",
-               "NODATA_value"
-            ],
-            "properties": {
-               "_id": {
-                  "type": "string"
-               },
-               "gridName": {
-                  "type": "string"
-               },
-               "measurement": {
-                  "type": "string"
-               },
-               "units": {
-                  "type": "string"
-               },
-               "data": {
-                  "type": "array",
-                  "items": {
-                     "type": "object",
-                     "properties": {
-                        "lat": {
-                           "type": "number"
-                        },
-                        "lon": {
-                           "type": "number"
-                        },
-                        "value": {
-                           "type": ["number", "null"]
-                        }
-                     }
-                  }
-               },
-               "variable": {
-                  "type": "string"
-               },
-               "date": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "pres": {
-                  "type": "number"
-               },
-               "model": {
-                  "type": "string"
-               },
-               "trend": {
-                  "type": "string"
-               },
-               "param": {
-                  "type": "string"
-               },
-               "cellsize": {
-                  "type": "number"
-               },
-               "NODATA_value": {
-                  "type": ["string", "null"]
-               }
-            }
-         },
-         "GridSchema": {
-            "allOf": [
-               {
-                  "$ref": "#/components/schemas/ancestorGrid"
-               },
-               {
-                  "type": "object",
-                  "properties": {
-                     "chunk": {
-                        "type": "integer"
-                     }
-                  }
-               }
-            ]
-         },
-         "nonUniformGrid": {
-            "description": "response object for non-uniform grid search",
-            "allOf": [
-               {
-                  "$ref": "#/components/schemas/ancestorGrid"
-               },
-               {
-                  "type": "object",
-                  "properties": {
-                     "chunks": {
-                        "type": "array",
-                        "items": {
-                           "type": "number"
-                        }
-                     }
-                  }
-               }
-            ]
-         },
-         "GridCoordSchema": {
-            "type": "object",
-            "required": [
-               "_id",
-               "lats",
-               "lons",
-               "gridName"
-            ],
-            "properties": {
-               "_id": {
-                  "type": ["string", "null"]
-               },
-               "lats": {
-                  "type": "array",
-                  "items": {
-                     "type": "number"
-                  }
-               },
-               "lons": {
-                  "type": "array",
-                  "items": {
-                     "type": "number"
-                  }
-               },
-               "gridName": {
-                  "type": "string"
-               }
-            }
-         },
-         "gridParams": {
-            "type": "object",
-            "properties": {
-               "model": {
-                  "type": "string"
-               },
-               "param": {
-                  "type": "string"
-               },
-               "measurement": {
-                  "type": "string"
-               },
-               "trend": {
-                  "type": "string"
-               },
-               "pres": {
-                  "type": "number"
                }
             }
          },
@@ -2041,7 +1484,6 @@
          "startDate": {
             "in": "query",
             "name": "startDate",
-            "required": false,
             "description": "date-time formatted string indicating the beginning of a time period",
             "allowReserved": true,
             "schema": {
@@ -2053,7 +1495,6 @@
          "endDate": {
             "in": "query",
             "name": "endDate",
-            "required": false,
             "description": "date-time formatted string indicating the end of a time period",
             "allowReserved": true,
             "schema": {
@@ -2062,24 +1503,28 @@
                "example": "2010-01-01T00:00:00Z"
             }
          },
-         "gridNameUniform": {
+         "startDateR": {
             "in": "query",
-            "name": "gridName",
+            "name": "startDate",
             "required": true,
-            "description": "name of the gridded product",
+            "description": "date-time formatted string indicating the beginning of a time period",
+            "allowReserved": true,
             "schema": {
                "type": "string",
-               "example": "rgTempAnom"
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
             }
          },
-         "gridNameNonUniform": {
+         "endDateR": {
             "in": "query",
-            "name": "gridName",
+            "name": "endDate",
             "required": true,
-            "description": "name of the gridded product",
+            "description": "date-time formatted string indicating the end of a time period",
+            "allowReserved": true,
             "schema": {
                "type": "string",
-               "example": "sose_si_area_1_day_sparse"
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
             }
          },
          "gridName": {
@@ -2090,148 +1535,6 @@
             "schema": {
                "type": "string",
                "example": "rgTempTotal"
-            }
-         },
-         "presLevelUniform": {
-            "in": "query",
-            "name": "presLevel",
-            "required": true,
-            "description": "pressure level (dbar)",
-            "schema": {
-               "type": "number",
-               "example": 10
-            }
-         },
-         "presLevelNonUniform": {
-            "in": "query",
-            "name": "presLevel",
-            "required": true,
-            "description": "pressure level (dbar)",
-            "schema": {
-               "type": "number",
-               "example": 0
-            }
-         },
-         "presLevel": {
-            "in": "query",
-            "name": "presLevel",
-            "required": true,
-            "description": "pressure level (dbar)",
-            "schema": {
-               "type": "number",
-               "example": 10
-            }
-         },
-         "latRangeUniform": {
-            "in": "query",
-            "name": "latRange",
-            "required": true,
-            "description": "Latitude range (-90 to 90 degrees)",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
-            "schema": {
-               "type": "array",
-               "items": {
-                  "type": "number",
-                  "minItems": 2,
-                  "maxItems": 2,
-                  "minimum": -90,
-                  "maximum": 90
-               },
-               "example": "-5,5.33"
-            }
-         },
-         "latRangeNonUniform": {
-            "in": "query",
-            "name": "latRange",
-            "required": true,
-            "description": "Latitude range (-90 to 90 degrees)",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
-            "schema": {
-               "type": "array",
-               "items": {
-                  "type": "number",
-                  "minItems": 2,
-                  "maxItems": 2,
-                  "minimum": -90,
-                  "maximum": 90
-               },
-               "example": "-5,5.33"
-            }
-         },
-         "latRange": {
-            "in": "query",
-            "name": "latRange",
-            "required": true,
-            "description": "Latitude range (-90 to 90 degrees)",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
-            "schema": {
-               "type": "array",
-               "items": {
-                  "type": "number",
-                  "minItems": 2,
-                  "maxItems": 2,
-                  "minimum": -90,
-                  "maximum": 90
-               },
-               "example": "-5,5.33"
-            }
-         },
-         "lonRange": {
-            "in": "query",
-            "name": "lonRange",
-            "required": true,
-            "description": "Longitude range (-180 to 180 degrees)",
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
-            "schema": {
-               "type": "array",
-               "items": {
-                  "type": "number",
-                  "minItems": 2,
-                  "maxItems": 2,
-                  "minimum": -180,
-                  "maximum": 180
-               },
-               "example": "0,2.153"
-            }
-         },
-         "dateUniform": {
-            "in": "query",
-            "name": "date",
-            "required": true,
-            "description": "YYYY-MM-DD format. Monthly grids use the first day of the month.",
-            "schema": {
-               "type": "string",
-               "format": "date",
-               "example": "2012-01-01"
-            }
-         },
-         "dateNonUniform": {
-            "in": "query",
-            "name": "date",
-            "required": true,
-            "description": "YYYY-MM-DD format. Monthly grids use the first day of the month.",
-            "schema": {
-               "type": "string",
-               "format": "date",
-               "example": "2012-01-01"
-            }
-         },
-         "gridParam": {
-            "in": "query",
-            "name": "param",
-            "required": true,
-            "description": "tbd",
-            "schema": {
-               "type": "string",
-               "example": ""
             }
          },
          "presRange": {
@@ -2326,6 +1629,17 @@
          "polygon": {
             "in": "query",
             "name": "polygon",
+            "description": "array of [lon, lat] vertices describing a polygon; final point must match initial point",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+            }
+         },
+         "polygonR": {
+            "in": "query",
+            "name": "polygon",
+            "required": true,
             "description": "array of [lon, lat] vertices describing a polygon; final point must match initial point",
             "allowReserved": true,
             "schema": {

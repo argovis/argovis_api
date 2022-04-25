@@ -389,7 +389,7 @@ paths:
     get:
       tags:
       - grid
-      summary: uniformly spaced rectangular gridded product selector
+      summary: gridded product selector
       operationId: gridselect
       parameters:
       - name: gridName
@@ -401,50 +401,46 @@ paths:
         schema:
           type: string
           example: rgTempTotal
-      - name: presLevel
+      - name: presRange
         in: query
-        description: pressure level (dbar)
+        description: Pressure range
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon; final point\
+          \ must match initial point"
         required: true
         style: form
         explode: true
-        schema:
-          type: number
-          example: 10
-      - name: latRange
-        in: query
-        description: Latitude range (-90 to 90 degrees)
-        required: true
-        style: form
-        explode: false
         allowReserved: true
         schema:
-          type: array
-          example: "-5,5.33"
-          items:
-            maximum: 90
-            minimum: -90
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: lonRange
+          type: string
+          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+      - name: startDate
         in: query
-        description: Longitude range (-180 to 180 degrees)
+        description: date-time formatted string indicating the beginning of a time
+          period
         required: true
         style: form
-        explode: false
+        explode: true
         allowReserved: true
         schema:
-          type: array
-          example: "0,2.153"
-          items:
-            maximum: 180
-            minimum: -180
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: date
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
         in: query
-        description: date-time formatted string
+        description: date-time formatted string indicating the end of a time period
         required: true
         style: form
         explode: true
@@ -461,526 +457,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RasterGrid'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Grid
-  /griddedProducts/gridMetadata:
-    get:
-      tags:
-      - grid
-      summary: "metadata from grid unique dates, pres levels"
-      operationId: gridmeta
-      parameters:
-      - name: gridName
-        in: query
-        description: name of the gridded product
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: rgTempAnom
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GridMeta'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Grid
-  /griddedProducts/grid/window:
-    get:
-      tags:
-      - grid
-      summary: uniformly spaced rectangular gridded product selector
-      operationId: uniformGridWindow
-      parameters:
-      - name: gridName
-        in: query
-        description: name of the gridded product
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: rgTempAnom
-      - name: presLevel
-        in: query
-        description: pressure level (dbar)
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 10
-      - name: latRange
-        in: query
-        description: Latitude range (-90 to 90 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "-5,5.33"
-          items:
-            maximum: 90
-            minimum: -90
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: lonRange
-        in: query
-        description: Longitude range (-180 to 180 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "0,2.153"
-          items:
-            maximum: 180
-            minimum: -180
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: date
-        in: query
-        description: date-time formatted string
-        required: true
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RasterGrid'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Grid
-  /griddedProducts/nonUniformGrid/window:
-    get:
-      tags:
-      - grid
-      summary: non uniformly spaced rectangular gridded product
-      operationId: nonuniformGridWindow
-      parameters:
-      - name: gridName
-        in: query
-        description: name of the gridded product
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: sose_si_area_1_day_sparse
-      - name: presLevel
-        in: query
-        description: pressure level (dbar)
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 0
-      - name: latRange
-        in: query
-        description: Latitude range (-90 to 90 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "-5,5.33"
-          items:
-            maximum: 90
-            minimum: -90
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: lonRange
-        in: query
-        description: Longitude range (-180 to 180 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "0,2.153"
-          items:
-            maximum: 180
-            minimum: -180
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: date
-        in: query
-        description: date-time formatted string
-        required: true
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/nonUniformGrid'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Grid
-  /griddedProducts/gridCoords:
-    get:
-      tags:
-      - grid
-      summary: coordinates for gridded product
-      operationId: gridCoords
-      parameters:
-      - name: gridName
-        in: query
-        description: name of the gridded product
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: sose_si_area_1_day_sparse
-      - name: latRange
-        in: query
-        description: Latitude range (-90 to 90 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "-5,5.33"
-          items:
-            maximum: 90
-            minimum: -90
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: lonRange
-        in: query
-        description: Longitude range (-180 to 180 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "0,2.153"
-          items:
-            maximum: 180
-            minimum: -180
-            maxItems: 2
-            minItems: 2
-            type: number
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GridCoordSchema'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Grid
-  /griddedProducts/grid/find:
-    get:
-      tags:
-      - grid
-      summary: returns a single grid by name
-      operationId: findGrid
-      parameters:
-      - name: gridName
-        in: query
-        description: name of the gridded product
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: rgTempAnom
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GridSchema'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Grid
-  /griddedProducts/gridParams/find:
-    get:
-      tags:
-      - grid
-      summary: grid parameter search
-      operationId: findGridParam
-      parameters:
-      - name: gridName
-        in: query
-        description: name of the gridded product
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: rgTempAnom
-      - name: presLevel
-        in: query
-        description: pressure level (dbar)
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 10
-      - name: param
-        in: query
-        description: tbd
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: ""
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/gridParams'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Grid
-  /griddedProducts/gridParams/window:
-    get:
-      tags:
-      - grid
-      summary: tbd
-      operationId: windowGridParam
-      parameters:
-      - name: gridName
-        in: query
-        description: name of the gridded product
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: rgTempAnom
-      - name: presLevel
-        in: query
-        description: pressure level (dbar)
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 10
-      - name: latRange
-        in: query
-        description: Latitude range (-90 to 90 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "-5,5.33"
-          items:
-            maximum: 90
-            minimum: -90
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: lonRange
-        in: query
-        description: Longitude range (-180 to 180 degrees)
-        required: true
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "0,2.153"
-          items:
-            maximum: 180
-            minimum: -180
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: param
-        in: query
-        description: tbd
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: ""
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RasterParam'
+                  $ref: '#/components/schemas/columnGrid'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -1693,210 +1170,36 @@ components:
             - 0.80082819046101150206595775671303272247314453125
             type: type
         startDate: 2000-01-23T04:56:07.000+00:00
-    GridMeta:
-      required:
-      - dates
-      - maxDate
-      - minDate
-      - presLevels
-      type: object
-      properties:
-        _id: {}
-        presLevels:
-          type: array
-          items:
-            type: number
-        dates:
-          type: array
-          items:
-            type: string
-            format: date-time
-        minDate:
-          type: string
-          format: date-time
-        maxDate:
-          type: string
-          format: date-time
-      example:
-        minDate: 2000-01-23T04:56:07.000+00:00
-        dates:
-        - 2000-01-23T04:56:07.000+00:00
-        - 2000-01-23T04:56:07.000+00:00
-        maxDate: 2000-01-23T04:56:07.000+00:00
-        _id: ""
-        presLevels:
-        - 0.80082819046101150206595775671303272247314453125
-        - 0.80082819046101150206595775671303272247314453125
-    RasterParam:
+    columnGrid:
       required:
       - _id
-      - cellXSize
-      - cellYSize
-      - nCols
-      - nRows
-      - noDataValue
-      - pres
-      - xllCorner
-      - yllCorner
-      - zs
+      - d
+      - g
+      - t
       type: object
       properties:
         _id:
           type: string
-        pres:
-          type: number
-        cellXSize: {}
-        cellYSize: {}
-        noDataValue: {}
-        zs:
+        g:
+          $ref: '#/components/schemas/geoJSONpoint'
+        t:
+          type: string
+          format: date-time
+        d:
           type: array
           items:
             type: number
-        nRows:
-          type: integer
-        nCols:
-          type: integer
-        xllCorner:
-          type: number
-        yllCorner:
-          type: number
-        gridName:
-          type: string
-        units:
-          type: string
-        measurement:
-          type: string
-        param:
-          type: string
       example:
-        gridName: gridName
-        pres: 0.80082819046101150206595775671303272247314453125
-        units: units
-        cellXSize: ""
-        measurement: measurement
-        nCols: 5
-        yllCorner: 2.3021358869347654518833223846741020679473876953125
-        nRows: 1
-        param: param
-        xllCorner: 5.63737665663332876420099637471139430999755859375
-        noDataValue: ""
-        zs:
-        - 6.02745618307040320615897144307382404804229736328125
-        - 6.02745618307040320615897144307382404804229736328125
+        t: 2000-01-23T04:56:07.000+00:00
+        d:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
+        g:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
         _id: _id
-        cellYSize: ""
-    RasterGrid:
-      allOf:
-      - $ref: '#/components/schemas/RasterParam'
-      - type: object
-        properties:
-          date:
-            type: string
-            format: date-time
-    ancestorGrid:
-      required:
-      - NODATA_value
-      - _id
-      - cellsize
-      - measurement
-      - param
-      - pres
-      - units
-      type: object
-      properties:
-        _id:
-          type: string
-        gridName:
-          type: string
-        measurement:
-          type: string
-        units:
-          type: string
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ancestorGrid_data'
-        variable:
-          type: string
-        date:
-          type: string
-          format: date-time
-        pres:
-          type: number
-        model:
-          type: string
-        trend:
-          type: string
-        param:
-          type: string
-        cellsize:
-          type: number
-        NODATA_value: {}
-      description: ancestor object describing common grid-like properties
-    GridSchema:
-      allOf:
-      - $ref: '#/components/schemas/ancestorGrid'
-      - type: object
-        properties:
-          chunk:
-            type: integer
-    nonUniformGrid:
-      description: response object for non-uniform grid search
-      allOf:
-      - $ref: '#/components/schemas/ancestorGrid'
-      - type: object
-        properties:
-          chunks:
-            type: array
-            items:
-              type: number
-    GridCoordSchema:
-      required:
-      - _id
-      - gridName
-      - lats
-      - lons
-      type: object
-      properties:
-        _id: {}
-        lats:
-          type: array
-          items:
-            type: number
-        lons:
-          type: array
-          items:
-            type: number
-        gridName:
-          type: string
-      example:
-        gridName: gridName
-        lats:
-        - 0.80082819046101150206595775671303272247314453125
-        - 0.80082819046101150206595775671303272247314453125
-        lons:
-        - 6.02745618307040320615897144307382404804229736328125
-        - 6.02745618307040320615897144307382404804229736328125
-        _id: ""
-    gridParams:
-      type: object
-      properties:
-        model:
-          type: string
-        param:
-          type: string
-        measurement:
-          type: string
-        trend:
-          type: string
-        pres:
-          type: number
-      example:
-        pres: 0.80082819046101150206595775671303272247314453125
-        param: param
-        trend: trend
-        model: model
-        measurement: measurement
     Profile:
       required:
       - _id
@@ -2597,15 +1900,6 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           - 0.80082819046101150206595775671303272247314453125
           type: type
-    ancestorGrid_data:
-      type: object
-      properties:
-        lat:
-          type: number
-        lon:
-          type: number
-        value: {}
-      example: null
   responses:
     badRequest:
       description: Bad Request
@@ -2685,26 +1979,30 @@ components:
         type: string
         format: date-time
         example: 2010-01-01T00:00:00Z
-    gridNameUniform:
-      name: gridName
+    startDateR:
+      name: startDate
       in: query
-      description: name of the gridded product
+      description: date-time formatted string indicating the beginning of a time period
       required: true
       style: form
       explode: true
+      allowReserved: true
       schema:
         type: string
-        example: rgTempAnom
-    gridNameNonUniform:
-      name: gridName
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    endDateR:
+      name: endDate
       in: query
-      description: name of the gridded product
+      description: date-time formatted string indicating the end of a time period
       required: true
       style: form
       explode: true
+      allowReserved: true
       schema:
         type: string
-        example: sose_si_area_1_day_sparse
+        format: date-time
+        example: 2010-01-01T00:00:00Z
     gridName:
       name: gridName
       in: query
@@ -2715,136 +2013,6 @@ components:
       schema:
         type: string
         example: rgTempTotal
-    presLevelUniform:
-      name: presLevel
-      in: query
-      description: pressure level (dbar)
-      required: true
-      style: form
-      explode: true
-      schema:
-        type: number
-        example: 10
-    presLevelNonUniform:
-      name: presLevel
-      in: query
-      description: pressure level (dbar)
-      required: true
-      style: form
-      explode: true
-      schema:
-        type: number
-        example: 0
-    presLevel:
-      name: presLevel
-      in: query
-      description: pressure level (dbar)
-      required: true
-      style: form
-      explode: true
-      schema:
-        type: number
-        example: 10
-    latRangeUniform:
-      name: latRange
-      in: query
-      description: Latitude range (-90 to 90 degrees)
-      required: true
-      style: form
-      explode: false
-      allowReserved: true
-      schema:
-        type: array
-        example: "-5,5.33"
-        items:
-          maximum: 90
-          minimum: -90
-          maxItems: 2
-          minItems: 2
-          type: number
-    latRangeNonUniform:
-      name: latRange
-      in: query
-      description: Latitude range (-90 to 90 degrees)
-      required: true
-      style: form
-      explode: false
-      allowReserved: true
-      schema:
-        type: array
-        example: "-5,5.33"
-        items:
-          maximum: 90
-          minimum: -90
-          maxItems: 2
-          minItems: 2
-          type: number
-    latRange:
-      name: latRange
-      in: query
-      description: Latitude range (-90 to 90 degrees)
-      required: true
-      style: form
-      explode: false
-      allowReserved: true
-      schema:
-        type: array
-        example: "-5,5.33"
-        items:
-          maximum: 90
-          minimum: -90
-          maxItems: 2
-          minItems: 2
-          type: number
-    lonRange:
-      name: lonRange
-      in: query
-      description: Longitude range (-180 to 180 degrees)
-      required: true
-      style: form
-      explode: false
-      allowReserved: true
-      schema:
-        type: array
-        example: "0,2.153"
-        items:
-          maximum: 180
-          minimum: -180
-          maxItems: 2
-          minItems: 2
-          type: number
-    dateUniform:
-      name: date
-      in: query
-      description: YYYY-MM-DD format. Monthly grids use the first day of the month.
-      required: true
-      style: form
-      explode: true
-      schema:
-        type: string
-        format: date
-        example: 2012-01-01
-    dateNonUniform:
-      name: date
-      in: query
-      description: YYYY-MM-DD format. Monthly grids use the first day of the month.
-      required: true
-      style: form
-      explode: true
-      schema:
-        type: string
-        format: date
-        example: 2012-01-01
-    gridParam:
-      name: param
-      in: query
-      description: tbd
-      required: true
-      style: form
-      explode: true
-      schema:
-        type: string
-        example: ""
     presRange:
       name: presRange
       in: query
@@ -2941,6 +2109,18 @@ components:
       description: "array of [lon, lat] vertices describing a polygon; final point\
         \ must match initial point"
       required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+    polygonR:
+      name: polygon
+      in: query
+      description: "array of [lon, lat] vertices describing a polygon; final point\
+        \ must match initial point"
+      required: true
       style: form
       explode: true
       allowReserved: true
