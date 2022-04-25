@@ -4,3 +4,4 @@ COPY nodejs-server/package.json .
 RUN npm install
 RUN apt-get update -y
 RUN apt-get install -y zlib1g/stable-security subversion/stable-security
+
