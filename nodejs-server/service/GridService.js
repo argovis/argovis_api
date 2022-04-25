@@ -21,24 +21,25 @@ exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
     // sanitation
     startDate = new Date(startDate);
     endDate = new Date(endDate);
+
     if(!(gridName in Grid)){
-      return {"code": 400, "message": gridName + " is not a supported grid; instead try one of: " + Grid.keys().join()};  
+      reject({"code": 400, "message": gridName + " is not a supported grid; instead try one of: " + Object.getOwnPropertyNames(Grid)});  
     }
 
     try {
       polygon = JSON.parse(polygon);
     } catch (e) {
-      return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
+      reject({"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"});
     }
     if(!helpers.validlonlat(polygon)){
-      return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+      reject({"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}); 
     }
     polygon = {
       "type": "Polygon",
       "coordinates": [polygon]
     }
     if(!GJV.valid(polygon)){
-      return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
+      reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
     }
 
     let query = Grid[gridName].aggregate([{$match: {"g": {$geoWithin: {$geometry: polygon}}, "t": {$gte: startDate, $lte: endDate} }}])
@@ -46,3 +47,5 @@ exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
+
+
