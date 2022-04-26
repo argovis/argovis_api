@@ -53,7 +53,7 @@ exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
             }
             gridmeta[0]['levels'] = gridmeta[0]['levels'].filter(x => x>presRange[0] && x<presRange[1])
         }
-        grids.unshift(gridmeta)
+        grids.unshift(gridmeta[0])
         resolve(grids);
     }).catch(error => {
         reject({"code": 500, "message": "Server error"});
