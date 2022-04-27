@@ -39,7 +39,8 @@ exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
     } else {
         // regular data request
         // sanitation
-        if(!polygon || !startDate || !endDate || !gridName){
+
+        if(typeof polygon == 'undefined' || typeof startDate == 'undefined' || typeof endDate == 'undefined'){
             reject({"code": 400, "message": "Query string parameters gridName, polygon, startDate, and endDate are all required unless you are making a metadata-only request, in which case only gridName should be provided." }); 
         }
 
