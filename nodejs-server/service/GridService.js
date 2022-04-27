@@ -10,13 +10,13 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
  * gridded product selector
  *
  * gridName String name of the gridded product
- * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point
- * startDate Date date-time formatted string indicating the beginning of a time period
- * endDate Date date-time formatted string indicating the end of a time period
  * presRange List Pressure range (optional)
+ * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
+ * startDate Date date-time formatted string indicating the beginning of a time period (optional)
+ * endDate Date date-time formatted string indicating the end of a time period (optional)
  * returns List
  **/
-exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
+exports.gridselect = function(gridName,presRange,polygon,startDate,endDate) {
   return new Promise(function(resolve, reject) {
 
     if(gridName && !polygon && !startDate && !endDate && !presRange){
