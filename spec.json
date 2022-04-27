@@ -307,13 +307,13 @@
                   "$ref": "#/components/parameters/presRange"
                },
                {
-                  "$ref": "#/components/parameters/polygonR"
+                  "$ref": "#/components/parameters/polygon"
                },
                {
-                  "$ref": "#/components/parameters/startDateR"
+                  "$ref": "#/components/parameters/startDate"
                },
                {
-                  "$ref": "#/components/parameters/endDateR"
+                  "$ref": "#/components/parameters/endDate"
                }
             ],
             "responses": {
@@ -1503,30 +1503,6 @@
                "example": "2010-01-01T00:00:00Z"
             }
          },
-         "startDateR": {
-            "in": "query",
-            "name": "startDate",
-            "required": true,
-            "description": "date-time formatted string indicating the beginning of a time period",
-            "allowReserved": true,
-            "schema": {
-               "type": "string",
-               "format": "date-time",
-               "example": "2010-01-01T00:00:00Z"
-            }
-         },
-         "endDateR": {
-            "in": "query",
-            "name": "endDate",
-            "required": true,
-            "description": "date-time formatted string indicating the end of a time period",
-            "allowReserved": true,
-            "schema": {
-               "type": "string",
-               "format": "date-time",
-               "example": "2010-01-01T00:00:00Z"
-            }
-         },
          "gridName": {
             "in": "query",
             "name": "gridName",
@@ -1629,17 +1605,6 @@
          "polygon": {
             "in": "query",
             "name": "polygon",
-            "description": "array of [lon, lat] vertices describing a polygon; final point must match initial point",
-            "allowReserved": true,
-            "schema": {
-               "type": "string",
-               "example": "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
-            }
-         },
-         "polygonR": {
-            "in": "query",
-            "name": "polygon",
-            "required": true,
             "description": "array of [lon, lat] vertices describing a polygon; final point must match initial point",
             "allowReserved": true,
             "schema": {

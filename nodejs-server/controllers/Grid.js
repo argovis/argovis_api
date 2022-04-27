@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Grid = require('../service/GridService');
 
-module.exports.gridselect = function gridselect (req, res, next, gridName, polygon, startDate, endDate, presRange) {
-  Grid.gridselect(gridName, polygon, startDate, endDate, presRange)
+module.exports.gridselect = function gridselect (req, res, next, gridName, presRange, polygon, startDate, endDate) {
+  Grid.gridselect(gridName, presRange, polygon, startDate, endDate)
     .then(function (response) {
       utils.writeJson(res, response);
     })
