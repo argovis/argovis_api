@@ -18,6 +18,26 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
  **/
 exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
   return new Promise(function(resolve, reject) {
+
+    if(gridName && !polygon && !startDate && !endDate && !presRange){
+        // metadata only request
+        const query = Grid['grids-meta'].aggregate([{$match:{"_id": gridName}}]);
+
+        query.exec(function (err, meta) {
+          if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+          }
+
+          if(meta.length == 0) {
+            reject({"code": 404, "message": "Not found: No matching results found in database."});
+            return;
+          }
+
+          resolve(meta[0]);
+        })
+    }
+
     // sanitation
     startDate = new Date(startDate);
     endDate = new Date(endDate);
