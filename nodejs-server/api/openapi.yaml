@@ -912,7 +912,7 @@ paths:
       - name: platforms
         in: query
         description: List of platform IDs
-        required: false
+        required: true
         style: form
         explode: false
         allowReserved: true
@@ -951,78 +951,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Platforms
-  /platforms/bgcList:
-    get:
-      tags:
-      - platforms
-      summary: Lists all platforms that report BGC data.
-      operationId: bgcPlatformList
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  anyOf:
-                  - type: string
-                  - type: number
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Platforms
-  /dacs:
-    get:
-      tags:
-      - dacs
-      summary: Summary data for all DACs in the database.
-      operationId: dacList
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/dacStub'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Dacs
 components:
   schemas:
     arShapeSchema:
@@ -1718,11 +1646,6 @@ components:
           format: date-time
         dac:
           type: string
-      example:
-        most_recent_date: 2000-01-23T04:56:07.000+00:00
-        dac: dac
-        number_of_profiles: 0
-        _id: _id
     profileCollectionSummary:
       type: object
       properties:
@@ -2069,7 +1992,7 @@ components:
       name: platforms
       in: query
       description: List of platform IDs
-      required: false
+      required: true
       style: form
       explode: false
       allowReserved: true
