@@ -3,40 +3,9 @@ const Profile = require('../models/profile')
 const helpers = require('./helpers')
 
 /**
- * Lists all platforms that report BGC data.
- *
- * returns List
- **/
-exports.bgcPlatformList = function() {
-  return new Promise(function(resolve, reject) {
-    const query = Profile.aggregate([
-        {$unwind: '$source_info'}, 
-        {$match: {'source_info.source':'argo_bgc' }},
-        {$group: { _id: '$platform_id', platform_id: {$first: '$platform_id'}}}
-    ])
-    query.exec(function (err, platforms) {
-        if (err){
-          reject({"code": 500, "message": "Server error"});
-          return;
-        }
-        if(platforms.length == 0){
-          reject({"code": 404, "message": "Not found: No matching results found in database."});
-          return;
-        }
-        resolve(Array.from(platforms, x => x.platform_id));
-    })
-    let postprocess = function(data) {
-        return Array.from(data, x => x.platform_id)
-    }
-    query.exec(helpers.queryCallback.bind(null,postprocess, resolve, reject))
-  });
-}
-
-
-/**
  * Provides a list of platforms (all by default) with their most recent known report and position.
  *
- * platforms List List of platform IDs (optional)
+ * platforms List List of platform IDs
  * returns List
  **/
 exports.platformList = function(platforms) {
