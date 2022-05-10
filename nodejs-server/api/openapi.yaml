@@ -553,6 +553,17 @@ paths:
         schema:
           type: number
           example: 0
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; will return points interior to all
+          listed polygons
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
       - name: id
         in: query
         description: Profile ID
@@ -2014,6 +2025,18 @@ components:
       schema:
         type: string
         example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+    multipolygon:
+      name: multipolygon
+      in: query
+      description: array of polygon regions; will return points interior to all listed
+        polygons
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
     box:
       name: box
       in: query

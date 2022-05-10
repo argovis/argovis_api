@@ -13,6 +13,7 @@ const geojsonArea = require('@mapbox/geojson-area');
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
+ * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
  * id String Profile ID (optional)
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
@@ -23,7 +24,7 @@ const geojsonArea = require('@mapbox/geojson-area');
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,presRange,dac,source,woceline,compression,data) {
   return new Promise(function(resolve, reject) {
 
     if((!endDate || !startDate) && !id) {
