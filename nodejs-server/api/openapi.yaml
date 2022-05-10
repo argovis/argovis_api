@@ -748,6 +748,17 @@ paths:
         schema:
           type: number
           example: 0
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; will return points interior to all
+          listed polygons
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
       - name: dac
         in: query
         description: Data Assembly Center

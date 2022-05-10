@@ -13,8 +13,8 @@ module.exports.profile = function profile (req, res, next, startDate, endDate, p
     });
 };
 
-module.exports.profileList = function profileList (req, res, next, startDate, endDate, polygon, box, center, radius, dac, source, woceline, platform, presRange, data) {
-  Profiles.profileList(startDate, endDate, polygon, box, center, radius, dac, source, woceline, platform, presRange, data)
+module.exports.profileList = function profileList (req, res, next, startDate, endDate, polygon, box, center, radius, multipolygon, dac, source, woceline, platform, presRange, data) {
+  Profiles.profileList(startDate, endDate, polygon, box, center, radius, multipolygon, dac, source, woceline, platform, presRange, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })

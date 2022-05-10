@@ -449,6 +449,9 @@
                   "$ref": "#/components/parameters/radius"
                },
                {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
                   "$ref": "#/components/parameters/dac"
                },
                {
