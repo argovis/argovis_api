@@ -2,6 +2,7 @@
 const Grid = require('../models/grid');
 const helpers = require('./helpers')
 const GJV = require('geojson-validation');
+const geojsonArea = require('@mapbox/geojson-area');
 
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
 
@@ -65,6 +66,9 @@ exports.gridselect = function(gridName,polygon,startDate,endDate,presRange) {
         }
         if(!GJV.valid(polygon)){
           reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
+        }
+        if(geojsonArea.geometry(polygon) > 1500000000000){
+          return {"code": 400, "message": "Polygon region is too big; please ask for 1.5 M square km or less in a single request, or about 10 square degrees at the equator."}
         }
 
         Promise.all([

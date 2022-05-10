@@ -2,6 +2,7 @@
 const Profile = require('../models/profile');
 const GJV = require('geojson-validation');
 const helpers = require('./helpers')
+const geojsonArea = require('@mapbox/geojson-area');
 
 /**
  * Search, reduce and download profile data.
@@ -238,6 +239,11 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     let aggPipeline = []
 
     if(center && radius) {
+      // sanitation
+      if(radius > 700){
+        return {"code": 400, "message": "Please limit proximity searches to at most 700 km in radius"};
+      }
+
       // $geoNear must be first in the aggregation pipeline
       aggPipeline.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
       aggPipeline.push({ $unset: "distcalculated" })
@@ -273,6 +279,10 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
       }
       spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
+
+      if(geojsonArea.geometry(polygon) > 1500000000000){
+        return {"code": 400, "message": "Polygon region is too big; please ask for 1.5 M square km or less in a single request, or about 10 square degrees at the equator."}
+      }
     }
 
     if(box) {
@@ -294,6 +304,14 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
       if(!helpers.validlonlat(box)){
         return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+      }
+
+      let polybox = {
+        "type": "Polygon",
+        "coordinates": [[[box[0][0], box[0][1]], [box[1][0], box[0][1]], [box[1][0], box[1][1]], [box[0][0], box[1][1]], [box[0][0], box[0][1]]]]
+      }
+      if(geojsonArea.geometry(polybox) > 1500000000000){
+        return {"code": 400, "message": "Box region is too big; please ask for 1.5 M square km or less in a single request, or about 10 square degrees at the equator."}
       }
 
       spacetimeMatch['geolocation'] = {$geoWithin: {$box: box}}
