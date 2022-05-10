@@ -89,6 +89,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
+ * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
  * dac String Data Assembly Center (optional)
  * source List  (optional)
  * woceline String  (optional)
@@ -97,7 +98,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,platform,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,multipolygon,dac,source,woceline,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
     if((!endDate || !startDate) && !id) {
       reject({"code": 400, "message": "Please specify at least a date range with startDate AND endDate, OR a single profile id."});
