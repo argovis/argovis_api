@@ -310,6 +310,9 @@
                   "$ref": "#/components/parameters/polygon"
                },
                {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
                   "$ref": "#/components/parameters/startDate"
                },
                {
