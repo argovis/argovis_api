@@ -3,7 +3,7 @@ const Profile = require('../models/profile');
 const GJV = require('geojson-validation');
 const helpers = require('./helpers')
 const geojsonArea = require('@mapbox/geojson-area');
-
+const maxgeosearch = 2000000000000 //maximum geo region allowed in square meters
 /**
  * Search, reduce and download profile data.
  *
@@ -38,7 +38,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
       endDate = new Date(endDate);
     }
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,dac,source,woceline)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -111,7 +111,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
       endDate = new Date(endDate);
     }
 
-    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,null,platform,dac,source,woceline)
+    let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,multipolygon,null,platform,dac,source,woceline)
 
     if('code' in aggPipeline){
       reject(aggPipeline);
@@ -221,7 +221,35 @@ const reinflate = function(profile){
   return profile
 }
 
-const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,id,platform,dac,source,woceline){
+const polygon_sanitation = function(poly){
+  // given a string <poly> that describes a polygon as [[lon0,lat0],[lon1,lat1],...,[lonN,latN],[lon0,lat0]],
+  // make sure its formatted sensibly, and return it as a geojson polygon.
+
+  let p = {}
+
+  try {
+    p = JSON.parse(poly);
+  } catch (e) {
+    return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
+  }
+
+  if(!helpers.validlonlat(p)){
+    return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+  }
+
+  p = {
+    "type": "Polygon",
+    "coordinates": [p]
+  }
+
+  if(!GJV.valid(p)){
+    return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
+  }
+
+  return p
+}
+
+const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,dac,source,woceline){
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
@@ -261,30 +289,17 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     }
 
     if(polygon) {
-      // sanitation
-      try {
-        polygon = JSON.parse(polygon);
-      } catch (e) {
-        return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
-      }
-
-      if(!helpers.validlonlat(polygon)){
-        return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
-      }
-
-      polygon = {
-        "type": "Polygon",
-        "coordinates": [polygon]
-      }
-
-      if(!GJV.valid(polygon)){
-        return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
-      }
-      spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
-
-      if(geojsonArea.geometry(polygon) > 1500000000000){
+      polygon = polygon_sanitation(polygon)
+      if(geojsonArea.geometry(polygon) > maxgeosearch){
         return {"code": 400, "message": "Polygon region is too big; please ask for 1.5 M square km or less in a single request, or about 10 square degrees at the equator."}
       }
+
+      if(polygon.hasOwnProperty('code')){
+        // error, return and bail out
+        return polygon
+      }
+
+      spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
     }
 
     if(box) {
@@ -312,14 +327,38 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         "type": "Polygon",
         "coordinates": [[[box[0][0], box[0][1]], [box[1][0], box[0][1]], [box[1][0], box[1][1]], [box[0][0], box[1][1]], [box[0][0], box[0][1]]]]
       }
-      if(geojsonArea.geometry(polybox) > 1500000000000){
+      if(geojsonArea.geometry(polybox) > maxgeosearch){
         return {"code": 400, "message": "Box region is too big; please ask for 1.5 M square km or less in a single request, or about 10 square degrees at the equator."}
       }
 
       spacetimeMatch['geolocation'] = {$geoWithin: {$box: box}}
     }
 
+    if(multipolygon){
+      try {
+        multipolygon = JSON.parse(multipolygon);
+      } catch (e) {
+        return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
+      }
+      multipolygon = multipolygon.map(function(x){return polygon_sanitation(JSON.stringify(x))})
+      if(multipolygon.some(p => p.hasOwnProperty('code'))){
+        multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
+        return multipolygon
+      }
+      if(multipolygon.every(p => geojsonArea.geometry(p) > maxgeosearch)){
+        return {"code": 400, "message": "All Multipolygon regions are too big; at least one of them must be 1.5 M square km or less, or about 10 square degrees at the equator."}
+      }
+      multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: multipolygon[0]}}
+    }
+
     aggPipeline.push({$match: spacetimeMatch})
+    // zoom in on subsequent polygon regions; will be unindexed.
+    if(multipolygon && multipolygon.length > 1){
+      for(let i=1; i<multipolygon.length; i++){
+        aggPipeline.push( {$match: {"geolocation": {$geoWithin: {$geometry: multipolygon[i]}}}} )
+      }
+    }
 
     if(id){
       metadataMatch['_id'] = id
