@@ -203,3 +203,31 @@ module.exports.filter_data = function(profiles, data, presRange){
 
     return profiles
 }
+
+module.exports.polygon_sanitation = function(poly){
+  // given a string <poly> that describes a polygon as [[lon0,lat0],[lon1,lat1],...,[lonN,latN],[lon0,lat0]],
+  // make sure its formatted sensibly, and return it as a geojson polygon.
+  const GJV = require('geojson-validation')
+  let p = {}
+
+  try {
+    p = JSON.parse(poly);
+  } catch (e) {
+    return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
+  }
+
+  if(!module.exports.validlonlat(p)){
+    return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+  }
+
+  p = {
+    "type": "Polygon",
+    "coordinates": [p]
+  }
+
+  if(!GJV.valid(p)){
+    return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
+  }
+
+  return p
+}
