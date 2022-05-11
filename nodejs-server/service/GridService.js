@@ -11,6 +11,7 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
  *
  * gridName String name of the gridded product
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point
+ * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
  * startDate Date date-time formatted string indicating the beginning of a time period
  * endDate Date date-time formatted string indicating the end of a time period
  * presRange List Pressure range (optional)
@@ -66,7 +67,7 @@ exports.gridselect = function(gridName,presRange,polygon,multipolygon,startDate,
         if(!GJV.valid(polygon)){
           reject({"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"});
         }
-        if(geojsonArea.geometry(polygon) > 2000000000000){
+        if(geojsonArea.geometry(polygon) > 1500000000000){
           return {"code": 400, "message": "Polygon region is too big; please ask for 1.5 M square km or less in a single request, or about 10 square degrees at the equator."}
         }
 
