@@ -237,5 +237,19 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /profiles", function () {
+      it("capture only the intersection with multipolygon", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&multipolygon=[[[134,36],[135,36],[135,37],[134,37],[134,36]],[[134,36],[134.5,36],[134.5,37],[134,37],[134,36]]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(2);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("multipolygon reject if all regions are too big", async function () {
+        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&multipolygon=[[[124,26],[145,26],[145,47],[124,47],[124,26]],[[124,26],[144.5,26],[144.5,47],[124,47],[124,26]]]").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(400);
+      });
+    });
+
   }
 })
