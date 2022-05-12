@@ -10,6 +10,7 @@
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
+ * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
  * id String Profile ID (optional)
  * platform String Platform ID (optional)
  * presRange List Pressure range (optional)
@@ -20,7 +21,7 @@
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platform,presRange,dac,source,woceline,compression,data) {
+exports.profile = function(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,presRange,dac,source,woceline,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -124,6 +125,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
  * center List center to measure max radius from (optional)
  * radius BigDecimal km from centerpoint (optional)
+ * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
  * dac String Data Assembly Center (optional)
  * source List  (optional)
  * woceline String  (optional)
@@ -132,7 +134,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,id,platfo
  * data List Keys of data to include (optional)
  * returns List
  **/
-exports.profileList = function(startDate,endDate,polygon,box,center,radius,dac,source,woceline,platform,presRange,data) {
+exports.profileList = function(startDate,endDate,polygon,box,center,radius,multipolygon,dac,source,woceline,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ "", "" ];
