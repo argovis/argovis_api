@@ -4,7 +4,7 @@ const helpers = require('./helpers')
 const GJV = require('geojson-validation');
 const geojsonArea = require('@mapbox/geojson-area');
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
-const maxgeosearch = 2000000000000 //maximum geo region allowed in square meters
+const maxgeosearch = 3000000000000 //maximum geo region allowed in square meters
 /**
  * gridded product selector
  *
@@ -54,13 +54,14 @@ exports.gridselect = function(gridName,presRange,polygon,multipolygon,startDate,
 
         if(polygon) {
           polygon = helpers.polygon_sanitation(polygon)
-          if(geojsonArea.geometry(polygon) > maxgeosearch){
-            return {"code": 400, "message": "Polygon region is too big; please ask for 2 M square km or less in a single request, or about 15 square degrees at the equator."}
-          }
 
           if(polygon.hasOwnProperty('code')){
             // error, return and bail out
             return polygon
+          }
+
+          if(geojsonArea.geometry(polygon) > maxgeosearch){
+            return {"code": 400, "message": "Polygon region is too big; please ask for 2 M square km or less in a single request, or about 15 square degrees at the equator."}
           }
 
           spacetimeMatch = [{$match: {"g": {$geoWithin: {$geometry: polygon}}, "t": {$gte: startDate, $lte: endDate} }}]

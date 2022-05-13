@@ -2,7 +2,7 @@
 const Profile = require('../models/profile');
 const helpers = require('./helpers')
 const geojsonArea = require('@mapbox/geojson-area');
-const maxgeosearch = 2000000000000 //maximum geo region allowed in square meters
+const maxgeosearch = 3000000000000 //maximum geo region allowed in square meters
 /**
  * Search, reduce and download profile data.
  *
@@ -260,13 +260,14 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
 
     if(polygon) {
       polygon = helpers.polygon_sanitation(polygon)
-      if(geojsonArea.geometry(polygon) > maxgeosearch){
-        return {"code": 400, "message": "Polygon region is too big; please ask for 2 M square km or less in a single request, or about 15 square degrees at the equator."}
-      }
 
       if(polygon.hasOwnProperty('code')){
         // error, return and bail out
         return polygon
+      }
+
+      if(geojsonArea.geometry(polygon) > maxgeosearch){
+        return {"code": 400, "message": "Polygon region is too big; please ask for 2 M square km or less in a single request, or about 15 square degrees at the equator."}
       }
 
       spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
