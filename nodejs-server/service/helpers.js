@@ -231,3 +231,67 @@ module.exports.polygon_sanitation = function(poly){
 
   return p
 }
+
+module.exports.box_sanitation = function(box){
+  // given a string <box> that describes a box as [[lllon,lllat], [urlon,urlat]],
+  // make sure it is formatted sensibly, an return it as a json object
+
+  try {
+    box = JSON.parse(box);
+  } catch (e) {
+    return {"code": 400, "message": "Box region wasn't proper JSON; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
+  }
+  if(box.length != 2 || 
+     box[0].length != 2 || 
+     box[1].length != 2 || 
+     typeof box[0][0] != 'number' ||
+     typeof box[0][1] != 'number' ||
+     typeof box[1][0] != 'number' || 
+     typeof box[1][1] != 'number') {
+    return {"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
+  }
+
+  if(!module.exports.validlonlat(box)){
+    return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
+  }
+
+  return box
+}
+
+module.exports.request_scoping = function(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform){
+  // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
+  const geojsonArea = require('@mapbox/geojson-area');
+  console.log(1100)
+  if(id || platform){
+    // always allow single ID or platform
+    return false
+  }
+  console.log(1200)
+  if(!startDate){
+    startDate = new Date('1980-01-01T00:00:00Z')
+  }
+  if(!endDate){
+    endDate = new Date()
+  }
+  console.log(1300)
+  let dayspan = Math.round(Math.abs((endDate - startDate) / (24*60*60*1000) )); // n days of request
+  console.log(1400, dayspan)
+  let geospan = 360*180*0.7 // rough number of 1 deg grid points covered by request; if no geo in request, estimate as 70% of all 1 deg grid points, ie the entire ocean
+  if(polygon){
+    geospan = geojsonArea.geometry(polygon) / 3000000000000 * 225 // 15 deg x 15 deg is about 3M square km at the equator
+  } else if(box){
+    geospan = Math.abs(box[0][0] - box[1][0])*Math.abs(box[0][1] - box[1][1])
+  } else if(center && radius){
+    geospan = 3.14159*radius*radius / 3000000 * 225
+  } else if(multipolygon){
+    let areas = multipolygon.map(x => geojsonArea.geometry(x) / 3000000000000 * 225)
+    geospan = Math.min(areas)
+  }
+
+  console.log(dayspan, geospan)
+  if(dayspan*geospan > 50000){
+    return {"code":400, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 2 degree by 2 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific profile IDs or platform IDs, where applicable."};
+  }
+
+  return false
+}
