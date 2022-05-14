@@ -2,7 +2,7 @@
 const Profile = require('../models/profile');
 const helpers = require('./helpers')
 const geojsonArea = require('@mapbox/geojson-area');
-const maxgeosearch = 3000000000000 //maximum geo region allowed in square meters
+
 /**
  * Search, reduce and download profile data.
  *
@@ -67,9 +67,9 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
       } 
     }
 
-    let bailout = helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)
     if(bailout){
-      //request looks huge, reject it
+      //request looks huge or malformed, reject it
       reject(bailout)
       return
     }
@@ -173,9 +173,9 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
       } 
     }
 
-    let bailout = helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, null, platform)
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, null, platform)
     if(bailout){
-      //request looks huge, reject it
+      //request looks huge or malformed, reject it
       reject(bailout)
       return
     }
@@ -287,27 +287,11 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
-    // sanity checks
-    if((center && box) || (center && polygon) || (box && polygon)){
-      reject({"code": 400, "message": "Please request only one of box, polygon or center."});
-      return; 
-    }
-
-    if((center && !radius) || (!center && radius)){
-      reject({"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."});
-      return; 
-    }
-
     let spacetimeMatch = {}
     let metadataMatch = {}
     let aggPipeline = []
 
     if(center && radius) {
-      // sanitation
-      if(radius > 700){
-        return {"code": 400, "message": "Please limit proximity searches to at most 700 km in radius"};
-      }
-
       // $geoNear must be first in the aggregation pipeline
       aggPipeline.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
       aggPipeline.push({ $unset: "distcalculated" })
@@ -323,30 +307,14 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     }
 
     if(polygon) {
-      if(geojsonArea.geometry(polygon) > maxgeosearch){
-        return {"code": 400, "message": "Polygon region is too big; please ask for 3 M square km or less in a single request, or about 15 deg x 15 deg at the equator."}
-      }
-
       spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
     }
 
     if(box) {
-      let polybox = {
-        "type": "Polygon",
-        "coordinates": [[[box[0][0], box[0][1]], [box[1][0], box[0][1]], [box[1][0], box[1][1]], [box[0][0], box[1][1]], [box[0][0], box[0][1]]]]
-      }
-      if(geojsonArea.geometry(polybox) > maxgeosearch){
-        return {"code": 400, "message": "Box region is too big; please ask for 3 M square km or less in a single request, or about 15 deg x 15 deg at the equator."}
-      }
-
       spacetimeMatch['geolocation'] = {$geoWithin: {$box: box}}
     }
 
     if(multipolygon){
-
-      if(multipolygon.every(p => geojsonArea.geometry(p) > maxgeosearch)){
-        return {"code": 400, "message": "All Multipolygon regions are too big; at least one of them must be 3 M square km or less, or about 15 deg x 15 deg at the equator."}
-      }
       multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
       spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: multipolygon[0]}}
     }

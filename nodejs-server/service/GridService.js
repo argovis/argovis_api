@@ -4,7 +4,7 @@ const helpers = require('./helpers')
 const GJV = require('geojson-validation');
 const geojsonArea = require('@mapbox/geojson-area');
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
-const maxgeosearch = 3000000000000 //maximum geo region allowed in square meters
+
 /**
  * gridded product selector
  *
@@ -39,50 +39,58 @@ exports.gridselect = function(gridName,presRange,polygon,multipolygon,startDate,
     } else {
         // regular data request
         // sanitation
-
         if((typeof polygon == 'undefined' && typeof multipolygon == 'undefined') || typeof startDate == 'undefined' || typeof endDate == 'undefined'){
-            reject({"code": 400, "message": "Query string parameters gridName, startDate, endDate, and one of polygon or multipolygon are all required unless you are making a metadata-only request, in which case only gridName should be provided." }); 
+          reject({"code": 400, "message": "Query string parameters gridName, startDate, endDate, and one of polygon or multipolygon are all required unless you are making a metadata-only request, in which case only gridName should be provided." }); 
         }
-
-        let spacetimeMatch = []
-        startDate = new Date(startDate);
-        endDate = new Date(endDate);
-
         if(!(gridName in Grid)){
           reject({"code": 400, "message": gridName + " is not a supported grid; instead try one of: " + Object.getOwnPropertyNames(Grid)});  
         }
 
-        if(polygon) {
+        // parse inputs
+        if(startDate){
+          startDate = new Date(startDate);
+        }
+        if(endDate){
+          endDate = new Date(endDate);
+        }
+        if(polygon){
           polygon = helpers.polygon_sanitation(polygon)
 
           if(polygon.hasOwnProperty('code')){
             // error, return and bail out
-            return polygon
+            reject(polygon)
+            return
           }
-
-          if(geojsonArea.geometry(polygon) > maxgeosearch){
-            return {"code": 400, "message": "Polygon region is too big; please ask for 2 M square km or less in a single request, or about 15 square degrees at the equator."}
-          }
-
-          spacetimeMatch = [{$match: {"g": {$geoWithin: {$geometry: polygon}}, "t": {$gte: startDate, $lte: endDate} }}]
         }
-
         if(multipolygon){
           try {
             multipolygon = JSON.parse(multipolygon);
           } catch (e) {
-            return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
+            reject({"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."});
+            return
           }
           multipolygon = multipolygon.map(function(x){return helpers.polygon_sanitation(JSON.stringify(x))})
           if(multipolygon.some(p => p.hasOwnProperty('code'))){
             multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
-            return multipolygon
-          }
-          if(multipolygon.every(p => geojsonArea.geometry(p) > maxgeosearch)){
-            return {"code": 400, "message": "All Multipolygon regions are too big; at least one of them must be 2 M square km or less, or about 15 square degrees at the equator."}
-          }
+            reject(multipolygon[0])
+            return
+          } 
+        }
+
+        let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, null, null, multipolygon, null, null)
+        if(bailout){
+          //request looks huge, reject it
+          reject(bailout)
+          return
+        }
+
+        let spacetimeMatch = []
+        if(polygon) {
+          spacetimeMatch = [{$match: {"g": {$geoWithin: {$geometry: polygon}}, "t": {$gte: startDate, $lte: endDate} }}]
+        }
+
+        if(multipolygon){
           multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
-          //spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: multipolygon[0]}}
 
           spacetimeMatch = [{$match: {"g": {$geoWithin: {$geometry: multipolygon[0]}}, "t": {$gte: startDate, $lte: endDate} }}]
           for(let i=1; i<multipolygon.length; i++){

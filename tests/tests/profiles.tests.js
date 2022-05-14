@@ -246,8 +246,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("multipolygon reject if all regions are too big", async function () {
-        const response = await request.get("/profiles?multipolygon=[[[124,26],[145,26],[145,47],[124,47],[124,26]],[[124,26],[144.5,26],[144.5,47],[124,47],[124,26]]]").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?multipolygon=[[[0,-35],[70,-35],[70,35],[0,35],[0,-35]],[20,-35],[90,-35],[90,35],[20,35],[20,-35]]").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(400);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("reject a huge request", async function () {
+        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00Z&endDate=2021-01-01T00:00:00Z&polygon=[[0,-30],[60,-30],[60,30],[0,30],[0,-30]]").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(413);
       });
     });
 

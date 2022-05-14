@@ -258,36 +258,70 @@ module.exports.box_sanitation = function(box){
   return box
 }
 
-module.exports.request_scoping = function(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform){
+module.exports.request_sanitation = function(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
   const geojsonArea = require('@mapbox/geojson-area');
 
-  if(id || platform){
-    // always allow single ID or platform
-    return false
+  // basic sanity checks
+  if((center && box) || (center && polygon) || (box && polygon)){
+    return {"code": 400, "message": "Please request only one of box, polygon or center."} 
+  }
+  if((center && !radius) || (!center && radius)){
+    return {"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."}
   }
 
+  // geo size limits - mongo doesn't like huge geoWithins
+  maxgeosearch = 45000000000000 // 60 degree box centered on equator, in sq m
+  if(radius) {
+    if(radius > 3000){
+      return {"code": 400, "message": "Please limit proximity searches to at most 3000 km in radius"};
+    }
+  }
+  if(polygon) {
+    if(geojsonArea.geometry(polygon) > maxgeosearch){
+      return {"code": 400, "message": "Polygon region is too big; please ask for 45 M square km or less in a single request, or about 60 deg x 60 deg at the equator."}
+    }
+  }
+  if(box) {
+    let polybox = {
+      "type": "Polygon",
+      "coordinates": [[[box[0][0], box[0][1]], [box[1][0], box[0][1]], [box[1][0], box[1][1]], [box[0][0], box[1][1]], [box[0][0], box[0][1]]]]
+    }
+    if(geojsonArea.geometry(polybox) > maxgeosearch){
+      return {"code": 400, "message": "Box region is too big; please ask for 45 M square km or less in a single request, or about 60 deg x 60 deg at the equator."}
+    }
+  }
+  if(multipolygon){
+    if(multipolygon.every(p => geojsonArea.geometry(p) > maxgeosearch)){
+      return {"code": 400, "message": "All Multipolygon regions are too big; at least one of them must be 45 M square km or less, or about 60 deg x 60 deg at the equator."}
+    }
+  }
+
+  // data volume limits
+  if(id || platform){
+    // always allow single ID or platform searches at this point
+    return false
+  }
   if(!startDate){
     startDate = new Date('1980-01-01T00:00:00Z')
   }
   if(!endDate){
     endDate = new Date()
   }
-
   let dayspan = Math.round(Math.abs((endDate - startDate) / (24*60*60*1000) )); // n days of request
-
-  let geospan = 360*180*0.7 // rough number of 1 deg grid points covered by request; if no geo in request, estimate as 70% of all 1 deg grid points, ie the entire ocean
+  let geospan = 41252.96125*0.7 // square degrees covered by earth's ocean, equivalent to the entire globe for our purposes
   if(polygon){
-    geospan = geojsonArea.geometry(polygon) / 3000000000000 * 225 // 15 deg x 15 deg is about 3M square km at the equator
+    console.log(polygon, geojsonArea.geometry(polygon))
+    geospan = geojsonArea.geometry(polygon) / 13000000000 // 1 sq degree is about 13B sq meters
   } else if(box){
     geospan = Math.abs(box[0][0] - box[1][0])*Math.abs(box[0][1] - box[1][1])
   } else if(center && radius){
-    geospan = 3.14159*radius*radius / 3000000 * 225
+    geospan = 3.14159*radius*radius / 13000 // recall radius is reported in km
   } else if(multipolygon){
-    let areas = multipolygon.map(x => geojsonArea.geometry(x) / 3000000000000 * 225)
+    let areas = multipolygon.map(x => geojsonArea.geometry(x) / 13000000000)
     geospan = Math.min(areas)
   }
-
+  console.log(dayspan, geospan, dayspan*geospan)
   if(dayspan*geospan > 50000){
     return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific profile IDs or platform IDs, where applicable."};
   }

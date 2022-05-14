@@ -88,7 +88,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    describe("request_scoping", function () {
+    describe("request_sanitation", function () {
       it("allows the whole globe for a day", async function () {
         startDate = new Date('2020-01-01T00:00:00Z')
         endDate = new Date('2020-01-02T00:00:00Z')
@@ -99,11 +99,11 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
       });
     });
 
-    describe("request_scoping", function () {
+    describe("request_sanitation", function () {
       it("allows a 15 degree box near the equator for 6 months", async function () {
         startDate = new Date('2020-01-01T00:00:00Z')
         endDate = new Date('2020-07-01T00:00:00Z')
@@ -114,11 +114,11 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
       });
     }); 
 
-    describe("request_scoping", function () {
+    describe("request_sanitation", function () {
       it("disallows a 20 degree box near the equator for 6 months", async function () {
         startDate = new Date('2020-01-01T00:00:00Z')
         endDate = new Date('2020-07-01T00:00:00Z')
@@ -129,11 +129,11 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.have.property('code', 413) 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.have.property('code', 413) 
       });
     });
 
-    describe("request_scoping", function () {
+    describe("request_sanitation", function () {
       it("allows a 15 degree box as a polygon near the equator for 6 months", async function () {
         startDate = new Date('2020-01-01T00:00:00Z')
         endDate = new Date('2020-07-01T00:00:00Z')
@@ -144,11 +144,11 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
       });
     });
 
-    describe("request_scoping", function () {
+    describe("request_sanitation", function () {
       it("allows a 20 degree box near the equator for 6 months if an ID is also present", async function () {
         startDate = new Date('2020-01-01T00:00:00Z')
         endDate = new Date('2020-07-01T00:00:00Z')
@@ -159,11 +159,11 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = 'test-id'
         platform = null
-        expect(helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
       });
     }); 
 
-    describe("request_scoping", function () {
+    describe("request_sanitation", function () {
       it("allows a 20 degree box near the equator for 6 months if an ID is also present", async function () {
         startDate = new Date('2020-01-01T00:00:00Z')
         endDate = new Date('2020-07-01T00:00:00Z')
@@ -174,12 +174,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = 'test-platform'
-        expect(helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
       });
     });   
   }
 
-  describe("request_scoping", function () {
+  describe("request_sanitation", function () {
     it("allows a 2 degree box near the equator for all time", async function () {
       startDate = null
       endDate = null
@@ -190,7 +190,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
       multipolygon = null
       id = null
       platform = null
-      expect(helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+      expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
     });
   }); 
 })
