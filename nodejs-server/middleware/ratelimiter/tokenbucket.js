@@ -53,7 +53,7 @@ module.exports.tokenbucket = function (req, res, next) {
 		if(tokensnow-requestCost >= 0){
 			hsetAsync(userbucket.key, "ntokens", Math.max(tokensnow-requestCost,0), "lastUpdate", t).then(next())
 		} else {
-			throw({"code": 403, "message": "You have temporarily exceeded your API request limit. Try again in a minute, but limit your requests to small bursts, or wait a few seconds between requests long term."})
+			throw({"code": 429, "message": "You have temporarily exceeded your API request limit. Try again in a minute, but limit your requests to small bursts, or wait a few seconds between requests long term."})
 		}
 	})
 	.catch(err => {

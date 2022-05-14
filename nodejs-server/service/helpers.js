@@ -261,21 +261,21 @@ module.exports.box_sanitation = function(box){
 module.exports.request_scoping = function(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
   const geojsonArea = require('@mapbox/geojson-area');
-  console.log(1100)
+
   if(id || platform){
     // always allow single ID or platform
     return false
   }
-  console.log(1200)
+
   if(!startDate){
     startDate = new Date('1980-01-01T00:00:00Z')
   }
   if(!endDate){
     endDate = new Date()
   }
-  console.log(1300)
+
   let dayspan = Math.round(Math.abs((endDate - startDate) / (24*60*60*1000) )); // n days of request
-  console.log(1400, dayspan)
+
   let geospan = 360*180*0.7 // rough number of 1 deg grid points covered by request; if no geo in request, estimate as 70% of all 1 deg grid points, ie the entire ocean
   if(polygon){
     geospan = geojsonArea.geometry(polygon) / 3000000000000 * 225 // 15 deg x 15 deg is about 3M square km at the equator
@@ -288,9 +288,8 @@ module.exports.request_scoping = function(startDate, endDate, polygon, box, cent
     geospan = Math.min(areas)
   }
 
-  console.log(dayspan, geospan)
   if(dayspan*geospan > 50000){
-    return {"code":400, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 2 degree by 2 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific profile IDs or platform IDs, where applicable."};
+    return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific profile IDs or platform IDs, where applicable."};
   }
 
   return false

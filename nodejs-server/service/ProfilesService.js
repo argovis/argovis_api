@@ -172,9 +172,8 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
         return
       } 
     }
-    console.log(1000, startDate, endDate, polygon, data)
+
     let bailout = helpers.request_scoping(startDate, endDate, polygon, box, center, radius, multipolygon, null, platform)
-    console.log(2000, bailout)
     if(bailout){
       //request looks huge, reject it
       reject(bailout)
