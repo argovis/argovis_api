@@ -12,7 +12,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
   else {
     describe("GET /profiles", function () {
       it("searches for profiles by date", async function () {
-        const response = await request.get("/profiles?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00.000Z&endDate=2006-04-16T00:00:00.000Z&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
       });
     });
@@ -41,7 +41,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("gets profiles for one platform", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&platform=2900448&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?platform=2900448&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/profiles'].get.responses['200'].content['application/json'].schema);
       });
     });
@@ -69,14 +69,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("should find 2 profiles within a 20 km of this point", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&platform=2900448&center=134.25,36.16&radius=20&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?platform=2900448&center=134.25,36.16&radius=20&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(2)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return KO profiles", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&dac=KO&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&polygon=[[134.23095703125,38.05674222065296],[131.912841796875,34.7506398050501],[136.219482421875,34.56990638085636],[134.23095703125,38.05674222065296]]&dac=KO&compression=basic").set({'x-argokey': 'developer'});
         dacs = response.body.map(p => p.data_center)
         s = new Set(dacs)
         expect(Array.from(s)).to.eql(['KO'])
@@ -85,7 +85,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles", function () {
       it("fails to find any nitrate in BGC measurements", async function () {
-        const response = await request.get("/profiles?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&data=nitrate&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&polygon=[[134.23095703125,38.05674222065296],[131.912841796875,34.7506398050501],[136.219482421875,34.56990638085636],[134.23095703125,38.05674222065296]]&data=nitrate&compression=basic").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });   
@@ -106,148 +106,155 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /profiles/listID", function () {
       it("lists the IDs of any profile with doxy data", async function () {
-        const response = await request.get("/profiles/listID?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&data=doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles/listID?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&polygon=[[134.23095703125,38.05674222065296],[131.912841796875,34.7506398050501],[136.219482421875,34.56990638085636],[134.23095703125,38.05674222065296]]&data=doxy").set({'x-argokey': 'developer'});
         expect(response.body).to.have.members(['2900448_060','2900448_061'])  
       });
     }); 
 
     describe("GET /profiles/listID", function () {
       it("lists the IDs of any profile with a core salinity measurement", async function () {
-        const response = await request.get("/profiles/listID?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&data=psal").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles/listID?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&polygon=[[134.23095703125,38.05674222065296],[131.912841796875,34.7506398050501],[136.219482421875,34.56990638085636],[134.23095703125,38.05674222065296]]&data=psal").set({'x-argokey': 'developer'});
         expect(response.body).to.have.members(['2900448_060','2900448_061'])
       });
     }); 
 
     describe("GET /profiles/listID", function () {
       it("fails to find any profile IDs with nitrate in BGC measurements", async function () {
-        const response = await request.get("/profiles/listID?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&data=nitrate").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles/listID?startDate=2006-04-01T00:00:00.000Z&endDate=2006-05-01T00:00:00.000Z&polygon=[[134.23095703125,38.05674222065296],[131.912841796875,34.7506398050501],[136.219482421875,34.56990638085636],[134.23095703125,38.05674222065296]]&data=nitrate").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });   
 
     describe("GET /profiles/listID", function () {
-      it("fails to find a profile with core salinity measurement on the given day", async function () {
-        const response = await request.get("/profiles/listID?startDate=2006-04-16T00:00:00Z&endDate=2006-04-17T00:00:00Z&data=psal").set({'x-argokey': 'developer'});
+      it("fails to find a profile with doxy on the given day", async function () {
+        const response = await request.get("/profiles/listID?startDate=2006-05-17T00:00:00.000Z&endDate=2006-05-18T00:00:00.000Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=doxy").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return bgc profiles", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&source=argo_bgc").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&source=argo_bgc").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return argo_core profiles that dont have associated argo_bgc", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return profiles with doxy", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return profiles with temp", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=temp").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=temp").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(4)
       });
     });
 
     describe("GET /profiles", function () {
       it("should only return profiles with temp AND doxy", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=temp,doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=temp,doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3)
       });
     });
 
     describe("GET /profiles", function () {
       it("should handle data=all correctly", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=all").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=all").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(4)
       });
     });
 
     describe("GET /profiles", function () {
       it("should not return anything due to presRange being empty", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=temp&presRange=10000,20000").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=temp&presRange=10000,20000").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
 
     describe("GET /profiles", function () {
       it("should append pres even if not requested", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=doxy").set({'x-argokey': 'developer'});
         expect(response.body[0].data_keys).to.have.members(['doxy', 'pres'])
       });
     });
 
     describe("GET /profiles", function () {
       it("should not return a profile if it had coerced pressure alone", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=chla").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=chla").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
 
     describe("GET /profiles", function () {
       it("should handle data='metadata-only", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&id=2900448_060&data=metadata-only").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?id=2900448_060&data=metadata-only").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     });
 
     describe("GET /profiles", function () {
       it("should suppress levels that don't have a doxy value", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&id=2900448_060&data=doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?id=2900448_060&data=doxy").set({'x-argokey': 'developer'});
         expect(response.body[0].data[1].doxy).to.eql(258.24920654296875);
       });
     });
 
     describe("GET /profiles", function () {
       it("should suppress anything with dissolved oxygen", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=pres,psal,~doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=pres,psal,~doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     });
 
     describe("GET /profiles", function () {
       it("should suppress anything with dissolved oxygen, in isolation", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=~doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=~doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     });
 
     describe("GET /profiles", function () {
       it("make sure metadata-only interacts nicely with data negation", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=metadata-only,~doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=metadata-only,~doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     });
 
     describe("GET /profiles", function () {
       it("make sure data=all interacts nicely with data negation", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&data=all,~doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?startDate=2006-04-15T00:00:00Z&endDate=2006-05-18T00:00:00Z&polygon=[[133.330078125,38.89103282648846],[133.0224609375,35.639441068973944],[135.4833984375,35.71083783530009],[135.615234375,38.75408327579141],[133.330078125,38.89103282648846]]&data=all,~doxy").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     });
 
     describe("GET /profiles", function () {
       it("capture only the intersection with multipolygon", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&multipolygon=[[[134,36],[135,36],[135,37],[134,37],[134,36]],[[134,36],[134.5,36],[134.5,37],[134,37],[134,36]]]").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?multipolygon=[[[134,36],[135,36],[135,37],[134,37],[134,36]],[[134,36],[134.5,36],[134.5,37],[134,37],[134,36]]]").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(2);
       });
     });
 
     describe("GET /profiles", function () {
       it("multipolygon reject if all regions are too big", async function () {
-        const response = await request.get("/profiles?startDate=1900-01-01T00:00:00Z&endDate=2100-01-01T00:00:00Z&multipolygon=[[[124,26],[145,26],[145,47],[124,47],[124,26]],[[124,26],[144.5,26],[144.5,47],[124,47],[124,26]]]").set({'x-argokey': 'developer'});
+        const response = await request.get("/profiles?multipolygon=[[[0,-35],[70,-35],[70,35],[0,35],[0,-35]],[20,-35],[90,-35],[90,35],[20,35],[20,-35]]").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(400);
+      });
+    });
+
+    describe("GET /profiles", function () {
+      it("reject a huge request", async function () {
+        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00Z&endDate=2021-01-01T00:00:00Z&polygon=[[0,-30],[60,-30],[60,30],[0,30],[0,-30]]").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(413);
       });
     });
 

@@ -8,6 +8,7 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
+    "@mapbox/geojson-area": "^0.2.2",
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "chai": "^4.3.4",
     "chai-almost": "^1.0.1",

@@ -2,7 +2,7 @@
 const Profile = require('../models/profile');
 const helpers = require('./helpers')
 const geojsonArea = require('@mapbox/geojson-area');
-const maxgeosearch = 2000000000000 //maximum geo region allowed in square meters
+
 /**
  * Search, reduce and download profile data.
  *
@@ -26,10 +26,7 @@ const maxgeosearch = 2000000000000 //maximum geo region allowed in square meters
 exports.profile = function(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,presRange,dac,source,woceline,compression,data) {
   return new Promise(function(resolve, reject) {
 
-    if((!endDate || !startDate) && !id) {
-      reject({"code": 400, "message": "Please specify at least a date range with startDate AND endDate, OR a single profile id."});
-      return; 
-    }
+    // parse inputs
     if(startDate){
       startDate = new Date(startDate);
     }
@@ -37,9 +34,49 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
       endDate = new Date(endDate);
     }
 
+    if(polygon){
+      polygon = helpers.polygon_sanitation(polygon)
+
+      if(polygon.hasOwnProperty('code')){
+        // error, return and bail out
+        reject(polygon)
+        return
+      }
+    }
+    if(box){
+      box = helpers.box_sanitation(box)
+
+      if(box.hasOwnProperty('code')){
+        // error, return and bail out
+        reject(box)
+        return
+      }
+    }
+    if(multipolygon){
+      try {
+        multipolygon = JSON.parse(multipolygon);
+      } catch (e) {
+        reject({"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."});
+        return
+      }
+      multipolygon = multipolygon.map(function(x){return helpers.polygon_sanitation(JSON.stringify(x))})
+      if(multipolygon.some(p => p.hasOwnProperty('code'))){
+        multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
+        reject(multipolygon[0])
+        return
+      } 
+    }
+
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)
+    if(bailout){
+      //request looks huge or malformed, reject it
+      reject(bailout)
+      return
+    }
+
     let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,dac,source,woceline)
 
-    if('code' in aggPipeline){
+    if(aggPipeline.hasOwnProperty('code')){
       reject(aggPipeline);
       return;
     }
@@ -55,11 +92,6 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;
-      }
-
-      if(profiles.length > 1000){
-        reject({"code": 400, "message": "Your query is too broad and matched too many profiles; please use the filters to make a narrower request, and feel free to make multiple requests to cover more cases."});
-        return; 
       }
 
       profiles = helpers.filter_data(profiles, data, presRange)
@@ -99,10 +131,8 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
  **/
 exports.profileList = function(startDate,endDate,polygon,box,center,radius,multipolygon,dac,source,woceline,platform,presRange,data) {
   return new Promise(function(resolve, reject) {
-    if((!endDate || !startDate) && !id) {
-      reject({"code": 400, "message": "Please specify at least a date range with startDate AND endDate, OR a single profile id."});
-      return; 
-    }
+
+    // parse inputs
     if(startDate){
       startDate = new Date(startDate);
     }
@@ -110,9 +140,49 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
       endDate = new Date(endDate);
     }
 
+    if(polygon){
+      polygon = helpers.polygon_sanitation(polygon)
+
+      if(polygon.hasOwnProperty('code')){
+        // error, return and bail out
+        reject(polygon)
+        return
+      }
+    }
+    if(box){
+      box = helpers.box_sanitation(box)
+
+      if(box.hasOwnProperty('code')){
+        // error, return and bail out
+        reject(box)
+        return
+      }
+    }
+    if(multipolygon){
+      try {
+        multipolygon = JSON.parse(multipolygon);
+      } catch (e) {
+        reject({"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."});
+        return
+      }
+      multipolygon = multipolygon.map(function(x){return helpers.polygon_sanitation(JSON.stringify(x))})
+      if(multipolygon.some(p => p.hasOwnProperty('code'))){
+        multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
+        reject(multipolygon[0])
+        return
+      } 
+    }
+
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, null, platform)
+    if(bailout){
+      //request looks huge or malformed, reject it
+      reject(bailout)
+      return
+    }
+
     let aggPipeline = profile_candidate_agg_pipeline(startDate,endDate,polygon,box,center,radius,multipolygon,null,platform,dac,source,woceline)
 
-    if('code' in aggPipeline){
+    if(aggPipeline.hasOwnProperty('code')){
       reject(aggPipeline);
       return;
     }
@@ -129,12 +199,6 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
         reject({"code": 500, "message": "Server error"});
         return;
       }
-
-      if(profiles.length > 10000){
-        reject({"code": 400, "message": "Your query is too broad and matched too many profiles; please use the filters to make a narrower request, and feel free to make multiple requests to cover more cases."});
-        return; 
-      }
-
       profiles = helpers.filter_data(profiles, data, presRange)
 
       if(profiles.length == 0) {
@@ -223,27 +287,11 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     // return an aggregation pipeline array that describes how we want to filter eligible profiles
     // in case of error, return the object to pass to reject().
 
-    // sanity checks
-    if((center && box) || (center && polygon) || (box && polygon)){
-      reject({"code": 400, "message": "Please request only one of box, polygon or center."});
-      return; 
-    }
-
-    if((center && !radius) || (!center && radius)){
-      reject({"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."});
-      return; 
-    }
-
     let spacetimeMatch = {}
     let metadataMatch = {}
     let aggPipeline = []
 
     if(center && radius) {
-      // sanitation
-      if(radius > 700){
-        return {"code": 400, "message": "Please limit proximity searches to at most 700 km in radius"};
-      }
-
       // $geoNear must be first in the aggregation pipeline
       aggPipeline.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
       aggPipeline.push({ $unset: "distcalculated" })
@@ -259,65 +307,14 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
     }
 
     if(polygon) {
-      polygon = helpers.polygon_sanitation(polygon)
-      if(geojsonArea.geometry(polygon) > maxgeosearch){
-        return {"code": 400, "message": "Polygon region is too big; please ask for 2 M square km or less in a single request, or about 15 square degrees at the equator."}
-      }
-
-      if(polygon.hasOwnProperty('code')){
-        // error, return and bail out
-        return polygon
-      }
-
       spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
     }
 
     if(box) {
-      // sanitation
-      try {
-        box = JSON.parse(box);
-      } catch (e) {
-        return {"code": 400, "message": "Box region wasn't proper JSON; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
-      }
-      if(box.length != 2 || 
-         box[0].length != 2 || 
-         box[1].length != 2 || 
-         typeof box[0][0] != 'number' ||
-         typeof box[0][1] != 'number' ||
-         typeof box[1][0] != 'number' || 
-         typeof box[1][1] != 'number') {
-        return {"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
-      }
-
-      if(!helpers.validlonlat(box)){
-        return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
-      }
-
-      let polybox = {
-        "type": "Polygon",
-        "coordinates": [[[box[0][0], box[0][1]], [box[1][0], box[0][1]], [box[1][0], box[1][1]], [box[0][0], box[1][1]], [box[0][0], box[0][1]]]]
-      }
-      if(geojsonArea.geometry(polybox) > maxgeosearch){
-        return {"code": 400, "message": "Box region is too big; please ask for 2 M square km or less in a single request, or about 15 square degrees at the equator."}
-      }
-
       spacetimeMatch['geolocation'] = {$geoWithin: {$box: box}}
     }
 
     if(multipolygon){
-      try {
-        multipolygon = JSON.parse(multipolygon);
-      } catch (e) {
-        return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
-      }
-      multipolygon = multipolygon.map(function(x){return helpers.polygon_sanitation(JSON.stringify(x))})
-      if(multipolygon.some(p => p.hasOwnProperty('code'))){
-        multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
-        return multipolygon
-      }
-      if(multipolygon.every(p => geojsonArea.geometry(p) > maxgeosearch)){
-        return {"code": 400, "message": "All Multipolygon regions are too big; at least one of them must be 2 M square km or less, or about 15 square degrees at the equator."}
-      }
       multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
       spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: multipolygon[0]}}
     }
