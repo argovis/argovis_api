@@ -219,13 +219,21 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
  **/
 exports.profileVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
+    let key = ''
+    if(parameter == 'data') key = 'data_keys'
+    else if(parameter == 'woceline') key = 'woce_lines'
+    else if(parameter == 'dac') key = 'data_center'
+    else if(parameter == 'source') key = 'source_info.source'
+
+    Profile.find().distinct(key, function (err, vocab) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+
+      resolve(vocab)
+    })
   });
 }
 
