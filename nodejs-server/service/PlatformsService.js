@@ -2,6 +2,24 @@
 
 
 /**
+ * Provides a list of all Argo platform IDs with BGC data.
+ *
+ * returns List
+ **/
+exports.platformBGC = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Provides a list of platforms with their most recent known report and position.
  *
  * platforms List List of platform IDs

@@ -2,11 +2,11 @@
 
 
 /**
- * Summary data for all DACs in the database.
+ * Provides summary data for each data assembly center.
  *
  * returns List
  **/
-exports.dacList = function() {
+exports.dacSummary = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

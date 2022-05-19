@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Dacs = require('../service/DacsService');
 
-module.exports.dacList = function dacList (req, res, next) {
-  Dacs.dacList()
+module.exports.dacSummary = function dacSummary (req, res, next) {
+  Dacs.dacSummary()
     .then(function (response) {
       utils.writeJson(res, response);
     })
