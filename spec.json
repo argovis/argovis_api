@@ -1426,7 +1426,7 @@
          "startDate": {
             "in": "query",
             "name": "startDate",
-            "description": "date-time formatted string indicating the beginning of a time period",
+            "description": "ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest.",
             "allowReserved": true,
             "schema": {
                "type": "string",
@@ -1437,7 +1437,7 @@
          "endDate": {
             "in": "query",
             "name": "endDate",
-            "description": "date-time formatted string indicating the end of a time period",
+            "description": "ISO 8601 UTC date-time formatted string indicating the end of the time period of interest.",
             "allowReserved": true,
             "schema": {
                "type": "string",
@@ -1449,7 +1449,7 @@
             "in": "query",
             "name": "gridName",
             "required": true,
-            "description": "name of the gridded product",
+            "description": "name of the gridded product to query.",
             "schema": {
                "type": "string",
                "example": "rgTempTotal"
@@ -1458,7 +1458,7 @@
          "presRange": {
             "in": "query",
             "name": "presRange",
-            "description": "Pressure range",
+            "description": "Pressure range in dbar to filter for; levels outside this range will not be returned.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
@@ -1475,16 +1475,16 @@
          "dac": {
             "in": "query",
             "name": "dac",
-            "description": "Data Assembly Center",
+            "description": "Data Assembly Center to search for. See /profiles/dacs for list of options.",
             "schema": {
                "type": "string",
-               "example": ""
+               "example": "KO"
             }
          },
          "profileSource": {
             "in": "query",
             "name": "source",
-            "description": "",
+            "description": "Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/sources for list of options.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
@@ -1492,22 +1492,23 @@
                "type": "array",
                "items": {
                   "type": "string"
-               }
+               },
+               "example": "argo_bgc,~argo_core"
             }
          },
          "woceline": {
             "in": "query",
             "name": "woceline",
-            "description": "",
+            "description": "WOCE line to search for. See /profiles/wocelines for list of options.",
             "schema": {
                "type": "string",
-               "example": "argo_bgc"
+               "example": "A10"
             } 
          },
          "compression": {
             "in": "query",
             "name": "compression",
-            "description": "Data compression strategy",
+            "description": "Data compression strategy to apply.",
             "schema": {
                "type": "string",
                "example": "basic-minification"
@@ -1516,7 +1517,7 @@
          "profileID": {
             "in": "query",
             "name": "id",
-            "description": "Profile ID",
+            "description": "Unique profile ID to search for.",
             "schema": {
                "type": "string",
                "example": "4902911_0"
@@ -1525,10 +1526,11 @@
          "profilePlatform": {
             "in": "query",
             "name": "platform",
-            "description": "Platform ID",
+            "description": "Unique platform ID to search for.",
             "schema": {
                "type": "string"
-            }
+            },
+            "example": "4902911"
          },
          "platformList": {
             "in": "query",
@@ -1548,17 +1550,17 @@
          "polygon": {
             "in": "query",
             "name": "polygon",
-            "description": "array of [lon, lat] vertices describing a polygon; final point must match initial point",
+            "description": "array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point",
             "allowReserved": true,
             "schema": {
                "type": "string",
-               "example": "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+               "example": "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
             }
          },
          "multipolygon": {
             "in": "query",
             "name": "multipolygon",
-            "description": "array of polygon regions; will return points interior to all listed polygons",
+            "description": "array of polygon regions; region of interest is taken as the intersection of all listed polygons.",
             "allowReserved": true,
             "schema": {
                "type": "string",
@@ -1568,17 +1570,17 @@
          "box": {
             "in": "query",
             "name": "box",
-            "description": "box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]]",
+            "description": "box region of interest described as [[lower left lon, lower left lat], [upper right lon, upper right lat]]",
             "allowReserved": true,
             "schema": {
                "type": "string",
-               "example": "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+               "example": "[[-74.2,40.5],[-73.6,40.9]]"
             }
          },
          "center": {
             "in": "query",
             "name": "center",
-            "description": "center to measure max radius from",
+            "description": "center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
@@ -1595,16 +1597,16 @@
          "radius": {
             "in": "query",
             "name": "radius",
-            "description": "km from centerpoint",
+            "description": "km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'.",
             "schema": {
                "type": "number",
-               "example": 0
+               "example": 50
             }
          },
          "data": {
             "in": "query",
             "name": "data",
-            "description": "Keys of data to include",
+            "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
@@ -1612,7 +1614,8 @@
                "type": "array",
                "items": {
                   "$ref": "#/components/schemas/dataKey"
-               }
+               },
+               "example": "pres,doxy,~psal"
             }
          },
          "platform": {
