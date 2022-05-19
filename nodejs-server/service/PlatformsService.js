@@ -2,7 +2,7 @@
 
 
 /**
- * Provides a list of platforms (all by default) with their most recent known report and position.
+ * Provides a list of platforms with their most recent known report and position.
  *
  * platforms List List of platform IDs
  * returns List
