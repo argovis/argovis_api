@@ -6,6 +6,25 @@ const geojsonArea = require('@mapbox/geojson-area');
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
 
 /**
+ * List all possible values for certain grid query string parameters
+ *
+ * parameter String /grids query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.gridVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * gridded product selector
  *
 <<<<<<< HEAD
