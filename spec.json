@@ -345,6 +345,51 @@
             }
          }
       },
+      "/grids/vocabulary": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "List all possible values for certain grid query string parameters",
+            "operationId": "gridVocab",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "parameter",
+                  "required": true,
+                  "description": "/grids query string parameter to summarize possible values of.",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["gridName"]
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/profiles": {
          "get": {
             "tags": [
@@ -614,7 +659,7 @@
             "tags": [
                "platforms"
             ],
-            "summary": "Provides a list of platforms (all by default) with their most recent known report and position.",
+            "summary": "Provides a list of platforms with their most recent known report and position.",
             "operationId": "platformList",
             "parameters": [
                {
@@ -1520,7 +1565,7 @@
          "dac": {
             "in": "query",
             "name": "dac",
-            "description": "Data Assembly Center to search for. See /profiles/dacs for list of options.",
+            "description": "Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac for list of options.",
             "schema": {
                "type": "string",
                "example": "KO"
@@ -1529,7 +1574,7 @@
          "profileSource": {
             "in": "query",
             "name": "source",
-            "description": "Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/sources for list of options.",
+            "description": "Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
@@ -1544,7 +1589,7 @@
          "woceline": {
             "in": "query",
             "name": "woceline",
-            "description": "WOCE line to search for. See /profiles/wocelines for list of options.",
+            "description": "WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options.",
             "schema": {
                "type": "string",
                "example": "A10"
@@ -1573,9 +1618,9 @@
             "name": "platform",
             "description": "Unique platform ID to search for.",
             "schema": {
-               "type": "string"
-            },
-            "example": "4902911"
+               "type": "string",
+               "example": "4902911"
+            }
          },
          "platformList": {
             "in": "query",
@@ -1589,7 +1634,8 @@
                "type": "array",
                "items": {
                   "anyOf": [ {"type": "string"}, {"type": "number"}]
-               }
+               },
+               "example": "4902911,4902912"
             }
          },
          "polygon": {
@@ -1651,7 +1697,7 @@
          "data": {
             "in": "query",
             "name": "data",
-            "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+            "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. See /profiles/vocabulary?parameter=data for possible values.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
@@ -1669,7 +1715,8 @@
             "required": true,
             "description": "platform ID",
             "schema": {
-               "anyOf": [ {"type": "string"}, {"type": "number"}]
+               "anyOf": [ {"type": "string"}, {"type": "number"}],
+               "example": "4902911"
             }
          },
          "lat": {

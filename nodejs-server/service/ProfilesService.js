@@ -14,11 +14,11 @@
  * id String Unique profile ID to search for. (optional)
  * platform String Unique platform ID to search for. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
- * dac String Data Assembly Center to search for. See /profiles/dacs for list of options. (optional)
- * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/sources for list of options. (optional)
- * woceline String WOCE line to search for. See /profiles/wocelines for list of options. (optional)
+ * dac String Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac for list of options. (optional)
+ * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
+ * woceline String WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options. (optional)
  * compression String Data compression strategy to apply. (optional)
- * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. See /profiles/vocabulary?parameter=data for possible values. (optional)
  * returns List
  **/
 exports.profile = function(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,presRange,dac,source,woceline,compression,data) {
@@ -126,12 +126,12 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
- * dac String Data Assembly Center to search for. See /profiles/dacs for list of options. (optional)
- * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/sources for list of options. (optional)
- * woceline String WOCE line to search for. See /profiles/wocelines for list of options. (optional)
+ * dac String Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac for list of options. (optional)
+ * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
+ * woceline String WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options. (optional)
  * platform String Unique platform ID to search for. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
- * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. See /profiles/vocabulary?parameter=data for possible values. (optional)
  * returns List
  **/
 exports.profileList = function(startDate,endDate,polygon,box,center,radius,multipolygon,dac,source,woceline,platform,presRange,data) {
