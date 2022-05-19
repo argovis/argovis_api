@@ -740,7 +740,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/parameters/dacSummary"
+                              "$ref": "#/components/schemas/dacSummary"
                            }
                         }
                      }

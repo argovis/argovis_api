@@ -1163,7 +1163,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/parameters/dacSummary'
+                  $ref: '#/components/schemas/dacSummary'
                 x-content-type: application/json
         "400":
           description: Bad Request
