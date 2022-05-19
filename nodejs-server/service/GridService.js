@@ -8,12 +8,21 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
 /**
  * gridded product selector
  *
+<<<<<<< HEAD
  * gridName String name of the gridded product
  * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point
  * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
  * startDate Date date-time formatted string indicating the beginning of a time period
  * endDate Date date-time formatted string indicating the end of a time period
  * presRange List Pressure range (optional)
+=======
+ * gridName String name of the gridded product to query.
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
+ * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
+ * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
+ * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
+>>>>>>> templates-vocab
  * returns List
  **/
 exports.gridselect = function(gridName,presRange,polygon,multipolygon,startDate,endDate) {

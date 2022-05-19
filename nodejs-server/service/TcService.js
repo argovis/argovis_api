@@ -44,8 +44,8 @@ exports.findStormNameList = function() {
 /**
  * Tropical cyclone search and filter.
  *
- * startDate Date date-time formatted string indicating the beginning of a time period (optional)
- * endDate Date date-time formatted string indicating the end of a time period (optional)
+ * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
+ * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * name String name of tropical cyclone (optional)
  * year BigDecimal year of tropical cyclone (optional)
  * returns List

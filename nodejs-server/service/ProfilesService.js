@@ -6,21 +6,21 @@ const geojsonArea = require('@mapbox/geojson-area');
 /**
  * Search, reduce and download profile data.
  *
- * startDate Date date-time formatted string indicating the beginning of a time period (optional)
- * endDate Date date-time formatted string indicating the end of a time period (optional)
- * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
- * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
- * center List center to measure max radius from (optional)
- * radius BigDecimal km from centerpoint (optional)
- * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
- * id String Profile ID (optional)
- * platform String Platform ID (optional)
- * presRange List Pressure range (optional)
- * dac String Data Assembly Center (optional)
- * source List  (optional)
- * woceline String  (optional)
- * compression String Data compression strategy (optional)
- * data List Keys of data to include (optional)
+ * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
+ * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
+ * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
+ * box String box region of interest described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
+ * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
+ * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
+ * id String Unique profile ID to search for. (optional)
+ * platform String Unique platform ID to search for. (optional)
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * dac String Data Assembly Center to search for. See /profiles/dacs for list of options. (optional)
+ * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/sources for list of options. (optional)
+ * woceline String WOCE line to search for. See /profiles/wocelines for list of options. (optional)
+ * compression String Data compression strategy to apply. (optional)
+ * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
 exports.profile = function(startDate,endDate,polygon,box,center,radius,multipolygon,id,platform,presRange,dac,source,woceline,compression,data) {
@@ -114,19 +114,19 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
 /**
  * List profile IDs that match a search
  *
- * startDate Date date-time formatted string indicating the beginning of a time period (optional)
- * endDate Date date-time formatted string indicating the end of a time period (optional)
- * polygon String array of [lon, lat] vertices describing a polygon; final point must match initial point (optional)
- * box String box described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
- * center List center to measure max radius from (optional)
- * radius BigDecimal km from centerpoint (optional)
- * multipolygon String array of polygon regions; will return points interior to all listed polygons (optional)
- * dac String Data Assembly Center (optional)
- * source List  (optional)
- * woceline String  (optional)
- * platform String Platform ID (optional)
- * presRange List Pressure range (optional)
- * data List Keys of data to include (optional)
+ * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
+ * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
+ * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
+ * box String box region of interest described as [[lower left lon, lower left lat], [upper right lon, upper right lat]] (optional)
+ * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
+ * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
+ * dac String Data Assembly Center to search for. See /profiles/dacs for list of options. (optional)
+ * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/sources for list of options. (optional)
+ * woceline String WOCE line to search for. See /profiles/wocelines for list of options. (optional)
+ * platform String Unique platform ID to search for. (optional)
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
 exports.profileList = function(startDate,endDate,polygon,box,center,radius,multipolygon,dac,source,woceline,platform,presRange,data) {
@@ -210,6 +210,25 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
     })
   });
 }
+
+/**
+ * List all possible values for certain profile query string parameters
+ *
+ * parameter String /profiles query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.profileVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
 
 /**
  * Provides a summary of the profile database.
