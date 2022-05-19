@@ -3,6 +3,17 @@ const Profile = require('../models/profile')
 const helpers = require('./helpers')
 
 /**
+ * Provides a list of all Argo platform IDs with BGC data.
+ *
+ * returns List
+ **/
+exports.platformBGC = function() {
+  return new Promise(function(resolve, reject) {
+     reject({"code": 501, "message": "Not implemented"});
+  });
+}
+
+/**
  * Provides a list of platforms with their most recent known report and position.
  *
  * platforms List List of platform IDs

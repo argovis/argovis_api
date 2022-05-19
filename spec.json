@@ -691,6 +691,72 @@
                }
             }
          }
+      },
+      "/platforms/bgc": {
+         "get": {
+            "tags": [
+               "platforms"
+            ],
+            "summary": "Provides a list of all Argo platform IDs with BGC data.",
+            "operationId": "platformBGC",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/dacs": {
+         "get": {
+            "tags": [
+               "dacs"
+            ],
+            "summary": "Provides summary data for each data assembly center.",
+            "operationId": "dacSummary",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/parameters/dacSummary"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
       }
    },
    "components": {
@@ -1359,7 +1425,7 @@
                }
             }
          },
-         "dacStub": {
+         "dacSummary": {
             "type": "object",
             "properties": {
                "_id": {

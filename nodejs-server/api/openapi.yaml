@@ -1114,6 +1114,76 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Platforms
+  /platforms/bgc:
+    get:
+      tags:
+      - platforms
+      summary: Provides a list of all Argo platform IDs with BGC data.
+      operationId: platformBGC
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Platforms
+  /dacs:
+    get:
+      tags:
+      - dacs
+      summary: Provides summary data for each data assembly center.
+      operationId: dacSummary
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/parameters/dacSummary'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Dacs
 components:
   schemas:
     arShapeSchema:
@@ -1797,7 +1867,7 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           - 0.80082819046101150206595775671303272247314453125
           type: type
-    dacStub:
+    dacSummary:
       type: object
       properties:
         _id:
@@ -1809,6 +1879,11 @@ components:
           format: date-time
         dac:
           type: string
+      example:
+        most_recent_date: 2000-01-23T04:56:07.000+00:00
+        dac: dac
+        number_of_profiles: 0
+        _id: _id
     profileCollectionSummary:
       type: object
       properties:
