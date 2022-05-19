@@ -29,6 +29,19 @@ module.exports.profileList = function profileList (req, res, next, startDate, en
     });
 };
 
+module.exports.profileVocab = function profileVocab (req, res, next, parameter) {
+  Profiles.profileVocab(parameter)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.profilesOverview = function profilesOverview (req, res, next) {
   Profiles.profilesOverview()
     .then(function (response) {

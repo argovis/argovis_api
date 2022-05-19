@@ -238,15 +238,15 @@ paths:
           - 1800
       - name: polygon
         in: query
-        description: "array of [lon, lat] vertices describing a polygon; final point\
-          \ must match initial point"
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
         required: false
         style: form
         explode: true
         allowReserved: true
         schema:
           type: string
-          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
       responses:
         "200":
           description: OK
@@ -282,8 +282,8 @@ paths:
       parameters:
       - name: startDate
         in: query
-        description: date-time formatted string indicating the beginning of a time
-          period
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
         required: false
         style: form
         explode: true
@@ -294,7 +294,8 @@ paths:
           example: 2010-01-01T00:00:00Z
       - name: endDate
         in: query
-        description: date-time formatted string indicating the end of a time period
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
         required: false
         style: form
         explode: true
@@ -394,7 +395,7 @@ paths:
       parameters:
       - name: gridName
         in: query
-        description: name of the gridded product
+        description: name of the gridded product to query.
         required: true
         style: form
         explode: true
@@ -403,7 +404,8 @@ paths:
           example: rgTempTotal
       - name: presRange
         in: query
-        description: Pressure range
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
         required: false
         style: form
         explode: false
@@ -417,19 +419,19 @@ paths:
             type: number
       - name: polygon
         in: query
-        description: "array of [lon, lat] vertices describing a polygon; final point\
-          \ must match initial point"
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
         required: false
         style: form
         explode: true
         allowReserved: true
         schema:
           type: string
-          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
       - name: multipolygon
         in: query
-        description: array of polygon regions; will return points interior to all
-          listed polygons
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
         required: false
         style: form
         explode: true
@@ -439,8 +441,8 @@ paths:
           example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
       - name: startDate
         in: query
-        description: date-time formatted string indicating the beginning of a time
-          period
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
         required: false
         style: form
         explode: true
@@ -451,7 +453,8 @@ paths:
           example: 2010-01-01T00:00:00Z
       - name: endDate
         in: query
-        description: date-time formatted string indicating the end of a time period
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
         required: false
         style: form
         explode: true
@@ -498,8 +501,8 @@ paths:
       parameters:
       - name: startDate
         in: query
-        description: date-time formatted string indicating the beginning of a time
-          period
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
         required: false
         style: form
         explode: true
@@ -510,7 +513,8 @@ paths:
           example: 2010-01-01T00:00:00Z
       - name: endDate
         in: query
-        description: date-time formatted string indicating the end of a time period
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
         required: false
         style: form
         explode: true
@@ -521,29 +525,30 @@ paths:
           example: 2010-01-01T00:00:00Z
       - name: polygon
         in: query
-        description: "array of [lon, lat] vertices describing a polygon; final point\
-          \ must match initial point"
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
         required: false
         style: form
         explode: true
         allowReserved: true
         schema:
           type: string
-          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
       - name: box
         in: query
-        description: "box described as [[lower left lon, lower left lat], [upper right\
-          \ lon, upper right lat]]"
+        description: "box region of interest described as [[lower left lon, lower\
+          \ left lat], [upper right lon, upper right lat]]"
         required: false
         style: form
         explode: true
         allowReserved: true
         schema:
           type: string
-          example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+          example: "[[-74.2,40.5],[-73.6,40.9]]"
       - name: center
         in: query
-        description: center to measure max radius from
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
         required: false
         style: form
         explode: false
@@ -557,17 +562,18 @@ paths:
             type: number
       - name: radius
         in: query
-        description: km from centerpoint
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
         required: false
         style: form
         explode: true
         schema:
           type: number
-          example: 0
+          example: 50
       - name: multipolygon
         in: query
-        description: array of polygon regions; will return points interior to all
-          listed polygons
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
         required: false
         style: form
         explode: true
@@ -577,7 +583,7 @@ paths:
           example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
       - name: id
         in: query
-        description: Profile ID
+        description: Unique profile ID to search for.
         required: false
         style: form
         explode: true
@@ -586,15 +592,17 @@ paths:
           example: 4902911_0
       - name: platform
         in: query
-        description: Platform ID
+        description: Unique platform ID to search for.
         required: false
         style: form
         explode: true
         schema:
           type: string
+        example: "4902911"
       - name: presRange
         in: query
-        description: Pressure range
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
         required: false
         style: form
         explode: false
@@ -608,36 +616,41 @@ paths:
             type: number
       - name: dac
         in: query
-        description: Data Assembly Center
+        description: Data Assembly Center to search for. See /profiles/dacs for list
+          of options.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: ""
+          example: KO
       - name: source
         in: query
-        description: ""
+        description: Experimental program source(s) to search for; document must match
+          all sources to be returned. Accepts ~ negation to filter out documents.
+          See /profiles/sources for list of options.
         required: false
         style: form
         explode: false
         allowReserved: true
         schema:
           type: array
+          example: "argo_bgc,~argo_core"
           items:
             type: string
       - name: woceline
         in: query
-        description: ""
+        description: WOCE line to search for. See /profiles/wocelines for list of
+          options.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: argo_bgc
+          example: A10
       - name: compression
         in: query
-        description: Data compression strategy
+        description: Data compression strategy to apply.
         required: false
         style: form
         explode: true
@@ -646,13 +659,17 @@ paths:
           example: basic-minification
       - name: data
         in: query
-        description: Keys of data to include
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
         required: false
         style: form
         explode: false
         allowReserved: true
         schema:
           type: array
+          example: "pres,doxy,~psal"
           items:
             $ref: '#/components/schemas/dataKey'
       responses:
@@ -693,8 +710,8 @@ paths:
       parameters:
       - name: startDate
         in: query
-        description: date-time formatted string indicating the beginning of a time
-          period
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
         required: false
         style: form
         explode: true
@@ -705,7 +722,8 @@ paths:
           example: 2010-01-01T00:00:00Z
       - name: endDate
         in: query
-        description: date-time formatted string indicating the end of a time period
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
         required: false
         style: form
         explode: true
@@ -716,29 +734,30 @@ paths:
           example: 2010-01-01T00:00:00Z
       - name: polygon
         in: query
-        description: "array of [lon, lat] vertices describing a polygon; final point\
-          \ must match initial point"
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
         required: false
         style: form
         explode: true
         allowReserved: true
         schema:
           type: string
-          example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
       - name: box
         in: query
-        description: "box described as [[lower left lon, lower left lat], [upper right\
-          \ lon, upper right lat]]"
+        description: "box region of interest described as [[lower left lon, lower\
+          \ left lat], [upper right lon, upper right lat]]"
         required: false
         style: form
         explode: true
         allowReserved: true
         schema:
           type: string
-          example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+          example: "[[-74.2,40.5],[-73.6,40.9]]"
       - name: center
         in: query
-        description: center to measure max radius from
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
         required: false
         style: form
         explode: false
@@ -752,17 +771,18 @@ paths:
             type: number
       - name: radius
         in: query
-        description: km from centerpoint
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
         required: false
         style: form
         explode: true
         schema:
           type: number
-          example: 0
+          example: 50
       - name: multipolygon
         in: query
-        description: array of polygon regions; will return points interior to all
-          listed polygons
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
         required: false
         style: form
         explode: true
@@ -772,44 +792,51 @@ paths:
           example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
       - name: dac
         in: query
-        description: Data Assembly Center
+        description: Data Assembly Center to search for. See /profiles/dacs for list
+          of options.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: ""
+          example: KO
       - name: source
         in: query
-        description: ""
+        description: Experimental program source(s) to search for; document must match
+          all sources to be returned. Accepts ~ negation to filter out documents.
+          See /profiles/sources for list of options.
         required: false
         style: form
         explode: false
         allowReserved: true
         schema:
           type: array
+          example: "argo_bgc,~argo_core"
           items:
             type: string
       - name: woceline
         in: query
-        description: ""
+        description: WOCE line to search for. See /profiles/wocelines for list of
+          options.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: argo_bgc
+          example: A10
       - name: platform
         in: query
-        description: Platform ID
+        description: Unique platform ID to search for.
         required: false
         style: form
         explode: true
         schema:
           type: string
+        example: "4902911"
       - name: presRange
         in: query
-        description: Pressure range
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
         required: false
         style: form
         explode: false
@@ -823,13 +850,17 @@ paths:
             type: number
       - name: data
         in: query
-        description: Keys of data to include
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
         required: false
         style: form
         explode: false
         allowReserved: true
         schema:
           type: array
+          example: "pres,doxy,~psal"
           items:
             $ref: '#/components/schemas/dataKey'
       responses:
@@ -874,6 +905,56 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/profileCollectionSummary'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /profiles/vocabulary:
+    get:
+      tags:
+      - profiles
+      summary: List all possible values for certain profile query string parameters
+      operationId: profileVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: /profiles query string parameter to summarize possible values
+          of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - data
+          - woceline
+          - dac
+          - source
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -1914,7 +1995,8 @@ components:
     startDate:
       name: startDate
       in: query
-      description: date-time formatted string indicating the beginning of a time period
+      description: ISO 8601 UTC date-time formatted string indicating the beginning
+        of the time period of interest.
       required: false
       style: form
       explode: true
@@ -1926,7 +2008,8 @@ components:
     endDate:
       name: endDate
       in: query
-      description: date-time formatted string indicating the end of a time period
+      description: ISO 8601 UTC date-time formatted string indicating the end of the
+        time period of interest.
       required: false
       style: form
       explode: true
@@ -1938,7 +2021,7 @@ components:
     gridName:
       name: gridName
       in: query
-      description: name of the gridded product
+      description: name of the gridded product to query.
       required: true
       style: form
       explode: true
@@ -1948,7 +2031,8 @@ components:
     presRange:
       name: presRange
       in: query
-      description: Pressure range
+      description: Pressure range in dbar to filter for; levels outside this range
+        will not be returned.
       required: false
       style: form
       explode: false
@@ -1963,39 +2047,43 @@ components:
     dac:
       name: dac
       in: query
-      description: Data Assembly Center
+      description: Data Assembly Center to search for. See /profiles/dacs for list
+        of options.
       required: false
       style: form
       explode: true
       schema:
         type: string
-        example: ""
+        example: KO
     profileSource:
       name: source
       in: query
-      description: ""
+      description: Experimental program source(s) to search for; document must match
+        all sources to be returned. Accepts ~ negation to filter out documents. See
+        /profiles/sources for list of options.
       required: false
       style: form
       explode: false
       allowReserved: true
       schema:
         type: array
+        example: "argo_bgc,~argo_core"
         items:
           type: string
     woceline:
       name: woceline
       in: query
-      description: ""
+      description: WOCE line to search for. See /profiles/wocelines for list of options.
       required: false
       style: form
       explode: true
       schema:
         type: string
-        example: argo_bgc
+        example: A10
     compression:
       name: compression
       in: query
-      description: Data compression strategy
+      description: Data compression strategy to apply.
       required: false
       style: form
       explode: true
@@ -2005,7 +2093,7 @@ components:
     profileID:
       name: id
       in: query
-      description: Profile ID
+      description: Unique profile ID to search for.
       required: false
       style: form
       explode: true
@@ -2015,12 +2103,13 @@ components:
     profilePlatform:
       name: platform
       in: query
-      description: Platform ID
+      description: Unique platform ID to search for.
       required: false
       style: form
       explode: true
       schema:
         type: string
+      example: "4902911"
     platformList:
       name: platforms
       in: query
@@ -2038,20 +2127,20 @@ components:
     polygon:
       name: polygon
       in: query
-      description: "array of [lon, lat] vertices describing a polygon; final point\
-        \ must match initial point"
+      description: "array of [lon, lat] vertices describing a polygon bounding the\
+        \ region of interest; final point must match initial point"
       required: false
       style: form
       explode: true
       allowReserved: true
       schema:
         type: string
-        example: "[[-74.1247,40.5972],[-73.7347,40.5972],[-74.0148,40.8886],[-74.1247,40.5972]]"
+        example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
     multipolygon:
       name: multipolygon
       in: query
-      description: array of polygon regions; will return points interior to all listed
-        polygons
+      description: array of polygon regions; region of interest is taken as the intersection
+        of all listed polygons.
       required: false
       style: form
       explode: true
@@ -2062,19 +2151,20 @@ components:
     box:
       name: box
       in: query
-      description: "box described as [[lower left lon, lower left lat], [upper right\
-        \ lon, upper right lat]]"
+      description: "box region of interest described as [[lower left lon, lower left\
+        \ lat], [upper right lon, upper right lat]]"
       required: false
       style: form
       explode: true
       allowReserved: true
       schema:
         type: string
-        example: "[[-74.2126,40.5221],[-73.6798,40.9135]]"
+        example: "[[-74.2,40.5],[-73.6,40.9]]"
     center:
       name: center
       in: query
-      description: center to measure max radius from
+      description: center to measure max radius from when defining circular region
+        of interest; must be used in conjunction with query string parameter 'radius'.
       required: false
       style: form
       explode: false
@@ -2089,23 +2179,28 @@ components:
     radius:
       name: radius
       in: query
-      description: km from centerpoint
+      description: km from centerpoint when defining circular region of interest;
+        must be used in conjunction with query string parameter 'center'.
       required: false
       style: form
       explode: true
       schema:
         type: number
-        example: 0
+        example: 50
     data:
       name: data
       in: query
-      description: Keys of data to include
+      description: "Keys of data to include. Return only documents that have all data\
+        \ requested, within the pressure range if specified. Accepts ~ negation to\
+        \ filter out documents including the specified data. Omission of this parameter\
+        \ will result in metadata only responses."
       required: false
       style: form
       explode: false
       allowReserved: true
       schema:
         type: array
+        example: "pres,doxy,~psal"
         items:
           $ref: '#/components/schemas/dataKey'
     platform:
