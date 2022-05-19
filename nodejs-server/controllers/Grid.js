@@ -7,6 +7,9 @@ module.exports.gridVocab = function gridVocab (req, res, next, parameter) {
   Grid.gridVocab(parameter)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
