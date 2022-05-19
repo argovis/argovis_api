@@ -492,6 +492,52 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
+  /grids/vocabulary:
+    get:
+      tags:
+      - grid
+      summary: List all possible values for certain grid query string parameters
+      operationId: gridVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: /grids query string parameter to summarize possible values of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - gridName
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Grid
   /profiles:
     get:
       tags:
@@ -598,7 +644,7 @@ paths:
         explode: true
         schema:
           type: string
-        example: "4902911"
+          example: "4902911"
       - name: presRange
         in: query
         description: Pressure range in dbar to filter for; levels outside this range
@@ -616,8 +662,8 @@ paths:
             type: number
       - name: dac
         in: query
-        description: Data Assembly Center to search for. See /profiles/dacs for list
-          of options.
+        description: Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac
+          for list of options.
         required: false
         style: form
         explode: true
@@ -628,7 +674,7 @@ paths:
         in: query
         description: Experimental program source(s) to search for; document must match
           all sources to be returned. Accepts ~ negation to filter out documents.
-          See /profiles/sources for list of options.
+          See /profiles/vocabulary?parameter=source for list of options.
         required: false
         style: form
         explode: false
@@ -640,8 +686,8 @@ paths:
             type: string
       - name: woceline
         in: query
-        description: WOCE line to search for. See /profiles/wocelines for list of
-          options.
+        description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+          for list of options.
         required: false
         style: form
         explode: true
@@ -662,7 +708,8 @@ paths:
         description: "Keys of data to include. Return only documents that have all\
           \ data requested, within the pressure range if specified. Accepts ~ negation\
           \ to filter out documents including the specified data. Omission of this\
-          \ parameter will result in metadata only responses."
+          \ parameter will result in metadata only responses. See /profiles/vocabulary?parameter=data\
+          \ for possible values."
         required: false
         style: form
         explode: false
@@ -792,8 +839,8 @@ paths:
           example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
       - name: dac
         in: query
-        description: Data Assembly Center to search for. See /profiles/dacs for list
-          of options.
+        description: Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac
+          for list of options.
         required: false
         style: form
         explode: true
@@ -804,7 +851,7 @@ paths:
         in: query
         description: Experimental program source(s) to search for; document must match
           all sources to be returned. Accepts ~ negation to filter out documents.
-          See /profiles/sources for list of options.
+          See /profiles/vocabulary?parameter=source for list of options.
         required: false
         style: form
         explode: false
@@ -816,8 +863,8 @@ paths:
             type: string
       - name: woceline
         in: query
-        description: WOCE line to search for. See /profiles/wocelines for list of
-          options.
+        description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+          for list of options.
         required: false
         style: form
         explode: true
@@ -832,7 +879,7 @@ paths:
         explode: true
         schema:
           type: string
-        example: "4902911"
+          example: "4902911"
       - name: presRange
         in: query
         description: Pressure range in dbar to filter for; levels outside this range
@@ -853,7 +900,8 @@ paths:
         description: "Keys of data to include. Return only documents that have all\
           \ data requested, within the pressure range if specified. Accepts ~ negation\
           \ to filter out documents including the specified data. Omission of this\
-          \ parameter will result in metadata only responses."
+          \ parameter will result in metadata only responses. See /profiles/vocabulary?parameter=data\
+          \ for possible values."
         required: false
         style: form
         explode: false
@@ -1019,8 +1067,8 @@ paths:
     get:
       tags:
       - platforms
-      summary: Provides a list of platforms (all by default) with their most recent
-        known report and position.
+      summary: Provides a list of platforms with their most recent known report and
+        position.
       operationId: platformList
       parameters:
       - name: platforms
@@ -1032,6 +1080,7 @@ paths:
         allowReserved: true
         schema:
           type: array
+          example: "4902911,4902912"
           items:
             anyOf:
             - type: string
@@ -1870,6 +1919,7 @@ components:
       example:
         sum: 0
     platform:
+      example: "4902911"
       anyOf:
       - type: string
       - type: number
@@ -2047,8 +2097,8 @@ components:
     dac:
       name: dac
       in: query
-      description: Data Assembly Center to search for. See /profiles/dacs for list
-        of options.
+      description: Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac
+        for list of options.
       required: false
       style: form
       explode: true
@@ -2060,7 +2110,7 @@ components:
       in: query
       description: Experimental program source(s) to search for; document must match
         all sources to be returned. Accepts ~ negation to filter out documents. See
-        /profiles/sources for list of options.
+        /profiles/vocabulary?parameter=source for list of options.
       required: false
       style: form
       explode: false
@@ -2073,7 +2123,8 @@ components:
     woceline:
       name: woceline
       in: query
-      description: WOCE line to search for. See /profiles/wocelines for list of options.
+      description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+        for list of options.
       required: false
       style: form
       explode: true
@@ -2109,7 +2160,7 @@ components:
       explode: true
       schema:
         type: string
-      example: "4902911"
+        example: "4902911"
     platformList:
       name: platforms
       in: query
@@ -2120,6 +2171,7 @@ components:
       allowReserved: true
       schema:
         type: array
+        example: "4902911,4902912"
         items:
           anyOf:
           - type: string
@@ -2193,7 +2245,8 @@ components:
       description: "Keys of data to include. Return only documents that have all data\
         \ requested, within the pressure range if specified. Accepts ~ negation to\
         \ filter out documents including the specified data. Omission of this parameter\
-        \ will result in metadata only responses."
+        \ will result in metadata only responses. See /profiles/vocabulary?parameter=data\
+        \ for possible values."
       required: false
       style: form
       explode: false
