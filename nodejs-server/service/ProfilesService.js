@@ -353,6 +353,7 @@ const profile_candidate_agg_pipeline = function(startDate,endDate,polygon,box,ce
         aggPipeline.push( {$match: {"geolocation": {$geoWithin: {$geometry: multipolygon[i]}}}} )
       }
     }
+    aggPipeline.push({$sort: {timestamp:-1}})
 
     if(id){
       metadataMatch['_id'] = id
