@@ -5,11 +5,10 @@ const helpers = require('./helpers')
 /**
  * Provides summary data for each data assembly center.
  *
- * returns List
+ * returns summary
  **/
 exports.dacSummary = function() {
   return new Promise(function(resolve, reject) {
-
     const query = Summary.find({"_id":"dacs"})
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });

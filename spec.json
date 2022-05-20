@@ -705,10 +705,7 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
+                           "$ref": "#/components/schemas/summary"
                         }
                      }
                   }
@@ -738,10 +735,7 @@
                   "content": {
                      "application/json": {
                         "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/dacSummary"
-                           }
+                           "$ref": "#/components/schemas/summary"
                         }
                      }
                   }
@@ -1425,21 +1419,14 @@
                }
             }
          },
-         "dacSummary": {
+         "summary": {
             "type": "object",
             "properties": {
                "_id": {
                   "type": "string"
                },
-               "number_of_profiles": {
-                  "type": "integer"
-               },
-               "most_recent_date": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "dac": {
-                  "type": "string"
+               "summary": {
+                  "type": "object"
                }
             }
          },

@@ -6,14 +6,12 @@ const Summary = require('../models/summary');
 /**
  * Provides a list of all Argo platform IDs with BGC data.
  *
- * returns List
+ * returns summary
  **/
 exports.platformBGC = function() {
   return new Promise(function(resolve, reject) {
-
     const query = Summary.find({"_id":"argo_bgc"})
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
-
   });
 }
 

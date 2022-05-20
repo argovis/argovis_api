@@ -1126,10 +1126,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-                x-content-type: application/json
+                $ref: '#/components/schemas/summary'
         "400":
           description: Bad Request
           content:
@@ -1161,10 +1158,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/dacSummary'
-                x-content-type: application/json
+                $ref: '#/components/schemas/summary'
         "400":
           description: Bad Request
           content:
@@ -1867,22 +1861,15 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           - 0.80082819046101150206595775671303272247314453125
           type: type
-    dacSummary:
+    summary:
       type: object
       properties:
         _id:
           type: string
-        number_of_profiles:
-          type: integer
-        most_recent_date:
-          type: string
-          format: date-time
-        dac:
-          type: string
+        summary:
+          type: object
       example:
-        most_recent_date: 2000-01-23T04:56:07.000+00:00
-        dac: dac
-        number_of_profiles: 0
+        summary: {}
         _id: _id
     profileCollectionSummary:
       type: object
