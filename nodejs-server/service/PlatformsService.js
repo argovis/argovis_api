@@ -1,6 +1,7 @@
 'use strict';
 const Profile = require('../models/profile')
 const helpers = require('./helpers')
+const Summary = require('../models/summary');
 
 /**
  * Provides a list of all Argo platform IDs with BGC data.
@@ -9,7 +10,10 @@ const helpers = require('./helpers')
  **/
 exports.platformBGC = function() {
   return new Promise(function(resolve, reject) {
-     reject({"code": 501, "message": "Not implemented"});
+
+    const query = Summary.find({"_id":"argo_bgc"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+
   });
 }
 

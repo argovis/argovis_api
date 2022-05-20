@@ -1,5 +1,6 @@
 'use strict';
-const Profile = require('../models/profile');
+const Summary = require('../models/summary');
+const helpers = require('./helpers')
 
 /**
  * Provides summary data for each data assembly center.
@@ -9,24 +10,8 @@ const Profile = require('../models/profile');
 exports.dacSummary = function() {
   return new Promise(function(resolve, reject) {
 
-    const sortMap = new Map();
-    sortMap.set('data_center', 1)
-    sortMap.set('timestamp', -1)
-
-    let dacsummary = [
-        {'$sort': sortMap}, 
-        {'$group': {'_id': '$data_center','number_of_profiles': {'$sum':1}, 'most_recent_date':{'$first':'$timestamp'}}}  
-    ]
-
-    const query = Profile.aggregate(dacsummary)
-
-    query.exec(function (err, dacs) {
-      if (err){
-        reject({"code": 500, "message": "Server error"});
-        return;
-      }
-      resolve(dacs);
-    })
+    const query = Summary.find({"_id":"dacs"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
