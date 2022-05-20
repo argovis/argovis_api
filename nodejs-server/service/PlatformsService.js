@@ -4,12 +4,15 @@
 /**
  * Provides a list of all Argo platform IDs with BGC data.
  *
- * returns List
+ * returns summary
  **/
 exports.platformBGC = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ "", "" ];
+    examples['application/json'] = {
+  "summary" : { },
+  "_id" : "_id"
+};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
