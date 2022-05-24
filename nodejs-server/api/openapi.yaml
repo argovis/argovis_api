@@ -1274,7 +1274,7 @@ paths:
       tags:
       - drifters
       summary: "Search, reduce and download drifter metadata."
-      operationId: drifterSearch
+      operationId: drifterMetaSearch
       parameters:
       - name: id
         in: query

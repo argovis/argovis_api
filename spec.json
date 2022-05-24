@@ -812,7 +812,7 @@
                "drifters"
             ],
             "summary": "Search, reduce and download drifter metadata.",
-            "operationId": "drifterSearch",
+            "operationId": "drifterMetaSearch",
             "parameters": [
                {
                   "$ref": "#/components/parameters/drifterID"
