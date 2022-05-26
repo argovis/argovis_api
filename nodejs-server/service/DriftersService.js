@@ -35,11 +35,12 @@ exports.drifterMetaSearch = function(id,wmo) {
  * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
  * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
+ * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * id String Unique drifter ID to search for. (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
  * returns List
  **/
-exports.drifterSearch = function(startDate,endDate,polygon,id,wmo) {
+exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) {
   return new Promise(function(resolve, reject) {
 
     if(id && wmo){
