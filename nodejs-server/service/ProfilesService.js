@@ -67,7 +67,7 @@ exports.profile = function(startDate,endDate,polygon,box,center,radius,multipoly
       } 
     }
 
-    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform||woceline)
     if(bailout){
       //request looks huge or malformed, reject it
       reject(bailout)
@@ -173,7 +173,7 @@ exports.profileList = function(startDate,endDate,polygon,box,center,radius,multi
       } 
     }
 
-    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, null, platform)
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, platform||woceline)
     if(bailout){
       //request looks huge or malformed, reject it
       reject(bailout)

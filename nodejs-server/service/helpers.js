@@ -258,8 +258,9 @@ module.exports.box_sanitation = function(box){
   return box
 }
 
-module.exports.request_sanitation = function(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform){
+module.exports.request_sanitation = function(startDate, endDate, polygon, box, center, radius, multipolygon, allowAll){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
+  // allowAll==true allows the request if it isn't malformed; approriate for requests that have an a-priori small scope, like a single ID, platform or WOCE line.
   const geojsonArea = require('@mapbox/geojson-area');
 
   // basic sanity checks
@@ -298,7 +299,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
   }
 
   // data volume limits
-  if(id || platform){
+  if(allowAll){
     // always allow single ID or platform searches at this point
     return false
   }

@@ -83,7 +83,7 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
         return
       } 
     }
-    let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, null, null, multipolygon, id, wmo) // wmo here is a bit kludgy; at time of writing, that argument was intended as Argo platform number, and the sanitation funciton waves through anything with a unique platform number, which is also appropriate for a unique WMO number, but not strictly semantically correct.
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, null, null, multipolygon, id||wmo) 
     if(bailout){
       //request looks huge or malformed, reject it
       reject(bailout)
