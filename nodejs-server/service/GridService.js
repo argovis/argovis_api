@@ -102,7 +102,7 @@ exports.gridselect = function(gridName,presRange,polygon,multipolygon,startDate,
           } 
         }
 
-        let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, null, null, multipolygon, null, null)
+        let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, null, null, multipolygon, null)
         if(bailout){
           //request looks huge, reject it
           reject(bailout)
