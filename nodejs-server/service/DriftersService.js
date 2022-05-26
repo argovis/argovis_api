@@ -1,6 +1,7 @@
 'use strict';
 const Drifter = require('../models/drifter');
-const helpers = require('./helpers')
+const helpers = require('./helpers');
+const geojsonArea = require('@mapbox/geojson-area');
 
 /**
  * Search, reduce and download drifter metadata.
@@ -48,14 +49,8 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
       return
     }
 
-    let metaMatch = {}
     let spacetimeMatch = {}
     let aggPipeline = []
-
-    // construct metadata match
-    if(id){
-      metaMatch['metadata'] = id
-    }
 
     // spacetime match
     /// spacetime sanitation
@@ -74,7 +69,21 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
         return
       }
     }
-    let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, null, null, null, id, wmo) // wmo here is a bit kludgy; at time of writing, that argument was intended as Argo platform number, and the sanitation funciton waves through anything with a unique platform number, which is also appropriate for a unique WMO number, but not strictly semantically correct.
+    if(multipolygon){
+      try {
+        multipolygon = JSON.parse(multipolygon);
+      } catch (e) {
+        reject({"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."});
+        return
+      }
+      multipolygon = multipolygon.map(function(x){return helpers.polygon_sanitation(JSON.stringify(x))})
+      if(multipolygon.some(p => p.hasOwnProperty('code'))){
+        multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
+        reject(multipolygon[0])
+        return
+      } 
+    }
+    let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, null, null, multipolygon, id, wmo) // wmo here is a bit kludgy; at time of writing, that argument was intended as Argo platform number, and the sanitation funciton waves through anything with a unique platform number, which is also appropriate for a unique WMO number, but not strictly semantically correct.
     if(bailout){
       //request looks huge or malformed, reject it
       reject(bailout)
@@ -91,7 +100,20 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
     if(polygon) {
       spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: polygon}}
     }
+    if(multipolygon){
+      multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      spacetimeMatch['geolocation'] = {$geoWithin: {$geometry: multipolygon[0]}}
+    }
+    aggPipeline.push({$match: spacetimeMatch})
+    // zoom in on subsequent polygon regions; will be unindexed.
+    if(multipolygon && multipolygon.length > 1){
+      for(let i=1; i<multipolygon.length; i++){
+        aggPipeline.push( {$match: {"geolocation": {$geoWithin: {$geometry: multipolygon[i]}}}} )
+      }
+    }
+    aggPipeline.push({$sort: {timestamp:-1}})
 
+    // construct metadata search, and prefix to aggregation pipeline; wmo requires a table cross reference. $lookup is an option, but this is faster:
     if(wmo){
       let query = Drifter['drifterMeta'].aggregate([{$match: {'WMO': wmo}}])
       query.exec(function (err, driftermeta) {
@@ -101,19 +123,19 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
         }
         let ids = new Set(driftermeta.map(x => x['_id']))
 
-        aggPipeline.push({$match:{'metadata':{$in:Array.from(ids)}}})
-        aggPipeline.push({$match: spacetimeMatch})
-        aggPipeline.push({$sort: {timestamp:-1}})
+        aggPipeline.unshift({$match:{'metadata':{$in:Array.from(ids)}}}) 
         query = Drifter['drifters'].aggregate(aggPipeline);
-        query.exec(helpers.queryCallback.bind(null,null, resolve, reject))  
+        query.exec(helpers.queryCallback.bind(null,null, resolve, reject)) 
       })
-    } else {
-      aggPipeline.push({$match: metaMatch})
-      aggPipeline.push({$match: spacetimeMatch})
-      aggPipeline.push({$sort: {timestamp:-1}})    
+    } else if(id) {
+      aggPipeline.unshift({$match: {'metadata': id}})
       let query = Drifter['drifters'].aggregate(aggPipeline);
-      query.exec(helpers.queryCallback.bind(null,null, resolve, reject))  
+      query.exec(helpers.queryCallback.bind(null,null, resolve, reject)) 
+    } else {
+      let query = Drifter['drifters'].aggregate(aggPipeline);
+      query.exec(helpers.queryCallback.bind(null,null, resolve, reject)) 
     }
+
 
   });
 }
