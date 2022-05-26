@@ -89,7 +89,7 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
     var examples = {};
     examples['application/json'] = [ {
   "metadata" : "metadata",
-  "data" : [ 6.027456183070403, 6.027456183070403 ],
+  "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "geolocation" : {
@@ -99,7 +99,7 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
   "metadata" : "metadata",
-  "data" : [ 6.027456183070403, 6.027456183070403 ],
+  "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "geolocation" : {
