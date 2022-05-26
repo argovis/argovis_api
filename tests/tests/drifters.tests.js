@@ -24,44 +24,33 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });  
 
+    describe("GET /drifters/vocabulary", function () {
+      it("fetch possible drifter WMOs", async function () {
+        const response = await request.get("/drifters/vocabulary?parameter=wmo").set({'x-argokey': 'developer'});
+        expect(response.body).to.have.members([1300915, 5500930])
+      });
+    });     
 
-    // describe("GET /grids", function () {
-    //   it("fetch gridded data", async function () {
-    //     const response = await request.get("/grids?gridName=rgTempTotal&polygon=[[20,-65],[20,-64],[22,-64],[22,-65],[20,-65]]&startDate=2000-01-01T00:00:00Z&endDate=2020-01-01T00:00:00Z").set({'x-argokey': 'developer'});
-    //     response.body.shift() // first element is metadata, drop before cheking rest of schema
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/grids'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });
+    describe("GET /drifters", function () {
+      it("fetch drifter data with a polygon filter", async function () {
+        const response = await request.get("/drifters?polygon=[[-18,14],[-17,14],[-17,15],[-18,15],[-18,14]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(10);
+      });
+    }); 
 
-    // describe("GET /grids", function () {
-    //   it("complain about grid name typo", async function () {
-    //     const response = await request.get("/grids?gridName=rgTempTota&polygon=[[20,-65],[20,-64],[22,-64],[22,-65],[20,-65]]&startDate=2000-01-01T00:00:00Z&endDate=2020-01-01T00:00:00Z").set({'x-argokey': 'developer'});  
-    //     expect(response.status).to.eql(400);
-    //   });
-    // }); 
+    describe("GET /drifters", function () {
+      it("fetch drifter data with a multipolygon filter", async function () {
+        const response = await request.get("/drifters?multipolygon=[[[-18,14],[-17,14],[-17,15],[-18,15],[-18,14]],[[-18,14],[-17,14],[-17,14.8],[-18,14.8],[-18,14]]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(6);
+      });
+    }); 
 
-    // describe("GET /grids", function () {
-    //   it("fetch gridded data with pressure bracket", async function () {
-    //     const response = await request.get("/grids?gridName=rgTempTotal&polygon=[[20,-65],[20,-64],[22,-64],[22,-65],[20,-65]]&startDate=2000-01-01T00:00:00Z&endDate=2020-01-01T00:00:00Z&presRange=999,2000").set({'x-argokey': 'developer'});
-    //     response.body.shift() // first element is metadata, drop before cheking rest of schema
-    //     expect(response.body[0]['d']).to.eql( [ 0.621, 0.584, 0.549,  0.52, 0.489, 0.464, 0.441, 0.415, 0.383, 0.356, 0.309, 0.265, 0.219, 0.175, 0.128 ]);
-    //   });
-    // });
-
-    // describe("GET /grids", function () {
-    //   it("fetch gridded data in overlap region between two polygons", async function () {
-    //     const response = await request.get("/grids?gridName=rgTempTotal&multipolygon=[[[20,-60],[30,-60],[30,-70],[20,-70],[20,-60]],[[20,-64],[22,-64],[22,-65],[20,-65],[20,-64]]]&startDate=2004-01-01T00:00:00Z&endDate=2004-02-01T00:00:00Z").set({'x-argokey': 'developer'});
-    //     response.body.shift() // first element is metadata, drop before cheking rest of schema
-    //     expect(response.body.length).to.eql(2);
-    //   });
-    // });
-
-    // describe("GET /grids", function () {
-    //   it("reject a huge request", async function () {
-    //     const response = await request.get("/grids?gridName=rgTempTotal&startDate=2020-01-01T00:00:00Z&endDate=2021-01-01T00:00:00Z&polygon=[[0,-30],[60,-30],[60,30],[0,30],[0,-30]]").set({'x-argokey': 'developer'});
-    //     expect(response.status).to.eql(413);
-    //   });
-    // });
+    describe("GET /drifters", function () {
+      it("fetch drifter data via a cross reference with drifter metadata", async function () {
+        const response = await request.get("/drifters?wmo=5500930").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(10);
+      });
+    }); 
   }
 })
 
