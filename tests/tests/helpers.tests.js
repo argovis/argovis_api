@@ -99,7 +99,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
       });
     });
 
@@ -114,7 +114,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
       });
     }); 
 
@@ -129,7 +129,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.have.property('code', 413) 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.have.property('code', 413) 
       });
     });
 
@@ -144,7 +144,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
       });
     });
 
@@ -159,12 +159,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = 'test-id'
         platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
       });
     }); 
 
     describe("request_sanitation", function () {
-      it("allows a 20 degree box near the equator for 6 months if an ID is also present", async function () {
+      it("allows a 20 degree box near the equator for 6 months if a platform is also present", async function () {
         startDate = new Date('2020-01-01T00:00:00Z')
         endDate = new Date('2020-07-01T00:00:00Z')
         polygon = null
@@ -174,7 +174,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         multipolygon = null
         id = null
         platform = 'test-platform'
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
       });
     });   
   }
@@ -190,7 +190,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
       multipolygon = null
       id = null
       platform = null
-      expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id, platform)).to.be.false 
+      expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
     });
   }); 
 })
