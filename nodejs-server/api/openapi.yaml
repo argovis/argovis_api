@@ -6,7 +6,7 @@ info:
   contact:
     name: Argovis Collaboration
     url: https://argovis.colorado.edu/
-    email: tbd@example.com
+    email: argovis@colorado.edu
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -37,6 +37,8 @@ tags:
   description: Platform metadata
 - name: dacs
   description: Summary and metadata for data assembly centers represented in the dataset
+- name: drifters
+  description: Data and metadata for drifters.
 paths:
   /ar:
     get:
@@ -1178,6 +1180,208 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Dacs
+  /drifters:
+    get:
+      tags:
+      - drifters
+      summary: "Search, reduce and download drifter data."
+      operationId: drifterSearch
+      parameters:
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: id
+        in: query
+        description: Unique drifter ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "101143"
+      - name: wmo
+        in: query
+        description: World Meteorological Organization identification number
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 1300915
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Drifter'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Drifters
+  /drifters/meta:
+    get:
+      tags:
+      - drifters
+      summary: "Search, reduce and download drifter metadata."
+      operationId: drifterMetaSearch
+      parameters:
+      - name: id
+        in: query
+        description: Unique drifter ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "101143"
+      - name: wmo
+        in: query
+        description: World Meteorological Organization identification number
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 1300915
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DrifterMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Drifters
+  /drifters/vocabulary:
+    get:
+      tags:
+      - drifters
+      summary: List all possible values for certain drifter query string parameters
+      operationId: drifterVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: /drifters query string parameter to summarize possible values
+          of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - wmo
+          - id
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Drifters
 components:
   schemas:
     arShapeSchema:
@@ -1961,6 +2165,172 @@ components:
         - data_keys_source
         source_url: source_url
         date_updated_source: 2000-01-23T04:56:07.000+00:00
+    drifter_source_info:
+      required:
+      - source
+      type: object
+      properties:
+        source:
+          type: array
+          items:
+            type: string
+        source_url:
+          type: string
+      example:
+        source:
+        - source
+        - source
+        source_url: source_url
+    Drifter:
+      required:
+      - _id
+      - basin
+      - data
+      - geolocation
+      - metadata
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        metadata:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+      example:
+        metadata: metadata
+        data:
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        _id: _id
+        basin: 0.80082819046101150206595775671303272247314453125
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    DrifterMeta:
+      required:
+      - WMO
+      - _id
+      - data_keys
+      - data_type
+      - date_updated_argovis
+      - deploy_date
+      - deploy_lat
+      - deploy_lon
+      - drogue_lost_date
+      - end_date
+      - end_lat
+      - end_lon
+      - expno
+      - long_name
+      - rowsize
+      - source_info
+      - typebuoy
+      - typedeath
+      - units
+      type: object
+      properties:
+        _id:
+          type: string
+        rowsize:
+          type: number
+        WMO:
+          type: number
+        expno:
+          type: number
+        deploy_date:
+          type: string
+          format: date-time
+        deploy_lon:
+          type: number
+        deploy_lat:
+          type: number
+        end_date:
+          type: string
+          format: date-time
+        end_lon:
+          type: number
+        end_lat:
+          type: number
+        drogue_lost_date:
+          type: string
+          format: date-time
+        typedeath:
+          type: number
+        typebuoy:
+          type: string
+        data_type:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/drifter_source_info'
+        data_keys:
+          type: array
+          items:
+            type: string
+        units:
+          type: array
+          items:
+            type: string
+            nullable: true
+        long_name:
+          type: array
+          items:
+            type: string
+      example:
+        end_date: 2000-01-23T04:56:07.000+00:00
+        typebuoy: typebuoy
+        end_lat: 7.061401241503109105224211816675961017608642578125
+        deploy_lon: 5.962133916683182377482808078639209270477294921875
+        drogue_lost_date: 2000-01-23T04:56:07.000+00:00
+        rowsize: 0.80082819046101150206595775671303272247314453125
+        units:
+        - units
+        - units
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        typedeath: 9.301444243932575517419536481611430644989013671875
+        long_name:
+        - long_name
+        - long_name
+        deploy_date: 2000-01-23T04:56:07.000+00:00
+        deploy_lat: 5.63737665663332876420099637471139430999755859375
+        WMO: 6.02745618307040320615897144307382404804229736328125
+        data_type: data_type
+        expno: 1.46581298050294517310021547018550336360931396484375
+        data_keys:
+        - data_keys
+        - data_keys
+        _id: _id
+        source_info:
+        - source:
+          - source
+          - source
+          source_url: source_url
+        - source:
+          - source
+          - source
+          source_url: source_url
+        end_lon: 2.3021358869347654518833223846741020679473876953125
     errorResponse:
       required:
       - code
@@ -2380,3 +2750,23 @@ components:
         - 1560
         - 1680
         - 1800
+    drifterID:
+      name: id
+      in: query
+      description: Unique drifter ID to search for.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: "101143"
+    wmo:
+      name: wmo
+      in: query
+      description: World Meteorological Organization identification number
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 1300915

@@ -5,7 +5,7 @@
       "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
       "contact": {
          "name": "Argovis Collaboration",
-         "email": "tbd@example.com",
+         "email": "argovis@colorado.edu",
          "url": "https://argovis.colorado.edu/"
       },
       "license": {
@@ -61,6 +61,10 @@
       {
          "name": "dacs",
          "description": "Summary and metadata for data assembly centers represented in the dataset"
+      },
+      {
+         "name": "drifters",
+         "description": "Data and metadata for drifters."
       }
    ],
    "paths": {
@@ -736,6 +740,145 @@
                      "application/json": {
                         "schema": {
                            "$ref": "#/components/schemas/summary"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/drifters": {
+         "get": {
+            "tags": [
+               "drifters"
+            ],
+            "summary": "Search, reduce and download drifter data.",
+            "operationId": "drifterSearch",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/drifterID"
+               },
+               {
+                  "$ref": "#/components/parameters/wmo"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/Drifter"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/drifters/meta": {
+         "get": {
+            "tags": [
+               "drifters"
+            ],
+            "summary": "Search, reduce and download drifter metadata.",
+            "operationId": "drifterMetaSearch",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/drifterID"
+               },
+               {
+                  "$ref": "#/components/parameters/wmo"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/DrifterMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/drifters/vocabulary": {
+         "get": {
+            "tags": [
+               "drifters"
+            ],
+            "summary": "List all possible values for certain drifter query string parameters",
+            "operationId": "drifterVocab",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "parameter",
+                  "required": true,
+                  "description": "/drifters query string parameter to summarize possible values of.",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["wmo", "id"]
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
                         }
                      }
                   }
@@ -1515,6 +1658,132 @@
                }
             }
          },
+         "drifter_source_info": {
+            "type": "object",
+            "required": ["source"],
+            "properties": {
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "source_url": {
+                  "type": "string"
+               }
+            }
+         },
+         "Drifter": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp", "data"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "metadata": {
+                  "type": "string"
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "basin": {
+                  "type": "number"
+               },
+               "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "data": {
+                  "type": "array",
+                  "items": {
+                     "type": "array",
+                     "items": {
+                        "type": "number"
+                     }
+                  }
+               }
+            }
+         },
+         "DrifterMeta": {
+            "type": "object",
+            "required": ["_id", "rowsize", "WMO", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "data_type", "date_updated_argovis", "source_info", "data_keys", "units", "long_name"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "rowsize": {
+                  "type": "number"
+               },
+               "WMO": {
+                  "type": "number"
+               },
+               "expno": {
+                  "type": "number"
+               },
+               "deploy_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "deploy_lon": {
+                  "type": "number"
+               },
+               "deploy_lat": {
+                  "type": "number"
+               },
+               "end_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "end_lon": {
+                  "type": "number"
+               },
+               "end_lat": {
+                  "type": "number"
+               },
+               "drogue_lost_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "typedeath": {
+                  "type": "number"
+               },
+               "typebuoy": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source_info": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/drifter_source_info"
+                  }
+               },
+               "data_keys": {
+                  "type": "array",
+                  "items":{
+                     "type": "string"
+                  }
+               },
+               "units": {
+                  "type": "array",
+                  "items":{
+                     "type": "string",
+                     "nullable": true
+                  }
+               },
+               "long_name": {
+                  "type": "array",
+                  "items":{
+                     "type": "string"
+                  }
+               }
+            }
+         },
          "errorResponse": {
             "type": "object",
             "required": [
@@ -1824,6 +2093,24 @@
                   1680,
                   1800
                ]
+            }
+         },
+         "drifterID": {
+            "in": "query",
+            "name": "id",
+            "description": "Unique drifter ID to search for.",
+            "schema": {
+               "type": "string",
+               "example": "101143"
+            }
+         },
+         "wmo": {
+            "in": "query",
+            "name": "wmo",
+            "description": "World Meteorological Organization identification number",
+            "schema": {
+               "type": "number",
+               "example": 1300915
             }
          }
       },
