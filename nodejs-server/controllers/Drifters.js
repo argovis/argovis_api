@@ -7,6 +7,9 @@ module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, i
   Drifters.drifterMetaSearch(id, wmo)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -17,6 +20,9 @@ module.exports.drifterSearch = function drifterSearch (req, res, next, startDate
   Drifters.drifterSearch(startDate, endDate, polygon, id, wmo)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -27,6 +33,9 @@ module.exports.drifterVocab = function drifterVocab (req, res, next, parameter) 
   Drifters.drifterVocab(parameter)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);

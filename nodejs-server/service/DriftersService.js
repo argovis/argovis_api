@@ -126,13 +126,18 @@ exports.drifterSearch = function(startDate,endDate,polygon,id,wmo) {
  **/
 exports.drifterVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    let key = ''
+    if(parameter == 'wmo') key = 'WMO'
+    else if(parameter == 'id') key = '_id'
+
+    Drifter['drifterMeta'].find().distinct(key, function (err, vocab) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+
+      resolve(vocab)
+    })
   });
 }
 
