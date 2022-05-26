@@ -6,7 +6,7 @@ info:
   contact:
     name: Argovis Collaboration
     url: https://argovis.colorado.edu/
-    email: tbd@example.com
+    email: argovis@colorado.edu
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -1222,6 +1222,17 @@ paths:
         schema:
           type: string
           example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
       - name: id
         in: query
         description: Unique drifter ID to search for.

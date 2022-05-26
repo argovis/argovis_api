@@ -5,7 +5,7 @@
       "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
       "contact": {
          "name": "Argovis Collaboration",
-         "email": "tbd@example.com",
+         "email": "argovis@colorado.edu",
          "url": "https://argovis.colorado.edu/"
       },
       "license": {
@@ -772,6 +772,9 @@
                },
                {
                   "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
                },
                {
                   "$ref": "#/components/parameters/drifterID"
