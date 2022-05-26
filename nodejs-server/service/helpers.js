@@ -263,8 +263,8 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
   const geojsonArea = require('@mapbox/geojson-area');
 
   // basic sanity checks
-  if((center && box) || (center && polygon) || (box && polygon)){
-    return {"code": 400, "message": "Please request only one of box, polygon or center."} 
+  if((center && box) || (center && polygon) || (box && polygon || (multipolygon && polygon) || (multipolygon && box) || (multipolygon && center))){
+    return {"code": 400, "message": "Please request only one of box, polygon, center or multipolygon."} 
   }
   if((center && !radius) || (!center && radius)){
     return {"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."}
@@ -311,7 +311,6 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
   let dayspan = Math.round(Math.abs((endDate - startDate) / (24*60*60*1000) )); // n days of request
   let geospan = 41252.96125*0.7 // square degrees covered by earth's ocean, equivalent to the entire globe for our purposes
   if(polygon){
-    console.log(polygon, geojsonArea.geometry(polygon))
     geospan = geojsonArea.geometry(polygon) / 13000000000 // 1 sq degree is about 13B sq meters
   } else if(box){
     geospan = Math.abs(box[0][0] - box[1][0])*Math.abs(box[0][1] - box[1][1])
@@ -321,7 +320,6 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     let areas = multipolygon.map(x => geojsonArea.geometry(x) / 13000000000)
     geospan = Math.min(areas)
   }
-  console.log(dayspan, geospan, dayspan*geospan)
   if(dayspan*geospan > 50000){
     return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific profile IDs or platform IDs, where applicable."};
   }
