@@ -136,7 +136,6 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
       query.exec(helpers.queryCallback.bind(null,null, resolve, reject)) 
     }
 
-
   });
 }
 
