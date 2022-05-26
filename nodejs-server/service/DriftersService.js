@@ -117,3 +117,22 @@ exports.drifterSearch = function(startDate,endDate,polygon,id,wmo) {
   });
 }
 
+
+/**
+ * List all possible values for certain drifter query string parameters
+ *
+ * parameter String /drifters query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.drifterVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+

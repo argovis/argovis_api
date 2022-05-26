@@ -22,3 +22,13 @@ module.exports.drifterSearch = function drifterSearch (req, res, next, startDate
       utils.writeJson(res, response);
     });
 };
+
+module.exports.drifterVocab = function drifterVocab (req, res, next, parameter) {
+  Drifters.drifterVocab(parameter)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
