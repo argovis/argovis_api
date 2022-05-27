@@ -82,9 +82,10 @@ exports.drifterMetaSearch = function(id,wmo) {
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * id String Unique drifter ID to search for. (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
+ * compression String Data compression strategy to apply. (optional)
  * returns List
  **/
-exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) {
+exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo,compression) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
