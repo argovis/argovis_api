@@ -16,8 +16,8 @@ module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, i
     });
 };
 
-module.exports.drifterSearch = function drifterSearch (req, res, next, startDate, endDate, polygon, multipolygon, id, wmo) {
-  Drifters.drifterSearch(startDate, endDate, polygon, multipolygon, id, wmo)
+module.exports.drifterSearch = function drifterSearch (req, res, next, startDate, endDate, polygon, multipolygon, id, wmo, compression) {
+  Drifters.drifterSearch(startDate, endDate, polygon, multipolygon, id, wmo, compression)
     .then(function (response) {
       utils.writeJson(res, response);
     },
