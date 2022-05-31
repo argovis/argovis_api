@@ -3,6 +3,23 @@ const Drifter = require('../models/drifter');
 const helpers = require('./helpers');
 const geojsonArea = require('@mapbox/geojson-area');
 
+const inflateDrifters = function(data){
+  // given an array of drifter data records,
+  // replace the data key in the data records with an object keyed by variable name.
+
+  let dk = ["ve", "vn", "err_lon", "err_lat", "err_ve", "err_vn", "gap", "sst", "sst1", "sst2", "err_sst", "err_sst1", "err_sst2", "flg_sst", "flg_sst1", "flg_sst2"]
+
+  for(let i=0; i<data.length; i++){
+    let d = {}
+    for(let j=0; j<data[i].data[0].length; j++){
+      d[dk[j]] = data[i].data[0][j]
+    }
+    data[i].data[0] = d
+  }
+
+  return data
+}
+
 /**
  * Search, reduce and download drifter metadata.
  *
@@ -39,9 +56,10 @@ exports.drifterMetaSearch = function(id,wmo) {
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * id String Unique drifter ID to search for. (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
+ * compression String Data compression strategy to apply. (optional)
  * returns List
  **/
-exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) {
+exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo,compression) {
   return new Promise(function(resolve, reject) {
 
     if(id && wmo){
@@ -113,7 +131,7 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
     }
     aggPipeline.push({$sort: {timestamp:-1}})
 
-    // construct metadata search, and prefix to aggregation pipeline; wmo requires a table cross reference. $lookup is an option, but this is faster:
+    // look up metadata first if searching by wmo and then drifters
     if(wmo){
       let query = Drifter['drifterMeta'].aggregate([{$match: {'WMO': wmo}}])
       query.exec(function (err, driftermeta) {
@@ -125,15 +143,27 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,id,wmo) 
 
         aggPipeline.unshift({$match:{'metadata':{$in:Array.from(ids)}}}) 
         query = Drifter['drifters'].aggregate(aggPipeline);
-        query.exec(helpers.queryCallback.bind(null,null, resolve, reject)) 
+        if(compression){
+          query.exec(helpers.queryCallback.bind(null,null,resolve, reject)) 
+        } else {
+          query.exec(helpers.queryCallback.bind(null,inflateDrifters, resolve, reject)) 
+        }
       })
     } else if(id) {
       aggPipeline.unshift({$match: {'metadata': id}})
       let query = Drifter['drifters'].aggregate(aggPipeline);
-      query.exec(helpers.queryCallback.bind(null,null, resolve, reject)) 
+      if(compression){
+        query.exec(helpers.queryCallback.bind(null,null,resolve, reject)) 
+      } else {
+        query.exec(helpers.queryCallback.bind(null,inflateDrifters, resolve, reject)) 
+      }
     } else {
       let query = Drifter['drifters'].aggregate(aggPipeline);
-      query.exec(helpers.queryCallback.bind(null,null, resolve, reject)) 
+      if(compression){
+        query.exec(helpers.queryCallback.bind(null,null,resolve, reject)) 
+      } else {
+        query.exec(helpers.queryCallback.bind(null,inflateDrifters, resolve, reject)) 
+      }
     }
 
   });

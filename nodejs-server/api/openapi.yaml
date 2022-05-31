@@ -1251,6 +1251,15 @@ paths:
         schema:
           type: number
           example: 1300915
+      - name: compression
+        in: query
+        description: Data compression strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: basic-minification
       responses:
         "200":
           description: OK
