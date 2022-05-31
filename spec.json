@@ -781,6 +781,9 @@
                },
                {
                   "$ref": "#/components/parameters/wmo"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
                }
             ],
             "responses": {
