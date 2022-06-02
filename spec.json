@@ -427,7 +427,7 @@
                   "$ref": "#/components/parameters/profileID"
                },
                {
-                  "$ref": "#/components/parameters/profilePlatform"
+                  "$ref": "#/components/parameters/platformID"
                },
                {
                   "$ref": "#/components/parameters/presRange"
@@ -513,7 +513,7 @@
                   "$ref": "#/components/parameters/woceline" 
                },
                {
-                  "$ref": "#/components/parameters/profilePlatform"
+                  "$ref": "#/components/parameters/platformID"
                },
                {
                   "$ref": "#/components/parameters/presRange"
@@ -777,10 +777,19 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
-                  "$ref": "#/components/parameters/drifterID"
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/platformID"
                },
                {
                   "$ref": "#/components/parameters/wmo"
+               },
+               {
+                  "$ref": "#/components/parameters/drifterID"
                },
                {
                   "$ref": "#/components/parameters/compression"
@@ -821,7 +830,7 @@
             "operationId": "drifterMetaSearch",
             "parameters": [
                {
-                  "$ref": "#/components/parameters/drifterID"
+                  "$ref": "#/components/parameters/platformID"
                },
                {
                   "$ref": "#/components/parameters/wmo"
@@ -1938,7 +1947,7 @@
                "example": "4902911_0"
             }
          },
-         "profilePlatform": {
+         "platformID": {
             "in": "query",
             "name": "platform",
             "description": "Unique platform ID to search for.",
@@ -2098,15 +2107,6 @@
                ]
             }
          },
-         "drifterID": {
-            "in": "query",
-            "name": "id",
-            "description": "Unique drifter ID to search for.",
-            "schema": {
-               "type": "string",
-               "example": "101143"
-            }
-         },
          "wmo": {
             "in": "query",
             "name": "wmo",
@@ -2114,6 +2114,15 @@
             "schema": {
                "type": "number",
                "example": 1300915
+            }
+         },
+         "drifterID": {
+            "in": "query",
+            "name": "id",
+            "description": "ID of individual drifter measurement, formatted [platform_id]_[measurement number starting from 0]",
+            "schema": {
+               "type": "string",
+               "example": "101648_0"
             }
          }
       },
