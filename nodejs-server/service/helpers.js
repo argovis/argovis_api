@@ -5,6 +5,7 @@ module.exports.queryCallback = function(postprocess, resolve, reject, err, data)
 	// <postprocess> == optional function to mutate <data> before return
 	// <resolve> and <reject> == resolve and reject functions from a promise 
     if (err){
+        console.log(err)
         reject({"code": 500, "message": "Server error"});
         return;
     }

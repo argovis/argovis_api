@@ -176,7 +176,6 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,r
         aggPipeline = aggPipeline.concat(proxMatch) // mongo requires this to come first if present
         aggPipeline = aggPipeline.concat(metadataMatch)
         aggPipeline = aggPipeline.concat(spacetimeMatch)
-
         let query = Drifter['drifters'].aggregate(aggPipeline);
         if(compression){
           query.exec(helpers.queryCallback.bind(null,null,resolve, reject)) 
