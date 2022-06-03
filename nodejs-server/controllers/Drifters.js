@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Drifters = require('../service/DriftersService');
 
-module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, id, wmo) {
-  Drifters.drifterMetaSearch(id, wmo)
+module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, platform, wmo) {
+  Drifters.drifterMetaSearch(platform, wmo)
     .then(function (response) {
       utils.writeJson(res, response);
     },
@@ -16,8 +16,8 @@ module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, i
     });
 };
 
-module.exports.drifterSearch = function drifterSearch (req, res, next, startDate, endDate, polygon, multipolygon, id, wmo, compression) {
-  Drifters.drifterSearch(startDate, endDate, polygon, multipolygon, id, wmo, compression)
+module.exports.drifterSearch = function drifterSearch (req, res, next, startDate, endDate, polygon, multipolygon, center, radius, platform, wmo, id, compression) {
+  Drifters.drifterSearch(startDate, endDate, polygon, multipolygon, center, radius, platform, wmo, id, compression)
     .then(function (response) {
       utils.writeJson(res, response);
     },

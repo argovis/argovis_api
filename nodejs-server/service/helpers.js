@@ -268,7 +268,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     return {"code": 400, "message": "Please request only one of box, polygon, center or multipolygon."} 
   }
   if((center && !radius) || (!center && radius)){
-    return {"code": 400, "message": "Please specify both radius and center to filter for profiles less than <radius> km from <center>."}
+    return {"code": 400, "message": "Please specify both radius and center to filter for data less than <radius> km from <center>."}
   }
 
   // geo size limits - mongo doesn't like huge geoWithins

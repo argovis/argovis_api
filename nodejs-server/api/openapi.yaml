@@ -1233,15 +1233,40 @@ paths:
         schema:
           type: string
           example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
-      - name: id
+      - name: center
         in: query
-        description: Unique drifter ID to search for.
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: "101143"
+          example: "4902911"
       - name: wmo
         in: query
         description: World Meteorological Organization identification number
@@ -1251,6 +1276,16 @@ paths:
         schema:
           type: number
           example: 1300915
+      - name: id
+        in: query
+        description: "ID of individual drifter measurement, formatted [platform_id]_[measurement\
+          \ number starting from 0]"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 101648_0
       - name: compression
         in: query
         description: Data compression strategy to apply.
@@ -1296,15 +1331,15 @@ paths:
       summary: "Search, reduce and download drifter metadata."
       operationId: drifterMetaSearch
       parameters:
-      - name: id
+      - name: platform
         in: query
-        description: Unique drifter ID to search for.
+        description: Unique platform ID to search for.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: "101143"
+          example: "4902911"
       - name: wmo
         in: query
         description: World Meteorological Organization identification number
@@ -2592,7 +2627,7 @@ components:
       schema:
         type: string
         example: 4902911_0
-    profilePlatform:
+    platformID:
       name: platform
       in: query
       description: Unique platform ID to search for.
@@ -2759,16 +2794,6 @@ components:
         - 1560
         - 1680
         - 1800
-    drifterID:
-      name: id
-      in: query
-      description: Unique drifter ID to search for.
-      required: false
-      style: form
-      explode: true
-      schema:
-        type: string
-        example: "101143"
     wmo:
       name: wmo
       in: query
@@ -2779,3 +2804,14 @@ components:
       schema:
         type: number
         example: 1300915
+    drifterID:
+      name: id
+      in: query
+      description: "ID of individual drifter measurement, formatted [platform_id]_[measurement\
+        \ number starting from 0]"
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: 101648_0
