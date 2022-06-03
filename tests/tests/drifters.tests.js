@@ -51,6 +51,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.length).to.eql(10);
       });
     }); 
+
+    describe("GET /drifters", function () {
+      it("fetch proximate drifter data", async function () {
+        const response = await request.get("/drifters?center=-17.743450164794922,14.746769905090332&radius=100&startDate=2012-03-15T00:00:00Z&endDate=2012-03-16T00:00:00Z").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3);
+      });
+    });     
   }
 })
 
