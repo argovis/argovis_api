@@ -64,7 +64,7 @@ exports.drifterMetaSearch = function(platform,wmo) {
  **/
 exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,radius,platform,wmo,id,compression) {
   return new Promise(function(resolve, reject) {
-
+    
     let spacetimeMatch = []
     let proxMatch = []
     let metadataMatch = []

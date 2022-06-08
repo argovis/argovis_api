@@ -1687,12 +1687,12 @@
          },
          "Drifter": {
             "type": "object",
-            "required": ["_id", "metadata", "geolocation", "basin", "timestamp", "data"],
+            "required": ["_id", "platform", "geolocation", "basin", "timestamp", "data"],
             "properties": {
                "_id": {
                   "type": "string"
                },
-               "metadata": {
+               "platform": {
                   "type": "string"
                },
                "geolocation": {
