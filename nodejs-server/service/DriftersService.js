@@ -143,9 +143,15 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,r
 
     /// metadata match contruction
     if(platform || id){
-      metadataMatch[0] = {$match: {'platform': platform, '_id': id}}
+      metadataMatch[0] = {$match: {}}
+      if(platform){
+        metadataMatch[0]['$match']['platform'] = platform
+      }
+      if(id){
+        metadataMatch[0]['$match']['_id'] = id
+      }
     }
-
+    console.log(metadataMatch)
     /// foreign table match construction
     if(wmo){
       foreignMatch[0] = {$match: {'WMO': wmo}}
