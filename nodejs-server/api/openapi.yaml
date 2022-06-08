@@ -2231,13 +2231,13 @@ components:
       - basin
       - data
       - geolocation
-      - metadata
+      - platform
       - timestamp
       type: object
       properties:
         _id:
           type: string
-        metadata:
+        platform:
           type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
@@ -2253,7 +2253,6 @@ components:
             items:
               type: number
       example:
-        metadata: metadata
         data:
         - - 6.02745618307040320615897144307382404804229736328125
           - 6.02745618307040320615897144307382404804229736328125
@@ -2261,6 +2260,7 @@ components:
           - 6.02745618307040320615897144307382404804229736328125
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
+        platform: platform
         geolocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
