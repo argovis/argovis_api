@@ -143,7 +143,13 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,r
 
     /// metadata match contruction
     if(platform || id){
-      metadataMatch[0] = {$match: {'metadata': platform, '_id': id}}
+      metadataMatch[0] = {$match: {}}
+      if(platform){
+        metadataMatch[0]['$match']['platform'] = platform
+      }
+      if(id){
+        metadataMatch[0]['$match']['_id'] = id
+      }
     }
 
     /// foreign table match construction
@@ -162,7 +168,7 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,r
 
         aggPipeline = aggPipeline.concat(proxMatch) // mongo requires this to come first if present
         aggPipeline = aggPipeline.concat(metadataMatch)
-        aggPipeline.push({$match:{'metadata':{$in:Array.from(platforms)}}})
+        aggPipeline.push({$match:{'platform':{$in:Array.from(platforms)}}})
         aggPipeline = aggPipeline.concat(spacetimeMatch)
 
         query = Drifter['drifters'].aggregate(aggPipeline);

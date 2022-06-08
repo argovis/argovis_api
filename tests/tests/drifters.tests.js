@@ -57,6 +57,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/drifters?center=-17.743450164794922,14.746769905090332&radius=100&startDate=2012-03-15T00:00:00Z&endDate=2012-03-16T00:00:00Z").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3);
       });
+    }); 
+
+    describe("GET /drifters", function () {
+      it("fetch drifter data by platform id", async function () {
+        const response = await request.get("/drifters?platform=101143").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(10);
+      });
+    }); 
+
+    describe("GET /drifters", function () {
+      it("fetch drifter data by drifter id", async function () {
+        const response = await request.get("/drifters?id=101143_0").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
     });     
   }
 })
