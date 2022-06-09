@@ -33,7 +33,7 @@ exports.drifterMetaSearch = function(platform,wmo) {
     let metaMatch = {}
 
     if(platform){
-      metaMatch['_id'] = id
+      metaMatch['_id'] = platform
     }
 
     if(wmo){
