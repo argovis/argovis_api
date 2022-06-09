@@ -1396,7 +1396,7 @@ paths:
           type: string
           enum:
           - wmo
-          - id
+          - platform
       responses:
         "200":
           description: OK
