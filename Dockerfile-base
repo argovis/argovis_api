@@ -6,5 +6,5 @@ RUN mkdir /app/npmlogs && chown -R 1000660000 /app/npmlogs
 COPY nodejs-server/package.json .
 RUN npm install
 RUN apt-get update -y
-#RUN apt-get install -y zlib1g/stable-security subversion/stable-security openssl/stable-security ldap-utils/stable-security
+RUN apt-get install -y openssl/stable-security
 
