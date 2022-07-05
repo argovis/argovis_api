@@ -1,5 +1,5 @@
 'use strict';
-const tcTraj = require('../models/tcTraj');
+const tc = require('../models/tc');
 const moment = require('moment');
 const helpers = require('./helpers')
 
@@ -18,32 +18,29 @@ const helpers = require('./helpers')
  **/
 exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radius,name) {
   return new Promise(function(resolve, reject) {
-    const TRAJ_GROUP = { _id: '$stormName'}    
-    const TRAJ_PROJ = { 
-                        _id: 1,
-                        name: 1,
-                        year: 1,
-                        stormName: 1,
-                      }
 
-    let agg = [ {$addFields: {
-                    stormName: {
-                            $concat: [
-                                '$name', '-',
-                                {$toString: '$year'}
-                            ]
-                    }
-                }},
-                {$match: {stormName: {$exists: true, $ne: null}}},
-                {$group: TRAJ_GROUP},
-                {$project: TRAJ_PROJ}
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
 
-              ]
-    const query = tcTraj.aggregate(agg)
-    let postprocess = function(data) {
-        return data.map(function(d) { return d._id })
+    // decide y/n whether to service this request
+    let bailout = helpers.request_sanitation(params.startDate, params.endDate, params.polygon, null, params.center, params.radius, params.multipolygon, name||id) 
+    if(bailout){
+      //request looks huge or malformed, reject it
+      reject(bailout)
+      return
     }
-    query.exec(helpers.queryCallback.bind(null,postprocess, resolve, reject))
+
+    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+    let metafilter = new Promise((res, rej) => {res(null)})
+    if(name){
+        metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
+    }
+
+    // perform db searches, parse and return
+    metafilter
+        .then(helpers.datatable_match.bind(null, tc['tc'], params, [{$match:{'_id':id}}], meta))
+        .then(helpers.postprocess.bind(null,pp_params,result))
+        .catch(err => reject({"code": 500, "message": "Server error"}))
   });
 }
 

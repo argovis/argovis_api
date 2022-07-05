@@ -17,6 +17,7 @@ module.exports.findTC = function findTC (req, res, next, id, startDate, endDate,
 };
 
 module.exports.findTCmeta = function findTCmeta (req, res, next, id, name) {
+  Tc.findTCmeta(id,name)
     .then(function (response) {
       utils.writeJson(res, response);
     },

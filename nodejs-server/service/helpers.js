@@ -259,6 +259,57 @@ module.exports.box_sanitation = function(box){
   return box
 }
 
+module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,center,radius){
+  // sanity check and transform generic temporospatial query string parameters in preparation for search.
+
+  params = {}
+
+  if(id){
+    params.id = String(id)
+  }
+
+  if(startDate){
+    params.startDate = new Date(startDate);
+  }
+
+  if(endDate){
+    params.endDate = new Date(endDate);
+  }
+
+  if(polygon){
+    polygon = module.exports.polygon_sanitation(polygon)
+    if(polygon.hasOwnProperty('code')){
+      // error, return and bail out
+      return polygon
+    }
+  }
+
+  if(multipolygon){
+    try {
+      multipolygon = JSON.parse(multipolygon);
+    } catch (e) {
+      return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
+    }
+    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x))})
+    if(multipolygon.some(p => p.hasOwnProperty('code'))){
+      multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
+      return multipolygon[0]
+    } 
+
+    params.multipolygon = multipolygon
+  }
+
+  if(center){
+    params.center = center
+  }
+
+  if(radius){
+    params.radius = radius
+  }
+
+  return params
+}
+
 module.exports.request_sanitation = function(startDate, endDate, polygon, box, center, radius, multipolygon, allowAll){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
   // allowAll==true allows the request if it isn't malformed; approriate for requests that have an a-priori small scope, like a single ID, platform or WOCE line.
@@ -305,7 +356,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     return false
   }
   if(!startDate){
-    startDate = new Date('1980-01-01T00:00:00Z')
+    startDate = new Date('1600-01-01T00:00:00Z')
   }
   if(!endDate){
     endDate = new Date()
@@ -323,8 +374,70 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     geospan = Math.min(areas)
   }
   if(dayspan*geospan > 50000){
-    return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific profile IDs or platform IDs, where applicable."};
+    return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific object IDs, where applicable."};
   }
 
   return false
+}
+
+module.exports.datatable_match = function(model, params, local_filter, foreign_docs){
+  // given <model>, a mongoose model pointing to a data collection,
+  // <params> the return object from parameter_sanitization,
+  // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
+  // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
+  // return a promise to search <model> for all of the above.
+
+  let spacetimeMatch = []
+  let proxMatch = []
+  let foreignMatch = []
+  
+  // construct match stages as required
+  /// prox match construction
+  if(params.center && params.radius) {
+    proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [params.center[0], params.center[1]]}, maxDistance: 1000*params.radius, distanceField: "distcalculated"}}) 
+    proxMatch.push({ $unset: "distcalculated" })
+  }
+  /// spacetime match construction
+  if(params.startDate || params.endDate || params.polygon || params.multipolygon){
+    spacetimeMatch[0] = {$match: {}}
+    if (params.startDate && params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lte: params.endDate}
+    } else if (params.startDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
+    } else if (params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$lte: params.endDate}
+    }
+    if(params.polygon) {
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
+    }
+    if(params.multipolygon){
+      params.multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
+    }
+    // zoom in on subsequent polygon regions; will be unindexed.
+    if(params.multipolygon && params.multipolygon.length > 1){
+      for(let i=1; i<params.multipolygon.length; i++){
+        spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
+      }
+    }
+    spacetimeMatch.push({$sort: {'timestamp':-1}})
+  }
+  /// construct filter for matching metadata docs if required
+  if(foreign_docs){
+    let metaIDs = new Set(foreign_docs.map(x => x['_id']))
+    foreignMatch.push({$match:{'metadata':{$in:Array.from(metaIDs)}}})
+  }
+
+  // set up aggregation and return promise to evaluate:
+  let aggPipeline = proxMatch.concat(local_filter).concat(foreignMatch).concat(spacetimeMatch)
+  return model.aggregate(aggPipeline).exec()
+}
+
+module.exports.postprocess = function(pp_params, search_result){
+  // given <pp_params> which defines level filtering and compression decisions,
+  // and <search_result> an array of documents returned from a data collection,
+  // filter for requested levels and perform compression/reinflation as desired.
+
+  return search_result
+
 }
