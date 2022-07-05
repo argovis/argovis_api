@@ -4,13 +4,20 @@ const moment = require('moment');
 const helpers = require('./helpers')
 
 /**
- * returns a list of tropical cyclone names and years
+ * Tropical cyclone search and filter.
  *
+ * id String Unique ID to search for. (optional)
+ * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
+ * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
+ * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
+ * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
+ * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
+ * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * name String name of tropical cyclone (optional)
  * returns List
  **/
-exports.findStormNameList = function() {
+exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radius,name) {
   return new Promise(function(resolve, reject) {
-
     const TRAJ_GROUP = { _id: '$stormName'}    
     const TRAJ_PROJ = { 
                         _id: 1,
@@ -42,15 +49,13 @@ exports.findStormNameList = function() {
 
 
 /**
- * Tropical cyclone search and filter.
+ * Tropical cyclone metadata search and filter.
  *
- * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
- * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
+ * id String Unique ID to search for. (optional)
  * name String name of tropical cyclone (optional)
- * year BigDecimal year of tropical cyclone (optional)
  * returns List
  **/
-exports.findTC = function(startDate,endDate,name,year) {
+exports.findTCmeta = function(id,name) {
   return new Promise(function(resolve, reject) {
     if((name || year) && (startDate || endDate)){
         reject({"code": 400, "message": "Please search for TC by providing startDate and endDate, OR name and year."});
@@ -88,5 +93,23 @@ exports.findTC = function(startDate,endDate,name,year) {
     const query = tcTraj.find(filter)
 
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+  });
+}
+
+/**
+ * List all possible values for certain tc query string parameters
+ *
+ * parameter String TC query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.tcVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
   });
 }

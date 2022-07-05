@@ -211,30 +211,28 @@
             "operationId": "findTC",
             "parameters": [
                {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
                   "$ref": "#/components/parameters/startDate"
                },
                {
                   "$ref": "#/components/parameters/endDate"
                },
                {
-                  "name": "name",
-                  "in": "query",
-                  "required": false,
-                  "description": "name of tropical cyclone",
-                  "schema": {
-                     "type": "string",
-                     "example": "LANE"
-                  }
+                  "$ref": "#/components/parameters/polygon"
                },
                {
-                  "name": "year",
-                  "in": "query",
-                  "required": false,
-                  "description": "year of tropical cyclone",
-                  "schema": {
-                     "type": "number",
-                     "example": 2018
-                  }
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/tcName"
                }
             ],
             "responses": {
@@ -245,7 +243,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/tcSchema"
+                              "$ref": "#/components/schemas/tc"
                            }
                         }
                      }
@@ -263,13 +261,66 @@
             }
          }
       },
-      "/tc/stormNameList": {
+      "/tc/meta": {
          "get": {
             "tags": [
                "tc"
             ],
-            "summary": "returns a list of tropical cyclone names and years",
-            "operationId": "findStormNameList",
+            "summary": "Tropical cyclone metadata search and filter.",
+            "operationId": "findTCmeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/tcName"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/tcMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/tc/vocabulary": {
+         "get": {
+            "tags": [
+               "tc"
+            ],
+            "summary": "List all possible values for certain tc query string parameters",
+            "operationId": "tcVocab",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "parameter",
+                  "required": true,
+                  "description": "TC query string parameter to summarize possible values of.",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["name"]
+                  }
+               }
+            ],
             "responses": {
                "200": {
                   "description": "OK",
@@ -985,87 +1036,80 @@
                }
             }
          },
-         "tcSchema": {
+         "tc": {
             "type": "object",
-            "required": [
-               "_id",
-               "num",
-               "source",
-               "startDate",
-               "endDate",
-               "year"
-            ],
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp", "record_identifier", "class"],
             "properties": {
                "_id": {
                   "type": "string"
+               },
+               "metadata": {
+                  "type": "string"
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "basin": {
+                  "type": "number"
+               },
+               "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "data": {
+                  "type": "array",
+                  "items": {
+                     "type": "array",
+                     "items": {
+                        "type": "number"
+                     }
+                  }          
+               },
+               "record_identifier": {
+                  "type": "string"
+               },
+               "class": {
+                  "type": "string"
+               }
+            }
+         },
+         "tcMeta": {
+            "type": "object",
+            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "name", "num"],
+            "properties":{
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "data_keys": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "units": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
                },
                "name": {
                   "type": "string"
                },
                "num": {
                   "type": "number"
-               },
-               "source": {
-                  "type": "string"
-               },
-               "startDate": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "endDate": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "year": {
-                  "type": "number"
-               },
-               "trajData": {
-                  "type": "array",
-                  "items": {
-                     "type": "object",
-                     "required": [
-                        "date",
-                        "time",
-                        "class",
-                        "lat",
-                        "lon",
-                        "timestamp",
-                        "geolocation"
-                     ],
-                     "properties": {
-                        "date": {
-                           "type": "string"
-                        },
-                        "time": {
-                           "type": "number"
-                        },
-                        "class": {
-                           "type": "string"
-                        },
-                        "lat": {
-                           "type": "number"
-                        },
-                        "lon": {
-                           "type": "number"
-                        },
-                        "wind": {
-                           "type": "number"
-                        },
-                        "pres": {
-                           "type": "number"
-                        },
-                        "season": {
-                           "type": "number"
-                        },
-                        "timestamp": {
-                           "type": "string",
-                           "format": "date-time"
-                        },
-                        "geolocation": {
-                           "$ref": "#/components/schemas/geoJSONpoint"
-                        }
-                     }
-                  }
                }
             }
          },
@@ -1645,6 +1689,28 @@
                }
             }
          },
+         "generic_source_info": {
+            "type": "object",
+            "required": ["source"],
+            "properties": {
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "url": {
+                  "type": "string"
+               },
+               "date_updated": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "doi": {
+                  "type": "string"
+               }
+            }
+         },
          "profile_source_info": {
             "type": "object",
             "required": ["source"],
@@ -1835,6 +1901,16 @@
                "example": "1_262992"
             }
          },
+         "tcName": {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "name of tropical cyclone",
+            "schema": {
+               "type": "string",
+               "example": "LANE"
+            }
+         },
          "date": {
             "in": "query",
             "name": "date",
@@ -1936,6 +2012,15 @@
             "schema": {
                "type": "string",
                "example": "basic-minification"
+            }
+         },
+         "genericID": {
+            "in": "query",
+            "name": "id",
+            "description": "Unique ID to search for.",
+            "schema": {
+               "type": "string",
+               "example": "4902911_0"
             }
          },
          "profileID": {
