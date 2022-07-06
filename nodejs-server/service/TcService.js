@@ -21,6 +21,11 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
 
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
+    }
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.startDate, params.endDate, params.polygon, null, params.center, params.radius, params.multipolygon, name||id) 
@@ -30,16 +35,27 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
       return
     }
 
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = []
+    if(id){
+        local_filter = [{$match:{'_id':id}}]
+    }
+
+    // postprocessing parameters
+    let pp_params = null
+
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = new Promise((res, rej) => {res(null)})
+    let metafilter = Promise.resolve(null)
     if(name){
         metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
     }
+    console.log(100, params, metafilter, id)
 
     // perform db searches, parse and return
     metafilter
-        .then(helpers.datatable_match.bind(null, tc['tc'], params, [{$match:{'_id':id}}], meta))
-        .then(helpers.postprocess.bind(null,pp_params,result))
+        .then(meta => helpers.datatable_match.bind(null, tc['tc'], params, local_filter)(meta) )
+        .then(raw => helpers.postprocess.bind(null,pp_params)(raw) ) 
+        .then(result => resolve(result))
         .catch(err => reject({"code": 500, "message": "Server error"}))
   });
 }

@@ -277,7 +277,7 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
   }
 
   if(polygon){
-    polygon = module.exports.polygon_sanitation(polygon)
+    params.polygon = module.exports.polygon_sanitation(polygon)
     if(polygon.hasOwnProperty('code')){
       // error, return and bail out
       return polygon
@@ -295,7 +295,6 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
       multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
       return multipolygon[0]
     } 
-
     params.multipolygon = multipolygon
   }
 
@@ -356,7 +355,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     return false
   }
   if(!startDate){
-    startDate = new Date('1600-01-01T00:00:00Z')
+    startDate = new Date('1900-01-01T00:00:00Z')
   }
   if(!endDate){
     endDate = new Date()
@@ -364,7 +363,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
   let dayspan = Math.round(Math.abs((endDate - startDate) / (24*60*60*1000) )); // n days of request
   let geospan = 41252.96125*0.7 // square degrees covered by earth's ocean, equivalent to the entire globe for our purposes
   if(polygon){
-    geospan = geojsonArea.geometry(polygon) / 13000000000 // 1 sq degree is about 13B sq meters
+    geospan = geojsonArea.geometry(polygon) / 13000000000 // 1 sq degree is about 13B sq meters at eq
   } else if(box){
     geospan = Math.abs(box[0][0] - box[1][0])*Math.abs(box[0][1] - box[1][1])
   } else if(center && radius){
@@ -373,6 +372,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     let areas = multipolygon.map(x => geojsonArea.geometry(x) / 13000000000)
     geospan = Math.min(areas)
   }
+  console.log(9999, dayspan, geospan)
   if(dayspan*geospan > 50000){
     return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific object IDs, where applicable."};
   }
@@ -390,6 +390,7 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   let spacetimeMatch = []
   let proxMatch = []
   let foreignMatch = []
+  console.log(1000, local_filter, foreign_docs)
   
   // construct match stages as required
   /// prox match construction
@@ -430,6 +431,7 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
 
   // set up aggregation and return promise to evaluate:
   let aggPipeline = proxMatch.concat(local_filter).concat(foreignMatch).concat(spacetimeMatch)
+  console.log(2000, aggPipeline, model.aggregate(aggPipeline).exec() )
   return model.aggregate(aggPipeline).exec()
 }
 
@@ -438,6 +440,10 @@ module.exports.postprocess = function(pp_params, search_result){
   // and <search_result> an array of documents returned from a data collection,
   // filter for requested levels and perform compression/reinflation as desired.
 
+  if(search_result.length == 0){
+    return {"code": 404, "message": "Not found: No matching results found in database."}
+  }
+  
   return search_result
 
 }
