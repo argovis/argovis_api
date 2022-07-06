@@ -49,7 +49,6 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
     if(name){
         metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
     }
-    console.log(100, params, metafilter, id)
 
     // perform db searches, parse and return
     metafilter

@@ -372,7 +372,6 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     let areas = multipolygon.map(x => geojsonArea.geometry(x) / 13000000000)
     geospan = Math.min(areas)
   }
-  console.log(9999, dayspan, geospan)
   if(dayspan*geospan > 50000){
     return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific object IDs, where applicable."};
   }
@@ -390,7 +389,6 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   let spacetimeMatch = []
   let proxMatch = []
   let foreignMatch = []
-  console.log(1000, local_filter, foreign_docs)
   
   // construct match stages as required
   /// prox match construction
@@ -430,20 +428,19 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   }
 
   // set up aggregation and return promise to evaluate:
-  let aggPipeline = proxMatch.concat(local_filter).concat(foreignMatch).concat(spacetimeMatch)
-  console.log(2000, aggPipeline, model.aggregate(aggPipeline).exec() )
+  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
   return model.aggregate(aggPipeline).exec()
 }
 
 module.exports.postprocess = function(pp_params, search_result){
-  // given <pp_params> which defines level filtering and compression decisions,
+  // given <pp_params> which defines level filtering, data selection and compression decisions,
   // and <search_result> an array of documents returned from a data collection,
-  // filter for requested levels and perform compression/reinflation as desired.
+  // perform the requested filters and transforms
 
   if(search_result.length == 0){
     return {"code": 404, "message": "Not found: No matching results found in database."}
   }
-  
+
   return search_result
 
 }
