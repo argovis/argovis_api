@@ -437,6 +437,11 @@ module.exports.postprocess = function(pp_params, search_result){
   // and <search_result> an array of documents returned from a data collection,
   // perform the requested filters and transforms
 
+  // throw out levels out of pressure range
+  // keep only profiles that have requested data after the level filter
+  // keep only requested data, and only levels that have some of this data
+  // handle compression decision, inflate by default
+
   if(search_result.length == 0){
     return {"code": 404, "message": "Not found: No matching results found in database."}
   }

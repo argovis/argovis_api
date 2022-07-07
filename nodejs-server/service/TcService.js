@@ -44,7 +44,11 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
     }
 
     // postprocessing parameters
-    let pp_params = null
+    let pp_params = {
+        compression: compression,
+        data: data,
+        presRange: null
+    }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     let metafilter = Promise.resolve(null)
