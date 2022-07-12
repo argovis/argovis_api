@@ -1,4 +1,4 @@
-FROM node:17.9.1
+FROM node:18.5.0
 WORKDIR /tests
 COPY tests/package.json .
 RUN npm install

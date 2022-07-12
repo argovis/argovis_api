@@ -1,4 +1,4 @@
-FROM node:17.9.1 as build
+FROM node:18.5.0 as build
 WORKDIR /app
 # hack to avoid https://github.com/npm/cli/issues/4838
 ENV HOME=/app/npmlogs
