@@ -52,14 +52,24 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     let metafilter = Promise.resolve(null)
+    let metacomplete = false
     if(name){
         metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
+        metacomplete = true
     }
 
-    // perform db searches, parse and return
-    metafilter
-        .then(meta => helpers.datatable_match.bind(null, tc['tc'], params, local_filter)(meta) )
-        .then(raw => helpers.postprocess.bind(null,pp_params)(raw) ) 
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_match.bind(null, tc['tc'], params, local_filter))
+
+    // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
+    let metalookup = Promise.resolve(null)
+    if(!metacomplete){
+        metalookup = datafilter.then(helpers.meta_lookup.bind(null, tc['tcMeta']))
+    }
+
+    // send both metafilter and datafilter results to postprocessing:
+    Promise.all([metafilter, datafilter, metalookup])
+        .then(search_result => {return helpers.postprocess(pp_params, search_result)})
         .then(result => resolve(result))
         .catch(err => reject({"code": 500, "message": "Server error"}))
   });
@@ -75,41 +85,14 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
  **/
 exports.findTCmeta = function(id,name) {
   return new Promise(function(resolve, reject) {
-    if((name || year) && (startDate || endDate)){
-        reject({"code": 400, "message": "Please search for TC by providing startDate and endDate, OR name and year."});
-        return;
-    }
-    if((name && !year) || (year && !name)){
-        reject({"code": 400, "message": "Please provide both name and year, not just one."});
-        return;
-    }
-    if((startDate && !endDate) || (endDate && !startDate)){
-        reject({"code": 400, "message": "Please provide both startDate and endDate, no more than 3 months apart."});
-        return;
-    }
 
-    let filter = {}
-    if(name && year){
-        const tc_name = name.toUpperCase()
-        filter = {name: tc_name, year: year}
-    } else if (startDate && endDate){
-        const sDate = moment(startDate, 'YYYY-MM-DDTHH:mm:ss')
-        const eDate = moment(endDate, 'YYYY-MM-DDTHH:mm:ss')
-        const dateDiff = eDate.diff(sDate)
-        const monthDiff = Math.floor(moment.duration(dateDiff).asMonths())
-        if (monthDiff > 3) {
-            reject({"code": 400, "message": "Query timespan exceeds 3 months; please search for a smaller period."})
-            return;
-        }
-        filter = {$or: [
-          {$and: [ {startDate: {$lte: startDate}}, {endDate: {$gte: endDate} }] },    // cyclone completely within timespan
-          {$and: [ {endDate: {$gte: startDate}}, {endDate: {$lte: endDate} }] },      // cyclone ends during timespan
-          {$and: [ {startDate: {$gte: startDate}}, {startDate: {$lte: endDate} }] }   // cyclone begins during timespan
-        ]}
+    let match = {
+        '_id': id,
+        'name': name
     }
-
-    const query = tcTraj.find(filter)
-
+    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+    console.log(match)
+    const query = tc['tcMeta'].aggregate([{$match:match}]);
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
@@ -122,12 +105,17 @@ exports.findTCmeta = function(id,name) {
  **/
 exports.tcVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+
+    let lookup = {
+        'name': 'name' // <parameter value> : <corresponding key in metadata document>
     }
+
+    tc['tcMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+      resolve(vocab)
+    })
   });
 }

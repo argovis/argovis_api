@@ -421,6 +421,7 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
     }
     spacetimeMatch.push({$sort: {'timestamp':-1}})
   }
+
   /// construct filter for matching metadata docs if required
   if(foreign_docs){
     let metaIDs = new Set(foreign_docs.map(x => x['_id']))
@@ -434,18 +435,120 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
 
 module.exports.postprocess = function(pp_params, search_result){
   // given <pp_params> which defines level filtering, data selection and compression decisions,
-  // and <search_result> an array of documents returned from a data collection,
+  // <search_result>[0] the array of documents returned from the metadata collection for this search,
+  // <search_result>[1] the array of documents returned from the data collection for this search,
+  // and <search_results>[2] the array of documents retuned from the metadata collection corresponding to the metadata pointers of <search_result>[1] if not present in <search_result>[0],
   // perform the requested filters and transforms
 
-  // throw out levels out of pressure range
-  // keep only profiles that have requested data after the level filter
-  // keep only requested data, and only levels that have some of this data
-  // handle compression decision, inflate by default
+  // declare some variables at scope
+  let polished = []   // array of documents passing filters and munged to perfection to be returned
+  let keys = []       // data keys to keep 
+  let notkeys = []    // data ketys that disqualify a document if present
 
-  if(search_result.length == 0){
+  // bail immediately if nothing came back from the data collection
+  if(search_result[1].length == 0){
+    return {"code": 404, "message": "Not found: No matching results found in database."}
+  }
+  
+  // construct metadata lookup object
+  let upstream_meta = (search_result[0] === null) ? search_result[2] : search_result[0]
+  let meta_lookup = {}
+  for(let i=0; i<upstream_meta.length; i++){
+    meta_lookup[upstream_meta[i]['_id']] = upstream_meta[i]
+  }
+
+  // determine which data keys should be kept or tossed, if necessary
+  if(pp_params.data){
+    keys = pp_params.data.filter(e => e.charAt(0)!='~')
+    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
+  }
+
+  // loop through documents and let the munging begin
+  for(let i=0; i<search_result[1].length; i++){
+    let doc = search_result[1][i] // sugar
+
+    /// identify data_keys, could be on either document
+    let dk = null
+    if(doc.hasOwnProperty('data_keys')) {
+      dk = doc.data_keys  
+    }
+    else{
+      dk = meta_lookup[doc.metadata].data_keys
+    }
+
+    /// bail out on this document if it contains any ~keys:
+    if(dk.some(item => notkeys.includes(item))) continue
+
+    /// reinflate data arrays, and only keep requested data
+    let reinflated_levels = []
+    for(let j=0; j<doc.data.length; j++){ // loop over levels
+      let reinflate = {}
+      for(let k=0; k<doc.data[j].length; k++){ // loop over data variables
+        if( (keys.includes(dk[k]) || keys.includes('all')) && doc.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
+          reinflate[dk[k]] = doc.data[j][k]
+        }
+      }
+      if(Object.keys(reinflate).length > 0){ // ie only keep levels that retained some data
+        reinflated_levels.push(reinflate)
+      }
+    }
+    doc.data = reinflated_levels
+
+    /// filter by presRange [tbd]
+
+    /// if we wanted data and none is left, abandon this document
+    if(keys.length>0 && doc.data.length==0) continue
+
+    /// drop data on metadata only requests
+    if(!pp_params.data || pp_params.data.includes('metadata-only')) delete doc.data
+
+    /// deflate data if requested
+    if(pp_params.compression){
+      if(keys.includes('all')){
+        // keep original data_keys list if the user wants everything
+        doc.data_keys = dk
+      } else {
+        // keep only the requested keys as data_keys if the user made a filtered request
+        doc.data_keys = keys
+      }
+      doc.data = doc.data.map(x => {
+        let lvl = []
+        for(let ii=0; ii<doc.data_keys.length; ii++){
+          if(x.hasOwnProperty(doc.data_keys[ii])){
+            lvl.push(x[doc.data_keys[ii]])
+          } else {
+            lvl.push(null)
+          }
+        }
+        return lvl
+      })
+    }
+
+    polished.push(doc)
+  }
+
+  if(polished.length == 0){
     return {"code": 404, "message": "Not found: No matching results found in database."}
   }
 
-  return search_result
+  return polished
 
 }
+
+module.exports.meta_lookup = function(meta_model, data_docs){
+  // given an array <data_docs> of docs from a data collection,
+  // return a promise for all matching metadata documents in model <meta_model>
+
+  let metakeys = new Set(data_docs.map(x => x['metadata']))
+  let aggPipeline = [{$match:{'_id':{$in:Array.from(metakeys)}}}]
+  return meta_model.aggregate(aggPipeline).exec()
+
+}
+
+
+
+
+
+
+
+

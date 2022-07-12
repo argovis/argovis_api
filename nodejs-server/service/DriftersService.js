@@ -210,7 +210,6 @@ exports.drifterVocab = function(parameter) {
         reject({"code": 500, "message": "Server error"});
         return;
       }
-
       resolve(vocab)
     })
   });
