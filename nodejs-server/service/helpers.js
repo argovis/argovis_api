@@ -1,3 +1,5 @@
+const geojsonArea = require('@mapbox/geojson-area');
+
 module.exports = {}
 
 module.exports.queryCallback = function(postprocess, resolve, reject, err, data){

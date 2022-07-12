@@ -1,24 +1,6 @@
 'use strict';
 const Drifter = require('../models/drifter');
 const helpers = require('./helpers');
-const geojsonArea = require('@mapbox/geojson-area');
-
-// const inflateDrifters = function(data){
-//   // given an array of drifter data records,
-//   // replace the data key in the data records with an object keyed by variable name.
-
-//   let dk = ["ve", "vn", "err_lon", "err_lat", "err_ve", "err_vn", "gap", "sst", "sst1", "sst2", "err_sst", "err_sst1", "err_sst2", "flg_sst", "flg_sst1", "flg_sst2"]
-
-//   for(let i=0; i<data.length; i++){
-//     let d = {}
-//     for(let j=0; j<data[i].data[0].length; j++){
-//       d[dk[j]] = data[i].data[0][j]
-//     }
-//     data[i].data[0] = d
-//   }
-
-//   return data
-// }
 
 /**
  * Search, reduce and download drifter metadata.
