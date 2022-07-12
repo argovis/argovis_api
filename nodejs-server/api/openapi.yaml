@@ -1325,6 +1325,15 @@ paths:
       summary: "Search, reduce and download drifter data."
       operationId: drifterSearch
       parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
       - name: startDate
         in: query
         description: ISO 8601 UTC date-time formatted string indicating the beginning
@@ -1396,15 +1405,6 @@ paths:
         schema:
           type: number
           example: 50
-      - name: platform
-        in: query
-        description: Unique platform ID to search for.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: "4902911"
       - name: wmo
         in: query
         description: World Meteorological Organization identification number
@@ -1414,16 +1414,15 @@ paths:
         schema:
           type: number
           example: 1300915
-      - name: id
+      - name: platform
         in: query
-        description: "ID of individual drifter measurement, formatted [platform_id]_[measurement\
-          \ number starting from 0]"
+        description: Unique platform ID to search for.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: 101648_0
+          example: "4902911"
       - name: compression
         in: query
         description: Data compression strategy to apply.
@@ -1433,6 +1432,22 @@ paths:
         schema:
           type: string
           example: basic-minification
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "wind,~pres"
+          items:
+            pattern: "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|metadata-only)$"
+            type: string
       responses:
         "200":
           description: OK
@@ -2421,26 +2436,25 @@ components:
           type: array
           items:
             type: string
-        source_url:
+        url:
           type: string
       example:
         source:
         - source
         - source
-        source_url: source_url
+        url: url
     Drifter:
       required:
       - _id
       - basin
-      - data
       - geolocation
-      - platform
+      - metadata
       - timestamp
       type: object
       properties:
         _id:
           type: string
-        platform:
+        metadata:
           type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
@@ -2456,6 +2470,7 @@ components:
             items:
               type: number
       example:
+        metadata: metadata
         data:
         - - 6.02745618307040320615897144307382404804229736328125
           - 6.02745618307040320615897144307382404804229736328125
@@ -2463,7 +2478,6 @@ components:
           - 6.02745618307040320615897144307382404804229736328125
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
-        platform: platform
         geolocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
@@ -2486,14 +2500,35 @@ components:
       - end_lon
       - expno
       - long_name
+      - platform
       - rowsize
-      - source_info
+      - source
       - typebuoy
       - typedeath
       - units
       type: object
       properties:
         _id:
+          type: string
+        data_type:
+          type: string
+        data_keys:
+          type: array
+          items:
+            type: string
+        units:
+          type: array
+          items:
+            type: string
+            nullable: true
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/drifter_source_info'
+        platform:
           type: string
         rowsize:
           type: number
@@ -2522,24 +2557,6 @@ components:
           type: number
         typebuoy:
           type: string
-        data_type:
-          type: string
-        date_updated_argovis:
-          type: string
-          format: date-time
-        source_info:
-          type: array
-          items:
-            $ref: '#/components/schemas/drifter_source_info'
-        data_keys:
-          type: array
-          items:
-            type: string
-        units:
-          type: array
-          items:
-            type: string
-            nullable: true
         long_name:
           type: array
           items:
@@ -2554,29 +2571,30 @@ components:
         units:
         - units
         - units
+        source:
+        - source:
+          - source
+          - source
+          url: url
+        - source:
+          - source
+          - source
+          url: url
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        platform: platform
         typedeath: 9.301444243932575517419536481611430644989013671875
         long_name:
         - long_name
         - long_name
         deploy_date: 2000-01-23T04:56:07.000+00:00
         deploy_lat: 5.63737665663332876420099637471139430999755859375
-        WMO: 6.02745618307040320615897144307382404804229736328125
         data_type: data_type
+        WMO: 6.02745618307040320615897144307382404804229736328125
         expno: 1.46581298050294517310021547018550336360931396484375
         data_keys:
         - data_keys
         - data_keys
         _id: _id
-        source_info:
-        - source:
-          - source
-          - source
-          source_url: source_url
-        - source:
-          - source
-          - source
-          source_url: source_url
         end_lon: 2.3021358869347654518833223846741020679473876953125
     errorResponse:
       required:
@@ -2980,14 +2998,3 @@ components:
       schema:
         type: number
         example: 1300915
-    drifterID:
-      name: id
-      in: query
-      description: "ID of individual drifter measurement, formatted [platform_id]_[measurement\
-        \ number starting from 0]"
-      required: false
-      style: form
-      explode: true
-      schema:
-        type: string
-        example: 101648_0
