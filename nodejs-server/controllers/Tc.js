@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Tc = require('../service/TcService');
 
-module.exports.findStormNameList = function findStormNameList (req, res, next) {
-  Tc.findStormNameList()
+module.exports.findTC = function findTC (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, name, compression, data) {
+  Tc.findTC(id, startDate, endDate, polygon, multipolygon, center, radius, name, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     },
@@ -16,8 +16,21 @@ module.exports.findStormNameList = function findStormNameList (req, res, next) {
     });
 };
 
-module.exports.findTC = function findTC (req, res, next, startDate, endDate, name, year) {
-  Tc.findTC(startDate, endDate, name, year)
+module.exports.findTCmeta = function findTCmeta (req, res, next, id, name) {
+  Tc.findTCmeta(id,name)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.tcVocab = function tcVocab (req, res, next, parameter) {
+  Tc.tcVocab(parameter)
     .then(function (response) {
       utils.writeJson(res, response);
     },

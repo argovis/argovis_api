@@ -259,6 +259,56 @@ module.exports.box_sanitation = function(box){
   return box
 }
 
+module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,center,radius){
+  // sanity check and transform generic temporospatial query string parameters in preparation for search.
+
+  params = {}
+
+  if(id){
+    params.id = String(id)
+  }
+
+  if(startDate){
+    params.startDate = new Date(startDate);
+  }
+
+  if(endDate){
+    params.endDate = new Date(endDate);
+  }
+
+  if(polygon){
+    params.polygon = module.exports.polygon_sanitation(polygon)
+    if(polygon.hasOwnProperty('code')){
+      // error, return and bail out
+      return polygon
+    }
+  }
+
+  if(multipolygon){
+    try {
+      multipolygon = JSON.parse(multipolygon);
+    } catch (e) {
+      return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
+    }
+    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x))})
+    if(multipolygon.some(p => p.hasOwnProperty('code'))){
+      multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
+      return multipolygon[0]
+    } 
+    params.multipolygon = multipolygon
+  }
+
+  if(center){
+    params.center = center
+  }
+
+  if(radius){
+    params.radius = radius
+  }
+
+  return params
+}
+
 module.exports.request_sanitation = function(startDate, endDate, polygon, box, center, radius, multipolygon, allowAll){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
   // allowAll==true allows the request if it isn't malformed; approriate for requests that have an a-priori small scope, like a single ID, platform or WOCE line.
@@ -305,7 +355,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     return false
   }
   if(!startDate){
-    startDate = new Date('1980-01-01T00:00:00Z')
+    startDate = new Date('1900-01-01T00:00:00Z')
   }
   if(!endDate){
     endDate = new Date()
@@ -313,7 +363,7 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
   let dayspan = Math.round(Math.abs((endDate - startDate) / (24*60*60*1000) )); // n days of request
   let geospan = 41252.96125*0.7 // square degrees covered by earth's ocean, equivalent to the entire globe for our purposes
   if(polygon){
-    geospan = geojsonArea.geometry(polygon) / 13000000000 // 1 sq degree is about 13B sq meters
+    geospan = geojsonArea.geometry(polygon) / 13000000000 // 1 sq degree is about 13B sq meters at eq
   } else if(box){
     geospan = Math.abs(box[0][0] - box[1][0])*Math.abs(box[0][1] - box[1][1])
   } else if(center && radius){
@@ -323,8 +373,182 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
     geospan = Math.min(areas)
   }
   if(dayspan*geospan > 50000){
-    return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific profile IDs or platform IDs, where applicable."};
+    return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific object IDs, where applicable."};
   }
 
   return false
 }
+
+module.exports.datatable_match = function(model, params, local_filter, foreign_docs){
+  // given <model>, a mongoose model pointing to a data collection,
+  // <params> the return object from parameter_sanitization,
+  // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
+  // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
+  // return a promise to search <model> for all of the above.
+
+  let spacetimeMatch = []
+  let proxMatch = []
+  let foreignMatch = []
+  
+  // construct match stages as required
+  /// prox match construction
+  if(params.center && params.radius) {
+    proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [params.center[0], params.center[1]]}, maxDistance: 1000*params.radius, distanceField: "distcalculated"}}) 
+    proxMatch.push({ $unset: "distcalculated" })
+  }
+  /// spacetime match construction
+  if(params.startDate || params.endDate || params.polygon || params.multipolygon){
+    spacetimeMatch[0] = {$match: {}}
+    if (params.startDate && params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lte: params.endDate}
+    } else if (params.startDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
+    } else if (params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$lte: params.endDate}
+    }
+    if(params.polygon) {
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
+    }
+    if(params.multipolygon){
+      params.multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
+    }
+    // zoom in on subsequent polygon regions; will be unindexed.
+    if(params.multipolygon && params.multipolygon.length > 1){
+      for(let i=1; i<params.multipolygon.length; i++){
+        spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
+      }
+    }
+    spacetimeMatch.push({$sort: {'timestamp':-1}})
+  }
+
+  /// construct filter for matching metadata docs if required
+  if(foreign_docs){
+    let metaIDs = new Set(foreign_docs.map(x => x['_id']))
+    foreignMatch.push({$match:{'metadata':{$in:Array.from(metaIDs)}}})
+  }
+
+  // set up aggregation and return promise to evaluate:
+  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
+  return model.aggregate(aggPipeline).exec()
+}
+
+module.exports.postprocess = function(pp_params, search_result){
+  // given <pp_params> which defines level filtering, data selection and compression decisions,
+  // <search_result>[0] the array of documents returned from the metadata collection for this search,
+  // <search_result>[1] the array of documents returned from the data collection for this search,
+  // and <search_results>[2] the array of documents retuned from the metadata collection corresponding to the metadata pointers of <search_result>[1] if not present in <search_result>[0],
+  // perform the requested filters and transforms
+
+  // declare some variables at scope
+  let polished = []   // array of documents passing filters and munged to perfection to be returned
+  let keys = []       // data keys to keep 
+  let notkeys = []    // data ketys that disqualify a document if present
+
+  // bail immediately if nothing came back from the data collection
+  if(search_result[1].length == 0){
+    return {"code": 404, "message": "Not found: No matching results found in database."}
+  }
+  
+  // construct metadata lookup object
+  let upstream_meta = (search_result[0] === null) ? search_result[2] : search_result[0]
+  let meta_lookup = {}
+  for(let i=0; i<upstream_meta.length; i++){
+    meta_lookup[upstream_meta[i]['_id']] = upstream_meta[i]
+  }
+
+  // determine which data keys should be kept or tossed, if necessary
+  if(pp_params.data){
+    keys = pp_params.data.filter(e => e.charAt(0)!='~')
+    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
+  }
+
+  // loop through documents and let the munging begin
+  for(let i=0; i<search_result[1].length; i++){
+    let doc = search_result[1][i] // sugar
+
+    /// identify data_keys, could be on either document
+    let dk = null
+    if(doc.hasOwnProperty('data_keys')) {
+      dk = doc.data_keys  
+    }
+    else{
+      dk = meta_lookup[doc.metadata].data_keys
+    }
+
+    /// bail out on this document if it contains any ~keys:
+    if(dk.some(item => notkeys.includes(item))) continue
+
+    /// reinflate data arrays, and only keep requested data
+    let reinflated_levels = []
+    for(let j=0; j<doc.data.length; j++){ // loop over levels
+      let reinflate = {}
+      for(let k=0; k<doc.data[j].length; k++){ // loop over data variables
+        if( (keys.includes(dk[k]) || keys.includes('all')) && doc.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
+          reinflate[dk[k]] = doc.data[j][k]
+        }
+      }
+      if(Object.keys(reinflate).length > 0){ // ie only keep levels that retained some data
+        reinflated_levels.push(reinflate)
+      }
+    }
+    doc.data = reinflated_levels
+
+    /// filter by presRange [tbd]
+
+    /// if we wanted data and none is left, abandon this document
+    if(keys.length>0 && doc.data.length==0) continue
+
+    /// drop data on metadata only requests
+    if(!pp_params.data || pp_params.data.includes('metadata-only')) delete doc.data
+
+    /// deflate data if requested
+    if(pp_params.compression){
+      if(keys.includes('all')){
+        // keep original data_keys list if the user wants everything
+        doc.data_keys = dk
+      } else {
+        // keep only the requested keys as data_keys if the user made a filtered request
+        doc.data_keys = keys
+      }
+      doc.data = doc.data.map(x => {
+        let lvl = []
+        for(let ii=0; ii<doc.data_keys.length; ii++){
+          if(x.hasOwnProperty(doc.data_keys[ii])){
+            lvl.push(x[doc.data_keys[ii]])
+          } else {
+            lvl.push(null)
+          }
+        }
+        return lvl
+      })
+    }
+
+    polished.push(doc)
+  }
+
+  if(polished.length == 0){
+    return {"code": 404, "message": "Not found: No matching results found in database."}
+  }
+
+  return polished
+
+}
+
+module.exports.meta_lookup = function(meta_model, data_docs){
+  // given an array <data_docs> of docs from a data collection,
+  // return a promise for all matching metadata documents in model <meta_model>
+
+  let metakeys = new Set(data_docs.map(x => x['metadata']))
+  let aggPipeline = [{$match:{'_id':{$in:Array.from(metakeys)}}}]
+  return meta_model.aggregate(aggPipeline).exec()
+
+}
+
+
+
+
+
+
+
+
