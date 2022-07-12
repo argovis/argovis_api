@@ -863,6 +863,22 @@
                },
                {
                   "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|metadata-only)$"
+                     },
+                     "example": "wind,~pres"
+                  }
                }
             ],
             "responses": {
