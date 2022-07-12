@@ -76,19 +76,19 @@ exports.drifterMetaSearch = function(platform,wmo) {
 /**
  * Search, reduce and download drifter data.
  *
+ * id String Unique ID to search for. (optional)
  * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
  * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
- * platform String Unique platform ID to search for. (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
- * id String ID of individual drifter measurement, formatted [platform_id]_[measurement number starting from 0] (optional)
+ * platform String Unique platform ID to search for. (optional)
  * compression String Data compression strategy to apply. (optional)
  * returns List
  **/
-exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,radius,platform,wmo,id,compression) {
+exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,center,radius,wmo,platform,compression) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

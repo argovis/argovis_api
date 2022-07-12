@@ -1325,6 +1325,15 @@ paths:
       summary: "Search, reduce and download drifter data."
       operationId: drifterSearch
       parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
       - name: startDate
         in: query
         description: ISO 8601 UTC date-time formatted string indicating the beginning
@@ -1396,15 +1405,6 @@ paths:
         schema:
           type: number
           example: 50
-      - name: platform
-        in: query
-        description: Unique platform ID to search for.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: "4902911"
       - name: wmo
         in: query
         description: World Meteorological Organization identification number
@@ -1414,16 +1414,15 @@ paths:
         schema:
           type: number
           example: 1300915
-      - name: id
+      - name: platform
         in: query
-        description: "ID of individual drifter measurement, formatted [platform_id]_[measurement\
-          \ number starting from 0]"
+        description: Unique platform ID to search for.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: 101648_0
+          example: "4902911"
       - name: compression
         in: query
         description: Data compression strategy to apply.
@@ -2980,14 +2979,3 @@ components:
       schema:
         type: number
         example: 1300915
-    drifterID:
-      name: id
-      in: query
-      description: "ID of individual drifter measurement, formatted [platform_id]_[measurement\
-        \ number starting from 0]"
-      required: false
-      style: form
-      explode: true
-      schema:
-        type: string
-        example: 101648_0
