@@ -2436,26 +2436,26 @@ components:
           type: array
           items:
             type: string
-        source_url:
+        url:
           type: string
       example:
         source:
         - source
         - source
-        source_url: source_url
+        url: url
     Drifter:
       required:
       - _id
       - basin
       - data
       - geolocation
-      - platform
+      - metadata
       - timestamp
       type: object
       properties:
         _id:
           type: string
-        platform:
+        metadata:
           type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
@@ -2471,6 +2471,7 @@ components:
             items:
               type: number
       example:
+        metadata: metadata
         data:
         - - 6.02745618307040320615897144307382404804229736328125
           - 6.02745618307040320615897144307382404804229736328125
@@ -2478,7 +2479,6 @@ components:
           - 6.02745618307040320615897144307382404804229736328125
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
-        platform: platform
         geolocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
@@ -2501,14 +2501,35 @@ components:
       - end_lon
       - expno
       - long_name
+      - platform
       - rowsize
-      - source_info
+      - source
       - typebuoy
       - typedeath
       - units
       type: object
       properties:
         _id:
+          type: string
+        data_type:
+          type: string
+        data_keys:
+          type: array
+          items:
+            type: string
+        units:
+          type: array
+          items:
+            type: string
+            nullable: true
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/drifter_source_info'
+        platform:
           type: string
         rowsize:
           type: number
@@ -2537,24 +2558,6 @@ components:
           type: number
         typebuoy:
           type: string
-        data_type:
-          type: string
-        date_updated_argovis:
-          type: string
-          format: date-time
-        source_info:
-          type: array
-          items:
-            $ref: '#/components/schemas/drifter_source_info'
-        data_keys:
-          type: array
-          items:
-            type: string
-        units:
-          type: array
-          items:
-            type: string
-            nullable: true
         long_name:
           type: array
           items:
@@ -2569,29 +2572,30 @@ components:
         units:
         - units
         - units
+        source:
+        - source:
+          - source
+          - source
+          url: url
+        - source:
+          - source
+          - source
+          url: url
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        platform: platform
         typedeath: 9.301444243932575517419536481611430644989013671875
         long_name:
         - long_name
         - long_name
         deploy_date: 2000-01-23T04:56:07.000+00:00
         deploy_lat: 5.63737665663332876420099637471139430999755859375
-        WMO: 6.02745618307040320615897144307382404804229736328125
         data_type: data_type
+        WMO: 6.02745618307040320615897144307382404804229736328125
         expno: 1.46581298050294517310021547018550336360931396484375
         data_keys:
         - data_keys
         - data_keys
         _id: _id
-        source_info:
-        - source:
-          - source
-          - source
-          source_url: source_url
-        - source:
-          - source
-          - source
-          source_url: source_url
         end_lon: 2.3021358869347654518833223846741020679473876953125
     errorResponse:
       required:

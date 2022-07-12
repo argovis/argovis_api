@@ -1781,19 +1781,19 @@
                      "type": "string"
                   }
                },
-               "source_url": {
+               "url": {
                   "type": "string"
                }
             }
          },
          "Drifter": {
             "type": "object",
-            "required": ["_id", "platform", "geolocation", "basin", "timestamp", "data"],
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp", "data"],
             "properties": {
                "_id": {
                   "type": "string"
                },
-               "platform": {
+               "metadata": {
                   "type": "string"
                },
                "geolocation": {
@@ -1819,9 +1819,38 @@
          },
          "DrifterMeta": {
             "type": "object",
-            "required": ["_id", "rowsize", "WMO", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "data_type", "date_updated_argovis", "source_info", "data_keys", "units", "long_name"],
+            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "platform", "rowsize", "WMO", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "long_name"],
             "properties": {
                "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "data_keys": {
+                  "type": "array",
+                  "items":{
+                     "type": "string"
+                  }
+               },
+               "units": {
+                  "type": "array",
+                  "items":{
+                     "type": "string",
+                     "nullable": true
+                  }
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/drifter_source_info"
+                  }
+               },
+               "platform": {
                   "type": "string"
                },
                "rowsize": {
@@ -1862,33 +1891,7 @@
                },
                "typebuoy": {
                   "type": "string"
-               },
-               "data_type": {
-                  "type": "string"
-               },
-               "date_updated_argovis": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "source_info": {
-                  "type": "array",
-                  "items": {
-                     "$ref": "#/components/schemas/drifter_source_info"
-                  }
-               },
-               "data_keys": {
-                  "type": "array",
-                  "items":{
-                     "type": "string"
-                  }
-               },
-               "units": {
-                  "type": "array",
-                  "items":{
-                     "type": "string",
-                     "nullable": true
-                  }
-               },
+               },    
                "long_name": {
                   "type": "array",
                   "items":{

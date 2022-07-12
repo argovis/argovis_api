@@ -19,23 +19,24 @@ exports.drifterMetaSearch = function(platform,wmo) {
   "drogue_lost_date" : "2000-01-23T04:56:07.000+00:00",
   "rowsize" : 0.8008281904610115,
   "units" : [ "units", "units" ],
+  "source" : [ {
+    "source" : [ "source", "source" ],
+    "url" : "url"
+  }, {
+    "source" : [ "source", "source" ],
+    "url" : "url"
+  } ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "platform" : "platform",
   "typedeath" : 9.301444243932576,
   "long_name" : [ "long_name", "long_name" ],
   "deploy_date" : "2000-01-23T04:56:07.000+00:00",
   "deploy_lat" : 5.637376656633329,
-  "WMO" : 6.027456183070403,
   "data_type" : "data_type",
+  "WMO" : 6.027456183070403,
   "expno" : 1.4658129805029452,
   "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
-  "source_info" : [ {
-    "source" : [ "source", "source" ],
-    "source_url" : "source_url"
-  }, {
-    "source" : [ "source", "source" ],
-    "source_url" : "source_url"
-  } ],
   "end_lon" : 2.3021358869347655
 }, {
   "end_date" : "2000-01-23T04:56:07.000+00:00",
@@ -45,23 +46,24 @@ exports.drifterMetaSearch = function(platform,wmo) {
   "drogue_lost_date" : "2000-01-23T04:56:07.000+00:00",
   "rowsize" : 0.8008281904610115,
   "units" : [ "units", "units" ],
+  "source" : [ {
+    "source" : [ "source", "source" ],
+    "url" : "url"
+  }, {
+    "source" : [ "source", "source" ],
+    "url" : "url"
+  } ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "platform" : "platform",
   "typedeath" : 9.301444243932576,
   "long_name" : [ "long_name", "long_name" ],
   "deploy_date" : "2000-01-23T04:56:07.000+00:00",
   "deploy_lat" : 5.637376656633329,
-  "WMO" : 6.027456183070403,
   "data_type" : "data_type",
+  "WMO" : 6.027456183070403,
   "expno" : 1.4658129805029452,
   "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
-  "source_info" : [ {
-    "source" : [ "source", "source" ],
-    "source_url" : "source_url"
-  }, {
-    "source" : [ "source", "source" ],
-    "source_url" : "source_url"
-  } ],
   "end_lon" : 2.3021358869347655
 } ];
     if (Object.keys(examples).length > 0) {
@@ -93,20 +95,20 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
+  "metadata" : "metadata",
   "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "platform" : "platform",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
+  "metadata" : "metadata",
   "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "platform" : "platform",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
