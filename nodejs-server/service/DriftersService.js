@@ -29,7 +29,6 @@ const geojsonArea = require('@mapbox/geojson-area');
  **/
 exports.drifterMetaSearch = function(platform,wmo) {
   return new Promise(function(resolve, reject) {
-
     let match = {
         'WMO': wmo,
         'platform': platform
