@@ -282,6 +282,15 @@ paths:
       summary: Tropical cyclone search and filter.
       operationId: findTC
       parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
       - name: startDate
         in: query
         description: ISO 8601 UTC date-time formatted string indicating the beginning
@@ -306,6 +315,53 @@ paths:
           type: string
           format: date-time
           example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
       - name: name
         in: query
         description: name of tropical cyclone
@@ -315,15 +371,32 @@ paths:
         schema:
           type: string
           example: LANE
-      - name: year
+      - name: compression
         in: query
-        description: year of tropical cyclone
+        description: Data compression strategy to apply.
         required: false
         style: form
         explode: true
         schema:
-          type: number
-          example: 2018
+          type: string
+          example: basic-minification
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses. Possible values are\
+          \ 'wind', 'pres', 'all' and 'metadata-only'."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "wind,~pres"
+          items:
+            pattern: "^((~)?((wind)|(pres){1})|all|metadata-only)$"
+            type: string
       responses:
         "200":
           description: OK
@@ -332,7 +405,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/tcSchema'
+                  $ref: '#/components/schemas/tc'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -353,12 +426,77 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Tc
-  /tc/stormNameList:
+  /tc/meta:
     get:
       tags:
       - tc
-      summary: returns a list of tropical cyclone names and years
-      operationId: findStormNameList
+      summary: Tropical cyclone metadata search and filter.
+      operationId: findTCmeta
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: name
+        in: query
+        description: name of tropical cyclone
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: LANE
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/tcMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Tc
+  /tc/vocabulary:
+    get:
+      tags:
+      - tc
+      summary: List all possible values for certain tc query string parameters
+      operationId: tcVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: TC query string parameter to summarize possible values of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - name
       responses:
         "200":
           description: OK
@@ -1506,73 +1644,115 @@ components:
         _id: _id
         forcastDays: 5
         geolocation: null
-    tcSchema:
+    tc:
       required:
       - _id
-      - endDate
-      - num
-      - source
-      - startDate
-      - year
+      - basin
+      - class
+      - geolocation
+      - metadata
+      - record_identifier
+      - timestamp
       type: object
       properties:
         _id:
           type: string
+        metadata:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+        record_identifier:
+          type: string
+        class:
+          type: string
+      example:
+        metadata: metadata
+        data:
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        - - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        _id: _id
+        basin: 0.80082819046101150206595775671303272247314453125
+        record_identifier: record_identifier
+        class: class
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    tcMeta:
+      required:
+      - _id
+      - data_keys
+      - data_type
+      - date_updated_argovis
+      - name
+      - num
+      - source
+      - units
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        data_keys:
+          type: array
+          items:
+            type: string
+        units:
+          type: array
+          items:
+            type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
         name:
           type: string
         num:
           type: number
-        source:
-          type: string
-        startDate:
-          type: string
-          format: date-time
-        endDate:
-          type: string
-          format: date-time
-        year:
-          type: number
-        trajData:
-          type: array
-          items:
-            $ref: '#/components/schemas/tcSchema_trajData'
       example:
-        endDate: 2000-01-23T04:56:07.000+00:00
-        year: 6.02745618307040320615897144307382404804229736328125
         num: 0.80082819046101150206595775671303272247314453125
+        data_type: data_type
         name: name
+        data_keys:
+        - data_keys
+        - data_keys
         _id: _id
-        source: source
-        trajData:
-        - date: date
-          pres: 7.061401241503109105224211816675961017608642578125
-          season: 9.301444243932575517419536481611430644989013671875
-          lon: 5.63737665663332876420099637471139430999755859375
-          time: 1.46581298050294517310021547018550336360931396484375
-          class: class
-          lat: 5.962133916683182377482808078639209270477294921875
-          wind: 2.3021358869347654518833223846741020679473876953125
-          timestamp: 2000-01-23T04:56:07.000+00:00
-          geolocation:
-            coordinates:
-            - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
-            type: type
-        - date: date
-          pres: 7.061401241503109105224211816675961017608642578125
-          season: 9.301444243932575517419536481611430644989013671875
-          lon: 5.63737665663332876420099637471139430999755859375
-          time: 1.46581298050294517310021547018550336360931396484375
-          class: class
-          lat: 5.962133916683182377482808078639209270477294921875
-          wind: 2.3021358869347654518833223846741020679473876953125
-          timestamp: 2000-01-23T04:56:07.000+00:00
-          geolocation:
-            coordinates:
-            - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
-            type: type
-        startDate: 2000-01-23T04:56:07.000+00:00
+        units:
+        - units
+        - units
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
     columnGrid:
       required:
       - _id
@@ -2182,6 +2362,29 @@ components:
         - - 6.02745618307040320615897144307382404804229736328125
           - 6.02745618307040320615897144307382404804229736328125
         type: type
+    generic_source_info:
+      required:
+      - source
+      type: object
+      properties:
+        source:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+        date_updated:
+          type: string
+          format: date-time
+        doi:
+          type: string
+      example:
+        date_updated: 2000-01-23T04:56:07.000+00:00
+        source:
+        - source
+        - source
+        url: url
+        doi: doi
     profile_source_info:
       required:
       - source
@@ -2416,53 +2619,6 @@ components:
           type: type
         type: type
         properties: {}
-    tcSchema_trajData:
-      required:
-      - class
-      - date
-      - geolocation
-      - lat
-      - lon
-      - time
-      - timestamp
-      type: object
-      properties:
-        date:
-          type: string
-        time:
-          type: number
-        class:
-          type: string
-        lat:
-          type: number
-        lon:
-          type: number
-        wind:
-          type: number
-        pres:
-          type: number
-        season:
-          type: number
-        timestamp:
-          type: string
-          format: date-time
-        geolocation:
-          $ref: '#/components/schemas/geoJSONpoint'
-      example:
-        date: date
-        pres: 7.061401241503109105224211816675961017608642578125
-        season: 9.301444243932575517419536481611430644989013671875
-        lon: 5.63737665663332876420099637471139430999755859375
-        time: 1.46581298050294517310021547018550336360931396484375
-        class: class
-        lat: 5.962133916683182377482808078639209270477294921875
-        wind: 2.3021358869347654518833223846741020679473876953125
-        timestamp: 2000-01-23T04:56:07.000+00:00
-        geolocation:
-          coordinates:
-          - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-          type: type
   responses:
     badRequest:
       description: Bad Request
@@ -2506,6 +2662,16 @@ components:
       schema:
         type: string
         example: 1_262992
+    tcName:
+      name: name
+      in: query
+      description: name of tropical cyclone
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: LANE
     date:
       name: date
       in: query
@@ -2617,6 +2783,16 @@ components:
       schema:
         type: string
         example: basic-minification
+    genericID:
+      name: id
+      in: query
+      description: Unique ID to search for.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: 4902911_0
     profileID:
       name: id
       in: query
