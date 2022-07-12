@@ -56,5 +56,5 @@ const DrifterMetaSchema = Schema({
 });
 
 module.exports = {}
-module.exports.drifterMeta = mongoose.model('drifterMetax', DrifterMetaSchema, 'drifterMetax');
-module.exports.drifter = mongoose.model('drifterx', DrifterSchema, 'drifterx');
+module.exports.drifterMeta = mongoose.model('drifterMeta', DrifterMetaSchema, 'drifterMeta');
+module.exports.drifter = mongoose.model('drifter', DrifterSchema, 'drifter');

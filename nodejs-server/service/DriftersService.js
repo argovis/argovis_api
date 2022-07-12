@@ -36,7 +36,7 @@ exports.drifterMetaSearch = function(platform,wmo) {
     }
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
-    const query = Drifter['drifterMetax'].aggregate([{$match:match}]);
+    const query = Drifter['drifterMeta'].aggregate([{$match:match}]);
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
@@ -100,19 +100,19 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
         }
         Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
-        metafilter = Drifter['drifterMetax'].aggregate([{$match: match}]).exec()
+        metafilter = Drifter['drifterMeta'].aggregate([{$match: match}]).exec()
         metacomplete = true
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_match.bind(null, Drifter['drifterx'], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_match.bind(null, Drifter['drifter'], params, local_filter))
 
     // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
     let metalookup = Promise.resolve(null)
     if(!metacomplete){
-        metalookup = datafilter.then(helpers.meta_lookup.bind(null, Drifter['drifterMetax']))
+        metalookup = datafilter.then(helpers.meta_lookup.bind(null, Drifter['drifterMeta']))
     }
-
+    
     // send both metafilter and datafilter results to postprocessing:
     Promise.all([metafilter, datafilter, metalookup])
         .then(search_result => {return helpers.postprocess(pp_params, search_result)})
@@ -137,7 +137,7 @@ exports.drifterVocab = function(parameter) {
         'platform': 'platform'
     }
 
-    Drifter['drifterMetax'].find().distinct(lookup[parameter], function (err, vocab) {
+    Drifter['drifterMeta'].find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;
