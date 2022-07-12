@@ -1,24 +1,6 @@
 'use strict';
 const Drifter = require('../models/drifter');
 const helpers = require('./helpers');
-const geojsonArea = require('@mapbox/geojson-area');
-
-const inflateDrifters = function(data){
-  // given an array of drifter data records,
-  // replace the data key in the data records with an object keyed by variable name.
-
-  let dk = ["ve", "vn", "err_lon", "err_lat", "err_ve", "err_vn", "gap", "sst", "sst1", "sst2", "err_sst", "err_sst1", "err_sst2", "flg_sst", "flg_sst1", "flg_sst2"]
-
-  for(let i=0; i<data.length; i++){
-    let d = {}
-    for(let j=0; j<data[i].data[0].length; j++){
-      d[dk[j]] = data[i].data[0][j]
-    }
-    data[i].data[0] = d
-  }
-
-  return data
-}
 
 /**
  * Search, reduce and download drifter metadata.
@@ -29,20 +11,14 @@ const inflateDrifters = function(data){
  **/
 exports.drifterMetaSearch = function(platform,wmo) {
   return new Promise(function(resolve, reject) {
-
-    let metaMatch = {}
-
-    if(platform){
-      metaMatch['_id'] = platform
+    let match = {
+        'WMO': wmo,
+        'platform': platform
     }
+    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
-    if(wmo){
-      metaMatch['WMO'] = wmo
-    }
-
-    let query = Drifter['drifterMeta'].aggregate([{$match: metaMatch}])
+    const query = Drifter['drifterMeta'].aggregate([{$match:match}]);
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
-
   });
 }
 
@@ -50,145 +26,80 @@ exports.drifterMetaSearch = function(platform,wmo) {
 /**
  * Search, reduce and download drifter data.
  *
+ * id String Unique ID to search for. (optional)
  * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
  * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
- * platform String Unique platform ID to search for. (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
- * id String ID of individual drifter measurement, formatted [platform_id]_[measurement number starting from 0] (optional)
+ * platform String Unique platform ID to search for. (optional)
  * compression String Data compression strategy to apply. (optional)
+ * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,radius,platform,wmo,id,compression) {
+exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,center,radius,wmo,platform,compression,data) {
   return new Promise(function(resolve, reject) {
 
-    let spacetimeMatch = []
-    let proxMatch = []
-    let metadataMatch = []
-    let foreignMatch = []
-    let aggPipeline = []
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
+    }
 
-    // input sanitation & parsing
-    if(startDate){
-      startDate = new Date(startDate);
-    }
-    if(endDate){
-      endDate = new Date(endDate);
-    }
-    if(polygon){
-      polygon = helpers.polygon_sanitation(polygon)
-
-      if(polygon.hasOwnProperty('code')){
-        // error, return and bail out
-        reject(polygon)
-        return
-      }
-    }
-    if(multipolygon){
-      try {
-        multipolygon = JSON.parse(multipolygon);
-      } catch (e) {
-        reject({"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."});
-        return
-      }
-      multipolygon = multipolygon.map(function(x){return helpers.polygon_sanitation(JSON.stringify(x))})
-      if(multipolygon.some(p => p.hasOwnProperty('code'))){
-        multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
-        reject(multipolygon[0])
-        return
-      } 
-    }
-    let bailout = helpers.request_sanitation(startDate, endDate, polygon, null, center, radius, multipolygon, platform||wmo||id) 
+    // decide y/n whether to service this request
+    let bailout = helpers.request_sanitation(params.startDate, params.endDate, params.polygon, null, params.center, params.radius, params.multipolygon, id||wmo||platform) 
     if(bailout){
       //request looks huge or malformed, reject it
       reject(bailout)
       return
     }
 
-    // construct match stages as required
-    /// prox match construction
-    if(center && radius) {
-      proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [center[0], center[1]]}, maxDistance: 1000*radius, distanceField: "distcalculated"}}) 
-      proxMatch.push({ $unset: "distcalculated" })
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = []
+    if(id){
+        local_filter = [{$match:{'_id':id}}]
     }
 
-    /// spacetime match construction
-    if(startDate || endDate || polygon || multipolygon){
-      spacetimeMatch[0] = {$match: {}}
-      if (startDate && endDate){
-        spacetimeMatch[0]['$match']['timestamp'] = {$gte: startDate, $lte: endDate}
-      } else if (startDate){
-        spacetimeMatch[0]['$match']['timestamp'] = {$gte: startDate}
-      } else if (endDate){
-        spacetimeMatch[0]['$match']['timestamp'] = {$lte: endDate}
-      }
-      if(polygon) {
-        spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: polygon}}
-      }
-      if(multipolygon){
-        multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
-        spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: multipolygon[0]}}
-      }
-      // zoom in on subsequent polygon regions; will be unindexed.
-      if(multipolygon && multipolygon.length > 1){
-        for(let i=1; i<multipolygon.length; i++){
-          spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: multipolygon[i]}}}} )
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        data: data,
+        presRange: null
+    }
+
+    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+    let metafilter = Promise.resolve(null)
+    let metacomplete = false
+    if(wmo||platform){
+        let match = {
+            'WMO': wmo,
+            'platform': platform
         }
-      }
-      spacetimeMatch.push({$sort: {timestamp:-1}})
+        Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+
+        metafilter = Drifter['drifterMeta'].aggregate([{$match: match}]).exec()
+        metacomplete = true
     }
 
-    /// metadata match contruction
-    if(platform || id){
-      metadataMatch[0] = {$match: {}}
-      if(platform){
-        metadataMatch[0]['$match']['platform'] = platform
-      }
-      if(id){
-        metadataMatch[0]['$match']['_id'] = id
-      }
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_match.bind(null, Drifter['drifter'], params, local_filter))
+
+    // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
+    let metalookup = Promise.resolve(null)
+    if(!metacomplete){
+        metalookup = datafilter.then(helpers.meta_lookup.bind(null, Drifter['drifterMeta']))
     }
-
-    /// foreign table match construction
-    if(wmo){
-      foreignMatch[0] = {$match: {'WMO': wmo}}
-    }
-
-    if(foreignMatch.length > 0){ // want to leverage indexes of both collections; index search the foreign table first, and use the result to construct a pipeline stage for the main table, which can be inserted as optimal.
-      let query = Drifter['drifterMeta'].aggregate(foreignMatch)
-      query.exec(function (err, driftermeta) {
-        if (err){
-          reject({"code": 500, "message": "Server error"});
-          return;
-        }
-        let platforms = new Set(driftermeta.map(x => x['_id']))
-
-        aggPipeline = aggPipeline.concat(proxMatch) // mongo requires this to come first if present
-        aggPipeline = aggPipeline.concat(metadataMatch)
-        aggPipeline.push({$match:{'platform':{$in:Array.from(platforms)}}})
-        aggPipeline = aggPipeline.concat(spacetimeMatch)
-
-        query = Drifter['drifters'].aggregate(aggPipeline);
-        if(compression){
-          query.exec(helpers.queryCallback.bind(null,null,resolve, reject)) 
-        } else {
-          query.exec(helpers.queryCallback.bind(null,inflateDrifters, resolve, reject)) 
-        }
-      })      
-    } else {
-        aggPipeline = aggPipeline.concat(proxMatch) // mongo requires this to come first if present
-        aggPipeline = aggPipeline.concat(metadataMatch)
-        aggPipeline = aggPipeline.concat(spacetimeMatch)
-        let query = Drifter['drifters'].aggregate(aggPipeline);
-        if(compression){
-          query.exec(helpers.queryCallback.bind(null,null,resolve, reject)) 
-        } else {
-          query.exec(helpers.queryCallback.bind(null,inflateDrifters, resolve, reject)) 
-        }
-    }
+    
+    // send both metafilter and datafilter results to postprocessing:
+    Promise.all([metafilter, datafilter, metalookup])
+        .then(search_result => {return helpers.postprocess(pp_params, search_result)})
+        .then(result => resolve(result))
+        .catch(err => reject({"code": 500, "message": "Server error"}))
+    
   });
 }
 
@@ -201,16 +112,17 @@ exports.drifterSearch = function(startDate,endDate,polygon,multipolygon,center,r
  **/
 exports.drifterVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    let key = ''
-    if(parameter == 'wmo') key = 'WMO'
-    else if(parameter == 'platform') key = '_id'
 
-    Drifter['drifterMeta'].find().distinct(key, function (err, vocab) {
+    let lookup = {
+        'wmo': 'WMO', // <parameter value> : <corresponding key in metadata document>
+        'platform': 'platform'
+    }
+
+    Drifter['drifterMeta'].find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;
       }
-      
       resolve(vocab)
     })
   });

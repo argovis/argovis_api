@@ -1,3 +1,5 @@
+const geojsonArea = require('@mapbox/geojson-area');
+
 module.exports = {}
 
 module.exports.queryCallback = function(postprocess, resolve, reject, err, data){
@@ -430,6 +432,7 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
 
   // set up aggregation and return promise to evaluate:
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
+
   return model.aggregate(aggPipeline).exec()
 }
 

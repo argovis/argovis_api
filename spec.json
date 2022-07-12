@@ -835,6 +835,9 @@
             "operationId": "drifterSearch",
             "parameters": [
                {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
                   "$ref": "#/components/parameters/startDate"
                },
                {
@@ -853,16 +856,29 @@
                   "$ref": "#/components/parameters/radius"
                },
                {
-                  "$ref": "#/components/parameters/platformID"
-               },
-               {
                   "$ref": "#/components/parameters/wmo"
                },
                {
-                  "$ref": "#/components/parameters/drifterID"
+                  "$ref": "#/components/parameters/platformID"
                },
                {
                   "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|metadata-only)$"
+                     },
+                     "example": "wind,~pres"
+                  }
                }
             ],
             "responses": {
@@ -1765,19 +1781,19 @@
                      "type": "string"
                   }
                },
-               "source_url": {
+               "url": {
                   "type": "string"
                }
             }
          },
          "Drifter": {
             "type": "object",
-            "required": ["_id", "platform", "geolocation", "basin", "timestamp", "data"],
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
             "properties": {
                "_id": {
                   "type": "string"
                },
-               "platform": {
+               "metadata": {
                   "type": "string"
                },
                "geolocation": {
@@ -1803,9 +1819,38 @@
          },
          "DrifterMeta": {
             "type": "object",
-            "required": ["_id", "rowsize", "WMO", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "data_type", "date_updated_argovis", "source_info", "data_keys", "units", "long_name"],
+            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "platform", "rowsize", "WMO", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "long_name"],
             "properties": {
                "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "data_keys": {
+                  "type": "array",
+                  "items":{
+                     "type": "string"
+                  }
+               },
+               "units": {
+                  "type": "array",
+                  "items":{
+                     "type": "string",
+                     "nullable": true
+                  }
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/drifter_source_info"
+                  }
+               },
+               "platform": {
                   "type": "string"
                },
                "rowsize": {
@@ -1846,33 +1891,7 @@
                },
                "typebuoy": {
                   "type": "string"
-               },
-               "data_type": {
-                  "type": "string"
-               },
-               "date_updated_argovis": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "source_info": {
-                  "type": "array",
-                  "items": {
-                     "$ref": "#/components/schemas/drifter_source_info"
-                  }
-               },
-               "data_keys": {
-                  "type": "array",
-                  "items":{
-                     "type": "string"
-                  }
-               },
-               "units": {
-                  "type": "array",
-                  "items":{
-                     "type": "string",
-                     "nullable": true
-                  }
-               },
+               },    
                "long_name": {
                   "type": "array",
                   "items":{
@@ -2218,15 +2237,6 @@
             "schema": {
                "type": "number",
                "example": 1300915
-            }
-         },
-         "drifterID": {
-            "in": "query",
-            "name": "id",
-            "description": "ID of individual drifter measurement, formatted [platform_id]_[measurement number starting from 0]",
-            "schema": {
-               "type": "string",
-               "example": "101648_0"
             }
          }
       },

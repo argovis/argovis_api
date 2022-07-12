@@ -91,7 +91,7 @@ exports.findTCmeta = function(id,name) {
         'name': name
     }
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
-    console.log(match)
+
     const query = tc['tcMeta'].aggregate([{$match:match}]);
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
