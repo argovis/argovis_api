@@ -835,6 +835,9 @@
             "operationId": "drifterSearch",
             "parameters": [
                {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
                   "$ref": "#/components/parameters/startDate"
                },
                {
@@ -853,13 +856,10 @@
                   "$ref": "#/components/parameters/radius"
                },
                {
-                  "$ref": "#/components/parameters/platformID"
-               },
-               {
                   "$ref": "#/components/parameters/wmo"
                },
                {
-                  "$ref": "#/components/parameters/drifterID"
+                  "$ref": "#/components/parameters/platformID"
                },
                {
                   "$ref": "#/components/parameters/compression"
@@ -2219,15 +2219,6 @@
                "type": "number",
                "example": 1300915
             }
-         },
-         "drifterID": {
-            "in": "query",
-            "name": "id",
-            "description": "ID of individual drifter measurement, formatted [platform_id]_[measurement number starting from 0]",
-            "schema": {
-               "type": "string",
-               "example": "101648_0"
-            }
          }
       },
       "responses": {
@@ -2250,6 +2241,20 @@
                   }
                }
             }
+         },
+         "serverError": {
+            "description": "Server Error",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         }
+      }
+   }
+}         }
          },
          "serverError": {
             "description": "Server Error",
