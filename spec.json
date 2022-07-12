@@ -1788,7 +1788,7 @@
          },
          "Drifter": {
             "type": "object",
-            "required": ["_id", "metadata", "geolocation", "basin", "timestamp", "data"],
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
             "properties": {
                "_id": {
                   "type": "string"
