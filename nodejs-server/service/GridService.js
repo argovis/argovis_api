@@ -57,7 +57,7 @@ exports.findOHCmeta = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "timerange" : [ "", "" ],
+  "timerange" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "data_type" : "data_type",
   "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
   "latcell" : 5.637376656633329,
@@ -80,7 +80,7 @@ exports.findOHCmeta = function() {
   "levels" : [ 0.8008281904610115, 0.8008281904610115 ],
   "latrange" : [ 1.4658129805029452, 1.4658129805029452 ]
 }, {
-  "timerange" : [ "", "" ],
+  "timerange" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "data_type" : "data_type",
   "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
   "latcell" : 5.637376656633329,
