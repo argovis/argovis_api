@@ -7,6 +7,9 @@ module.exports.findOHC = function findOHC (req, res, next, id, startDate, endDat
   Grid.findOHC(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -17,6 +20,9 @@ module.exports.findOHCmeta = function findOHCmeta (req, res, next) {
   Grid.findOHCmeta()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);

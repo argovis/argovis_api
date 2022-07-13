@@ -21,33 +21,59 @@ const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, da
  **/
 exports.findOHC = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "metadata" : "metadata",
-  "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "metadata" : "metadata",
-  "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
     }
+
+    // decide y/n whether to service this request
+    let bailout = helpers.request_sanitation(params.startDate, params.endDate, params.polygon, null, params.center, params.radius, params.multipolygon, id) 
+    if(bailout){
+      //request looks huge or malformed, reject it
+      reject(bailout)
+      return
+    }
+
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = []
+    if(id){
+        local_filter = [{$match:{'_id':id}}]
+    }
+
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        data: data,
+        presRange: null
+    }
+
+    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+    /// currently no explicit metadata parameters to start search on for grid, but leaving the boilerplate in anyway...
+    let metafilter = Promise.resolve(null)
+    let metacomplete = false
+    // if(name){
+    //     metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
+    //     metacomplete = true
+    // }
+
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_match.bind(null, Grid['ohc_kg'], params, local_filter))
+
+    // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
+    let metalookup = Promise.resolve(null)
+    if(!metacomplete){
+        metalookup = datafilter.then(helpers.meta_lookup.bind(null, Grid['gridMeta']))
+    }
+
+    // send both metafilter and datafilter results to postprocessing:
+    Promise.all([metafilter, datafilter, metalookup])
+        .then(search_result => {return helpers.postprocess(pp_params, search_result)})
+        .then(result => resolve(result))
+        .catch(err => reject({"code": 500, "message": "Server error"}))
   });
 }
 
@@ -59,59 +85,8 @@ exports.findOHC = function(id,startDate,endDate,polygon,multipolygon,center,radi
  **/
 exports.findOHCmeta = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "timerange" : [ "", "" ],
-  "data_type" : "data_type",
-  "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
-  "latcell" : 5.637376656633329,
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "loncell" : 5.962133916683182,
-  "_id" : "_id",
-  "units" : [ "units", "units" ],
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ],
-  "latrange" : [ 1.4658129805029452, 1.4658129805029452 ]
-}, {
-  "timerange" : [ "", "" ],
-  "data_type" : "data_type",
-  "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
-  "latcell" : 5.637376656633329,
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "loncell" : 5.962133916683182,
-  "_id" : "_id",
-  "units" : [ "units", "units" ],
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ],
-  "latrange" : [ 1.4658129805029452, 1.4658129805029452 ]
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = Grid.gridMeta.aggregate([{$match:{'_id':'ohc_kg'}}]);
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
