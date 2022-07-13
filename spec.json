@@ -366,6 +366,114 @@
             }
          }
       },
+      "/ohc": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "Search and filter for an ocean heat content grid, https://doi.org/10.5281/ZENODO.6131625.",
+            "operationId": "findOHC",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((ohc){1})|all|metadata-only)$"
+                     },
+                     "example": "ohc"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/grid"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/ohc/meta": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "OHC metadata search and filter.",
+            "operationId": "findOHCmeta",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/gridMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/grids":{
          "get": {
             "tags": [
@@ -1168,6 +1276,72 @@
                      "type": "number"
                   }
                }
+            }
+         },
+         "grid": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "metadata": {
+                  "type": "string"
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "basin": {
+                  "type": "number"
+               },
+               "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "data": {
+                  "type": "array",
+                  "items": {
+                     "type": "array",
+                     "items": {
+                        "type": "number"
+                     }
+                  }          
+               }
+            }
+         },
+         "gridMeta": {
+            "type": "object",
+            "required": [],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "data_keys": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "units": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
+               },
+               
             }
          },
          "Profile": {
