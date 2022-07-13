@@ -366,7 +366,7 @@
             }
          }
       },
-      "/ohc": {
+      "/ohc_kg": {
          "get": {
             "tags": [
                "grid"
@@ -1311,7 +1311,7 @@
          },
          "gridMeta": {
             "type": "object",
-            "required": [],
+            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "levels", "lonrange", "latrange", "timerange", "loncell", "latcell"],
             "properties": {
                "_id": {
                   "type": "string"
@@ -1341,7 +1341,42 @@
                      "$ref": "#/components/schemas/generic_source_info"
                   }
                },
-               
+               "levels": {
+                  "type": "array",
+                  "items": {
+                     "type": "number"
+                  }
+               },
+               "lonrange": {
+                  "type": "array",
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
+                  }
+               },
+               "latrange": {
+                  "type": "array",
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
+                  }
+               },
+               "timerange": {
+                  "type": "array",
+                  "items": {
+                     "type": "date-time",
+                     "minItems": 2,
+                     "maxItems": 2
+                  }
+               },
+               "loncell": {
+                  "type": "number"
+               },
+               "latcell": {
+                  "type": "number"
+               }
             }
          },
          "Profile": {
