@@ -2071,15 +2071,16 @@ components:
           items:
             maxItems: 2
             minItems: 2
-            type: date-time
+            type: string
+            format: date-time
         loncell:
           type: number
         latcell:
           type: number
       example:
         timerange:
-        - ""
-        - ""
+        - 2000-01-23T04:56:07.000+00:00
+        - 2000-01-23T04:56:07.000+00:00
         data_type: data_type
         lonrange:
         - 6.02745618307040320615897144307382404804229736328125

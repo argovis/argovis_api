@@ -1366,7 +1366,8 @@
                "timerange": {
                   "type": "array",
                   "items": {
-                     "type": "date-time",
+                     "type": "string",
+                     "format": "date-time",
                      "minItems": 2,
                      "maxItems": 2
                   }
