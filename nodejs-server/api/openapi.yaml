@@ -1860,9 +1860,16 @@ components:
         data:
           type: array
           items:
-            type: array
-            items:
-              type: number
+            anyOf:
+            - type: array
+              items:
+                type: number
+            - type: object
+              properties:
+                wind:
+                  type: number
+                pres:
+                  type: number
         record_identifier:
           type: string
         class:
@@ -1870,10 +1877,8 @@ components:
       example:
         metadata: metadata
         data:
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
+        - ""
+        - ""
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         record_identifier: record_identifier
@@ -1997,16 +2002,19 @@ components:
         data:
           type: array
           items:
-            type: array
-            items:
-              type: number
+            anyOf:
+            - type: array
+              items:
+                type: number
+            - type: object
+              properties:
+                ohc_kg:
+                  type: number
       example:
         metadata: metadata
         data:
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
+        - ""
+        - ""
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         geolocation:
