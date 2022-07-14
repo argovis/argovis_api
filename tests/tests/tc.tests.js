@@ -13,7 +13,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     
     describe("GET /tc?startDate&endDate", function () {
       it("returns one tropical cyclone result within the requested range", async function () {
-        const response = await request.get("/tc?startDate=1851-06-24T23:00:00Z&endDate=1851-06-25T01:00:00Z").set({'x-argokey': 'developer'});
+        const response = await request.get("/tc?startDate=1851-06-24T23:00:00Z&endDate=1851-06-25T01:00:00Zdata=wind").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/tc'].get.responses['200'].content['application/json'].schema);   
       });
     });    
