@@ -2782,16 +2782,49 @@ components:
         data:
           type: array
           items:
-            type: array
-            items:
-              type: number
+            anyOf:
+            - type: array
+              items:
+                type: number
+            - type: object
+              properties:
+                ve:
+                  type: number
+                vn:
+                  type: number
+                err_lon:
+                  type: number
+                err_lat:
+                  type: number
+                err_ve:
+                  type: number
+                err_vn:
+                  type: number
+                gap:
+                  type: number
+                sst:
+                  type: number
+                sst1:
+                  type: number
+                sst2:
+                  type: number
+                err_sst:
+                  type: number
+                err_sst1:
+                  type: number
+                err_sst2:
+                  type: number
+                flg_sst:
+                  type: number
+                flg_sst1:
+                  type: number
+                flg_sst2:
+                  type: number
       example:
         metadata: metadata
         data:
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
+        - ""
+        - ""
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         geolocation:
