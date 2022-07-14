@@ -409,9 +409,9 @@
                      "type": "array",
                      "items": {
                         "type": "string",
-                        "pattern": "^((~)?((ohc){1})|all|metadata-only)$"
+                        "pattern": "^((~)?((ohc_kg){1})|all|metadata-only)$"
                      },
-                     "example": "ohc"
+                     "example": "ohc_kg"
                   }
                }
             ],
