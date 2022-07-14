@@ -12,7 +12,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
   else {
     describe("GET /drifters", function () {
       it("basic fetching drifter data", async function () {
-        const response = await request.get("/drifters?startDate=2012-03-16T00:00:00Z&endDate=2012-03-17T00:00:00Z").set({'x-argokey': 'developer'});
+        const response = await request.get("/drifters?startDate=2012-03-16T00:00:00Z&endDate=2012-03-17T00:00:00Z&data=sst").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/drifters'].get.responses['200'].content['application/json'].schema);
       });
     });    
