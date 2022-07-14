@@ -21,7 +21,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
     var examples = {};
     examples['application/json'] = [ {
   "metadata" : "metadata",
-  "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
+  "data" : [ "", "" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "record_identifier" : "record_identifier",
@@ -33,7 +33,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
   "metadata" : "metadata",
-  "data" : [ [ 6.027456183070403, 6.027456183070403 ], [ 6.027456183070403, 6.027456183070403 ] ],
+  "data" : [ "", "" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "record_identifier" : "record_identifier",
