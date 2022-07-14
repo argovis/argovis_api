@@ -634,9 +634,9 @@ paths:
         allowReserved: true
         schema:
           type: array
-          example: ohc
+          example: ohc_kg
           items:
-            pattern: "^((~)?((ohc){1})|all|metadata-only)$"
+            pattern: "^((~)?((ohc_kg){1})|all|metadata-only)$"
             type: string
       responses:
         "200":
