@@ -482,8 +482,14 @@ module.exports.postprocess = function(pp_params, search_result){
     /// bail out on this document if it contains any ~keys:
     if(dk.some(item => notkeys.includes(item))) continue
 
-    /// reinflate data arrays, and only keep requested data
-    let reinflated_levels = []
+    /// reinflate data arrays as a dictionary keyed by depth, and only keep requested data
+    let reinflated_levels = {}
+    let metalevels = null
+    if(meta_lookup[doc.metadata].hasOwnProperty('levels')){
+      metalevels = meta_lookup[doc.metadata].levels // relevant for grids
+    } else if (!dk.includes('pres')){
+      metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pres key, since they're all implicitly single-level pres=0 surface measurements
+    }
     for(let j=0; j<doc.data.length; j++){ // loop over levels
       let reinflate = {}
       for(let k=0; k<doc.data[j].length; k++){ // loop over data variables
@@ -492,18 +498,35 @@ module.exports.postprocess = function(pp_params, search_result){
         }
       }
       if(Object.keys(reinflate).length > 0){ // ie only keep levels that retained some data
-        reinflated_levels.push(reinflate)
+        let lvl = metalevels ? metalevels[j] : reinflate.pres
+        reinflated_levels[lvl] = reinflate
       }
     }
-    doc.data = reinflated_levels
+    
+    let levels = []
+    /// filter by presRange
+    if(pp_params.presRange){
+      levels = Object.keys(reinflated_levels).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
+    } else {
+      levels = Object.keys(reinflated_levels).map(n=>Number(n)).sort((a,b)=>a>b) 
+    }
+    levels = levels.map(n=>Number(n)).sort((a,b)=>a>b)
 
-    /// filter by presRange [tbd]
+    /// translate level-keyed dictionary back to a sorted list of per-level dictionaries
+    if(metalevels){
+      /// need to make a levels property on the data document that overrides the levels property on the metadata doc, for grid-like objects
+      doc.levels = levels
+    }
+    doc.data = levels.map(k=>reinflated_levels[String(k)])
 
     /// if we wanted data and none is left, abandon this document
     if(keys.length>0 && doc.data.length==0) continue
 
     /// drop data on metadata only requests
-    if(!pp_params.data || pp_params.data.includes('metadata-only')) delete doc.data
+    if(!pp_params.data || pp_params.data.includes('metadata-only')){
+      delete doc.data
+      delete doc.levels
+    }
 
     /// deflate data if requested
     if(pp_params.compression){

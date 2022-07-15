@@ -53,3 +53,5 @@ const GridMetaSchema = Schema({
 module.exports = {}
 module.exports.gridMeta = mongoose.model('gridMeta', GridMetaSchema, 'gridMeta');
 module.exports.ohc_kg = mongoose.model('ohc_kg', GridSchema, 'ohc_kg');
+module.exports.salinity_rg = mongoose.model('salinity_rg', GridSchema, 'salinity_rg');
+module.exports.temperature_rg = mongoose.model('temperature_rg', GridSchema, 'temperature_rg');
