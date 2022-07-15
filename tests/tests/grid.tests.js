@@ -17,13 +17,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    // describe("GET /grids", function () {
-    //   it("fetch gridded data with pressure bracket", async function () {
-    //     const response = await request.get("/grids?gridName=rgTempTotal&polygon=[[20,-65],[20,-64],[22,-64],[22,-65],[20,-65]]&startDate=2000-01-01T00:00:00Z&endDate=2020-01-01T00:00:00Z&presRange=999,2000").set({'x-argokey': 'developer'});
-    //     response.body.shift() // first element is metadata, drop before cheking rest of schema
-    //     expect(response.body[0]['d']).to.eql( [ 0.621, 0.584, 0.549,  0.52, 0.489, 0.464, 0.441, 0.415, 0.383, 0.356, 0.309, 0.265, 0.219, 0.175, 0.128 ]);
-    //   });
-    // });
+    describe("GET /temperature_rg", function () {
+      it("fetch gridded data with pressure bracket", async function () {
+        const response = await request.get("/temperature_rg?id=20190115000000_20.5_-64.5&presRange=50,100").set({'x-argokey': 'developer'});
+        expect(response.body[0]['data']).to.eql( [[ -1.37 ], [ -1.508 ], [ -1.468 ], [ -1.206 ], [ -0.745 ], [ -0.275 ]]);
+      });
+    });
 
     describe("GET /ohc_kg", function () {
       it("fetch gridded data in overlap region between two polygons", async function () {
