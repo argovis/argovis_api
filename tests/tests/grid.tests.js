@@ -19,8 +19,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /temperature_rg", function () {
       it("fetch gridded data with pressure bracket", async function () {
-        const response = await request.get("/temperature_rg?id=20190115000000_20.5_-64.5&presRange=50,100").set({'x-argokey': 'developer'});
-        expect(response.body[0]['data']).to.eql( [[ -1.37 ], [ -1.508 ], [ -1.468 ], [ -1.206 ], [ -0.745 ], [ -0.275 ]]);
+        const response = await request.get("/temperature_rg?id=20190115000000_20.5_-64.5&presRange=10,100&data=temperature_rg&compression=basic-minification").set({'x-argokey': 'developer'});
+        expect(response.body[0]['data']).to.eql( [[ 0.37 ], [ 0.11 ], [ -0.318 ], [ -0.959 ], [ -1.37 ], [ -1.508 ], [ -1.468 ], [ -1.206 ], [ -0.745 ], [ -0.275 ]]);
+      });
+    });
+
+    describe("GET /temperature_rg", function () {
+      it("check reported level range with pressure bracket", async function () {
+        const response = await request.get("/temperature_rg?id=20190115000000_20.5_-64.5&presRange=10,100&data=temperature_rg").set({'x-argokey': 'developer'});
+        expect(response.body[0]['levels']).to.eql([10,20,30,40,50,60,70,80,90,100]);
       });
     });
 

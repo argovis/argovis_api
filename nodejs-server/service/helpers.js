@@ -503,13 +503,16 @@ module.exports.postprocess = function(pp_params, search_result){
       }
     }
     
+    let levels = []
     /// filter by presRange
     if(pp_params.presRange){
-      reinflated_levels = Object.keys(reinflated_levels).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
+      levels = Object.keys(reinflated_levels).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
+    } else {
+      levels = Object.keys(reinflated_levels).map(n=>Number(n)).sort((a,b)=>a>b) 
     }
+    levels = levels.map(n=>Number(n)).sort((a,b)=>a>b)
 
     /// translate level-keyed dictionary back to a sorted list of per-level dictionaries
-    let levels = Object.keys(reinflated_levels).map(n=>Number(n)).sort((a,b)=>a>b)
     if(metalevels){
       /// need to make a levels property on the data document that overrides the levels property on the metadata doc, for grid-like objects
       doc.levels = levels
@@ -520,7 +523,10 @@ module.exports.postprocess = function(pp_params, search_result){
     if(keys.length>0 && doc.data.length==0) continue
 
     /// drop data on metadata only requests
-    if(!pp_params.data || pp_params.data.includes('metadata-only')) delete doc.data
+    if(!pp_params.data || pp_params.data.includes('metadata-only')){
+      delete doc.data
+      delete doc.levels
+    }
 
     /// deflate data if requested
     if(pp_params.compression){
