@@ -33,6 +33,9 @@ module.exports.findRGpaslTotal = function findRGpaslTotal (req, res, next, id, s
   Grid.findRGpaslTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -43,6 +46,9 @@ module.exports.findRGpsalTotalMeta = function findRGpsalTotalMeta (req, res, nex
   Grid.findRGpsalTotalMeta()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -53,6 +59,9 @@ module.exports.findRGtempTotal = function findRGtempTotal (req, res, next, id, s
   Grid.findRGtempTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -63,6 +72,9 @@ module.exports.findRGtempTotalMeta = function findRGtempTotalMeta (req, res, nex
   Grid.findRGtempTotalMeta()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
