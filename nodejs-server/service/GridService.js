@@ -124,9 +124,10 @@ exports.findOHCmeta = function() {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * compression String Data compression strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findRGpaslTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data) {
+exports.findRGpaslTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -235,9 +236,10 @@ exports.findRGpsalTotalMeta = function() {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * compression String Data compression strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findRGtempTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data) {
+exports.findRGtempTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

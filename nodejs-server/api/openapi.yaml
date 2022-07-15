@@ -815,6 +815,21 @@ paths:
           items:
             pattern: "^((~)?((temperature_rg){1})|all|metadata-only)$"
             type: string
+      - name: presRange
+        in: query
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
       responses:
         "200":
           description: OK
@@ -992,6 +1007,21 @@ paths:
           items:
             pattern: "^((~)?((salinity_rg){1})|all|metadata-only)$"
             type: string
+      - name: presRange
+        in: query
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
       responses:
         "200":
           description: OK
