@@ -23,6 +23,46 @@ module.exports.findOHCmeta = function findOHCmeta (req, res, next) {
     });
 };
 
+module.exports.findRGpaslTotal = function findRGpaslTotal (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data) {
+  Grid.findRGpaslTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.findRGpsalTotalMeta = function findRGpsalTotalMeta (req, res, next) {
+  Grid.findRGpsalTotalMeta()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.findRGtempTotal = function findRGtempTotal (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data) {
+  Grid.findRGtempTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.findRGtempTotalMeta = function findRGtempTotalMeta (req, res, next) {
+  Grid.findRGtempTotalMeta()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.gridVocab = function gridVocab (req, res, next, parameter) {
   Grid.gridVocab(parameter)
     .then(function (response) {
