@@ -5,7 +5,7 @@ const GJV = require('geojson-validation');
 const geojsonArea = require('@mapbox/geojson-area');
 const datePresGrouping = {_id: '$gridName', presLevels: {$addToSet: '$pres'}, dates: {$addToSet: '$date'}}
 
-const findGrid = function(model, id,startDate,endDate,polygon,multipolygon,center,radius,compression,data, resolve, reject){
+const findGrid = function(model, id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange, resolve, reject){
   // generic helper for all grid search and filter routes
 
   // input sanitization
@@ -34,7 +34,7 @@ const findGrid = function(model, id,startDate,endDate,polygon,multipolygon,cente
   let pp_params = {
       compression: compression,
       data: data,
-      presRange: null
+      presRange: presRange
   }
 
   // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
@@ -77,7 +77,7 @@ const findGrid = function(model, id,startDate,endDate,polygon,multipolygon,cente
  * returns List
  **/
 exports.findOHC = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data) {
-  return new Promise(findGrid.bind(null, Grid['ohc_kg'],id,startDate,endDate,polygon,multipolygon,center,radius,compression,data));
+  return new Promise(findGrid.bind(null, Grid['ohc_kg'],id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,null));
 }
 
 
@@ -106,10 +106,11 @@ exports.findOHCmeta = function() {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * compression String Data compression strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findRGpaslTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data) {
-  return new Promise(findGrid.bind(null, Grid['salinity_rg'],id,startDate,endDate,polygon,multipolygon,center,radius,compression,data));
+exports.findRGpaslTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
+  return new Promise(findGrid.bind(null, Grid['salinity_rg'],id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange));
 }
 
 
@@ -138,10 +139,11 @@ exports.findRGpsalTotalMeta = function() {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * compression String Data compression strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findRGtempTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data) {
-  return new Promise(findGrid.bind(null, Grid['temperature_rg'],id,startDate,endDate,polygon,multipolygon,center,radius,compression,data));
+exports.findRGtempTotal = function(id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
+  return new Promise(findGrid.bind(null, Grid['temperature_rg'],id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange));
 }
 
 

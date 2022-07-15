@@ -521,6 +521,9 @@
                      },
                      "example": "temperature_rg"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
                }
             ],
             "responses": {
@@ -629,6 +632,9 @@
                      },
                      "example": "salinity_rg"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
                }
             ],
             "responses": {

@@ -29,8 +29,8 @@ module.exports.findOHCmeta = function findOHCmeta (req, res, next) {
     });
 };
 
-module.exports.findRGpaslTotal = function findRGpaslTotal (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data) {
-  Grid.findRGpaslTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data)
+module.exports.findRGpaslTotal = function findRGpaslTotal (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange) {
+  Grid.findRGpaslTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     },
@@ -55,8 +55,8 @@ module.exports.findRGpsalTotalMeta = function findRGpsalTotalMeta (req, res, nex
     });
 };
 
-module.exports.findRGtempTotal = function findRGtempTotal (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data) {
-  Grid.findRGtempTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data)
+module.exports.findRGtempTotal = function findRGtempTotal (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange) {
+  Grid.findRGtempTotal(id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     },
