@@ -524,12 +524,14 @@ module.exports.postprocess = function(pp_params, search_result){
 
     /// drop data on metadata only requests
     if(!pp_params.data || pp_params.data.includes('metadata-only')){
+      console.log(1000, doc)
       delete doc.data
       delete doc.levels
     }
+    console.log(2000,doc)
 
     /// deflate data if requested
-    if(pp_params.compression && pp_params.data){
+    if(pp_params.compression && pp_params.data && !pp_params.data.includes('metadata-only')){
       if(keys.includes('all')){
         // keep original data_keys list if the user wants everything
         doc.data_keys = dk
@@ -549,7 +551,7 @@ module.exports.postprocess = function(pp_params, search_result){
         return lvl
       })
     }
-
+    console.log(3000,doc)
     polished.push(doc)
   }
 
