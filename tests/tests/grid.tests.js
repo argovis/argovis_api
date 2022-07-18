@@ -13,7 +13,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /grids/ohc_kg", function () {
       it("fetch gridded data", async function () {
         const response = await request.get("/grids/ohc_kg?polygon=[[112,-65],[112,-64],[114,-64],[114,-65],[112,-65]]&startDate=2000-01-01T00:00:00Z&endDate=2020-01-01T00:00:00Z&data=ohc_kg").set({'x-argokey': 'developer'});
-        expect(response.body).to.be.jsonSchema(schema.paths['/ohc_kg'].get.responses['200'].content['application/json'].schema);
+        expect(response.body).to.be.jsonSchema(schema.paths['/grids/{gridName}'].get.responses['200'].content['application/json'].schema);
       });
     });
 
