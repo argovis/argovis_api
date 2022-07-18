@@ -2714,7 +2714,6 @@ components:
         timestamp: 2000-01-23T04:56:07.000+00:00
     DrifterMeta:
       required:
-      - WMO
       - _id
       - data_keys
       - data_type
@@ -2734,6 +2733,7 @@ components:
       - typebuoy
       - typedeath
       - units
+      - wmo
       type: object
       properties:
         _id:
@@ -2760,7 +2760,7 @@ components:
           type: string
         rowsize:
           type: number
-        WMO:
+        wmo:
           type: number
         expno:
           type: number
@@ -2817,7 +2817,7 @@ components:
         deploy_date: 2000-01-23T04:56:07.000+00:00
         deploy_lat: 5.63737665663332876420099637471139430999755859375
         data_type: data_type
-        WMO: 6.02745618307040320615897144307382404804229736328125
+        wmo: 6.02745618307040320615897144307382404804229736328125
         expno: 1.46581298050294517310021547018550336360931396484375
         data_keys:
         - data_keys

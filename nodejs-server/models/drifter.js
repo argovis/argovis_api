@@ -36,7 +36,7 @@ const DrifterSchema = Schema({
 const DrifterMetaSchema = Schema({
   _id: {type: String, required: true},
   rowsize: {type: Number, required: true},
-  WMO: {type: Number, required: true},
+  wmo: {type: Number, required: true},
   expno: {type: Number, required: true},
   deploy_date: {type: Date, required: true},
   deploy_lon: {type: Number, required: true},

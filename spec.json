@@ -1993,7 +1993,7 @@
          },
          "DrifterMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "platform", "rowsize", "WMO", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "long_name"],
+            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "platform", "rowsize", "wmo", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "long_name"],
             "properties": {
                "_id": {
                   "type": "string"
@@ -2030,7 +2030,7 @@
                "rowsize": {
                   "type": "number"
                },
-               "WMO": {
+               "wmo": {
                   "type": "number"
                },
                "expno": {

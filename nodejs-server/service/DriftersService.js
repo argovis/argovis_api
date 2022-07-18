@@ -12,7 +12,7 @@ const helpers = require('./helpers');
 exports.drifterMetaSearch = function(platform,wmo) {
   return new Promise(function(resolve, reject) {
     let match = {
-        'WMO': wmo,
+        'wmo': wmo,
         'platform': platform
     }
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
@@ -76,7 +76,7 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
     let metacomplete = false
     if(wmo||platform){
         let match = {
-            'WMO': wmo,
+            'wmo': wmo,
             'platform': platform
         }
         Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
@@ -114,7 +114,7 @@ exports.drifterVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
 
     let lookup = {
-        'wmo': 'WMO', // <parameter value> : <corresponding key in metadata document>
+        'wmo': 'wmo', // <parameter value> : <corresponding key in metadata document>
         'platform': 'platform'
     }
 
