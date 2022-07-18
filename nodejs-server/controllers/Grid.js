@@ -81,21 +81,9 @@ module.exports.findRGtempTotalMeta = function findRGtempTotalMeta (req, res, nex
     });
 };
 
-module.exports.gridVocab = function gridVocab (req, res, next, parameter) {
-  Grid.gridVocab(parameter)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
-    function (response) {
-      utils.writeJson(res, response, response.code);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
 
-module.exports.gridselect = function gridselect (req, res, next, gridName, presRange, polygon, multipolygon, startDate, endDate) {
-  Grid.gridselect(gridName, presRange, polygon, multipolygon, startDate, endDate)
+module.exports.findgrid = function findgrid (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange, gridName) {
+  Grid.findgrid(gridName, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     },
