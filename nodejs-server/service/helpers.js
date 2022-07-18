@@ -529,7 +529,7 @@ module.exports.postprocess = function(pp_params, search_result){
     }
 
     /// deflate data if requested
-    if(pp_params.compression){
+    if(pp_params.compression && pp_params.data && !pp_params.data.includes('metadata-only')){
       if(keys.includes('all')){
         // keep original data_keys list if the user wants everything
         doc.data_keys = dk
@@ -549,7 +549,6 @@ module.exports.postprocess = function(pp_params, search_result){
         return lvl
       })
     }
-
     polished.push(doc)
   }
 
