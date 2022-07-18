@@ -73,6 +73,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /drifters", function () {
+      it("ignore compression without data", async function () {
+        const response = await request.get("/drifters?id=101143_0&compression=basic").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    }); 
+
     describe("GET /drifters/meta", function () {
       it("fetch drifter metadata by platform number", async function () {
         const response = await request.get("/drifters/meta?platform=101143").set({'x-argokey': 'developer'});
