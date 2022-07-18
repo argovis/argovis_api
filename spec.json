@@ -696,19 +696,31 @@
             }
          }
       },
-      "/grids":{
+      "/grids/{gridName}": {
          "get": {
             "tags": [
                "grid"
             ],
-            "summary": "gridded product selector",
-            "operationId": "gridselect",
+            "summary": "Search and filter for grid named in path",
+            "operationId": "findgrid",
             "parameters": [
                {
-                  "$ref": "#/components/parameters/gridName"
+                  "name": "gridName",
+                  "in": "path",
+                  "required": "true",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["ohc_kg", "temperature_rg", "salinity_rg"]
+                  }
                },
                {
-                  "$ref": "#/components/parameters/presRange"
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
                },
                {
                   "$ref": "#/components/parameters/polygon"
@@ -717,55 +729,31 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
-                  "$ref": "#/components/parameters/startDate"
+                  "$ref": "#/components/parameters/center"
                },
                {
-                  "$ref": "#/components/parameters/endDate"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/columnGrid"
-                           }
-                        }
-                     }
-                  }
+                  "$ref": "#/components/parameters/radius"
                },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/grids/vocabulary": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "List all possible values for certain grid query string parameters",
-            "operationId": "gridVocab",
-            "parameters": [
                {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "name": "data",
                   "in": "query",
-                  "name": "parameter",
-                  "required": true,
-                  "description": "/grids query string parameter to summarize possible values of.",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
                   "schema": {
-                     "type": "string",
-                     "enum": ["gridName"]
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     },
+                     "example": "salinity_rg"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
                }
             ],
             "responses": {
@@ -776,7 +764,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "type": "string"
+                              "$ref": "#/components/schemas/grid"
                            }
                         }
                      }
