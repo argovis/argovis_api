@@ -366,14 +366,23 @@
             }
          }
       },
-      "/ohc_kg": {
+      "/grids/{gridName}": {
          "get": {
             "tags": [
                "grid"
             ],
-            "summary": "Search and filter for an ocean heat content grid, https://doi.org/10.5281/ZENODO.6131625.",
-            "operationId": "findOHC",
+            "summary": "Search and filter for grid named in path",
+            "operationId": "findgrid",
             "parameters": [
+               {
+                  "name": "gridName",
+                  "in": "path",
+                  "required": "true",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["ohc_kg", "temperature_rg", "salinity_rg"]
+                  }
+               },
                {
                   "$ref": "#/components/parameters/genericID"
                },
@@ -408,227 +417,7 @@
                   "schema": {
                      "type": "array",
                      "items": {
-                        "type": "string",
-                        "pattern": "^((~)?((ohc_kg){1})|all|metadata-only)$"
-                     },
-                     "example": "ohc_kg"
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/grid"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/ohc/meta": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "OHC metadata search and filter.",
-            "operationId": "findOHCmeta",
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/gridMeta"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/temperature_rg": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "Search and filter for Roemmich-Gilson total (anomaly + mean) temperature grid",
-            "operationId": "findRGtempTotal",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/genericID"
-               },
-               {
-                  "$ref": "#/components/parameters/startDate"
-               },
-               {
-                  "$ref": "#/components/parameters/endDate"
-               },
-               {
-                  "$ref": "#/components/parameters/polygon"
-               },
-               {
-                  "$ref": "#/components/parameters/multipolygon"
-               },
-               {
-                  "$ref": "#/components/parameters/center"
-               },
-               {
-                  "$ref": "#/components/parameters/radius"
-               },
-               {
-                  "$ref": "#/components/parameters/compression"
-               },
-               {
-                  "name": "data",
-                  "in": "query",
-                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
-                  "style": "form",
-                  "explode": false,
-                  "allowReserved": true,
-                  "schema": {
-                     "type": "array",
-                     "items": {
-                        "type": "string",
-                        "pattern": "^((~)?((temperature_rg){1})|all|metadata-only)$"
-                     },
-                     "example": "temperature_rg"
-                  }
-               },
-               {
-                  "$ref": "#/components/parameters/presRange"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/grid"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/temperature_rg/meta": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "Metadata for RG total temperature grid",
-            "operationId": "findRGtempTotalMeta",
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/gridMeta"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/salinity_rg": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "Search and filter for Roemmich-Gilson total (anomaly + mean) salinity grid",
-            "operationId": "findRGpaslTotal",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/genericID"
-               },
-               {
-                  "$ref": "#/components/parameters/startDate"
-               },
-               {
-                  "$ref": "#/components/parameters/endDate"
-               },
-               {
-                  "$ref": "#/components/parameters/polygon"
-               },
-               {
-                  "$ref": "#/components/parameters/multipolygon"
-               },
-               {
-                  "$ref": "#/components/parameters/center"
-               },
-               {
-                  "$ref": "#/components/parameters/radius"
-               },
-               {
-                  "$ref": "#/components/parameters/compression"
-               },
-               {
-                  "name": "data",
-                  "in": "query",
-                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
-                  "style": "form",
-                  "explode": false,
-                  "allowReserved": true,
-                  "schema": {
-                     "type": "array",
-                     "items": {
-                        "type": "string",
-                        "pattern": "^((~)?((salinity_rg){1})|all|metadata-only)$"
+                        "type": "string"
                      },
                      "example": "salinity_rg"
                   }
@@ -663,64 +452,16 @@
             }
          }
       },
-      "/salinity_rg/meta": {
+      "/grids/meta": {
          "get": {
             "tags": [
                "grid"
             ],
-            "summary": "Metadata for RG total salinity grid",
-            "operationId": "findRGpsalTotalMeta",
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/gridMeta"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/grids":{
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "gridded product selector",
-            "operationId": "gridselect",
-            "parameters": [
+            "summary": "Metadata for grids by ID",
+            "operationId": "findgridMeta",
+            "parameters":[
                {
-                  "$ref": "#/components/parameters/gridName"
-               },
-               {
-                  "$ref": "#/components/parameters/presRange"
-               },
-               {
-                  "$ref": "#/components/parameters/polygon"
-               },
-               {
-                  "$ref": "#/components/parameters/multipolygon"
-               },
-               {
-                  "$ref": "#/components/parameters/startDate"
-               },
-               {
-                  "$ref": "#/components/parameters/endDate"
+                  "$ref": "#/components/parameters/genericID"
                }
             ],
             "responses": {
@@ -731,52 +472,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/columnGrid"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/grids/vocabulary": {
-         "get": {
-            "tags": [
-               "grid"
-            ],
-            "summary": "List all possible values for certain grid query string parameters",
-            "operationId": "gridVocab",
-            "parameters": [
-               {
-                  "in": "query",
-                  "name": "parameter",
-                  "required": true,
-                  "description": "/grids query string parameter to summarize possible values of.",
-                  "schema": {
-                     "type": "string",
-                     "enum": ["gridName"]
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
+                              "$ref": "#/components/schemas/gridMeta"
                            }
                         }
                      }
