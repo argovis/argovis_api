@@ -14,9 +14,10 @@
  * woceline BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * compression String Data compression strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,compression,data) {
+exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

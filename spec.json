@@ -543,6 +543,9 @@
                      },
                      "example": "temperature_btl,~psal_ctd"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
                }
             ],
             "responses": {

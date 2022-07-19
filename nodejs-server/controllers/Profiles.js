@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Profiles = require('../service/ProfilesService');
 
-module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, compression, data) {
-  Profiles.findGoship(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, compression, data)
+module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, compression, data, presRange) {
+  Profiles.findGoship(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, compression, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     })
