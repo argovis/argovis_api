@@ -2645,7 +2645,7 @@
          },
          "cchdo_cruise": {
             "in": "query",
-            "name": "woceline",
+            "name": "cchdo_cruise",
             "description": "CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options.",
             "schema": {
                "type": "number",
