@@ -470,17 +470,28 @@ module.exports.postprocess = function(pp_params, search_result){
   for(let i=0; i<search_result[1].length; i++){
     let doc = search_result[1][i] // sugar
 
-    /// identify data_keys, could be on either document
+    /// identify data_keys and units, could be on either document
     let dk = null
+    let u = null
     if(doc.hasOwnProperty('data_keys')) {
       dk = doc.data_keys  
+      u = doc.units
     }
     else{
       dk = meta_lookup[doc.metadata].data_keys
+      u = meta_lookup[doc.metadata].units
     }
 
     /// bail out on this document if it contains any ~keys:
     if(dk.some(item => notkeys.includes(item))) continue
+
+    /// turn upstream units into a lookup table by data_key, for requested keys
+    let units = {}
+    for(let k=0; k<dk.length; k++){
+      if(keys.includes(dk[k])){
+        units[dk[k]] = u[k]
+      }
+    }
 
     /// reinflate data arrays as a dictionary keyed by depth, and only keep requested data
     let reinflated_levels = {}
@@ -492,7 +503,7 @@ module.exports.postprocess = function(pp_params, search_result){
     }
     for(let j=0; j<doc.data.length; j++){ // loop over levels
       let reinflate = {}
-      for(let k=0; k<doc.data[j].length; k++){ // loop over data variables
+      for(k=0; k<doc.data[j].length; k++){ // loop over data variables
         if( (keys.includes(dk[k]) || keys.includes('all')) && doc.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
           reinflate[dk[k]] = doc.data[j][k]
         }
@@ -518,6 +529,7 @@ module.exports.postprocess = function(pp_params, search_result){
       doc.levels = levels
     }
     doc.data = levels.map(k=>reinflated_levels[String(k)])
+    doc.units = units
 
     /// if we wanted data and none is left, abandon this document
     if(keys.length>0 && doc.data.length==0) continue
@@ -526,6 +538,7 @@ module.exports.postprocess = function(pp_params, search_result){
     if(!pp_params.data || pp_params.data.includes('metadata-only')){
       delete doc.data
       delete doc.levels
+      delete doc.units
     }
 
     /// deflate data if requested
@@ -548,6 +561,8 @@ module.exports.postprocess = function(pp_params, search_result){
         }
         return lvl
       })
+      // turn doc.units into a list in the same order as doc.data_keys
+      doc.units = doc.data_keys.map(x => doc.units[x])
     }
     polished.push(doc)
   }
