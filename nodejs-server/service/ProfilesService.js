@@ -1,5 +1,6 @@
 'use strict';
 const Profile = require('../models/profile');
+const goship = require('../models/goship');
 const helpers = require('./helpers')
 const geojsonArea = require('@mapbox/geojson-area');
 
@@ -21,65 +22,7 @@ const geojsonArea = require('@mapbox/geojson-area');
  **/
 exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "cast" : 6.027456183070403,
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "station" : "station",
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : [ "units", "units" ],
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "cast" : 6.027456183070403,
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "station" : "station",
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : [ "units", "units" ],
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
   });
 }
 
@@ -93,33 +36,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
  **/
 exports.findGoshipmeta = function(id,woceline) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "country" : "country",
-  "expocode" : "expocode",
-  "woce_lines" : [ "woce_lines", "woce_lines" ],
-  "cchdo_cruise_id" : 0.8008281904610115,
-  "data_type" : "data_type",
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "_id" : "_id",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "country" : "country",
-  "expocode" : "expocode",
-  "woce_lines" : [ "woce_lines", "woce_lines" ],
-  "cchdo_cruise_id" : 0.8008281904610115,
-  "data_type" : "data_type",
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "_id" : "_id",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
   });
 }
 
@@ -132,13 +49,7 @@ exports.findGoshipmeta = function(id,woceline) {
  **/
 exports.goshipVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+
   });
 }
 
