@@ -825,6 +825,16 @@ paths:
           example: 50
       - name: woceline
         in: query
+        description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+          for list of options.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: A10
+      - name: cchdo_cruise
+        in: query
         description: CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise
           for list of options.
         required: false
@@ -919,6 +929,16 @@ paths:
           type: string
           example: 4902911_0
       - name: woceline
+        in: query
+        description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+          for list of options.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: A10
+      - name: cchdo_cruise
         in: query
         description: CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise
           for list of options.
@@ -3717,7 +3737,7 @@ components:
         type: string
         example: A10
     cchdo_cruise:
-      name: woceline
+      name: cchdo_cruise
       in: query
       description: CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise
         for list of options.
