@@ -55,5 +55,5 @@ const goshipMetaSchema = Schema({
 });
 
 module.exports = {}
-module.exports.goshipMeta = mongoose.model('goshipMeta', tcMetaSchema, 'tcMeta');
-module.exports.goship = mongoose.model('goship', tcSchema, 'tc');
+module.exports.goshipMeta = mongoose.model('goshipMeta', goshipMetaSchema, 'goshipMeta');
+module.exports.goship = mongoose.model('goship', goshipSchema, 'goship');

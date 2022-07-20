@@ -445,8 +445,9 @@ module.exports.postprocess = function(pp_params, search_result){
 
   // declare some variables at scope
   let polished = []   // array of documents passing filters and munged to perfection to be returned
-  let keys = []       // data keys to keep 
+  let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data ketys that disqualify a document if present
+  let coerced_pressure = false
 
   // bail immediately if nothing came back from the data collection
   if(search_result[1].length == 0){
@@ -485,12 +486,16 @@ module.exports.postprocess = function(pp_params, search_result){
     /// bail out on this document if it contains any ~keys:
     if(dk.some(item => notkeys.includes(item))) continue
 
-    /// turn upstream units into a lookup table by data_key, for requested keys
+    /// force return of pressure for anything that has a pres data key
+    if(dk.includes('pres') && !keys.includes('pres')){
+      keys.push('pres')
+      coerced_pressure = true
+    }
+
+    /// turn upstream units into a lookup table by data_key
     let units = {}
     for(let k=0; k<dk.length; k++){
-      if(keys.includes(dk[k])){
-        units[dk[k]] = u[k]
-      }
+      units[dk[k]] = u[k]
     }
 
     /// reinflate data arrays as a dictionary keyed by depth, and only keep requested data
@@ -504,24 +509,24 @@ module.exports.postprocess = function(pp_params, search_result){
     for(let j=0; j<doc.data.length; j++){ // loop over levels
       let reinflate = {}
       for(k=0; k<doc.data[j].length; k++){ // loop over data variables
-        if( (keys.includes(dk[k]) || keys.includes('all')) && doc.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
+        if( (keys.includes(dk[k]) || keys.includes('all')) && !isNaN(doc.data[j][k]) && doc.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
           reinflate[dk[k]] = doc.data[j][k]
         }
       }
-      if(Object.keys(reinflate).length > 0){ // ie only keep levels that retained some data
+      if(Object.keys(reinflate).length > (coerced_pressure ? 1 : 0)){ // ie only keep levels that retained some data other than a coerced pressure record
         let lvl = metalevels ? metalevels[j] : reinflate.pres
         reinflated_levels[lvl] = reinflate
       }
     }
-    
-    let levels = []
+
     /// filter by presRange
+    let levels = []
     if(pp_params.presRange){
       levels = Object.keys(reinflated_levels).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
     } else {
-      levels = Object.keys(reinflated_levels).map(n=>Number(n)).sort((a,b)=>a>b) 
+      levels = Object.keys(reinflated_levels)
     }
-    levels = levels.map(n=>Number(n)).sort((a,b)=>a>b)
+    levels = levels.map(n=>Number(n)).sort((a,b)=>a-b)
 
     /// translate level-keyed dictionary back to a sorted list of per-level dictionaries
     if(metalevels){
@@ -529,27 +534,31 @@ module.exports.postprocess = function(pp_params, search_result){
       doc.levels = levels
     }
     doc.data = levels.map(k=>reinflated_levels[String(k)])
-    doc.units = units
 
     /// if we wanted data and none is left, abandon this document
-    if(keys.length>0 && doc.data.length==0) continue
+    if(keys.length>(coerced_pressure ? 1 : 0) && doc.data.length==0) continue
 
     /// drop data on metadata only requests
     if(!pp_params.data || pp_params.data.includes('metadata-only')){
       delete doc.data
       delete doc.levels
-      delete doc.units
+    }
+
+    /// manage data_keys and units
+    if(keys.includes('all') && !keys.includes('metadata-only')){
+      doc.data_keys = dk
+      doc.units = units
+    }
+    else if( (keys.length > (coerced_pressure ? 1 : 0)) && !keys.includes('metadata-only')){
+      doc.data_keys = keys
+      doc.units = units
+      for(const prop in units){
+        if(!keys.includes(prop)) delete doc.units[prop]
+      }
     }
 
     /// deflate data if requested
     if(pp_params.compression && pp_params.data && !pp_params.data.includes('metadata-only')){
-      if(keys.includes('all')){
-        // keep original data_keys list if the user wants everything
-        doc.data_keys = dk
-      } else {
-        // keep only the requested keys as data_keys if the user made a filtered request
-        doc.data_keys = keys
-      }
       doc.data = doc.data.map(x => {
         let lvl = []
         for(let ii=0; ii<doc.data_keys.length; ii++){
@@ -561,9 +570,8 @@ module.exports.postprocess = function(pp_params, search_result){
         }
         return lvl
       })
-      // turn doc.units into a list in the same order as doc.data_keys
-      doc.units = doc.data_keys.map(x => doc.units[x])
     }
+    doc.units = doc.data_keys.map(x => doc.units[x])
     polished.push(doc)
   }
 
