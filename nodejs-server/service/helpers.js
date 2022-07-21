@@ -537,7 +537,7 @@ module.exports.postprocess = function(pp_params, search_result){
 
     /// if we wanted data and none is left, abandon this document
     if(keys.length>(coerced_pressure ? 1 : 0) && doc.data.length==0) continue
-
+    console.log(1000, doc)
     /// drop data on metadata only requests
     if(!pp_params.data || pp_params.data.includes('metadata-only')){
       delete doc.data
@@ -572,7 +572,7 @@ module.exports.postprocess = function(pp_params, search_result){
       })
       doc.units = doc.data_keys.map(x => doc.units[x])
     }
-
+    console.log(2000, doc)
     polished.push(doc)
   }
 
