@@ -3556,295 +3556,585 @@ components:
             - type: object
               properties:
                 ammonium_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ammonium_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 bottle_latitude_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 bottle_longitude_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 bottle_number_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 bottle_number_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 bottle_time_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 carbon_tetrachloride_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 carbon_tetrachloride_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 cfc_113_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 cfc_113_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 cfc_11_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 cfc_11_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 cfc_12_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 cfc_12_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 chlorophyll_a_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 chlorophyll_a_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 chlorophyll_a_ug_kg_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 chlorophyll_a_ug_kg_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_beamcp_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_beamcp_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_fluor_arbitrary_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_fluor_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_fluor_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_fluor_raw_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_fluor_raw_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_fluor_raw_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_fluor_raw_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_number_of_observations_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_pressure_raw_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_temperature_unk_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_temperature_unk_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_transmissometer_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_transmissometer_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_transmissometer_raw_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_transmissometer_raw_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_transmissometer_raw_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_transmissometer_raw_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_carbon_13_dic_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_carbon_13_dic_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_carbon_14_dic_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_carbon_14_dic_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_carbon_14_dic_error_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_oxygen_18_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_oxygen_18_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 del_oxygen_18_error_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 delta_helium_3_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 delta_helium_3_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 delta_helium_3_error_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 dissolved_organic_carbon_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 dissolved_organic_carbon_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 dissolved_organic_nitrogen_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 dissolved_organic_nitrogen_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 doxy_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 doxy_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 doxy_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 doxy_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 fco2_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 fco2_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 fco2_temperature_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 helium_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 helium_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 helium_error_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 hplc_placeholder_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 methyl_chloroform_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 methyl_chloroform_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 neon_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 neon_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 neon_error_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrate_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrate_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrite_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrite_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrite_nitrate_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrite_nitrate_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrous_oxide_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 nitrous_oxide_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 oxygen_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 oxygen_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 oxygen_ml_l_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 oxygen_ml_l_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 par_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 par_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 partial_co2_temperature_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 partial_pressure_of_co2_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 partial_pressure_of_co2_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 particulate_organic_carbon_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 particulate_organic_carbon_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 particulate_organic_nitrogen_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 particulate_organic_nitrogen_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ph_sws_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ph_sws_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ph_temperature_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ph_total_h_scale_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ph_total_h_scale_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 phaeophytin_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 phaeophytin_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 phaeophytin_ug_l_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 phaeophytin_ug_l_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 phosphate_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 phosphate_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 potential_temperature_68_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 potential_temperature_c_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 pres:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 psal_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 psal_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 psal_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 psal_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 radium_226_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 radium_226_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 radium_228_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 radium_228_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ref_temperature_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ref_temperature_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ref_temperature_c_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 ref_temperature_c_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_pressure_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_pressure_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_temperature_90_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_temperature_90_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_temperature_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_temperature_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_temperature_c_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 rev_temperature_c_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 salinity_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 salinity_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 sample_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 sample_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 silicate_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 silicate_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 sulfur_hexifluoride_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 sulfur_hexifluoride_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 temperature_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 temperature_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 temperature_ctd:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 temperature_ctd_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 total_alkalinity_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 total_alkalinity_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 total_carbon_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 total_carbon_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 total_dissolved_nitrogen_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 total_dissolved_nitrogen_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 tritium_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 tritium_btl_woceqc:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
                 tritium_error_btl:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
       example:
         data_warning:
         - degenerate_levels
