@@ -2044,9 +2044,7 @@ components:
           type: array
           items:
             anyOf:
-            - type: array
-              items:
-                type: string
+            - type: string
             - type: object
               properties:
                 wind:
@@ -2200,9 +2198,7 @@ components:
           type: array
           items:
             anyOf:
-            - type: array
-              items:
-                type: string
+            - type: string
             - type: object
               properties:
                 ohc_kg:
@@ -3043,9 +3039,7 @@ components:
           type: array
           items:
             anyOf:
-            - type: array
-              items:
-                type: string
+            - type: string
             - type: object
               properties:
                 ve:
@@ -3261,9 +3255,7 @@ components:
           type: array
           items:
             anyOf:
-            - type: array
-              items:
-                type: string
+            - type: string
             - type: object
               properties:
                 ammonium_btl:
