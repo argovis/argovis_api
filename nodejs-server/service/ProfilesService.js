@@ -41,7 +41,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : [ "units", "units" ],
+  "units" : [ "", "" ],
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -67,7 +67,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : [ "units", "units" ],
+  "units" : [ "", "" ],
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"

@@ -97,8 +97,10 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
     examples['application/json'] = [ {
   "metadata" : "metadata",
   "data" : [ "", "" ],
+  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
+  "units" : [ "", "" ],
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -107,8 +109,10 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
 }, {
   "metadata" : "metadata",
   "data" : [ "", "" ],
+  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
+  "units" : [ "", "" ],
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
