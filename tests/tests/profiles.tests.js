@@ -10,6 +10,47 @@ $RefParser.dereference(rawspec, (err, schema) => {
     console.error(err);
   }
   else {
+
+    // goship
+
+    describe("GET /goship", function () {
+      it("searches for goship profiles, dont request data", async function () {
+        const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/goship'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /goship", function () {
+      it("searches for goship profiles with data=metadata-only", async function () {
+        const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=metadata-only").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/goship'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /goship", function () {
+      it("goship metadata-only should still have units and data_keys", async function () {
+        const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=metadata-only").set({'x-argokey': 'developer'});
+        expect(response.body[0]).to.contain.keys('data_keys', 'units')
+      });
+    });
+
+    /// fetch with data filter, get correct data
+    ///                         get correct data_keys
+    ///                         get correct units
+    /// fetch with data= all,   get correct data
+    ///                         get correct data_keys
+    ///                         get correct units
+    /// delete a level with only coerced pressure
+    /// delete a profile with no requested data
+    /// units are dict uncompressed
+    /// units are list compressed
+    /// data_keys correctly filtered
+    /// unitys correctly filtered
+    /// pressure sorted correctly
+
+
+    // legacy profiles route
+
     describe("GET /profiles", function () {
       it("searches for profiles by date", async function () {
         const response = await request.get("/profiles?startDate=2006-04-15T00:00:00.000Z&endDate=2006-04-16T00:00:00.000Z&compression=basic").set({'x-argokey': 'developer'});
