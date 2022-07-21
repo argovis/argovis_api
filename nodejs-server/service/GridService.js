@@ -36,6 +36,7 @@ exports.findgridMeta = function(id) {
  **/
 exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
+
     // generic helper for all grid search and filter routes
 
     // input sanitization
