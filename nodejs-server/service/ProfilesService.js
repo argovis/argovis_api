@@ -23,6 +23,7 @@ const geojsonArea = require('@mapbox/geojson-area');
  **/
 exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
+
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){
