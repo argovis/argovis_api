@@ -448,6 +448,7 @@ module.exports.postprocess = function(pp_params, search_result){
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data ketys that disqualify a document if present
   let coerced_pressure = false
+  let metadata_only = false
 
   // bail immediately if nothing came back from the data collection
   if(search_result[1].length == 0){
@@ -465,6 +466,10 @@ module.exports.postprocess = function(pp_params, search_result){
   if(pp_params.data){
     keys = pp_params.data.filter(e => e.charAt(0)!='~')
     notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
+    if(keys.includes('metadata-only')){
+      metadata_only = true
+      keys.splice(keys.indexOf('metadata-only'))
+    }
   }
 
   // loop through documents and let the munging begin
@@ -537,19 +542,19 @@ module.exports.postprocess = function(pp_params, search_result){
 
     /// if we wanted data and none is left, abandon this document
     if(keys.length>(coerced_pressure ? 1 : 0) && doc.data.length==0) continue
-    console.log(1000, doc)
+
     /// drop data on metadata only requests
-    if(!pp_params.data || pp_params.data.includes('metadata-only')){
+    if(!pp_params.data || metadata_only){
       delete doc.data
       delete doc.levels
     }
 
     /// manage data_keys and units
-    if(keys.includes('all') && !keys.includes('metadata-only')){
+    if(keys.includes('all') && !metadata_only){
       doc.data_keys = dk
       doc.units = units
     }
-    else if( (keys.length > (coerced_pressure ? 1 : 0)) && !keys.includes('metadata-only')){
+    else if( (keys.length > (coerced_pressure ? 1 : 0)) && !metadata_only){
       doc.data_keys = keys
       doc.units = units
       for(const prop in units){
@@ -558,7 +563,7 @@ module.exports.postprocess = function(pp_params, search_result){
     }
 
     /// deflate data if requested
-    if(pp_params.compression && pp_params.data && !pp_params.data.includes('metadata-only')){
+    if(pp_params.compression && pp_params.data && !metadata_only){
       doc.data = doc.data.map(x => {
         let lvl = []
         for(let ii=0; ii<doc.data_keys.length; ii++){
@@ -572,7 +577,7 @@ module.exports.postprocess = function(pp_params, search_result){
       })
       doc.units = doc.data_keys.map(x => doc.units[x])
     }
-    console.log(2000, doc)
+
     polished.push(doc)
   }
 

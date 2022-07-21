@@ -34,9 +34,48 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    /// fetch with data filter, get correct data
-    ///                         get correct data_keys
-    ///                         get correct units
+    describe("GET /goship", function () {
+      it("goship with data filter should return goship-consistent data", async function () {
+        const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/goship'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /goship", function () {
+      it("goship with data filter should return correct data_keys", async function () {
+        const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys).to.have.members(['salinity_btl','oxygen_btl','pres'])
+      });
+    });
+
+    describe("GET /goship", function () {
+      it("goship with data filter should return correct units", async function () {
+        const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal({'salinity_btl':"psu",'oxygen_btl':"micromole/kg",'pres':"decibar"})
+      });
+    });
+
+    describe("GET /goship", function () {
+      it("goship with data=all filter should return goship-consistent data", async function () {
+        const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/goship'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    // describe("GET /goship", function () {
+    //   it("goship with data filter should return correct data_keys", async function () {
+    //     const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
+    //     expect(response.body[0].data_keys).to.have.members(['salinity_btl','oxygen_btl','pres'])
+    //   });
+    // });
+
+    // describe("GET /goship", function () {
+    //   it("goship with data filter should return correct units", async function () {
+    //     const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
+    //     expect(response.body[0].units).to.deep.equal({'salinity_btl':"psu",'oxygen_btl':"micromole/kg",'pres':"decibar"})
+    //   });
+    // });
+
     /// fetch with data= all,   get correct data
     ///                         get correct data_keys
     ///                         get correct units
