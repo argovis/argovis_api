@@ -11,6 +11,76 @@ $RefParser.dereference(rawspec, (err, schema) => {
   }
   else {
     
+    describe("GET /tc", function () {
+      it("searches for tc records, dont request data", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/tc'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("searches for tc profiles with data=metadata-only", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=metadata-only").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/tc'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc with data filter should return tc-consistent data", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind,surface_pressure").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/tc'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc with data filter should return correct data_keys", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind,surface_pressure").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys).to.have.members(['wind','surface_pressure'])
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc with data filter should return correct units", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind,surface_pressure").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal({'wind':"kt",'surface_pressure':"mb"})
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc with data filter should return correct units, as a list when compressed", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind,surface_pressure&compression=basic").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal(["kt","mb"])
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc with data=all filter should return tc-consistent data", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=all").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/tc'].get.responses['200'].content['application/json'].schema);
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc with data=all filter should return correct data_keys", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=all").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys).to.have.members(["wind","surface_pressure"])
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc with data=all filter should return correct units", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=all").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal({"wind":"kt", "surface_pressure":"mb"})
+      });
+    });
+
+    describe("GET /tc", function () {
+      it("tc profile should be dropped if no requested data is available", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=surface_pressure").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
+
     describe("GET /tc?startDate&endDate", function () {
       it("returns one tropical cyclone result within the requested range", async function () {
         const response = await request.get("/tc?startDate=1851-06-24T23:00:00Z&endDate=1851-06-25T01:00:00Z&data=wind").set({'x-argokey': 'developer'});
@@ -44,14 +114,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/tc/vocabulary?parameter=name").set({'x-argokey': 'developer'});
         expect(response.body).to.have.members(['DEMO', 'UNNAMED']) 
       });
-    }); 
-
-    // describe("GET /tc/stormNameList", function () {
-    //   it("fetch a list of storm names", async function () {
-    //     const response = await request.get("/tc/stormNameList").set({'x-argokey': 'developer'});
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/tc/stormNameList'].get.responses['200'].content['application/json'].schema);   
-    //   });
-    // });  
+    });  
   }
 })
 

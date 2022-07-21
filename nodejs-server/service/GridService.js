@@ -36,6 +36,7 @@ exports.findgridMeta = function(id) {
  **/
 exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
+
     // generic helper for all grid search and filter routes
 
     // input sanitization
@@ -88,7 +89,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
     // send both metafilter and datafilter results to postprocessing:
     Promise.all([metafilter, datafilter, metalookup])
         .then(search_result => {return helpers.postprocess(pp_params, search_result)})
-        .then(result => resolve(result))
+        .then(result => { if(result.hasOwnProperty('code')) reject(result); else resolve(result)})
         .catch(err => reject({"code": 500, "message": "Server error"}))
 
   });
