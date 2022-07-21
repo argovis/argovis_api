@@ -25,7 +25,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
   "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : [ "", "" ],
+  "units" : "",
   "record_identifier" : "record_identifier",
   "class" : "class",
   "geolocation" : {
@@ -39,7 +39,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
   "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : [ "", "" ],
+  "units" : "",
   "record_identifier" : "record_identifier",
   "class" : "class",
   "geolocation" : {

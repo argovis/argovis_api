@@ -26,7 +26,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : [ "", "" ],
+  "units" : "",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -38,7 +38,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : [ "", "" ],
+  "units" : "",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
