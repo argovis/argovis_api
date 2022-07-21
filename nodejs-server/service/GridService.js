@@ -89,7 +89,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
     // send both metafilter and datafilter results to postprocessing:
     Promise.all([metafilter, datafilter, metalookup])
         .then(search_result => {return helpers.postprocess(pp_params, search_result)})
-        .then(result => resolve(result))
+        .then(result => { if(result.hasOwnProperty('code')) reject(result); else resolve(result)})
         .catch(err => reject({"code": 500, "message": "Server error"}))
 
   });
