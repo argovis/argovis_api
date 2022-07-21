@@ -570,10 +570,9 @@ module.exports.postprocess = function(pp_params, search_result){
         }
         return lvl
       })
-    }
-    if(doc.hasOwnProperty('units') && doc.hasOwnProperty('data_keys')){
       doc.units = doc.data_keys.map(x => doc.units[x])
     }
+
     polished.push(doc)
   }
 
