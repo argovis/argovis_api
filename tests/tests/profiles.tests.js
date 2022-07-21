@@ -70,14 +70,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /goship", function () {
-      it("goship with data filter should return correct data_keys", async function () {
+      it("goship with data=all filter should return correct data_keys", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
         expect(response.body[0].data_keys).to.have.members([ "temperature_ctd_woceqc", "psal_ctd_woceqc", "bottle_number_btl_woceqc", "salinity_btl", "oxygen_btl", "oxygen_btl_woceqc", "ctd_pressure_raw_btl", "psal_btl", "temperature_btl_woceqc", "doxy_ctd", "psal_btl_woceqc", "psal_ctd", "temperature_btl", "doxy_ctd_woceqc", "salinity_btl_woceqc", "sample_ctd", "sample_btl", "pres", "bottle_number_btl", "temperature_ctd", "potential_temperature_c_btl" ])
       });
     });
 
     describe("GET /goship", function () {
-      it("goship with data filter should return correct units", async function () {
+      it("goship with data=all filter should return correct units", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
         expect(response.body[0].units).to.deep.equal({"temperature_ctd_woceqc": 'null',"psal_ctd_woceqc": 'null',"bottle_number_btl_woceqc": 'null',"salinity_btl": "psu","oxygen_btl": "micromole/kg","oxygen_btl_woceqc": 'null',"ctd_pressure_raw_btl": "decibar","psal_btl": "psu","temperature_btl_woceqc": 'null',"doxy_ctd": 'null',"psal_btl_woceqc": 'null',"psal_ctd": 'null',"temperature_btl": "Celsius","doxy_ctd_woceqc": 'null',"salinity_btl_woceqc": 'null',"sample_ctd": 'null',"sample_btl": 'null',"pres": "decibar","bottle_number_btl": 'null',"temperature_ctd": 'null',"potential_temperature_c_btl": "Celsius"})
       });
