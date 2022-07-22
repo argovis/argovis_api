@@ -96,6 +96,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
 exports.findGoshipmeta = function(id,woceline,cchdo_cruise) {
   return new Promise(function(resolve, reject) {
     let match = {
+        '_id': id,
         'woce_lines': woceline,
         'cchdo_cruise_id': cchdo_cruise
     }

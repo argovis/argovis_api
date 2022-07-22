@@ -95,7 +95,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-
+    describe("GET /grids/meta", function () {
+      it("grid metadata", async function () {
+        const response = await request.get("/grids/meta?id=ohc_kg").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/grids/meta'].get.responses['200'].content['application/json'].schema);
+      });
+    }); 
 
 
     describe("GET /grids/ohc_kg", function () {
