@@ -442,7 +442,7 @@ module.exports.postprocess = function(pp_params, search_result){
   // <search_result>[1] the array of documents returned from the data collection for this search,
   // and <search_results>[2] the array of documents retuned from the metadata collection corresponding to the metadata pointers of <search_result>[1] if not present in <search_result>[0],
   // perform the requested filters and transforms
-  console.log(search_result)
+
   // declare some variables at scope
   let polished = []   // array of documents passing filters and munged to perfection to be returned
   let keys = []       // data keys to keep when filtering down data
