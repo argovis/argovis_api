@@ -534,8 +534,8 @@ module.exports.postprocess = function(pp_params, search_result){
     levels = levels.map(n=>Number(n)).sort((a,b)=>a-b)
 
     /// translate level-keyed dictionary back to a sorted list of per-level dictionaries
-    if(metalevels){
-      /// need to make a levels property on the data document that overrides the levels property on the metadata doc, for grid-like objects
+    if(metalevels && pp_params.presRange){
+      /// need to make a levels property on the data document that overrides the levels property on the metadata doc if level filtering has happened, for grid-like objects
       doc.levels = levels
     }
     doc.data = levels.map(k=>reinflated_levels[String(k)])
