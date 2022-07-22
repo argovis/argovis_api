@@ -33,6 +33,9 @@ module.exports.gridVocab = function gridVocab (req, res, next) {
   Grid.gridVocab()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
