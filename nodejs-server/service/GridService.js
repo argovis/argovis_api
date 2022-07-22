@@ -118,3 +118,21 @@ exports.findgridMeta = function(id) {
   });
 }
 
+
+/**
+ * List all grid names currently available
+ *
+ * returns List
+ **/
+exports.gridVocab = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+

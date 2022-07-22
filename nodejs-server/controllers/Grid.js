@@ -22,3 +22,13 @@ module.exports.findgridMeta = function findgridMeta (req, res, next, id) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.gridVocab = function gridVocab (req, res, next) {
+  Grid.gridVocab()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
