@@ -94,3 +94,20 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
 
   });
 }
+
+/**
+ * List all grid names currently available
+ *
+ * returns List
+ **/
+exports.gridVocab = function() {
+  return new Promise(function(resolve, reject) {
+    Grid['gridMeta'].find().distinct('data_keys', function (err, vocab) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+      resolve(vocab)
+    })
+  });
+}
