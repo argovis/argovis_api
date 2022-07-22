@@ -63,7 +63,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
         }
         Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
-        metafilter = Drifter['drifterMeta'].aggregate([{$match: match}]).exec()
+        metafilter = goship['goshipMeta'].aggregate([{$match: match}]).exec()
         metacomplete = true
     }
 

@@ -114,6 +114,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });    
 
+    describe("GET /goship", function () {
+      it("goship data filtered by woceline", async function () {
+        const response = await request.get("/goship?woceline=AR08").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/goship'].get.responses['200'].content['application/json'].schema);
+      });
+    }); 
+
     // legacy profiles route
 
     describe("GET /profiles", function () {
