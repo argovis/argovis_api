@@ -490,6 +490,39 @@
             }
          }
       },
+      "/grids/vocabulary": {
+         "get": {
+            "tags": [
+               "grid"
+            ],
+            "summary": "List all grid names currently available",
+            "operationId": "gridVocab",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/goship": {
          "get": {
             "tags": [
