@@ -114,7 +114,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/tc/vocabulary?parameter=name").set({'x-argokey': 'developer'});
         expect(response.body).to.have.members(['DEMO', 'UNNAMED']) 
       });
-    });  
+    });
   }
 })
 
