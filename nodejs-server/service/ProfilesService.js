@@ -1,6 +1,7 @@
 'use strict';
 const Profile = require('../models/profile');
 const goship = require('../models/goship');
+const argo = require('../models/argo');
 const helpers = require('./helpers')
 const geojsonArea = require('@mapbox/geojson-area');
 
@@ -23,75 +24,76 @@ const geojsonArea = require('@mapbox/geojson-area');
  **/
 exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "metadata" : "metadata",
-  "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ "", "" ],
-  "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "vertical_sampling_scheme" : "vertical_sampling_scheme",
-  "cycle_number" : 6.027456183070403,
-  "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "profile_direction" : "profile_direction",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "metadata" : "metadata",
-  "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ "", "" ],
-  "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "vertical_sampling_scheme" : "vertical_sampling_scheme",
-  "cycle_number" : 6.027456183070403,
-  "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "profile_direction" : "profile_direction",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
     }
+
+    // decide y/n whether to service this request
+    let bailout = helpers.request_sanitation(params.startDate, params.endDate, params.polygon, null, params.center, params.radius, params.multipolygon, id||platform) 
+    if(bailout){
+      //request looks huge or malformed, reject it
+      reject(bailout)
+      return
+    }
+
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = []
+    if(id){
+        local_filter = [{$match:{'_id':id}}]
+    }
+
+    // custom addition for argo: negatable, array-based source.source matching:
+    if(source){
+      let sourcematch = {}
+      let smatches = source.filter(e => e.charAt(0)!='~')
+      let snegations = source.filter(e => e.charAt(0)=='~').map(x => x.substring(1))
+      if(smatches.length > 0 && snegations.length > 0){
+        sourcematch['source.source'] = {'$all': smatches, '$nin': snegations}
+      } else if (smatches.length > 0){
+        sourcematch['source.source'] = {'$all': smatches}
+      } else if (snegations.length > 0){
+        sourcematch['source.source'] = {'$nin': snegations}
+      }
+      local_filter.push({$match: sourcematch})
+    }
+
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        data: data,
+        presRange: presRange
+    }
+
+    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+    let metafilter = Promise.resolve(null)
+    let metacomplete = false
+    if(platform){
+        let match = {
+            'platform': platform
+        }
+
+        metafilter = argo['argoMeta'].aggregate([{$match: match}]).exec()
+        metacomplete = true
+    }
+
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_match.bind(null, argo['argo'], params, local_filter))
+
+    // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
+    let metalookup = Promise.resolve(null)
+    if(!metacomplete){
+        metalookup = datafilter.then(helpers.meta_lookup.bind(null, goship['argoMeta']))
+    }
+
+    // send both metafilter and datafilter results to postprocessing:
+    Promise.all([metafilter, datafilter, metalookup])
+        .then(search_result => {return helpers.postprocess(pp_params, search_result)})
+        .then(result => { if(result.hasOwnProperty('code')) reject(result); else resolve(result)})
+        .catch(err => reject({"code": 500, "message": "Server error"}))
   });
 }
 
@@ -105,43 +107,14 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
  **/
 exports.findArgometa = function(id,platform) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "country" : "country",
-  "positioning_system" : "positioning_system",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "units" : "",
-  "platform" : "platform",
-  "platform_type" : "platform_type",
-  "wmo_inst_type" : "wmo_inst_type",
-  "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring"
-}, {
-  "country" : "country",
-  "positioning_system" : "positioning_system",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "units" : "",
-  "platform" : "platform",
-  "platform_type" : "platform_type",
-  "wmo_inst_type" : "wmo_inst_type",
-  "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    let match = {
+        '_id': id,
+        'platform': platform
     }
+    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+
+    const query = argo['argoMeta'].aggregate([{$match:match}]);
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 

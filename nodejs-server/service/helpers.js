@@ -491,9 +491,9 @@ module.exports.postprocess = function(pp_params, search_result){
     /// bail out on this document if it contains any ~keys:
     if(dk.some(item => notkeys.includes(item))) continue
 
-    /// force return of pressure for anything that has a pres data key
-    if(dk.includes('pres') && !keys.includes('pres')){
-      keys.push('pres')
+    /// force return of pressure for anything that has a pressure data key
+    if(dk.includes('pressure') && !keys.includes('pressure')){
+      keys.push('pressure')
       coerced_pressure = true
     }
 
@@ -508,7 +508,7 @@ module.exports.postprocess = function(pp_params, search_result){
     let metalevels = null
     if(meta_lookup[doc.metadata].hasOwnProperty('levels')){
       metalevels = meta_lookup[doc.metadata].levels // relevant for grids
-    } else if (!dk.includes('pres')){
+    } else if (!dk.includes('pressure')){
       metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pres key, since they're all implicitly single-level pres=0 surface measurements
     }
     for(let j=0; j<doc.data.length; j++){ // loop over levels

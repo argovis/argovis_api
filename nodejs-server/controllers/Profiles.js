@@ -7,6 +7,9 @@ module.exports.findArgo = function findArgo (req, res, next, id, startDate, endD
   Profiles.findArgo(id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -17,6 +20,9 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
   Profiles.findArgometa(id, platform)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
