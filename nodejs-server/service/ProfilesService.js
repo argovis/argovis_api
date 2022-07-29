@@ -86,7 +86,7 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
     // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
     let metalookup = Promise.resolve(null)
     if(!metacomplete){
-        metalookup = datafilter.then(helpers.meta_lookup.bind(null, goship['argoMeta']))
+        metalookup = datafilter.then(helpers.meta_lookup.bind(null, argo['argoMeta']))
     }
 
     // send both metafilter and datafilter results to postprocessing:

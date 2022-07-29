@@ -391,7 +391,7 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   let spacetimeMatch = []
   let proxMatch = []
   let foreignMatch = []
-  
+
   // construct match stages as required
   /// prox match construction
   if(params.center && params.radius) {
@@ -519,7 +519,7 @@ module.exports.postprocess = function(pp_params, search_result){
         }
       }
       if(Object.keys(reinflate).length > (coerced_pressure ? 1 : 0)){ // ie only keep levels that retained some data other than a coerced pressure record
-        let lvl = metalevels ? metalevels[j] : reinflate.pres
+        let lvl = metalevels ? metalevels[j] : reinflate.pressure
         reinflated_levels[lvl] = reinflate
       }
     }

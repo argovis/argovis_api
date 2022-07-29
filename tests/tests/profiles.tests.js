@@ -44,14 +44,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /goship", function () {
       it("goship with data filter should return correct data_keys", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members(['salinity_btl','oxygen_btl','pres'])
+        expect(response.body[0].data_keys).to.have.members(['salinity_btl','oxygen_btl','pressure'])
       });
     });
 
     describe("GET /goship", function () {
       it("goship with data filter should return correct units", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal({'salinity_btl':"psu",'oxygen_btl':"micromole/kg",'pres':"decibar"})
+        expect(response.body[0].units).to.deep.equal({'salinity_btl':"psu",'oxygen_btl':"micromole/kg",'pressure':"decibar"})
       });
     });
 
@@ -72,21 +72,21 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /goship", function () {
       it("goship with data=all filter should return correct data_keys", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members([ "temperature_ctd_woceqc", "psal_ctd_woceqc", "bottle_number_btl_woceqc", "salinity_btl", "oxygen_btl", "oxygen_btl_woceqc", "ctd_pressure_raw_btl", "psal_btl", "temperature_btl_woceqc", "doxy_ctd", "psal_btl_woceqc", "psal_ctd", "temperature_btl", "doxy_ctd_woceqc", "salinity_btl_woceqc", "sample_ctd", "sample_btl", "pres", "bottle_number_btl", "temperature_ctd", "potential_temperature_c_btl" ])
+        expect(response.body[0].data_keys).to.have.members([ "temperature_ctd_woceqc", "psal_ctd_woceqc", "bottle_number_btl_woceqc", "salinity_btl", "oxygen_btl", "oxygen_btl_woceqc", "ctd_pressure_raw_btl", "psal_btl", "temperature_btl_woceqc", "doxy_ctd", "psal_btl_woceqc", "psal_ctd", "temperature_btl", "doxy_ctd_woceqc", "salinity_btl_woceqc", "sample_ctd", "sample_btl", "pressure", "bottle_number_btl", "temperature_ctd", "potential_temperature_c_btl" ])
       });
     });
 
     describe("GET /goship", function () {
       it("goship with data=all filter should return correct units", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal({"temperature_ctd_woceqc": 'null',"psal_ctd_woceqc": 'null',"bottle_number_btl_woceqc": 'null',"salinity_btl": "psu","oxygen_btl": "micromole/kg","oxygen_btl_woceqc": 'null',"ctd_pressure_raw_btl": "decibar","psal_btl": "psu","temperature_btl_woceqc": 'null',"doxy_ctd": 'null',"psal_btl_woceqc": 'null',"psal_ctd": 'null',"temperature_btl": "Celsius","doxy_ctd_woceqc": 'null',"salinity_btl_woceqc": 'null',"sample_ctd": 'null',"sample_btl": 'null',"pres": "decibar","bottle_number_btl": 'null',"temperature_ctd": 'null',"potential_temperature_c_btl": "Celsius"})
+        expect(response.body[0].units).to.deep.equal({"temperature_ctd_woceqc": 'null',"psal_ctd_woceqc": 'null',"bottle_number_btl_woceqc": 'null',"salinity_btl": "psu","oxygen_btl": "micromole/kg","oxygen_btl_woceqc": 'null',"ctd_pressure_raw_btl": "decibar","psal_btl": "psu","temperature_btl_woceqc": 'null',"doxy_ctd": 'null',"psal_btl_woceqc": 'null',"psal_ctd": 'null',"temperature_btl": "Celsius","doxy_ctd_woceqc": 'null',"salinity_btl_woceqc": 'null',"sample_ctd": 'null',"sample_btl": 'null',"pressure": "decibar","bottle_number_btl": 'null',"temperature_ctd": 'null',"potential_temperature_c_btl": "Celsius"})
       });
     });
 
     describe("GET /goship", function () {
       it("goship levels should get dropped if they dont have requested data", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=salinity_btl").set({'x-argokey': 'developer'});
-        expect(response.body[0].data[0]['pres']).to.eql(3.5)
+        expect(response.body[0].data[0]['pressure']).to.eql(3.5)
       });
     });
 
@@ -100,7 +100,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /goship", function () {
       it("goship levels should come out sorted by pressure", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-        p = response.body[0].data.map(x => x.pres)
+        p = response.body[0].data.map(x => x.pressure)
         pp = JSON.parse(JSON.stringify(p))
         pp.sort((a,b)=>a-b)
         expect(p).to.deep.equal(pp)
@@ -167,7 +167,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /argo", function () {
       it("argo with data filter should return correct units, as a list when compressed", async function () {
-        const response = await request.get("/argo?id=4901283_021&data=salinity,oxygen&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/argo?id=4901283_021&data=salinity,doxy&compression=basic").set({'x-argokey': 'developer'});
         expect(response.body[0].units).to.deep.equal(["psu","micromole/kg","decibar"])
       });
     });
@@ -225,8 +225,8 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });    
 
     describe("GET /argo", function () {
-      it("argo data filtered by woceline", async function () {
-        const response = await request.get("/argo?platform=2900448").set({'x-argokey': 'developer'});
+      it("argo data filtered by platform", async function () {
+        const response = await request.get("/argo?platform=4901283").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
       });
     }); 
