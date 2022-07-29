@@ -1059,6 +1059,239 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Profiles
+  /argo:
+    get:
+      tags:
+      - profiles
+      summary: Argo search and filter.
+      operationId: findArgo
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      - name: source
+        in: query
+        description: Experimental program source(s) to search for; document must match
+          all sources to be returned. Accepts ~ negation to filter out documents.
+          See /profiles/vocabulary?parameter=source for list of options.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "argo_bgc,~argo_core"
+          items:
+            type: string
+      - name: compression
+        in: query
+        description: Data compression strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: basic-minification
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "temperature,~doxy"
+          items:
+            pattern: "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pres)|(psal)|(psal_sfile)|(temp)|(temp_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})(_argoqc)?|all|metadata-only)$"
+            type: string
+      - name: presRange
+        in: query
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/argo'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /argo/meta:
+    get:
+      tags:
+      - profiles
+      summary: Argo metadata search and filter.
+      operationId: findArgometa
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/argoMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
   /profiles:
     get:
       tags:
@@ -3587,7 +3820,9 @@ components:
             anyOf:
             - type: array
               items:
-                type: number
+                anyOf:
+                - type: string
+                - type: number
             - type: object
               properties:
                 ammonium_btl:
@@ -4228,6 +4463,10 @@ components:
           type: string
         instrument:
           type: string
+        pi_name:
+          type: array
+          items:
+            type: string
         expocode:
           type: string
         cchdo_cruise_id:
@@ -4242,12 +4481,600 @@ components:
         woce_lines:
         - woce_lines
         - woce_lines
+        pi_name:
+        - pi_name
+        - pi_name
         cchdo_cruise_id: 0.80082819046101150206595775671303272247314453125
         data_type: data_type
         data_center: data_center
         instrument: instrument
         _id: _id
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    argo:
+      required:
+      - _id
+      - basin
+      - cycle_number
+      - date_updated_argovis
+      - geolocation
+      - metadata
+      - source
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        metadata:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: array
+          items:
+            anyOf:
+            - type: array
+              items:
+                type: number
+            - type: object
+              properties:
+                bbp470:
+                  type: number
+                bbp532:
+                  type: number
+                bbp700:
+                  type: number
+                bbp700_2:
+                  type: number
+                bisulfide:
+                  type: number
+                cdom:
+                  type: number
+                chla:
+                  type: number
+                cndc:
+                  type: number
+                cndx:
+                  type: number
+                cp660:
+                  type: number
+                down_irradiance380:
+                  type: number
+                down_irradiance412:
+                  type: number
+                down_irradiance442:
+                  type: number
+                down_irradiance443:
+                  type: number
+                down_irradiance490:
+                  type: number
+                down_irradiance555:
+                  type: number
+                down_irradiance670:
+                  type: number
+                downwelling_par:
+                  type: number
+                doxy:
+                  type: number
+                doxy2:
+                  type: number
+                doxy3:
+                  type: number
+                molar_doxy:
+                  type: number
+                nitrate:
+                  type: number
+                ph_in_situ_total:
+                  type: number
+                pres:
+                  type: number
+                psal:
+                  type: number
+                psal_sfile:
+                  type: number
+                temp:
+                  type: number
+                temp_sfile:
+                  type: number
+                turbidity:
+                  type: number
+                up_radiance412:
+                  type: number
+                up_radiance443:
+                  type: number
+                up_radiance490:
+                  type: number
+                up_radiance555:
+                  type: number
+                bbp470_argoqc:
+                  type: number
+                bbp532_argoqc:
+                  type: number
+                bbp700_argoqc:
+                  type: number
+                bbp700_2_argoqc:
+                  type: number
+                bisulfide_argoqc:
+                  type: number
+                cdom_argoqc:
+                  type: number
+                chla_argoqc:
+                  type: number
+                cndc_argoqc:
+                  type: number
+                cndx_argoqc:
+                  type: number
+                cp660_argoqc:
+                  type: number
+                down_irradiance380_argoqc:
+                  type: number
+                down_irradiance412_argoqc:
+                  type: number
+                down_irradiance442_argoqc:
+                  type: number
+                down_irradiance443_argoqc:
+                  type: number
+                down_irradiance490_argoqc:
+                  type: number
+                down_irradiance555_argoqc:
+                  type: number
+                down_irradiance670_argoqc:
+                  type: number
+                downwelling_par_argoqc:
+                  type: number
+                doxy_argoqc:
+                  type: number
+                doxy2_argoqc:
+                  type: number
+                doxy3_argoqc:
+                  type: number
+                molar_doxy_argoqc:
+                  type: number
+                nitrate_argoqc:
+                  type: number
+                ph_in_situ_total_argoqc:
+                  type: number
+                pres_argoqc:
+                  type: number
+                psal_argoqc:
+                  type: number
+                psal_sfile_argoqc:
+                  type: number
+                temp_argoqc:
+                  type: number
+                temp_sfile_argoqc:
+                  type: number
+                turbidity_argoqc:
+                  type: number
+                up_radiance412_argoqc:
+                  type: number
+                up_radiance443_argoqc:
+                  type: number
+                up_radiance490_argoqc:
+                  type: number
+                up_radiance555_argoqc:
+                  type: number
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        data_warning:
+          type: array
+          items:
+            type: string
+            enum:
+            - degenerate_levels
+            - missing_basin
+            - missing_location
+            - missing_timestamp
+        data_keys:
+          type: array
+          items:
+            type: string
+        units:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              bbp470:
+                type: string
+              bbp532:
+                type: string
+              bbp700:
+                type: string
+              bbp700_2:
+                type: string
+              bisulfide:
+                type: string
+              cdom:
+                type: string
+              chla:
+                type: string
+              cndc:
+                type: string
+              cndx:
+                type: string
+              cp660:
+                type: string
+              down_irradiance380:
+                type: string
+              down_irradiance412:
+                type: string
+              down_irradiance442:
+                type: string
+              down_irradiance443:
+                type: string
+              down_irradiance490:
+                type: string
+              down_irradiance555:
+                type: string
+              down_irradiance670:
+                type: string
+              downwelling_par:
+                type: string
+              doxy:
+                type: string
+              doxy2:
+                type: string
+              doxy3:
+                type: string
+              molar_doxy:
+                type: string
+              nitrate:
+                type: string
+              ph_in_situ_total:
+                type: string
+              pres:
+                type: string
+              psal:
+                type: string
+              psal_sfile:
+                type: string
+              temp:
+                type: string
+              temp_sfile:
+                type: string
+              turbidity:
+                type: string
+              up_radiance412:
+                type: string
+              up_radiance443:
+                type: string
+              up_radiance490:
+                type: string
+              up_radiance555:
+                type: string
+              bbp470_argoqc:
+                type: string
+              bbp532_argoqc:
+                type: string
+              bbp700_argoqc:
+                type: string
+              bbp700_2_argoqc:
+                type: string
+              bisulfide_argoqc:
+                type: string
+              cdom_argoqc:
+                type: string
+              chla_argoqc:
+                type: string
+              cndc_argoqc:
+                type: string
+              cndx_argoqc:
+                type: string
+              cp660_argoqc:
+                type: string
+              down_irradiance380_argoqc:
+                type: string
+              down_irradiance412_argoqc:
+                type: string
+              down_irradiance442_argoqc:
+                type: string
+              down_irradiance443_argoqc:
+                type: string
+              down_irradiance490_argoqc:
+                type: string
+              down_irradiance555_argoqc:
+                type: string
+              down_irradiance670_argoqc:
+                type: string
+              downwelling_par_argoqc:
+                type: string
+              doxy_argoqc:
+                type: string
+              doxy2_argoqc:
+                type: string
+              doxy3_argoqc:
+                type: string
+              molar_doxy_argoqc:
+                type: string
+              nitrate_argoqc:
+                type: string
+              ph_in_situ_total_argoqc:
+                type: string
+              pres_argoqc:
+                type: string
+              psal_argoqc:
+                type: string
+              psal_sfile_argoqc:
+                type: string
+              temp_argoqc:
+                type: string
+              temp_sfile_argoqc:
+                type: string
+              turbidity_argoqc:
+                type: string
+              up_radiance412_argoqc:
+                type: string
+              up_radiance443_argoqc:
+                type: string
+              up_radiance490_argoqc:
+                type: string
+              up_radiance555_argoqc:
+                type: string
+        cycle_number:
+          type: number
+        data_keys_mode:
+          type: array
+          items:
+            type: string
+        geolocation_argoqc:
+          type: number
+        profile_direction:
+          type: string
+        timestamp_argoqc:
+          type: number
+        vertical_sampling_scheme:
+          type: string
+      example:
+        metadata: metadata
+        geolocation_argoqc: 1.46581298050294517310021547018550336360931396484375
+        data:
+        - ""
+        - ""
+        data_keys_mode:
+        - data_keys_mode
+        - data_keys_mode
+        basin: 0.80082819046101150206595775671303272247314453125
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        units: ""
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        data_warning:
+        - degenerate_levels
+        - degenerate_levels
+        vertical_sampling_scheme: vertical_sampling_scheme
+        cycle_number: 6.02745618307040320615897144307382404804229736328125
+        timestamp_argoqc: 5.962133916683182377482808078639209270477294921875
+        data_keys:
+        - data_keys
+        - data_keys
+        _id: _id
+        profile_direction: profile_direction
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    argoMeta:
+      required:
+      - _id
+      - data_type
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        data_keys:
+          type: array
+          items:
+            type: string
+        units:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              bbp470:
+                type: string
+              bbp532:
+                type: string
+              bbp700:
+                type: string
+              bbp700_2:
+                type: string
+              bisulfide:
+                type: string
+              cdom:
+                type: string
+              chla:
+                type: string
+              cndc:
+                type: string
+              cndx:
+                type: string
+              cp660:
+                type: string
+              down_irradiance380:
+                type: string
+              down_irradiance412:
+                type: string
+              down_irradiance442:
+                type: string
+              down_irradiance443:
+                type: string
+              down_irradiance490:
+                type: string
+              down_irradiance555:
+                type: string
+              down_irradiance670:
+                type: string
+              downwelling_par:
+                type: string
+              doxy:
+                type: string
+              doxy2:
+                type: string
+              doxy3:
+                type: string
+              molar_doxy:
+                type: string
+              nitrate:
+                type: string
+              ph_in_situ_total:
+                type: string
+              pres:
+                type: string
+              psal:
+                type: string
+              psal_sfile:
+                type: string
+              temp:
+                type: string
+              temp_sfile:
+                type: string
+              turbidity:
+                type: string
+              up_radiance412:
+                type: string
+              up_radiance443:
+                type: string
+              up_radiance490:
+                type: string
+              up_radiance555:
+                type: string
+              bbp470_argoqc:
+                type: string
+              bbp532_argoqc:
+                type: string
+              bbp700_argoqc:
+                type: string
+              bbp700_2_argoqc:
+                type: string
+              bisulfide_argoqc:
+                type: string
+              cdom_argoqc:
+                type: string
+              chla_argoqc:
+                type: string
+              cndc_argoqc:
+                type: string
+              cndx_argoqc:
+                type: string
+              cp660_argoqc:
+                type: string
+              down_irradiance380_argoqc:
+                type: string
+              down_irradiance412_argoqc:
+                type: string
+              down_irradiance442_argoqc:
+                type: string
+              down_irradiance443_argoqc:
+                type: string
+              down_irradiance490_argoqc:
+                type: string
+              down_irradiance555_argoqc:
+                type: string
+              down_irradiance670_argoqc:
+                type: string
+              downwelling_par_argoqc:
+                type: string
+              doxy_argoqc:
+                type: string
+              doxy2_argoqc:
+                type: string
+              doxy3_argoqc:
+                type: string
+              molar_doxy_argoqc:
+                type: string
+              nitrate_argoqc:
+                type: string
+              ph_in_situ_total_argoqc:
+                type: string
+              pres_argoqc:
+                type: string
+              psal_argoqc:
+                type: string
+              psal_sfile_argoqc:
+                type: string
+              temp_argoqc:
+                type: string
+              temp_sfile_argoqc:
+                type: string
+              turbidity_argoqc:
+                type: string
+              up_radiance412_argoqc:
+                type: string
+              up_radiance443_argoqc:
+                type: string
+              up_radiance490_argoqc:
+                type: string
+              up_radiance555_argoqc:
+                type: string
+        country:
+          type: string
+        data_center:
+          type: string
+        instrument:
+          type: string
+        pi_name:
+          type: array
+          items:
+            type: string
+        platform:
+          type: string
+        platform_type:
+          type: string
+        fleetmonitoring:
+          type: string
+        oceanops:
+          type: string
+        positioning_system:
+          type: string
+        wmo_inst_type:
+          type: string
+      example:
+        country: country
+        positioning_system: positioning_system
+        pi_name:
+        - pi_name
+        - pi_name
+        data_center: data_center
+        instrument: instrument
+        units: ""
+        platform: platform
+        platform_type: platform_type
+        wmo_inst_type: wmo_inst_type
+        data_type: data_type
+        data_keys:
+        - data_keys
+        - data_keys
+        _id: _id
+        oceanops: oceanops
+        fleetmonitoring: fleetmonitoring
     errorResponse:
       required:
       - code
