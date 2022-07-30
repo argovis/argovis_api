@@ -18,7 +18,7 @@ exports.drifterMetaSearch = function(platform,wmo) {
   "deploy_lon" : 5.962133916683182,
   "drogue_lost_date" : "2000-01-23T04:56:07.000+00:00",
   "rowsize" : 0.8008281904610115,
-  "units" : [ "units", "units" ],
+  "units" : "",
   "source" : [ {
     "source" : [ "source", "source" ],
     "url" : "url"
@@ -35,7 +35,7 @@ exports.drifterMetaSearch = function(platform,wmo) {
   "data_type" : "data_type",
   "wmo" : 6.027456183070403,
   "expno" : 1.4658129805029452,
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ve", "ve" ],
   "_id" : "_id",
   "end_lon" : 2.3021358869347655
 }, {
@@ -45,7 +45,7 @@ exports.drifterMetaSearch = function(platform,wmo) {
   "deploy_lon" : 5.962133916683182,
   "drogue_lost_date" : "2000-01-23T04:56:07.000+00:00",
   "rowsize" : 0.8008281904610115,
-  "units" : [ "units", "units" ],
+  "units" : "",
   "source" : [ {
     "source" : [ "source", "source" ],
     "url" : "url"
@@ -62,7 +62,7 @@ exports.drifterMetaSearch = function(platform,wmo) {
   "data_type" : "data_type",
   "wmo" : 6.027456183070403,
   "expno" : 1.4658129805029452,
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ve", "ve" ],
   "_id" : "_id",
   "end_lon" : 2.3021358869347655
 } ];
@@ -97,7 +97,7 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
     examples['application/json'] = [ {
   "metadata" : "metadata",
   "data" : [ "", "" ],
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ve", "ve" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",
@@ -109,7 +109,7 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
 }, {
   "metadata" : "metadata",
   "data" : [ "", "" ],
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ve", "ve" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",

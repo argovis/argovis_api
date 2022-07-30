@@ -22,7 +22,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
     examples['application/json'] = [ {
   "metadata" : "metadata",
   "data" : [ "", "" ],
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "wind", "wind" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",
@@ -36,7 +36,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
 }, {
   "metadata" : "metadata",
   "data" : [ "", "" ],
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "wind", "wind" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",
@@ -71,9 +71,9 @@ exports.findTCmeta = function(id,name) {
   "num" : 0.8008281904610115,
   "data_type" : "data_type",
   "name" : "name",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "wind", "wind" ],
   "_id" : "_id",
-  "units" : [ "units", "units" ],
+  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
@@ -90,9 +90,9 @@ exports.findTCmeta = function(id,name) {
   "num" : 0.8008281904610115,
   "data_type" : "data_type",
   "name" : "name",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "wind", "wind" ],
   "_id" : "_id",
-  "units" : [ "units", "units" ],
+  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
