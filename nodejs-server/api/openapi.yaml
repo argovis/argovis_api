@@ -2309,20 +2309,9 @@ components:
                 surface_pressure:
                   type: number
         units:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              wind:
-                type: string
-              surface_pressure:
-                type: string
+          $ref: '#/components/schemas/tcUnits'
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/tcData_keys'
         record_identifier:
           type: string
         class:
@@ -2333,8 +2322,8 @@ components:
         - ""
         - ""
         data_keys:
-        - data_keys
-        - data_keys
+        - wind
+        - wind
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         units: ""
@@ -2363,13 +2352,9 @@ components:
         data_type:
           type: string
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/tcData_keys'
         units:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/tcUnits'
         date_updated_argovis:
           type: string
           format: date-time
@@ -2386,12 +2371,10 @@ components:
         data_type: data_type
         name: name
         data_keys:
-        - data_keys
-        - data_keys
+        - wind
+        - wind
         _id: _id
-        units:
-        - units
-        - units
+        units: ""
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
           source:
@@ -2406,6 +2389,24 @@ components:
           url: url
           doi: doi
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    tcUnits:
+      anyOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+        properties:
+          wind:
+            type: string
+          surface_pressure:
+            type: string
+    tcData_keys:
+      type: array
+      items:
+        type: string
+        enum:
+        - wind
+        - surface_pressure
     columnGrid:
       required:
       - _id
