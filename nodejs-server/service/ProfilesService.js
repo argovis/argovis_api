@@ -44,7 +44,7 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 6.027456183070403,
   "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "bbp470", "bbp470" ],
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {
@@ -75,7 +75,7 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 6.027456183070403,
   "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "bbp470", "bbp470" ],
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {
@@ -114,7 +114,7 @@ exports.findArgometa = function(id,platform) {
   "platform_type" : "platform_type",
   "wmo_inst_type" : "wmo_inst_type",
   "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "bbp470", "bbp470" ],
   "_id" : "_id",
   "oceanops" : "oceanops",
   "fleetmonitoring" : "fleetmonitoring"
@@ -129,7 +129,7 @@ exports.findArgometa = function(id,platform) {
   "platform_type" : "platform_type",
   "wmo_inst_type" : "wmo_inst_type",
   "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "bbp470", "bbp470" ],
   "_id" : "_id",
   "oceanops" : "oceanops",
   "fleetmonitoring" : "fleetmonitoring"
@@ -169,7 +169,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
   "metadata" : "metadata",
   "data" : [ "", "" ],
   "station" : "station",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ammonium_btl", "ammonium_btl" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "source" : [ {
@@ -195,7 +195,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
   "metadata" : "metadata",
   "data" : [ "", "" ],
   "station" : "station",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ammonium_btl", "ammonium_btl" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "source" : [ {
