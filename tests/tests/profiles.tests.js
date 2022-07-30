@@ -231,9 +231,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /argo", function () {
+      it("argo data filtered by source", async function () {
+        const response = await request.get("/argo?polygon=[[-34,1],[-34,3],[-36,3],[-36,1],[-34,1]]&startDate=2011-11-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_bgc").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(2);
+      });
+    }); 
 
 
-
+    describe("GET /argo", function () {
+      it("argo data filtered by source negation", async function () {
+        const response = await request.get("/argo?polygon=[[-34,1],[-34,3],[-36,3],[-36,1],[-34,1]]&startDate=2011-11-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    }); 
 
 
 
