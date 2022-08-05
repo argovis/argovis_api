@@ -72,14 +72,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /goship", function () {
       it("goship with data=all filter should return correct data_keys", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members([ "temperature_ctd_woceqc", "psal_ctd_woceqc", "bottle_number_btl_woceqc", "salinity_btl", "oxygen_btl", "oxygen_btl_woceqc", "ctd_pressure_raw_btl", "psal_btl", "temperature_btl_woceqc", "doxy_ctd", "psal_btl_woceqc", "psal_ctd", "temperature_btl", "doxy_ctd_woceqc", "salinity_btl_woceqc", "sample_ctd", "sample_btl", "pressure", "bottle_number_btl", "temperature_ctd", "potential_temperature_c_btl" ])
+        expect(response.body[0].data_keys).to.have.members([ "temperature_btl_woceqc", "bottle_number_btl_woceqc", "bottle_number_btl", "temperature_btl", "oxygen_btl_woceqc", "pressure", "pressure_ctd_woceqc", "oxygen_btl", "temperature_ctd", "salinity_btl", "oxygen_ctd", "potential_temperature_c_btl", "sample_ctd", "sample_btl", "salinity_btl_woceqc", "bottle_salinity_btl_woceqc", "oxygen_ctd_woceqc", "ctd_pressure_raw_btl", "bottle_salinity_btl", "temperature_ctd_woceqc", "salinity_ctd_woceqc", "salinity_ctd" ])
       });
     });
 
     describe("GET /goship", function () {
       it("goship with data=all filter should return correct units", async function () {
         const response = await request.get("/goship?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal({"temperature_ctd_woceqc": 'null',"psal_ctd_woceqc": 'null',"bottle_number_btl_woceqc": 'null',"salinity_btl": "psu","oxygen_btl": "micromole/kg","oxygen_btl_woceqc": 'null',"ctd_pressure_raw_btl": "decibar","psal_btl": "psu","temperature_btl_woceqc": 'null',"doxy_ctd": 'null',"psal_btl_woceqc": 'null',"psal_ctd": 'null',"temperature_btl": "Celsius","doxy_ctd_woceqc": 'null',"salinity_btl_woceqc": 'null',"sample_ctd": 'null',"sample_btl": 'null',"pressure": "decibar","bottle_number_btl": 'null',"temperature_ctd": 'null',"potential_temperature_c_btl": "Celsius"})
+        expect(response.body[0].units).to.deep.equal({"temperature_btl_woceqc":  "null","bottle_number_btl_woceqc":  "null","bottle_number_btl":  "null","temperature_btl":  "Celsius","oxygen_btl_woceqc":  "null","pressure":  "decibar","pressure_ctd_woceqc":  "null","oxygen_btl":  "micromole/kg","temperature_ctd":  "null","salinity_btl":  "psu","oxygen_ctd":  "null","potential_temperature_c_btl":  "Celsius","sample_ctd":  "null","sample_btl":  "null","salinity_btl_woceqc":  "null","bottle_salinity_btl_woceqc":  "null","oxygen_ctd_woceqc":  "null","ctd_pressure_raw_btl":  "decibar","bottle_salinity_btl":  "psu","temperature_ctd_woceqc":  "null","salinity_ctd_woceqc":  "null","salinity_ctd" :  "null"})
       });
     });
 
