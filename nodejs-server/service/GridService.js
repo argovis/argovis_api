@@ -23,7 +23,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
     examples['application/json'] = [ {
   "metadata" : "metadata",
   "data" : [ "", "" ],
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ohc_kg", "ohc_kg" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",
@@ -35,7 +35,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
 }, {
   "metadata" : "metadata",
   "data" : [ "", "" ],
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ohc_kg", "ohc_kg" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",
@@ -68,10 +68,10 @@ exports.findgridMeta = function(id) {
   "data_type" : "data_type",
   "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
   "latcell" : 5.637376656633329,
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ohc_kg", "ohc_kg" ],
   "loncell" : 5.962133916683182,
   "_id" : "_id",
-  "units" : [ "units", "units" ],
+  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
@@ -91,10 +91,10 @@ exports.findgridMeta = function(id) {
   "data_type" : "data_type",
   "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
   "latcell" : 5.637376656633329,
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_keys" : [ "ohc_kg", "ohc_kg" ],
   "loncell" : 5.962133916683182,
   "_id" : "_id",
-  "units" : [ "units", "units" ],
+  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],

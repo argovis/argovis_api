@@ -901,7 +901,7 @@ paths:
           type: array
           example: "temperature_btl,~psal_ctd"
           items:
-            pattern: "^((~)?((ammonium_btl)|(ammonium_btl_woceqc)|(bottle_latitude_btl)|(bottle_longitude_btl)|(bottle_number_btl)|(bottle_number_btl_woceqc)|(bottle_time_btl)|(carbon_tetrachloride_btl)|(carbon_tetrachloride_btl_woceqc)|(cfc_113_btl)|(cfc_113_btl_woceqc)|(cfc_11_btl)|(cfc_11_btl_woceqc)|(cfc_12_btl)|(cfc_12_btl_woceqc)|(chlorophyll_a_btl)|(chlorophyll_a_btl_woceqc)|(chlorophyll_a_ug_kg_btl)|(chlorophyll_a_ug_kg_btl_woceqc)|(ctd_beamcp_ctd)|(ctd_beamcp_ctd_woceqc)|(ctd_fluor_arbitrary_ctd)|(ctd_fluor_ctd)|(ctd_fluor_ctd_woceqc)|(ctd_fluor_raw_btl)|(ctd_fluor_raw_btl_woceqc)|(ctd_fluor_raw_ctd)|(ctd_fluor_raw_ctd_woceqc)|(ctd_number_of_observations_ctd)|(ctd_pressure_raw_btl)|(ctd_temperature_unk_ctd)|(ctd_temperature_unk_ctd_woceqc)|(ctd_transmissometer_ctd)|(ctd_transmissometer_ctd_woceqc)|(ctd_transmissometer_raw_btl)|(ctd_transmissometer_raw_btl_woceqc)|(ctd_transmissometer_raw_ctd)|(ctd_transmissometer_raw_ctd_woceqc)|(del_carbon_13_dic_btl)|(del_carbon_13_dic_btl_woceqc)|(del_carbon_14_dic_btl)|(del_carbon_14_dic_btl_woceqc)|(del_carbon_14_dic_error_btl)|(del_oxygen_18_btl)|(del_oxygen_18_btl_woceqc)|(del_oxygen_18_error_btl)|(delta_helium_3_btl)|(delta_helium_3_btl_woceqc)|(delta_helium_3_error_btl)|(dissolved_organic_carbon_btl)|(dissolved_organic_carbon_btl_woceqc)|(dissolved_organic_nitrogen_btl)|(dissolved_organic_nitrogen_btl_woceqc)|(doxy_btl)|(doxy_btl_woceqc)|(doxy_ctd)|(doxy_ctd_woceqc)|(fco2_btl)|(fco2_btl_woceqc)|(fco2_temperature_btl)|(helium_btl)|(helium_btl_woceqc)|(helium_error_btl)|(hplc_placeholder_btl_woceqc)|(methyl_chloroform_btl)|(methyl_chloroform_btl_woceqc)|(neon_btl)|(neon_btl_woceqc)|(neon_error_btl)|(nitrate_btl)|(nitrate_btl_woceqc)|(nitrite_btl)|(nitrite_btl_woceqc)|(nitrite_nitrate_btl)|(nitrite_nitrate_btl_woceqc)|(nitrous_oxide_btl)|(nitrous_oxide_btl_woceqc)|(oxygen_btl)|(oxygen_btl_woceqc)|(oxygen_ml_l_btl)|(oxygen_ml_l_btl_woceqc)|(par_ctd)|(par_ctd_woceqc)|(partial_co2_temperature_btl)|(partial_pressure_of_co2_btl)|(partial_pressure_of_co2_btl_woceqc)|(particulate_organic_carbon_btl)|(particulate_organic_carbon_btl_woceqc)|(particulate_organic_nitrogen_btl)|(particulate_organic_nitrogen_btl_woceqc)|(ph_sws_btl)|(ph_sws_btl_woceqc)|(ph_temperature_btl)|(ph_total_h_scale_btl)|(ph_total_h_scale_btl_woceqc)|(phaeophytin_btl)|(phaeophytin_btl_woceqc)|(phaeophytin_ug_l_btl)|(phaeophytin_ug_l_btl_woceqc)|(phosphate_btl)|(phosphate_btl_woceqc)|(potential_temperature_68_btl)|(potential_temperature_c_btl)|(pres)|(psal_btl)|(psal_btl_woceqc)|(psal_ctd)|(psal_ctd_woceqc)|(radium_226_btl)|(radium_226_btl_woceqc)|(radium_228_btl)|(radium_228_btl_woceqc)|(ref_temperature_btl)|(ref_temperature_btl_woceqc)|(ref_temperature_c_btl)|(ref_temperature_c_btl_woceqc)|(rev_pressure_btl)|(rev_pressure_btl_woceqc)|(rev_temperature_90_btl)|(rev_temperature_90_btl_woceqc)|(rev_temperature_btl)|(rev_temperature_btl_woceqc)|(rev_temperature_c_btl)|(rev_temperature_c_btl_woceqc)|(salinity_btl)|(salinity_btl_woceqc)|(sample_btl)|(sample_ctd)|(silicate_btl)|(silicate_btl_woceqc)|(sulfur_hexifluoride_btl)|(sulfur_hexifluoride_btl_woceqc)|(temperature_btl)|(temperature_btl_woceqc)|(temperature_ctd)|(temperature_ctd_woceqc)|(total_alkalinity_btl)|(total_alkalinity_btl_woceqc)|(total_carbon_btl)|(total_carbon_btl_woceqc)|(total_dissolved_nitrogen_btl)|(total_dissolved_nitrogen_btl_woceqc)|(tritium_btl)|(tritium_btl_woceqc)|(tritium_error_btl){1})|all|metadata-only)$"
+            pattern: "^((~)?((ammonium_btl)|(ammonium_btl_woceqc)|(bionbr_btl)|(bottle_latitude_btl)|(bottle_longitude_btl)|(bottle_number_btl)|(bottle_number_btl_woceqc)|(bottle_salinity_btl)|(bottle_salinity_btl_woceqc)|(bottle_time_btl)|(carbon_tetrachloride_btl)|(carbon_tetrachloride_btl_woceqc)|(cfc_113_btl)|(cfc_113_btl_woceqc)|(cfc_11_btl)|(cfc_11_btl_woceqc)|(cfc_12_btl)|(cfc_12_btl_woceqc)|(chlorophyll_a_btl)|(chlorophyll_a_btl_woceqc)|(chlorophyll_a_ug_kg_btl)|(chlorophyll_a_ug_kg_btl_woceqc)|(co2_mole_fraction_btl)|(co2_mole_fraction_btl_woceqc)|(ctd_beamcp_ctd)|(ctd_beamcp_ctd_woceqc)|(ctd_beta700_raw_btl)|(ctd_beta700_raw_btl_woceqc)|(ctd_beta700_raw_ctd)|(ctd_beta700_raw_ctd_woceqc)|(ctd_cdom_raw_ctd)|(ctd_cdom_raw_ctd_woceqc)|(ctd_fluor_arbitrary_ctd)|(ctd_fluor_ctd)|(ctd_fluor_ctd_woceqc)|(ctd_fluor_raw_btl)|(ctd_fluor_raw_btl_woceqc)|(ctd_fluor_raw_ctd)|(ctd_fluor_raw_ctd_woceqc)|(ctd_nitrate_ctd)|(ctd_nitrate_ctd_woceqc)|(ctd_number_of_observations_ctd)|(ctd_optode_oxygen_ctd)|(ctd_optode_oxygen_ctd_woceqc)|(ctd_optode_oxygen_raw_ctd)|(ctd_optode_oxygen_raw_ctd_woceqc)|(ctd_pressure_raw_btl)|(ctd_temperature_unk_ctd)|(ctd_temperature_unk_ctd_woceqc)|(ctd_transmissometer_ctd)|(ctd_transmissometer_ctd_woceqc)|(ctd_transmissometer_raw_btl)|(ctd_transmissometer_raw_btl_woceqc)|(ctd_transmissometer_raw_ctd)|(ctd_transmissometer_raw_ctd_woceqc)|(ctd_turbidity_ntu_ctd)|(del_carbon_13_dic_btl)|(del_carbon_13_dic_btl_woceqc)|(del_carbon_14_dic_btl)|(del_carbon_14_dic_btl_woceqc)|(del_carbon_14_dic_error_btl)|(del_oxygen_18_btl)|(del_oxygen_18_btl_woceqc)|(del_oxygen_18_error_btl)|(delta_helium_3_btl)|(delta_helium_3_btl_woceqc)|(delta_helium_3_error_btl)|(dissolved_organic_carbon_btl)|(dissolved_organic_carbon_btl_woceqc)|(fm_depth_btl)|(fm_depth_ctd)|(fm_depth_ctd_woceqc)|(geotraces_sample_btl)|(helium_btl)|(helium_btl_woceqc)|(helium_error_btl)|(methyl_chloroform_btl)|(methyl_chloroform_btl_woceqc)|(neon_btl)|(neon_btl_woceqc)|(neon_error_btl)|(nitrate_btl)|(nitrate_btl_woceqc)|(nitrite_btl)|(nitrite_btl_woceqc)|(nitrite_nitrate_btl)|(nitrite_nitrate_btl_woceqc)|(nitrous_oxide_btl)|(nitrous_oxide_btl_woceqc)|(odf_pressure_btl)|(oxygen_btl)|(oxygen_btl_woceqc)|(oxygen_ctd)|(oxygen_ctd_woceqc)|(oxygen_ml_l_btl)|(oxygen_ml_l_btl_woceqc)|(package_depth_btl)|(par_ctd)|(par_ctd_woceqc)|(partial_co2_temperature_btl)|(partial_pressure_of_co2_btl)|(partial_pressure_of_co2_btl_woceqc)|(particulate_organic_carbon_btl)|(particulate_organic_carbon_btl_woceqc)|(particulate_organic_nitrogen_btl)|(particulate_organic_nitrogen_btl_woceqc)|(ph_sws_btl)|(ph_sws_btl_woceqc)|(ph_temperature_btl)|(ph_total_h_scale_btl)|(ph_total_h_scale_btl_woceqc)|(ph_unknown_scale_btl)|(ph_unknown_scale_btl_woceqc)|(phaeophytin_btl)|(phaeophytin_btl_woceqc)|(phaeophytin_ug_l_btl)|(phaeophytin_ug_l_btl_woceqc)|(phosphate_btl)|(phosphate_btl_woceqc)|(potential_temperature_68_btl)|(potential_temperature_c_btl)|(potential_temperature_c_ctd)|(pressure)|(pressure_btl_woceqc)|(pressure_ctd_woceqc)|(ref_temperature_btl)|(ref_temperature_btl_woceqc)|(ref_temperature_c_btl)|(ref_temperature_c_btl_woceqc)|(reference_salinity_btl)|(reference_salinity_btl_woceqc)|(rev_pressure_btl)|(rev_pressure_btl_woceqc)|(rev_temperature_90_btl)|(rev_temperature_90_btl_woceqc)|(rev_temperature_btl)|(rev_temperature_btl_woceqc)|(rev_temperature_c_btl)|(rev_temperature_c_btl_woceqc)|(salinity_btl)|(salinity_btl_woceqc)|(salinity_ctd)|(salinity_ctd_woceqc)|(sample_btl)|(sample_ctd)|(silicate_btl)|(silicate_btl_woceqc)|(sm_depth_btl)|(sm_depth_ctd)|(sm_depth_ctd_woceqc)|(sulfur_hexifluoride_btl)|(sulfur_hexifluoride_btl_woceqc)|(temperature_btl)|(temperature_btl_woceqc)|(temperature_ctd)|(temperature_ctd_woceqc)|(total_alkalinity_btl)|(total_alkalinity_btl_woceqc)|(total_carbon_btl)|(total_carbon_btl_woceqc)|(total_dissolved_nitrogen_btl)|(total_dissolved_nitrogen_btl_woceqc)|(total_organic_carbon_l_btl)|(total_organic_carbon_l_btl_woceqc)|(tritium_btl)|(tritium_btl_woceqc)|(tritium_error_btl)|(urea_btl)|(urea_btl_woceqc)|(user_bottle_number_btl)|(user_bottle_number_btl_woceqc)|(user_sample_number_btl){1})|all|metadata-only)$"
             type: string
       - name: presRange
         in: query
@@ -1039,6 +1039,239 @@ paths:
                 type: array
                 items:
                   type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /argo:
+    get:
+      tags:
+      - profiles
+      summary: Argo search and filter.
+      operationId: findArgo
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      - name: source
+        in: query
+        description: Experimental program source(s) to search for; document must match
+          all sources to be returned. Accepts ~ negation to filter out documents.
+          See /profiles/vocabulary?parameter=source for list of options.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "argo_bgc,~argo_core"
+          items:
+            type: string
+      - name: compression
+        in: query
+        description: Data compression strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: basic-minification
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "temperature,~doxy"
+          items:
+            pattern: "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pressure)|(salinity)|(salinity_sfile)|(temperature)|(temperature_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})(_argoqc)?|all|metadata-only)$"
+            type: string
+      - name: presRange
+        in: query
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/argo'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /argo/meta:
+    get:
+      tags:
+      - profiles
+      summary: Argo metadata search and filter.
+      operationId: findArgometa
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/argoMeta'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -1837,7 +2070,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Drifter'
+                  $ref: '#/components/schemas/drifter'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -1891,7 +2124,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DrifterMeta'
+                  $ref: '#/components/schemas/drifterMeta'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -2076,20 +2309,9 @@ components:
                 surface_pressure:
                   type: number
         units:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              wind:
-                type: string
-              surface_pressure:
-                type: string
+          $ref: '#/components/schemas/tc_units'
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/tc_data_keys'
         record_identifier:
           type: string
         class:
@@ -2100,8 +2322,8 @@ components:
         - ""
         - ""
         data_keys:
-        - data_keys
-        - data_keys
+        - wind
+        - wind
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         units: ""
@@ -2130,13 +2352,9 @@ components:
         data_type:
           type: string
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/tc_data_keys'
         units:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/tc_units'
         date_updated_argovis:
           type: string
           format: date-time
@@ -2153,12 +2371,10 @@ components:
         data_type: data_type
         name: name
         data_keys:
-        - data_keys
-        - data_keys
+        - wind
+        - wind
         _id: _id
-        units:
-        - units
-        - units
+        units: ""
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
           source:
@@ -2173,6 +2389,24 @@ components:
           url: url
           doi: doi
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    tc_units:
+      anyOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+        properties:
+          wind:
+            type: string
+          surface_pressure:
+            type: string
+    tc_data_keys:
+      type: array
+      items:
+        type: string
+        enum:
+        - wind
+        - surface_pressure
     columnGrid:
       required:
       - _id
@@ -2228,30 +2462,17 @@ components:
                 salinity_rg:
                   type: number
         units:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              ohc_kg:
-                type: string
-              temperature_rg:
-                type: string
-              salinity_rg:
-                type: string
+          $ref: '#/components/schemas/grid_units'
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/grid_data_keys'
       example:
         metadata: metadata
         data:
         - ""
         - ""
         data_keys:
-        - data_keys
-        - data_keys
+        - ohc_kg
+        - ohc_kg
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         units: ""
@@ -2282,13 +2503,9 @@ components:
         data_type:
           type: string
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/grid_data_keys'
         units:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/grid_units'
         date_updated_argovis:
           type: string
           format: date-time
@@ -2333,13 +2550,11 @@ components:
         - 6.02745618307040320615897144307382404804229736328125
         latcell: 5.63737665663332876420099637471139430999755859375
         data_keys:
-        - data_keys
-        - data_keys
+        - ohc_kg
+        - ohc_kg
         loncell: 5.962133916683182377482808078639209270477294921875
         _id: _id
-        units:
-        - units
-        - units
+        units: ""
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
           source:
@@ -2360,6 +2575,27 @@ components:
         latrange:
         - 1.46581298050294517310021547018550336360931396484375
         - 1.46581298050294517310021547018550336360931396484375
+    grid_units:
+      anyOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+        properties:
+          ohc_kg:
+            type: string
+          temperature_rg:
+            type: string
+          salinity_rg:
+            type: string
+    grid_data_keys:
+      type: array
+      items:
+        type: string
+        enum:
+        - ohc_kg
+        - temperature_rg
+        - salinity_rg
     Profile:
       required:
       - _id
@@ -3005,7 +3241,7 @@ components:
         - source
         - source
         url: url
-    Drifter:
+    drifter:
       required:
       - _id
       - basin
@@ -3067,56 +3303,17 @@ components:
                 flg_sst2:
                   type: number
         units:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              ve:
-                type: string
-              vn:
-                type: string
-              err_lon:
-                type: string
-              err_lat:
-                type: string
-              err_ve:
-                type: string
-              err_vn:
-                type: string
-              gap:
-                type: string
-              sst:
-                type: string
-              sst1:
-                type: string
-              sst2:
-                type: string
-              err_sst:
-                type: string
-              err_sst1:
-                type: string
-              err_sst2:
-                type: string
-              flg_sst:
-                type: string
-              flg_sst1:
-                type: string
-              flg_sst2:
-                type: string
+          $ref: '#/components/schemas/drifter_units'
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/drifter_data_keys'
       example:
         metadata: metadata
         data:
         - ""
         - ""
         data_keys:
-        - data_keys
-        - data_keys
+        - ve
+        - ve
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         units: ""
@@ -3126,7 +3323,7 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           type: type
         timestamp: 2000-01-23T04:56:07.000+00:00
-    DrifterMeta:
+    drifterMeta:
       required:
       - _id
       - data_keys
@@ -3155,14 +3352,9 @@ components:
         data_type:
           type: string
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/drifter_data_keys'
         units:
-          type: array
-          items:
-            type: string
-            nullable: true
+          $ref: '#/components/schemas/drifter_units'
         date_updated_argovis:
           type: string
           format: date-time
@@ -3210,9 +3402,7 @@ components:
         deploy_lon: 5.962133916683182377482808078639209270477294921875
         drogue_lost_date: 2000-01-23T04:56:07.000+00:00
         rowsize: 0.80082819046101150206595775671303272247314453125
-        units:
-        - units
-        - units
+        units: ""
         source:
         - source:
           - source
@@ -3234,10 +3424,70 @@ components:
         wmo: 6.02745618307040320615897144307382404804229736328125
         expno: 1.46581298050294517310021547018550336360931396484375
         data_keys:
-        - data_keys
-        - data_keys
+        - ve
+        - ve
         _id: _id
         end_lon: 2.3021358869347654518833223846741020679473876953125
+    drifter_units:
+      anyOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+        properties:
+          ve:
+            type: string
+          vn:
+            type: string
+          err_lon:
+            type: string
+          err_lat:
+            type: string
+          err_ve:
+            type: string
+          err_vn:
+            type: string
+          gap:
+            type: string
+          sst:
+            type: string
+          sst1:
+            type: string
+          sst2:
+            type: string
+          err_sst:
+            type: string
+          err_sst1:
+            type: string
+          err_sst2:
+            type: string
+          flg_sst:
+            type: string
+          flg_sst1:
+            type: string
+          flg_sst2:
+            type: string
+    drifter_data_keys:
+      type: array
+      items:
+        type: string
+        enum:
+        - ve
+        - vn
+        - err_lon
+        - err_lat
+        - err_ve
+        - err_vn
+        - gap
+        - sst
+        - sst1
+        - sst2
+        - err_sst
+        - err_sst1
+        - err_sst2
+        - flg_sst
+        - flg_sst1
+        - flg_sst2
     goship:
       required:
       - _id
@@ -3277,306 +3527,9 @@ components:
             - missing_location
             - missing_timestamp
         data_keys:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/goship_data_keys'
         units:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              ammonium_btl:
-                type: string
-              ammonium_btl_woceqc:
-                type: string
-              bottle_latitude_btl:
-                type: string
-              bottle_longitude_btl:
-                type: string
-              bottle_number_btl:
-                type: string
-              bottle_number_btl_woceqc:
-                type: string
-              bottle_time_btl:
-                type: string
-              carbon_tetrachloride_btl:
-                type: string
-              carbon_tetrachloride_btl_woceqc:
-                type: string
-              cfc_113_btl:
-                type: string
-              cfc_113_btl_woceqc:
-                type: string
-              cfc_11_btl:
-                type: string
-              cfc_11_btl_woceqc:
-                type: string
-              cfc_12_btl:
-                type: string
-              cfc_12_btl_woceqc:
-                type: string
-              chlorophyll_a_btl:
-                type: string
-              chlorophyll_a_btl_woceqc:
-                type: string
-              chlorophyll_a_ug_kg_btl:
-                type: string
-              chlorophyll_a_ug_kg_btl_woceqc:
-                type: string
-              ctd_beamcp_ctd:
-                type: string
-              ctd_beamcp_ctd_woceqc:
-                type: string
-              ctd_fluor_arbitrary_ctd:
-                type: string
-              ctd_fluor_ctd:
-                type: string
-              ctd_fluor_ctd_woceqc:
-                type: string
-              ctd_fluor_raw_btl:
-                type: string
-              ctd_fluor_raw_btl_woceqc:
-                type: string
-              ctd_fluor_raw_ctd:
-                type: string
-              ctd_fluor_raw_ctd_woceqc:
-                type: string
-              ctd_number_of_observations_ctd:
-                type: string
-              ctd_pressure_raw_btl:
-                type: string
-              ctd_temperature_unk_ctd:
-                type: string
-              ctd_temperature_unk_ctd_woceqc:
-                type: string
-              ctd_transmissometer_ctd:
-                type: string
-              ctd_transmissometer_ctd_woceqc:
-                type: string
-              ctd_transmissometer_raw_btl:
-                type: string
-              ctd_transmissometer_raw_btl_woceqc:
-                type: string
-              ctd_transmissometer_raw_ctd:
-                type: string
-              ctd_transmissometer_raw_ctd_woceqc:
-                type: string
-              del_carbon_13_dic_btl:
-                type: string
-              del_carbon_13_dic_btl_woceqc:
-                type: string
-              del_carbon_14_dic_btl:
-                type: string
-              del_carbon_14_dic_btl_woceqc:
-                type: string
-              del_carbon_14_dic_error_btl:
-                type: string
-              del_oxygen_18_btl:
-                type: string
-              del_oxygen_18_btl_woceqc:
-                type: string
-              del_oxygen_18_error_btl:
-                type: string
-              delta_helium_3_btl:
-                type: string
-              delta_helium_3_btl_woceqc:
-                type: string
-              delta_helium_3_error_btl:
-                type: string
-              dissolved_organic_carbon_btl:
-                type: string
-              dissolved_organic_carbon_btl_woceqc:
-                type: string
-              dissolved_organic_nitrogen_btl:
-                type: string
-              dissolved_organic_nitrogen_btl_woceqc:
-                type: string
-              doxy_btl:
-                type: string
-              doxy_btl_woceqc:
-                type: string
-              doxy_ctd:
-                type: string
-              doxy_ctd_woceqc:
-                type: string
-              fco2_btl:
-                type: string
-              fco2_btl_woceqc:
-                type: string
-              fco2_temperature_btl:
-                type: string
-              helium_btl:
-                type: string
-              helium_btl_woceqc:
-                type: string
-              helium_error_btl:
-                type: string
-              hplc_placeholder_btl_woceqc:
-                type: string
-              methyl_chloroform_btl:
-                type: string
-              methyl_chloroform_btl_woceqc:
-                type: string
-              neon_btl:
-                type: string
-              neon_btl_woceqc:
-                type: string
-              neon_error_btl:
-                type: string
-              nitrate_btl:
-                type: string
-              nitrate_btl_woceqc:
-                type: string
-              nitrite_btl:
-                type: string
-              nitrite_btl_woceqc:
-                type: string
-              nitrite_nitrate_btl:
-                type: string
-              nitrite_nitrate_btl_woceqc:
-                type: string
-              nitrous_oxide_btl:
-                type: string
-              nitrous_oxide_btl_woceqc:
-                type: string
-              oxygen_btl:
-                type: string
-              oxygen_btl_woceqc:
-                type: string
-              oxygen_ml_l_btl:
-                type: string
-              oxygen_ml_l_btl_woceqc:
-                type: string
-              par_ctd:
-                type: string
-              par_ctd_woceqc:
-                type: string
-              partial_co2_temperature_btl:
-                type: string
-              partial_pressure_of_co2_btl:
-                type: string
-              partial_pressure_of_co2_btl_woceqc:
-                type: string
-              particulate_organic_carbon_btl:
-                type: string
-              particulate_organic_carbon_btl_woceqc:
-                type: string
-              particulate_organic_nitrogen_btl:
-                type: string
-              particulate_organic_nitrogen_btl_woceqc:
-                type: string
-              ph_sws_btl:
-                type: string
-              ph_sws_btl_woceqc:
-                type: string
-              ph_temperature_btl:
-                type: string
-              ph_total_h_scale_btl:
-                type: string
-              ph_total_h_scale_btl_woceqc:
-                type: string
-              phaeophytin_btl:
-                type: string
-              phaeophytin_btl_woceqc:
-                type: string
-              phaeophytin_ug_l_btl:
-                type: string
-              phaeophytin_ug_l_btl_woceqc:
-                type: string
-              phosphate_btl:
-                type: string
-              phosphate_btl_woceqc:
-                type: string
-              potential_temperature_68_btl:
-                type: string
-              potential_temperature_c_btl:
-                type: string
-              pres:
-                type: string
-              psal_btl:
-                type: string
-              psal_btl_woceqc:
-                type: string
-              psal_ctd:
-                type: string
-              psal_ctd_woceqc:
-                type: string
-              radium_226_btl:
-                type: string
-              radium_226_btl_woceqc:
-                type: string
-              radium_228_btl:
-                type: string
-              radium_228_btl_woceqc:
-                type: string
-              ref_temperature_btl:
-                type: string
-              ref_temperature_btl_woceqc:
-                type: string
-              ref_temperature_c_btl:
-                type: string
-              ref_temperature_c_btl_woceqc:
-                type: string
-              rev_pressure_btl:
-                type: string
-              rev_pressure_btl_woceqc:
-                type: string
-              rev_temperature_90_btl:
-                type: string
-              rev_temperature_90_btl_woceqc:
-                type: string
-              rev_temperature_btl:
-                type: string
-              rev_temperature_btl_woceqc:
-                type: string
-              rev_temperature_c_btl:
-                type: string
-              rev_temperature_c_btl_woceqc:
-                type: string
-              salinity_btl:
-                type: string
-              salinity_btl_woceqc:
-                type: string
-              sample_btl:
-                type: string
-              sample_ctd:
-                type: string
-              silicate_btl:
-                type: string
-              silicate_btl_woceqc:
-                type: string
-              sulfur_hexifluoride_btl:
-                type: string
-              sulfur_hexifluoride_btl_woceqc:
-                type: string
-              temperature_btl:
-                type: string
-              temperature_btl_woceqc:
-                type: string
-              temperature_ctd:
-                type: string
-              temperature_ctd_woceqc:
-                type: string
-              total_alkalinity_btl:
-                type: string
-              total_alkalinity_btl_woceqc:
-                type: string
-              total_carbon_btl:
-                type: string
-              total_carbon_btl_woceqc:
-                type: string
-              total_dissolved_nitrogen_btl:
-                type: string
-              total_dissolved_nitrogen_btl_woceqc:
-                type: string
-              tritium_btl:
-                type: string
-              tritium_btl_woceqc:
-                type: string
-              tritium_error_btl:
-                type: string
+          $ref: '#/components/schemas/goship_units'
         station:
           type: string
         cast:
@@ -3587,7 +3540,9 @@ components:
             anyOf:
             - type: array
               items:
-                type: number
+                anyOf:
+                - type: string
+                - type: number
             - type: object
               properties:
                 ammonium_btl:
@@ -3595,6 +3550,10 @@ components:
                   - type: string
                   - type: number
                 ammonium_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                bionbr_btl:
                   anyOf:
                   - type: string
                   - type: number
@@ -3611,6 +3570,14 @@ components:
                   - type: string
                   - type: number
                 bottle_number_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                bottle_salinity_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                bottle_salinity_btl_woceqc:
                   anyOf:
                   - type: string
                   - type: number
@@ -3666,11 +3633,43 @@ components:
                   anyOf:
                   - type: string
                   - type: number
+                co2_mole_fraction_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                co2_mole_fraction_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_beamcp_ctd:
                   anyOf:
                   - type: string
                   - type: number
                 ctd_beamcp_ctd_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_beta700_raw_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_beta700_raw_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_beta700_raw_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_beta700_raw_ctd_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_cdom_raw_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_cdom_raw_ctd_woceqc:
                   anyOf:
                   - type: string
                   - type: number
@@ -3702,7 +3701,31 @@ components:
                   anyOf:
                   - type: string
                   - type: number
+                ctd_nitrate_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_nitrate_ctd_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
                 ctd_number_of_observations_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_optode_oxygen_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_optode_oxygen_ctd_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_optode_oxygen_raw_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_optode_oxygen_raw_ctd_woceqc:
                   anyOf:
                   - type: string
                   - type: number
@@ -3739,6 +3762,10 @@ components:
                   - type: string
                   - type: number
                 ctd_transmissometer_raw_ctd_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ctd_turbidity_ntu_ctd:
                   anyOf:
                   - type: string
                   - type: number
@@ -3794,39 +3821,19 @@ components:
                   anyOf:
                   - type: string
                   - type: number
-                dissolved_organic_nitrogen_btl:
+                fm_depth_btl:
                   anyOf:
                   - type: string
                   - type: number
-                dissolved_organic_nitrogen_btl_woceqc:
+                fm_depth_ctd:
                   anyOf:
                   - type: string
                   - type: number
-                doxy_btl:
+                fm_depth_ctd_woceqc:
                   anyOf:
                   - type: string
                   - type: number
-                doxy_btl_woceqc:
-                  anyOf:
-                  - type: string
-                  - type: number
-                doxy_ctd:
-                  anyOf:
-                  - type: string
-                  - type: number
-                doxy_ctd_woceqc:
-                  anyOf:
-                  - type: string
-                  - type: number
-                fco2_btl:
-                  anyOf:
-                  - type: string
-                  - type: number
-                fco2_btl_woceqc:
-                  anyOf:
-                  - type: string
-                  - type: number
-                fco2_temperature_btl:
+                geotraces_sample_btl:
                   anyOf:
                   - type: string
                   - type: number
@@ -3839,10 +3846,6 @@ components:
                   - type: string
                   - type: number
                 helium_error_btl:
-                  anyOf:
-                  - type: string
-                  - type: number
-                hplc_placeholder_btl_woceqc:
                   anyOf:
                   - type: string
                   - type: number
@@ -3898,6 +3901,10 @@ components:
                   anyOf:
                   - type: string
                   - type: number
+                odf_pressure_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
                 oxygen_btl:
                   anyOf:
                   - type: string
@@ -3906,11 +3913,23 @@ components:
                   anyOf:
                   - type: string
                   - type: number
+                oxygen_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                oxygen_ctd_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
                 oxygen_ml_l_btl:
                   anyOf:
                   - type: string
                   - type: number
                 oxygen_ml_l_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                package_depth_btl:
                   anyOf:
                   - type: string
                   - type: number
@@ -3970,6 +3989,14 @@ components:
                   anyOf:
                   - type: string
                   - type: number
+                ph_unknown_scale_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                ph_unknown_scale_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
                 phaeophytin_btl:
                   anyOf:
                   - type: string
@@ -4002,39 +4029,19 @@ components:
                   anyOf:
                   - type: string
                   - type: number
-                pres:
+                potential_temperature_c_ctd:
                   anyOf:
                   - type: string
                   - type: number
-                psal_btl:
+                pressure:
                   anyOf:
                   - type: string
                   - type: number
-                psal_btl_woceqc:
+                pressure_btl_woceqc:
                   anyOf:
                   - type: string
                   - type: number
-                psal_ctd:
-                  anyOf:
-                  - type: string
-                  - type: number
-                psal_ctd_woceqc:
-                  anyOf:
-                  - type: string
-                  - type: number
-                radium_226_btl:
-                  anyOf:
-                  - type: string
-                  - type: number
-                radium_226_btl_woceqc:
-                  anyOf:
-                  - type: string
-                  - type: number
-                radium_228_btl:
-                  anyOf:
-                  - type: string
-                  - type: number
-                radium_228_btl_woceqc:
+                pressure_ctd_woceqc:
                   anyOf:
                   - type: string
                   - type: number
@@ -4051,6 +4058,14 @@ components:
                   - type: string
                   - type: number
                 ref_temperature_c_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                reference_salinity_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                reference_salinity_btl_woceqc:
                   anyOf:
                   - type: string
                   - type: number
@@ -4094,6 +4109,14 @@ components:
                   anyOf:
                   - type: string
                   - type: number
+                salinity_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                salinity_ctd_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
                 sample_btl:
                   anyOf:
                   - type: string
@@ -4107,6 +4130,18 @@ components:
                   - type: string
                   - type: number
                 silicate_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                sm_depth_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                sm_depth_ctd:
+                  anyOf:
+                  - type: string
+                  - type: number
+                sm_depth_ctd_woceqc:
                   anyOf:
                   - type: string
                   - type: number
@@ -4158,6 +4193,14 @@ components:
                   anyOf:
                   - type: string
                   - type: number
+                total_organic_carbon_l_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                total_organic_carbon_l_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
                 tritium_btl:
                   anyOf:
                   - type: string
@@ -4167,6 +4210,26 @@ components:
                   - type: string
                   - type: number
                 tritium_error_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                urea_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                urea_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                user_bottle_number_btl:
+                  anyOf:
+                  - type: string
+                  - type: number
+                user_bottle_number_btl_woceqc:
+                  anyOf:
+                  - type: string
+                  - type: number
+                user_sample_number_btl:
                   anyOf:
                   - type: string
                   - type: number
@@ -4181,8 +4244,8 @@ components:
         - ""
         station: station
         data_keys:
-        - data_keys
-        - data_keys
+        - ammonium_btl
+        - ammonium_btl
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         source:
@@ -4228,6 +4291,10 @@ components:
           type: string
         instrument:
           type: string
+        pi_name:
+          type: array
+          items:
+            type: string
         expocode:
           type: string
         cchdo_cruise_id:
@@ -4242,12 +4309,1058 @@ components:
         woce_lines:
         - woce_lines
         - woce_lines
+        pi_name:
+        - pi_name
+        - pi_name
         cchdo_cruise_id: 0.80082819046101150206595775671303272247314453125
         data_type: data_type
         data_center: data_center
         instrument: instrument
         _id: _id
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    goship_units:
+      anyOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+        properties:
+          ammonium_btl:
+            type: string
+          ammonium_btl_woceqc:
+            type: string
+          bionbr_btl:
+            type: string
+          bottle_latitude_btl:
+            type: string
+          bottle_longitude_btl:
+            type: string
+          bottle_number_btl:
+            type: string
+          bottle_number_btl_woceqc:
+            type: string
+          bottle_salinity_btl:
+            type: string
+          bottle_salinity_btl_woceqc:
+            type: string
+          bottle_time_btl:
+            type: string
+          carbon_tetrachloride_btl:
+            type: string
+          carbon_tetrachloride_btl_woceqc:
+            type: string
+          cfc_113_btl:
+            type: string
+          cfc_113_btl_woceqc:
+            type: string
+          cfc_11_btl:
+            type: string
+          cfc_11_btl_woceqc:
+            type: string
+          cfc_12_btl:
+            type: string
+          cfc_12_btl_woceqc:
+            type: string
+          chlorophyll_a_btl:
+            type: string
+          chlorophyll_a_btl_woceqc:
+            type: string
+          chlorophyll_a_ug_kg_btl:
+            type: string
+          chlorophyll_a_ug_kg_btl_woceqc:
+            type: string
+          co2_mole_fraction_btl:
+            type: string
+          co2_mole_fraction_btl_woceqc:
+            type: string
+          ctd_beamcp_ctd:
+            type: string
+          ctd_beamcp_ctd_woceqc:
+            type: string
+          ctd_beta700_raw_btl:
+            type: string
+          ctd_beta700_raw_btl_woceqc:
+            type: string
+          ctd_beta700_raw_ctd:
+            type: string
+          ctd_beta700_raw_ctd_woceqc:
+            type: string
+          ctd_cdom_raw_ctd:
+            type: string
+          ctd_cdom_raw_ctd_woceqc:
+            type: string
+          ctd_fluor_arbitrary_ctd:
+            type: string
+          ctd_fluor_ctd:
+            type: string
+          ctd_fluor_ctd_woceqc:
+            type: string
+          ctd_fluor_raw_btl:
+            type: string
+          ctd_fluor_raw_btl_woceqc:
+            type: string
+          ctd_fluor_raw_ctd:
+            type: string
+          ctd_fluor_raw_ctd_woceqc:
+            type: string
+          ctd_nitrate_ctd:
+            type: string
+          ctd_nitrate_ctd_woceqc:
+            type: string
+          ctd_number_of_observations_ctd:
+            type: string
+          ctd_optode_oxygen_ctd:
+            type: string
+          ctd_optode_oxygen_ctd_woceqc:
+            type: string
+          ctd_optode_oxygen_raw_ctd:
+            type: string
+          ctd_optode_oxygen_raw_ctd_woceqc:
+            type: string
+          ctd_pressure_raw_btl:
+            type: string
+          ctd_temperature_unk_ctd:
+            type: string
+          ctd_temperature_unk_ctd_woceqc:
+            type: string
+          ctd_transmissometer_ctd:
+            type: string
+          ctd_transmissometer_ctd_woceqc:
+            type: string
+          ctd_transmissometer_raw_btl:
+            type: string
+          ctd_transmissometer_raw_btl_woceqc:
+            type: string
+          ctd_transmissometer_raw_ctd:
+            type: string
+          ctd_transmissometer_raw_ctd_woceqc:
+            type: string
+          ctd_turbidity_ntu_ctd:
+            type: string
+          del_carbon_13_dic_btl:
+            type: string
+          del_carbon_13_dic_btl_woceqc:
+            type: string
+          del_carbon_14_dic_btl:
+            type: string
+          del_carbon_14_dic_btl_woceqc:
+            type: string
+          del_carbon_14_dic_error_btl:
+            type: string
+          del_oxygen_18_btl:
+            type: string
+          del_oxygen_18_btl_woceqc:
+            type: string
+          del_oxygen_18_error_btl:
+            type: string
+          delta_helium_3_btl:
+            type: string
+          delta_helium_3_btl_woceqc:
+            type: string
+          delta_helium_3_error_btl:
+            type: string
+          dissolved_organic_carbon_btl:
+            type: string
+          dissolved_organic_carbon_btl_woceqc:
+            type: string
+          fm_depth_btl:
+            type: string
+          fm_depth_ctd:
+            type: string
+          fm_depth_ctd_woceqc:
+            type: string
+          geotraces_sample_btl:
+            type: string
+          helium_btl:
+            type: string
+          helium_btl_woceqc:
+            type: string
+          helium_error_btl:
+            type: string
+          methyl_chloroform_btl:
+            type: string
+          methyl_chloroform_btl_woceqc:
+            type: string
+          neon_btl:
+            type: string
+          neon_btl_woceqc:
+            type: string
+          neon_error_btl:
+            type: string
+          nitrate_btl:
+            type: string
+          nitrate_btl_woceqc:
+            type: string
+          nitrite_btl:
+            type: string
+          nitrite_btl_woceqc:
+            type: string
+          nitrite_nitrate_btl:
+            type: string
+          nitrite_nitrate_btl_woceqc:
+            type: string
+          nitrous_oxide_btl:
+            type: string
+          nitrous_oxide_btl_woceqc:
+            type: string
+          odf_pressure_btl:
+            type: string
+          oxygen_btl:
+            type: string
+          oxygen_btl_woceqc:
+            type: string
+          oxygen_ctd:
+            type: string
+          oxygen_ctd_woceqc:
+            type: string
+          oxygen_ml_l_btl:
+            type: string
+          oxygen_ml_l_btl_woceqc:
+            type: string
+          package_depth_btl:
+            type: string
+          par_ctd:
+            type: string
+          par_ctd_woceqc:
+            type: string
+          partial_co2_temperature_btl:
+            type: string
+          partial_pressure_of_co2_btl:
+            type: string
+          partial_pressure_of_co2_btl_woceqc:
+            type: string
+          particulate_organic_carbon_btl:
+            type: string
+          particulate_organic_carbon_btl_woceqc:
+            type: string
+          particulate_organic_nitrogen_btl:
+            type: string
+          particulate_organic_nitrogen_btl_woceqc:
+            type: string
+          ph_sws_btl:
+            type: string
+          ph_sws_btl_woceqc:
+            type: string
+          ph_temperature_btl:
+            type: string
+          ph_total_h_scale_btl:
+            type: string
+          ph_total_h_scale_btl_woceqc:
+            type: string
+          ph_unknown_scale_btl:
+            type: string
+          ph_unknown_scale_btl_woceqc:
+            type: string
+          phaeophytin_btl:
+            type: string
+          phaeophytin_btl_woceqc:
+            type: string
+          phaeophytin_ug_l_btl:
+            type: string
+          phaeophytin_ug_l_btl_woceqc:
+            type: string
+          phosphate_btl:
+            type: string
+          phosphate_btl_woceqc:
+            type: string
+          potential_temperature_68_btl:
+            type: string
+          potential_temperature_c_btl:
+            type: string
+          potential_temperature_c_ctd:
+            type: string
+          pressure:
+            type: string
+          pressure_btl_woceqc:
+            type: string
+          pressure_ctd_woceqc:
+            type: string
+          ref_temperature_btl:
+            type: string
+          ref_temperature_btl_woceqc:
+            type: string
+          ref_temperature_c_btl:
+            type: string
+          ref_temperature_c_btl_woceqc:
+            type: string
+          reference_salinity_btl:
+            type: string
+          reference_salinity_btl_woceqc:
+            type: string
+          rev_pressure_btl:
+            type: string
+          rev_pressure_btl_woceqc:
+            type: string
+          rev_temperature_90_btl:
+            type: string
+          rev_temperature_90_btl_woceqc:
+            type: string
+          rev_temperature_btl:
+            type: string
+          rev_temperature_btl_woceqc:
+            type: string
+          rev_temperature_c_btl:
+            type: string
+          rev_temperature_c_btl_woceqc:
+            type: string
+          salinity_btl:
+            type: string
+          salinity_btl_woceqc:
+            type: string
+          salinity_ctd:
+            type: string
+          salinity_ctd_woceqc:
+            type: string
+          sample_btl:
+            type: string
+          sample_ctd:
+            type: string
+          silicate_btl:
+            type: string
+          silicate_btl_woceqc:
+            type: string
+          sm_depth_btl:
+            type: string
+          sm_depth_ctd:
+            type: string
+          sm_depth_ctd_woceqc:
+            type: string
+          sulfur_hexifluoride_btl:
+            type: string
+          sulfur_hexifluoride_btl_woceqc:
+            type: string
+          temperature_btl:
+            type: string
+          temperature_btl_woceqc:
+            type: string
+          temperature_ctd:
+            type: string
+          temperature_ctd_woceqc:
+            type: string
+          total_alkalinity_btl:
+            type: string
+          total_alkalinity_btl_woceqc:
+            type: string
+          total_carbon_btl:
+            type: string
+          total_carbon_btl_woceqc:
+            type: string
+          total_dissolved_nitrogen_btl:
+            type: string
+          total_dissolved_nitrogen_btl_woceqc:
+            type: string
+          total_organic_carbon_l_btl:
+            type: string
+          total_organic_carbon_l_btl_woceqc:
+            type: string
+          tritium_btl:
+            type: string
+          tritium_btl_woceqc:
+            type: string
+          tritium_error_btl:
+            type: string
+          urea_btl:
+            type: string
+          urea_btl_woceqc:
+            type: string
+          user_bottle_number_btl:
+            type: string
+          user_bottle_number_btl_woceqc:
+            type: string
+          user_sample_number_btl:
+            type: string
+    goship_data_keys:
+      type: array
+      items:
+        type: string
+        enum:
+        - ammonium_btl
+        - ammonium_btl_woceqc
+        - bionbr_btl
+        - bottle_latitude_btl
+        - bottle_longitude_btl
+        - bottle_number_btl
+        - bottle_number_btl_woceqc
+        - bottle_salinity_btl
+        - bottle_salinity_btl_woceqc
+        - bottle_time_btl
+        - carbon_tetrachloride_btl
+        - carbon_tetrachloride_btl_woceqc
+        - cfc_113_btl
+        - cfc_113_btl_woceqc
+        - cfc_11_btl
+        - cfc_11_btl_woceqc
+        - cfc_12_btl
+        - cfc_12_btl_woceqc
+        - chlorophyll_a_btl
+        - chlorophyll_a_btl_woceqc
+        - chlorophyll_a_ug_kg_btl
+        - chlorophyll_a_ug_kg_btl_woceqc
+        - co2_mole_fraction_btl
+        - co2_mole_fraction_btl_woceqc
+        - ctd_beamcp_ctd
+        - ctd_beamcp_ctd_woceqc
+        - ctd_beta700_raw_btl
+        - ctd_beta700_raw_btl_woceqc
+        - ctd_beta700_raw_ctd
+        - ctd_beta700_raw_ctd_woceqc
+        - ctd_cdom_raw_ctd
+        - ctd_cdom_raw_ctd_woceqc
+        - ctd_fluor_arbitrary_ctd
+        - ctd_fluor_ctd
+        - ctd_fluor_ctd_woceqc
+        - ctd_fluor_raw_btl
+        - ctd_fluor_raw_btl_woceqc
+        - ctd_fluor_raw_ctd
+        - ctd_fluor_raw_ctd_woceqc
+        - ctd_nitrate_ctd
+        - ctd_nitrate_ctd_woceqc
+        - ctd_number_of_observations_ctd
+        - ctd_optode_oxygen_ctd
+        - ctd_optode_oxygen_ctd_woceqc
+        - ctd_optode_oxygen_raw_ctd
+        - ctd_optode_oxygen_raw_ctd_woceqc
+        - ctd_pressure_raw_btl
+        - ctd_temperature_unk_ctd
+        - ctd_temperature_unk_ctd_woceqc
+        - ctd_transmissometer_ctd
+        - ctd_transmissometer_ctd_woceqc
+        - ctd_transmissometer_raw_btl
+        - ctd_transmissometer_raw_btl_woceqc
+        - ctd_transmissometer_raw_ctd
+        - ctd_transmissometer_raw_ctd_woceqc
+        - ctd_turbidity_ntu_ctd
+        - del_carbon_13_dic_btl
+        - del_carbon_13_dic_btl_woceqc
+        - del_carbon_14_dic_btl
+        - del_carbon_14_dic_btl_woceqc
+        - del_carbon_14_dic_error_btl
+        - del_oxygen_18_btl
+        - del_oxygen_18_btl_woceqc
+        - del_oxygen_18_error_btl
+        - delta_helium_3_btl
+        - delta_helium_3_btl_woceqc
+        - delta_helium_3_error_btl
+        - dissolved_organic_carbon_btl
+        - dissolved_organic_carbon_btl_woceqc
+        - fm_depth_btl
+        - fm_depth_ctd
+        - fm_depth_ctd_woceqc
+        - geotraces_sample_btl
+        - helium_btl
+        - helium_btl_woceqc
+        - helium_error_btl
+        - methyl_chloroform_btl
+        - methyl_chloroform_btl_woceqc
+        - neon_btl
+        - neon_btl_woceqc
+        - neon_error_btl
+        - nitrate_btl
+        - nitrate_btl_woceqc
+        - nitrite_btl
+        - nitrite_btl_woceqc
+        - nitrite_nitrate_btl
+        - nitrite_nitrate_btl_woceqc
+        - nitrous_oxide_btl
+        - nitrous_oxide_btl_woceqc
+        - odf_pressure_btl
+        - oxygen_btl
+        - oxygen_btl_woceqc
+        - oxygen_ctd
+        - oxygen_ctd_woceqc
+        - oxygen_ml_l_btl
+        - oxygen_ml_l_btl_woceqc
+        - package_depth_btl
+        - par_ctd
+        - par_ctd_woceqc
+        - partial_co2_temperature_btl
+        - partial_pressure_of_co2_btl
+        - partial_pressure_of_co2_btl_woceqc
+        - particulate_organic_carbon_btl
+        - particulate_organic_carbon_btl_woceqc
+        - particulate_organic_nitrogen_btl
+        - particulate_organic_nitrogen_btl_woceqc
+        - ph_sws_btl
+        - ph_sws_btl_woceqc
+        - ph_temperature_btl
+        - ph_total_h_scale_btl
+        - ph_total_h_scale_btl_woceqc
+        - ph_unknown_scale_btl
+        - ph_unknown_scale_btl_woceqc
+        - phaeophytin_btl
+        - phaeophytin_btl_woceqc
+        - phaeophytin_ug_l_btl
+        - phaeophytin_ug_l_btl_woceqc
+        - phosphate_btl
+        - phosphate_btl_woceqc
+        - potential_temperature_68_btl
+        - potential_temperature_c_btl
+        - potential_temperature_c_ctd
+        - pressure
+        - pressure_btl_woceqc
+        - pressure_ctd_woceqc
+        - ref_temperature_btl
+        - ref_temperature_btl_woceqc
+        - ref_temperature_c_btl
+        - ref_temperature_c_btl_woceqc
+        - reference_salinity_btl
+        - reference_salinity_btl_woceqc
+        - rev_pressure_btl
+        - rev_pressure_btl_woceqc
+        - rev_temperature_90_btl
+        - rev_temperature_90_btl_woceqc
+        - rev_temperature_btl
+        - rev_temperature_btl_woceqc
+        - rev_temperature_c_btl
+        - rev_temperature_c_btl_woceqc
+        - salinity_btl
+        - salinity_btl_woceqc
+        - salinity_ctd
+        - salinity_ctd_woceqc
+        - sample_btl
+        - sample_ctd
+        - silicate_btl
+        - silicate_btl_woceqc
+        - sm_depth_btl
+        - sm_depth_ctd
+        - sm_depth_ctd_woceqc
+        - sulfur_hexifluoride_btl
+        - sulfur_hexifluoride_btl_woceqc
+        - temperature_btl
+        - temperature_btl_woceqc
+        - temperature_ctd
+        - temperature_ctd_woceqc
+        - total_alkalinity_btl
+        - total_alkalinity_btl_woceqc
+        - total_carbon_btl
+        - total_carbon_btl_woceqc
+        - total_dissolved_nitrogen_btl
+        - total_dissolved_nitrogen_btl_woceqc
+        - total_organic_carbon_l_btl
+        - total_organic_carbon_l_btl_woceqc
+        - tritium_btl
+        - tritium_btl_woceqc
+        - tritium_error_btl
+        - urea_btl
+        - urea_btl_woceqc
+        - user_bottle_number_btl
+        - user_bottle_number_btl_woceqc
+        - user_sample_number_btl
+    argo:
+      required:
+      - _id
+      - basin
+      - cycle_number
+      - date_updated_argovis
+      - geolocation
+      - metadata
+      - source
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        metadata:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          type: array
+          items:
+            anyOf:
+            - type: array
+              items:
+                type: number
+            - type: object
+              properties:
+                bbp470:
+                  type: number
+                bbp532:
+                  type: number
+                bbp700:
+                  type: number
+                bbp700_2:
+                  type: number
+                bisulfide:
+                  type: number
+                cdom:
+                  type: number
+                chla:
+                  type: number
+                cndc:
+                  type: number
+                cndx:
+                  type: number
+                cp660:
+                  type: number
+                down_irradiance380:
+                  type: number
+                down_irradiance412:
+                  type: number
+                down_irradiance442:
+                  type: number
+                down_irradiance443:
+                  type: number
+                down_irradiance490:
+                  type: number
+                down_irradiance555:
+                  type: number
+                down_irradiance670:
+                  type: number
+                downwelling_par:
+                  type: number
+                doxy:
+                  type: number
+                doxy2:
+                  type: number
+                doxy3:
+                  type: number
+                molar_doxy:
+                  type: number
+                nitrate:
+                  type: number
+                ph_in_situ_total:
+                  type: number
+                pressure:
+                  type: number
+                salinity:
+                  type: number
+                salinity_sfile:
+                  type: number
+                temperature:
+                  type: number
+                temperature_sfile:
+                  type: number
+                turbidity:
+                  type: number
+                up_radiance412:
+                  type: number
+                up_radiance443:
+                  type: number
+                up_radiance490:
+                  type: number
+                up_radiance555:
+                  type: number
+                bbp470_argoqc:
+                  type: number
+                bbp532_argoqc:
+                  type: number
+                bbp700_argoqc:
+                  type: number
+                bbp700_2_argoqc:
+                  type: number
+                bisulfide_argoqc:
+                  type: number
+                cdom_argoqc:
+                  type: number
+                chla_argoqc:
+                  type: number
+                cndc_argoqc:
+                  type: number
+                cndx_argoqc:
+                  type: number
+                cp660_argoqc:
+                  type: number
+                down_irradiance380_argoqc:
+                  type: number
+                down_irradiance412_argoqc:
+                  type: number
+                down_irradiance442_argoqc:
+                  type: number
+                down_irradiance443_argoqc:
+                  type: number
+                down_irradiance490_argoqc:
+                  type: number
+                down_irradiance555_argoqc:
+                  type: number
+                down_irradiance670_argoqc:
+                  type: number
+                downwelling_par_argoqc:
+                  type: number
+                doxy_argoqc:
+                  type: number
+                doxy2_argoqc:
+                  type: number
+                doxy3_argoqc:
+                  type: number
+                molar_doxy_argoqc:
+                  type: number
+                nitrate_argoqc:
+                  type: number
+                ph_in_situ_total_argoqc:
+                  type: number
+                pressure_argoqc:
+                  type: number
+                salinity_argoqc:
+                  type: number
+                salinity_sfile_argoqc:
+                  type: number
+                temperature_argoqc:
+                  type: number
+                temperature_sfile_argoqc:
+                  type: number
+                turbidity_argoqc:
+                  type: number
+                up_radiance412_argoqc:
+                  type: number
+                up_radiance443_argoqc:
+                  type: number
+                up_radiance490_argoqc:
+                  type: number
+                up_radiance555_argoqc:
+                  type: number
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        data_warning:
+          type: array
+          items:
+            type: string
+            enum:
+            - degenerate_levels
+            - missing_basin
+            - missing_location
+            - missing_timestamp
+        data_keys:
+          $ref: '#/components/schemas/argo_data_keys'
+        units:
+          $ref: '#/components/schemas/argo_units'
+        cycle_number:
+          type: number
+        data_keys_mode:
+          type: array
+          items:
+            type: string
+        geolocation_argoqc:
+          type: number
+        profile_direction:
+          type: string
+        timestamp_argoqc:
+          type: number
+        vertical_sampling_scheme:
+          type: string
+      example:
+        metadata: metadata
+        geolocation_argoqc: 1.46581298050294517310021547018550336360931396484375
+        data:
+        - ""
+        - ""
+        data_keys_mode:
+        - data_keys_mode
+        - data_keys_mode
+        basin: 0.80082819046101150206595775671303272247314453125
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        units: ""
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        data_warning:
+        - degenerate_levels
+        - degenerate_levels
+        vertical_sampling_scheme: vertical_sampling_scheme
+        cycle_number: 6.02745618307040320615897144307382404804229736328125
+        timestamp_argoqc: 5.962133916683182377482808078639209270477294921875
+        data_keys:
+        - bbp470
+        - bbp470
+        _id: _id
+        profile_direction: profile_direction
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    argoMeta:
+      required:
+      - _id
+      - data_type
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        data_keys:
+          $ref: '#/components/schemas/argo_data_keys'
+        units:
+          $ref: '#/components/schemas/argo_units'
+        country:
+          type: string
+        data_center:
+          type: string
+        instrument:
+          type: string
+        pi_name:
+          type: array
+          items:
+            type: string
+        platform:
+          type: string
+        platform_type:
+          type: string
+        fleetmonitoring:
+          type: string
+        oceanops:
+          type: string
+        positioning_system:
+          type: string
+        wmo_inst_type:
+          type: string
+      example:
+        country: country
+        positioning_system: positioning_system
+        pi_name:
+        - pi_name
+        - pi_name
+        data_center: data_center
+        instrument: instrument
+        units: ""
+        platform: platform
+        platform_type: platform_type
+        wmo_inst_type: wmo_inst_type
+        data_type: data_type
+        data_keys:
+        - bbp470
+        - bbp470
+        _id: _id
+        oceanops: oceanops
+        fleetmonitoring: fleetmonitoring
+    argo_units:
+      anyOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+        properties:
+          bbp470:
+            type: string
+          bbp532:
+            type: string
+          bbp700:
+            type: string
+          bbp700_2:
+            type: string
+          bisulfide:
+            type: string
+          cdom:
+            type: string
+          chla:
+            type: string
+          cndc:
+            type: string
+          cndx:
+            type: string
+          cp660:
+            type: string
+          down_irradiance380:
+            type: string
+          down_irradiance412:
+            type: string
+          down_irradiance442:
+            type: string
+          down_irradiance443:
+            type: string
+          down_irradiance490:
+            type: string
+          down_irradiance555:
+            type: string
+          down_irradiance670:
+            type: string
+          downwelling_par:
+            type: string
+          doxy:
+            type: string
+          doxy2:
+            type: string
+          doxy3:
+            type: string
+          molar_doxy:
+            type: string
+          nitrate:
+            type: string
+          ph_in_situ_total:
+            type: string
+          pressure:
+            type: string
+          salinity:
+            type: string
+          salinity_sfile:
+            type: string
+          temperature:
+            type: string
+          temperature_sfile:
+            type: string
+          turbidity:
+            type: string
+          up_radiance412:
+            type: string
+          up_radiance443:
+            type: string
+          up_radiance490:
+            type: string
+          up_radiance555:
+            type: string
+          bbp470_argoqc:
+            type: string
+          bbp532_argoqc:
+            type: string
+          bbp700_argoqc:
+            type: string
+          bbp700_2_argoqc:
+            type: string
+          bisulfide_argoqc:
+            type: string
+          cdom_argoqc:
+            type: string
+          chla_argoqc:
+            type: string
+          cndc_argoqc:
+            type: string
+          cndx_argoqc:
+            type: string
+          cp660_argoqc:
+            type: string
+          down_irradiance380_argoqc:
+            type: string
+          down_irradiance412_argoqc:
+            type: string
+          down_irradiance442_argoqc:
+            type: string
+          down_irradiance443_argoqc:
+            type: string
+          down_irradiance490_argoqc:
+            type: string
+          down_irradiance555_argoqc:
+            type: string
+          down_irradiance670_argoqc:
+            type: string
+          downwelling_par_argoqc:
+            type: string
+          doxy_argoqc:
+            type: string
+          doxy2_argoqc:
+            type: string
+          doxy3_argoqc:
+            type: string
+          molar_doxy_argoqc:
+            type: string
+          nitrate_argoqc:
+            type: string
+          ph_in_situ_total_argoqc:
+            type: string
+          pressure_argoqc:
+            type: string
+          salinity_argoqc:
+            type: string
+          salinity_sfile_argoqc:
+            type: string
+          temperature_argoqc:
+            type: string
+          temperature_sfile_argoqc:
+            type: string
+          turbidity_argoqc:
+            type: string
+          up_radiance412_argoqc:
+            type: string
+          up_radiance443_argoqc:
+            type: string
+          up_radiance490_argoqc:
+            type: string
+          up_radiance555_argoqc:
+            type: string
+    argo_data_keys:
+      type: array
+      items:
+        type: string
+        enum:
+        - bbp470
+        - bbp532
+        - bbp700
+        - bbp700_2
+        - bisulfide
+        - cdom
+        - chla
+        - cndc
+        - cndx
+        - cp660
+        - down_irradiance380
+        - down_irradiance412
+        - down_irradiance442
+        - down_irradiance443
+        - down_irradiance490
+        - down_irradiance555
+        - down_irradiance670
+        - downwelling_par
+        - doxy
+        - doxy2
+        - doxy3
+        - molar_doxy
+        - nitrate
+        - ph_in_situ_total
+        - pressure
+        - salinity
+        - salinity_sfile
+        - temperature
+        - temperature_sfile
+        - turbidity
+        - up_radiance412
+        - up_radiance443
+        - up_radiance490
+        - up_radiance555
+        - bbp470_argoqc
+        - bbp532_argoqc
+        - bbp700_argoqc
+        - bbp700_2_argoqc
+        - bisulfide_argoqc
+        - cdom_argoqc
+        - chla_argoqc
+        - cndc_argoqc
+        - cndx_argoqc
+        - cp660_argoqc
+        - down_irradiance380_argoqc
+        - down_irradiance412_argoqc
+        - down_irradiance442_argoqc
+        - down_irradiance443_argoqc
+        - down_irradiance490_argoqc
+        - down_irradiance555_argoqc
+        - down_irradiance670_argoqc
+        - downwelling_par_argoqc
+        - doxy_argoqc
+        - doxy2_argoqc
+        - doxy3_argoqc
+        - molar_doxy_argoqc
+        - nitrate_argoqc
+        - ph_in_situ_total_argoqc
+        - pressure_argoqc
+        - salinity_argoqc
+        - salinity_sfile_argoqc
+        - temperature_argoqc
+        - temperature_sfile_argoqc
+        - turbidity_argoqc
+        - up_radiance412_argoqc
+        - up_radiance443_argoqc
+        - up_radiance490_argoqc
+        - up_radiance555_argoqc
     errorResponse:
       required:
       - code
