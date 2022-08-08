@@ -15,10 +15,8 @@ externalDocs:
   description: Find us on GitHub
   url: https://github.com/argovis/argovis_api
 servers:
-- url: https://argovis.colorado.edu
+- url: https://argovis-api.colorado.edu
   description: "Server Hosted by University of Colorado, Boulder"
-- url: http://localhost:3001
-  description: Local server for testing and development
 security:
 - name: []
 tags:
