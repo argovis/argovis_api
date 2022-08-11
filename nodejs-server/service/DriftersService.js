@@ -51,7 +51,7 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
     }
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.startDate, params.endDate, params.polygon, null, params.center, params.radius, params.multipolygon, id||wmo||platform) 
+    let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
       //request looks huge or malformed, reject it
       reject(bailout)
