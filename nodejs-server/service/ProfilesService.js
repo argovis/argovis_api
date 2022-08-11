@@ -14,7 +14,7 @@
  * platform String Unique platform ID to search for. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
  * compression String Data compression strategy to apply. (optional)
- * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * data argo_data_keys Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
@@ -44,7 +44,7 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 6.027456183070403,
   "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "bbp470", "bbp470" ],
+  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {
@@ -75,7 +75,7 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 6.027456183070403,
   "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "bbp470", "bbp470" ],
+  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {
@@ -114,7 +114,7 @@ exports.findArgometa = function(id,platform) {
   "platform_type" : "platform_type",
   "wmo_inst_type" : "wmo_inst_type",
   "data_type" : "data_type",
-  "data_keys" : [ "bbp470", "bbp470" ],
+  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "oceanops" : "oceanops",
   "fleetmonitoring" : "fleetmonitoring"
@@ -129,7 +129,7 @@ exports.findArgometa = function(id,platform) {
   "platform_type" : "platform_type",
   "wmo_inst_type" : "wmo_inst_type",
   "data_type" : "data_type",
-  "data_keys" : [ "bbp470", "bbp470" ],
+  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "oceanops" : "oceanops",
   "fleetmonitoring" : "fleetmonitoring"
