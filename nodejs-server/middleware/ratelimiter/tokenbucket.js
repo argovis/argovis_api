@@ -48,6 +48,7 @@ module.exports.tokenbucket = function (req, res, next) {
 	})
 	.then(userbucket => {
 		if(userbucket.superuser) {
+			console.log('superuser')
 			next()
 			return
 		}
