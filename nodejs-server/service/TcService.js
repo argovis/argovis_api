@@ -1,7 +1,7 @@
 'use strict';
 const tc = require('../models/tc');
 const moment = require('moment');
-const helpers = require('./helpers')
+const helpers = require('../helpers/helpers')
 
 /**
  * Tropical cyclone search and filter.

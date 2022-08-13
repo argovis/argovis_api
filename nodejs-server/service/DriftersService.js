@@ -1,6 +1,6 @@
 'use strict';
 const Drifter = require('../models/drifter');
-const helpers = require('./helpers');
+const helpers = require('../helpers/helpers')
 
 /**
  * Search, reduce and download drifter metadata.

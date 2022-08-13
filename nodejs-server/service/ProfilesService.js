@@ -2,7 +2,7 @@
 const Profile = require('../models/profile');
 const goship = require('../models/goship');
 const argo = require('../models/argo');
-const helpers = require('./helpers')
+const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
 
 /**

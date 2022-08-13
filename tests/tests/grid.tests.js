@@ -130,13 +130,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.length).to.eql(2);
       });
     });
-
-    describe("GET /grids/ohc_kg", function () {
-      it("reject a huge request", async function () {
-        const response = await request.get("/grids/ohc_kg?startDate=2020-01-01T00:00:00Z&endDate=2021-01-01T00:00:00Z&polygon=[[0,-30],[60,-30],[60,30],[0,30],[0,-30]]").set({'x-argokey': 'developer'});
-        expect(response.status).to.eql(413);
-      });
-    });
   }
 })
 

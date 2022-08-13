@@ -7,6 +7,12 @@ const rawspec = require('/tests/spec.json');
 const $RefParser = require("@apidevtools/json-schema-ref-parser");
 const helpers = require('/tests/tests/helpers')
 
+const c = 1
+const cellprice = 0.001
+const metaDiscount = 100
+const maxbulk = 100000
+const bucketSize = 100
+
 $RefParser.dereference(rawspec, (err, schema) => {
   if (err) {
     console.error(err);
@@ -87,110 +93,51 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(helpers.has_data(profile,keys,true)).to.be.false 
       });
     });
-
-    describe("request_sanitation", function () {
-      it("allows the whole globe for a day", async function () {
-        startDate = new Date('2020-01-01T00:00:00Z')
-        endDate = new Date('2020-01-02T00:00:00Z')
-        polygon = null
-        box = null
-        center = null
-        radius = null
-        multipolygon = null
-        id = null
-        platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
-      });
-    });
-
-    describe("request_sanitation", function () {
-      it("allows a 15 degree box near the equator for 6 months", async function () {
-        startDate = new Date('2020-01-01T00:00:00Z')
-        endDate = new Date('2020-07-01T00:00:00Z')
-        polygon = null
-        box = [[0,-7.5],[15,7.5]]
-        center = null
-        radius = null
-        multipolygon = null
-        id = null
-        platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
+  
+    describe("maxgeo", function () {
+      it("block a request for a polygon covering an entire hemisphere", async function () {
+        const max = helpers.maxgeo({type: "Polygon", coordinates: [[[0,90],[0,-90],[179.9,-90],[179.9,90],[0,90]]]}, null, null, null)
+        expect(max.code).to.eql(400);
       });
     }); 
 
-    describe("request_sanitation", function () {
-      it("disallows a 20 degree box near the equator for 6 months", async function () {
-        startDate = new Date('2020-01-01T00:00:00Z')
-        endDate = new Date('2020-07-01T00:00:00Z')
-        polygon = null
-        box = [[0,-10],[20,10]]
-        center = null
-        radius = null
-        multipolygon = null
-        id = null
-        platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.have.property('code', 413) 
-      });
-    });
-
-    describe("request_sanitation", function () {
-      it("allows a 15 degree box as a polygon near the equator for 6 months", async function () {
-        startDate = new Date('2020-01-01T00:00:00Z')
-        endDate = new Date('2020-07-01T00:00:00Z')
-        polygon = {"type": "Polygon","coordinates": [[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]]}
-        box = null
-        center = null
-        radius = null
-        multipolygon = null
-        id = null
-        platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
-      });
-    });
-
-    describe("request_sanitation", function () {
-      it("allows a 20 degree box near the equator for 6 months if an ID is also present", async function () {
-        startDate = new Date('2020-01-01T00:00:00Z')
-        endDate = new Date('2020-07-01T00:00:00Z')
-        polygon = null
-        box = [[0,-10],[20,10]]
-        center = null
-        radius = null
-        multipolygon = null
-        id = 'test-id'
-        platform = null
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
+    describe("maxgeo", function () {
+      it("block a request for a multipolygon covering an entire hemisphere", async function () {
+        const max = helpers.maxgeo(null, [{type: "Polygon", coordinates: [[[0,1],[0,-1],[1,-1],[1,1],[0,1]]]},{type: "Polygon", coordinates: [[[0,90],[0,-90],[179.9,-90],[179.9,90],[0,90]]]}], null, null)
+        expect(max.code).to.eql(400);
       });
     }); 
 
-    describe("request_sanitation", function () {
-      it("allows a 20 degree box near the equator for 6 months if a platform is also present", async function () {
-        startDate = new Date('2020-01-01T00:00:00Z')
-        endDate = new Date('2020-07-01T00:00:00Z')
-        polygon = null
-        box = [[0,-10],[20,10]]
-        center = null
-        radius = null
-        multipolygon = null
-        id = null
-        platform = 'test-platform'
-        expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
+    describe("maxgeo", function () {
+      it("block a request for a huge proximity search", async function () {
+        const max = helpers.maxgeo(null, null, null, 10001)
+        expect(max.code).to.eql(400);
       });
-    });   
-  }
-
-  describe("request_sanitation", function () {
-    it("allows a 2 degree box near the equator for all time", async function () {
-      startDate = null
-      endDate = null
-      polygon = null
-      box = [[0,-0.5],[1,0.5]]
-      center = null
-      radius = null
-      multipolygon = null
-      id = null
-      platform = null
-      expect(helpers.request_sanitation(startDate, endDate, polygon, box, center, radius, multipolygon, id||platform)).to.be.false 
     });
-  }); 
+
+    describe("cost functions", function () {
+      it("cost of entire globe for a day with data for a standard API route", async function () {
+        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z&data=doxy', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice);
+      });
+    }); 
+
+    describe("cost functions", function () {
+      it("cost of entire globe for a day with data for a standard API route", async function () {
+        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice/metaDiscount);
+      });
+    }); 
+
+    describe("cost functions", function () {
+      it("cost of 15 deg box near equator for 6 months with data for a standard API route should prohibit more than a few such requests in parallel", async function () {
+        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-07-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk)*10).to.be.greaterThan(bucketSize);
+      });
+    }); 
+
+    describe("cost functions", function () {
+      it("cost of 15 deg box near equator for 10 years with data for a standard API route should be out of scope", async function () {
+        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2010-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk).code).to.eql(413);
+      });
+    }); 
+}
+
 })

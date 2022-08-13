@@ -14,6 +14,7 @@
     "chai-almost": "^1.0.1",
     "chai-json-schema": "^1.5.1",
     "mocha": "^9.1.1",
-    "supertest": "^6.1.6"
+    "supertest": "^6.1.6",
+    "geojson-validation": "^0.1.6"
   }
 }

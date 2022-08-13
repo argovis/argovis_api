@@ -483,20 +483,5 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.length).to.eql(2);
       });
     });
-
-    describe("GET /profiles", function () {
-      it("multipolygon reject if all regions are too big", async function () {
-        const response = await request.get("/profiles?multipolygon=[[[0,-35],[70,-35],[70,35],[0,35],[0,-35]],[[20,-35],[90,-35],[90,35],[20,35],[20,-35]]]").set({'x-argokey': 'developer'});
-        expect(response.status).to.eql(400);
-      });
-    });
-
-    describe("GET /profiles", function () {
-      it("reject a huge request", async function () {
-        const response = await request.get("/profiles?startDate=2020-01-01T00:00:00Z&endDate=2021-01-01T00:00:00Z&polygon=[[0,-30],[60,-30],[60,30],[0,30],[0,-30]]").set({'x-argokey': 'developer'});
-        expect(response.status).to.eql(413);
-      });
-    });
-
   }
 })
