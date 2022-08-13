@@ -9,7 +9,7 @@ const setAsync = util.promisify(client.set).bind(client);
 const hgetAsync = util.promisify(client.hget).bind(client);
 const hgetallAsync = util.promisify(client.hgetall).bind(client);
 const hsetAsync = util.promisify(client.hset).bind(client);
-const user = require('../../models/user');
+const userModel = require('../../models/user');
 const geojsonArea = require('@mapbox/geojson-area');
 
 module.exports = {}
@@ -38,9 +38,11 @@ module.exports.tokenbucket = function (req, res, next) {
 		let t = d.getTime()
 		if(userbucket == null){
      		// need to go find key in mongo and populate redis
-      		return new Promise(helpers.lookup_key.bind(null, argokey))
-      		.then(user => {hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t, "superuser", user.tokenValid==9999)})
-      		.then(() => {return {"key": argokey, "ntokens": bucketsize, "lastUpdate": t, "superuser": user.tokenValid==9999}})
+      		return new Promise(helpers.lookup_key.bind(null, userModel, argokey))
+      		.then(user => {
+      			hsetAsync(user.key, "ntokens", bucketsize, "lastUpdate", t, "superuser", user.tokenValid==9999)
+      			return {"key": argokey, "ntokens": bucketsize, "lastUpdate": t, "superuser": user.tokenValid==9999}
+      		})
 		} else {
 			// found the user's usage data in redis and can just hand it back.
 			return {"key": argokey, "ntokens": Number(userbucket.ntokens), "lastUpdate": Number(userbucket.lastUpdate), "superuser": userbucket.superuser==='true'}
@@ -48,7 +50,6 @@ module.exports.tokenbucket = function (req, res, next) {
 	})
 	.then(userbucket => {
 		if(userbucket.superuser) {
-			console.log('superuser')
 			next()
 			return
 		}

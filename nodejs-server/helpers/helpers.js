@@ -543,10 +543,10 @@ module.exports.meta_lookup = function(meta_model, data_docs){
 
 }
 
-
-module.exports.lookup_key = function(apikey, resolve, reject){
+module.exports.lookup_key = function(userModel, apikey, resolve, reject){
     // look up an apikey from mongo, and reject if not found or not valid.
-    const query = user.find({key: apikey})
+
+    const query = userModel.find({key: apikey})
     query.exec(function(err, user){
       if (err){
           reject({"code": 500, "message": "Server error"});
@@ -560,7 +560,7 @@ module.exports.lookup_key = function(apikey, resolve, reject){
         reject({"code": 403, "message": "API token has been deactivated; please contact argovis@colorado.edu for assistance."})
         return;
       }
-
+      
       resolve(user[0].toObject())
     })
 }

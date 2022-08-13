@@ -19,7 +19,6 @@ exports.findAR = function(date,_id) {
       }
       filter = {_id: _id}
     }
-    console.log('ar filter:', filter)
     const query = arShapes.find(filter)
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
