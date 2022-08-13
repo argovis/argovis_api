@@ -311,10 +311,8 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
   return params
 }
 
-module.exports.request_sanitation = function(startDate, endDate, polygon, box, center, radius, multipolygon, allowAll){
+module.exports.request_sanitation = function(polygon, box, center, radius, multipolygon){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
-  // allowAll==true allows the request if it isn't malformed; approriate for requests that have an a-priori small scope, like a single ID, platform or WOCE line.
-  const geojsonArea = require('@mapbox/geojson-area');
 
   // basic sanity checks
   if((center && box) || (center && polygon) || (box && polygon || (multipolygon && polygon) || (multipolygon && box) || (multipolygon && center))){
@@ -322,60 +320,6 @@ module.exports.request_sanitation = function(startDate, endDate, polygon, box, c
   }
   if((center && !radius) || (!center && radius)){
     return {"code": 400, "message": "Please specify both radius and center to filter for data less than <radius> km from <center>."}
-  }
-
-  // geo size limits - mongo doesn't like huge geoWithins
-  maxgeosearch = 45000000000000 // 60 degree box centered on equator, in sq m
-  if(radius) {
-    if(radius > 3000){
-      return {"code": 400, "message": "Please limit proximity searches to at most 3000 km in radius"};
-    }
-  }
-  if(polygon) {
-    if(geojsonArea.geometry(polygon) > maxgeosearch){
-      return {"code": 400, "message": "Polygon region is too big; please ask for 45 M square km or less in a single request, or about 60 deg x 60 deg at the equator."}
-    }
-  }
-  if(box) {
-    let polybox = {
-      "type": "Polygon",
-      "coordinates": [[[box[0][0], box[0][1]], [box[1][0], box[0][1]], [box[1][0], box[1][1]], [box[0][0], box[1][1]], [box[0][0], box[0][1]]]]
-    }
-    if(geojsonArea.geometry(polybox) > maxgeosearch){
-      return {"code": 400, "message": "Box region is too big; please ask for 45 M square km or less in a single request, or about 60 deg x 60 deg at the equator."}
-    }
-  }
-  if(multipolygon){
-    if(multipolygon.every(p => geojsonArea.geometry(p) > maxgeosearch)){
-      return {"code": 400, "message": "All Multipolygon regions are too big; at least one of them must be 45 M square km or less, or about 60 deg x 60 deg at the equator."}
-    }
-  }
-
-  // data volume limits
-  if(allowAll){
-    // always allow single ID or platform searches at this point
-    return false
-  }
-  if(!startDate){
-    startDate = new Date('1900-01-01T00:00:00Z')
-  }
-  if(!endDate){
-    endDate = new Date()
-  }
-  let dayspan = Math.round(Math.abs((endDate - startDate) / (24*60*60*1000) )); // n days of request
-  let geospan = 41252.96125*0.7 // square degrees covered by earth's ocean, equivalent to the entire globe for our purposes
-  if(polygon){
-    geospan = geojsonArea.geometry(polygon) / 13000000000 // 1 sq degree is about 13B sq meters at eq
-  } else if(box){
-    geospan = Math.abs(box[0][0] - box[1][0])*Math.abs(box[0][1] - box[1][1])
-  } else if(center && radius){
-    geospan = 3.14159*radius*radius / 13000 // recall radius is reported in km
-  } else if(multipolygon){
-    let areas = multipolygon.map(x => geojsonArea.geometry(x) / 13000000000)
-    geospan = Math.min(areas)
-  }
-  if(dayspan*geospan > 50000){
-    return {"code":413, "message": "The estimated size of your request is pretty big; please split it up into a few smaller requests. To get an idea of how to scope your requests, and depending on your needs, you may consider asking for a 1 degree by 1 degree region for all time; a 15 deg by 15 deg region for 6 months; or the entire globe for a day. Or, try asking for specific object IDs, where applicable."};
   }
 
   return false
@@ -599,8 +543,143 @@ module.exports.meta_lookup = function(meta_model, data_docs){
 
 }
 
+module.exports.lookup_key = function(userModel, apikey, resolve, reject){
+    // look up an apikey from mongo, and reject if not found or not valid.
 
+    const query = userModel.find({key: apikey})
+    query.exec(function(err, user){
+      if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+      }
+      if(user.length == 0){
+          reject({"code": 404, "message": "Not found: User key not found in database."});
+          return;
+      }
+      if(!user[0].toObject().tokenValid){
+        reject({"code": 403, "message": "API token has been deactivated; please contact argovis@colorado.edu for assistance."})
+        return;
+      }
+      
+      resolve(user[0].toObject())
+    })
+}
 
+module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
+  // return the tokenbucket price for this URL.
+  // c == defualt cost
+  // cellprice == token cost of 1 sq deg day
+  // metaDiscount == scaledown factor to discount metadata-only request by relative to data requests
+  // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
+
+  let earliest_records = {
+    'argo': Date("1997-07-28T20:26:20.002Z"),
+    'goship': Date("1977-10-07T00:00:00Z"),
+    'drifters': Date("1987-10-02T13:00:00Z"),
+    'ohc_kg': Date("2005-01-15T00:00:00Z"),
+    'temperature_rg': Date("2004-01-15T00:00:00Z"),
+    'salinity_rg': Date("2004-01-15T00:00:00Z"),
+    'tc': Date("1851-06-25T00:00:00Z")
+  }
+
+  /// determine path steps
+  let path = url.split('?')[0].split('/').slice(3)
+
+  /// tokenize query string
+  let qString = new URLSearchParams(url.split('?')[1]);
+
+  /// handle standardized routes
+  let standard_routes = ['argo', 'goship', 'drifters', 'tc', 'grids']
+  if(standard_routes.includes(path[0])){
+    //// core data routes
+    if(path.length==1 || (path[0]=='grids' && path.length==2)){
+      ///// any query parameter that specifies a particular record or small set of records can get waived through
+      if(qString.get('id') || qString.get('platform') || qString.get('wmo') || qString.get('name')){
+        c = 1
+      }
+
+      //// query parameters that specify a larger but still circumscribed number of records
+      else if(qString.get('woceline') || qString.get('cchdo_cruise')){
+        c = 10
+      }
+
+      ///// assume a temporospatial query absent the above (and if _nothing_ is provided, assumes and rejects an all-space-and-time request)
+      else{
+        ///// parameter cleaning and coercing
+        let params = module.exports.parameter_sanitization(null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('center'),qString.get('radius'))
+        if(params.hasOwnProperty('code')){
+          return params
+        }
+              params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
+              params.endDate = params.endDate ? params.endDate : Date()
+
+              ///// decline requests that are too geographically enormous
+              let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, params.center, params.radius)
+              if(checksize.hasOwnProperty('code')){
+                return checksize
+              }
+
+              ///// cost out request
+              let geospan = module.exports.geoarea(params.polygon,params.multipolygon,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
+              let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
+
+              if(geospan*dayspan > maxbulk){
+                return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
+              }
+              c = geospan*dayspan*cellprice
+
+              ///// metadata discount
+              if(!url.includes('data') || url.includes('metadata-only')){
+                c /= metaDiscount
+              }
+          }
+
+    }
+    //// */meta and */vocabulary routes unconstrained for now  
+  }
+
+  /// all other routes unconstrained for now
+
+    return c
+}
+
+module.exports.maxgeo = function(polygon, multipolygon, center, radius){
+    // geo size limits - mongo doesn't like huge geoWithins
+    let maxgeosearch = 250000000000000 // a little less than half the globe
+    if(radius) {
+      if(radius > 10000){
+        return {"code": 400, "message": "Please limit proximity searches to at most 10000 km in radius"};
+      }
+    }
+    if(polygon) {
+      if(geojsonArea.geometry(polygon) > maxgeosearch){
+        return {"code": 400, "message": "Polygon region is too big; please ask for less than half the globe at a time, or query the entire globe by leaving off the polygon query parameter."}
+      }
+    }
+    if(multipolygon){
+      if(multipolygon.some(p => geojsonArea.geometry(p) > maxgeosearch)){
+        return {"code": 400, "message": "At least one multipolygon region is too big; please ask for less than half the globe at a time in each."}
+      }
+    }
+
+    return 0
+}
+
+module.exports.geoarea = function(polygon, multipolygon, radius){
+  // return the area in sq km of the defined region
+
+  let geospan = 360000000 // 360M sq km, all the oceans
+  if(polygon){
+      geospan = geojsonArea.geometry(polygon) / 1000000
+  } else if(radius){
+      geospan = 3.14159*radius*radius // recall radius is reported in km
+  } else if(multipolygon){
+    let areas = multipolygon.map(x => geojsonArea.geometry(x) / 1000000)
+    geospan = Math.min(areas)
+  }
+
+  return geospan
+}
 
 
 

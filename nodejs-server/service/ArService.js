@@ -1,6 +1,6 @@
 'use strict';
 const arShapes = require('../models/arShapes');
-const helpers = require('./helpers')
+const helpers = require('../helpers/helpers')
 
 exports.findAR = function(date,_id) {
   return new Promise(function(resolve, reject) {
@@ -19,7 +19,6 @@ exports.findAR = function(date,_id) {
       }
       filter = {_id: _id}
     }
-
     const query = arShapes.find(filter)
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });

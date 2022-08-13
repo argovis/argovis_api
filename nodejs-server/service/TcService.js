@@ -1,7 +1,7 @@
 'use strict';
 const tc = require('../models/tc');
 const moment = require('moment');
-const helpers = require('./helpers')
+const helpers = require('../helpers/helpers')
 
 /**
  * Tropical cyclone search and filter.
@@ -30,7 +30,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
     }
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.startDate, params.endDate, params.polygon, null, params.center, params.radius, params.multipolygon, name||id) 
+    let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
       //request looks huge or malformed, reject it
       reject(bailout)

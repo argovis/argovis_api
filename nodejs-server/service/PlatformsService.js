@@ -1,6 +1,6 @@
 'use strict';
 const Profile = require('../models/profile')
-const helpers = require('./helpers')
+const helpers = require('../helpers/helpers')
 const Summary = require('../models/summary');
 
 /**

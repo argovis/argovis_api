@@ -14,3 +14,4 @@ script:
   - docker image build -f Dockerfile-test -t testrunner:dev .
   - docker container run -d --network travis --name api argovis/api:test
   - docker container run --network travis testrunner:dev
+  - docker container logs api

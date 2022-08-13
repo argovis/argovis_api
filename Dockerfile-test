@@ -3,6 +3,6 @@ WORKDIR /tests
 COPY tests/package.json .
 RUN npm install
 COPY tests .
-COPY nodejs-server/service/helpers.js tests/helpers.js
+COPY nodejs-server/helpers/helpers.js tests/helpers.js
 COPY spec.json .
 CMD npm test
