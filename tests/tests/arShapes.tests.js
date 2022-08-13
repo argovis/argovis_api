@@ -13,7 +13,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /ar", function () {
       it("returns one atmo river result", async function () {
         const response = await request.get("/ar").set({'x-argokey': 'developer'});
-        console.log(response.body)
         expect(response.body).to.be.jsonSchema(schema.paths['/ar'].get.responses['200'].content['application/json'].schema);
       });
     });
