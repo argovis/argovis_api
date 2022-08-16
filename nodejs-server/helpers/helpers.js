@@ -369,7 +369,7 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   }
 
   /// construct filter for matching metadata docs if required
-  if(foreign_docs){
+  if(foreign_docs.length > 0 && foreign_docs[0]._id !== null){
     let metaIDs = new Set(foreign_docs.map(x => x['_id']))
     foreignMatch.push({$match:{'metadata':{$in:Array.from(metaIDs)}}})
   }
@@ -668,14 +668,7 @@ module.exports.locate_meta = function(meta_id, meta_list, meta_model){
   // <meta_model>: collection model tp go looking in
   // return a promise that resolves to the metadata record sought.
 
-  let my_meta = undefined
-  if(meta_list){
-    console.log(meta_list.length)
-    my_meta = meta_list.find(x => x._id == meta_id)
-  } else {
-    meta_list = []
-    console.log(0)
-  }
+  let my_meta = meta_list.find(x => x._id == meta_id)
   if(typeof my_meta !== 'undefined'){
     return new Promise(function(resolve, reject){resolve(my_meta)})
   } else {

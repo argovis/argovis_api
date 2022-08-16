@@ -170,7 +170,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve(null)
+    let metafilter = Promise.resolve([{_id: null}])
     let metacomplete = false
     if(woceline||cchdo_cruise){
         let match = {
@@ -203,8 +203,12 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
           const xform = new Transform({
             objectMode: true,
             transform(chunk, encoding, next){
+              // wait on a promise to get this chunk's metadata back
               helpers.locate_meta(chunk['metadata'], search_result[0], goship['goshipMeta'])
                   .then(meta => {
+                    // keep track of new metadata docs so we don't look them up twice
+                    if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
+                    // munge the chunk and push it downstream if it isn't rejected.
                     let doc = helpers.postprocess(chunk, meta, pp_params)
                     if(doc){
                       this.push(doc)
