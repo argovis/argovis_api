@@ -4,6 +4,7 @@ const goship = require('../models/goship');
 const argo = require('../models/argo');
 const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
+const Transform = require('stream').Transform
 
 /**
  * Argo search and filter.
@@ -199,6 +200,23 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
   });
 }
 
+exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,compression,data,presRange) {
+  return new Promise(function(resolve, reject) {
+
+    const xform = new Transform({
+      objectMode: true,
+      transform(chunk, encoding, next){
+        this.push({...chunk.toJSON(), potato:9999})
+        next()
+      }
+    })
+    
+    //resolve(goship['goship'].find({'metadata':{'$in':['453_m0','1116_m0']}}).cursor().pipe(xform))
+    //resolve(goship['goship'].find({'metadata':{'$in':['453_m0','1116_m0']}}).cursor())
+    resolve(goship['goship'].find({'metadata':{'$in':['453_m0','1116_m0']}}).lean().cursor())
+
+  })
+}
 
 /**
  * GO-SHIP metadata search and filter.
