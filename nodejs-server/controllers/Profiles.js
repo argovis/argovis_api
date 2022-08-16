@@ -37,7 +37,7 @@ module.exports.findGoship = function findGoship (req, res, next, id, startDate, 
 
     .then(cursor => {
       cursor.pipe(JSONStream.stringify())
-      cursor.pipe(res.type('json'))
+            .pipe(res.type('json'))
     })
 
 
