@@ -137,7 +137,7 @@ exports.findArgometa = function(id,platform) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,compression,data,presRange) {
+exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -200,7 +200,9 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
-          const xform = new Transform({
+          
+          let nDocs = 0
+          const postprocess = new Transform({
             objectMode: true,
             transform(chunk, encoding, next){
               // wait on a promise to get this chunk's metadata back
@@ -211,13 +213,24 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
                     // munge the chunk and push it downstream if it isn't rejected.
                     let doc = helpers.postprocess(chunk, meta, pp_params)
                     if(doc){
-                      this.push(doc)
+                        this.push(doc)
+                        nDocs++
                     }
                     next()
                   })
             }
-          })
-          resolve(search_result[1].pipe(xform))
+          });
+          
+          postprocess._flush = function(callback){
+            console.log('nDocs', nDocs)
+            if(nDocs == 0){
+              res.status(404)
+            }
+            return callback()
+          }
+          
+          resolve([search_result[1], postprocess])
+          
         })
   });
 }
