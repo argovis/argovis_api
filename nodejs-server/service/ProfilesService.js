@@ -183,7 +183,7 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_match.bind(null, goship['goship'], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, goship['goship'], params, local_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

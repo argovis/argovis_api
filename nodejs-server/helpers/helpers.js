@@ -331,7 +331,62 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   // <params> the return object from parameter_sanitization,
   // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
   // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
-  // return a promise to search <model> for all of the above.
+  // return a cursor over that which matches the above
+
+  let spacetimeMatch = []
+  let proxMatch = []
+  let foreignMatch = []
+
+  // construct match stages as required
+  /// prox match construction
+  if(params.center && params.radius) {
+    proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [params.center[0], params.center[1]]}, maxDistance: 1000*params.radius, distanceField: "distcalculated"}}) 
+    proxMatch.push({ $unset: "distcalculated" })
+  }
+  /// spacetime match construction
+  if(params.startDate || params.endDate || params.polygon || params.multipolygon){
+    spacetimeMatch[0] = {$match: {}}
+    if (params.startDate && params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lte: params.endDate}
+    } else if (params.startDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
+    } else if (params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$lte: params.endDate}
+    }
+    if(params.polygon) {
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
+    }
+    if(params.multipolygon){
+      params.multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
+    }
+    // zoom in on subsequent polygon regions; will be unindexed.
+    if(params.multipolygon && params.multipolygon.length > 1){
+      for(let i=1; i<params.multipolygon.length; i++){
+        spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
+      }
+    }
+    spacetimeMatch.push({$sort: {'timestamp':-1}})
+  }
+
+  /// construct filter for matching metadata docs if required
+  if(foreign_docs){
+    let metaIDs = new Set(foreign_docs.map(x => x['_id']))
+    foreignMatch.push({$match:{'metadata':{$in:Array.from(metaIDs)}}})
+  }
+
+  // set up aggregation and return promise to evaluate:
+  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
+
+  return model.aggregate(aggPipeline).exec()
+}
+
+module.exports.datatable_stream = function(model, params, local_filter, foreign_docs){
+  // given <model>, a mongoose model pointing to a data collection,
+  // <params> the return object from parameter_sanitization,
+  // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
+  // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
+  // return a cursor over that which matches the above
 
   let spacetimeMatch = []
   let proxMatch = []
@@ -534,7 +589,7 @@ module.exports.postprocess = function(pp_params, search_result){
 
 }
 
-module.exports.postprocess = function(chunk, metadata, pp_params){
+module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   // <chunk>: raw data table document
   // <metadata>: metadata doc corresponding to this chunk
   // <pp_params>: kv which defines level filtering, data selection and compression decisions
@@ -675,7 +730,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
             // keep track of new metadata docs so we don't look them up twice
             if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
             // munge the chunk and push it downstream if it isn't rejected.
-            let doc = module.exports.postprocess(chunk, meta, pp_params)
+            let doc = module.exports.postprocess_stream(chunk, meta, pp_params)
              if(doc){
                 this.push(doc)
                 nDocs++
