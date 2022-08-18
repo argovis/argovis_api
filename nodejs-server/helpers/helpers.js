@@ -1,4 +1,5 @@
 const geojsonArea = require('@mapbox/geojson-area');
+const Transform = require('stream').Transform
 
 module.exports = {}
 
@@ -660,6 +661,38 @@ module.exports.postprocess = function(chunk, metadata, pp_params){
   }
 
   return chunk
+}
+
+module.exports.post_xform = function(metaModel, pp_params, search_result, res){
+
+  let nDocs = 0
+  const postprocess = new Transform({
+    objectMode: true,
+    transform(chunk, encoding, next){
+      // wait on a promise to get this chunk's metadata back
+      module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
+          .then(meta => {
+            // keep track of new metadata docs so we don't look them up twice
+            if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
+            // munge the chunk and push it downstream if it isn't rejected.
+            let doc = module.exports.postprocess(chunk, meta, pp_params)
+             if(doc){
+                this.push(doc)
+                nDocs++
+            }
+            next()
+          })
+    }
+  });
+  
+  postprocess._flush = function(callback){
+    if(nDocs == 0){
+      res.status(404)
+    }
+    return callback()
+  }
+
+  return postprocess
 }
 
 module.exports.locate_meta = function(meta_id, meta_list, meta_model){

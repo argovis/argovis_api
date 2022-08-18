@@ -4,7 +4,6 @@ const goship = require('../models/goship');
 const argo = require('../models/argo');
 const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
-const Transform = require('stream').Transform
 
 /**
  * Argo search and filter.
@@ -186,73 +185,16 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_match.bind(null, goship['goship'], params, local_filter))
 
-    // // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
-    // let metalookup = Promise.resolve(null)
-    // if(!metacomplete){
-    //     metalookup = datafilter.then(helpers.meta_lookup.bind(null, goship['goshipMeta']))
-    // }
-
-    // // send both metafilter and datafilter results to postprocessing:
-    // Promise.all([metafilter, datafilter, metalookup])
-    //     .then(search_result => {return helpers.postprocess(pp_params, search_result)})
-    //     .then(result => { if(result.hasOwnProperty('code')) reject(result); else resolve(result)})
-    //     .catch(err => reject({"code": 500, "message": "Server error"}))
-
     Promise.all([metafilter, datafilter])
         .then(search_result => {
           
-          let nDocs = 0
-          const postprocess = new Transform({
-            objectMode: true,
-            transform(chunk, encoding, next){
-              // wait on a promise to get this chunk's metadata back
-              helpers.locate_meta(chunk['metadata'], search_result[0], goship['goshipMeta'])
-                  .then(meta => {
-                    // keep track of new metadata docs so we don't look them up twice
-                    if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
-                    // munge the chunk and push it downstream if it isn't rejected.
-                    let doc = helpers.postprocess(chunk, meta, pp_params)
-                    if(doc){
-                        this.push(doc)
-                        nDocs++
-                    }
-                    next()
-                  })
-            }
-          });
-          
-          postprocess._flush = function(callback){
-            console.log('nDocs', nDocs)
-            if(nDocs == 0){
-              res.status(404)
-            }
-            return callback()
-          }
+          let postprocess = helpers.post_xform(goship['goshipMeta'], pp_params, search_result, res)
           
           resolve([search_result[1], postprocess])
           
         })
   });
 }
-
-// exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,compression,data,presRange) {
-//   return new Promise(function(resolve, reject) {
-
-//     const xform = new Transform({
-//       objectMode: true,
-//       transform(chunk, encoding, next){
-//         this.push({...chunk, potato:9999})
-//         next()
-//       }
-//     })
-    
-//     //resolve(goship['goship'].find({'metadata':{'$in':['453_m0','1116_m0']}}).cursor().pipe(xform))
-//     //resolve(goship['goship'].find({'metadata':{'$in':['453_m0','1116_m0']}}).cursor())
-//     //resolve(goship['goship'].find({'metadata':{'$in':['453_m0','1116_m0']}}).lean().cursor())
-//     resolve(goship['goship'].aggregate([{'$match': {'metadata':{'$in':['453_m0','1116_m0']}}}]).cursor().pipe(xform))
-
-//   })
-// }
 
 /**
  * GO-SHIP metadata search and filter.
