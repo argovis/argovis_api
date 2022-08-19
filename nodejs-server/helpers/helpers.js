@@ -1,5 +1,7 @@
 const geojsonArea = require('@mapbox/geojson-area');
 const Transform = require('stream').Transform
+const { pipeline } = require('stream');
+const JSONStream = require('JSONStream')
 
 module.exports = {}
 
@@ -914,6 +916,19 @@ module.exports.geoarea = function(polygon, multipolygon, radius){
   return geospan
 }
 
+module.exports.pipeline = function(res, pipefittings){
+  pipeline(
+    pipefittings[0],
+    pipefittings[1],
+    JSONStream.stringify(),
+    res.type('json'),
+    (err) => {
+      if(err){
+        console.log(err.message)
+      }
+    }
+  )
+}
 
 
 

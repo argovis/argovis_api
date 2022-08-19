@@ -2,8 +2,7 @@
 
 var utils = require('../utils/writer.js');
 var Profiles = require('../service/ProfilesService');
-var JSONStream = require('JSONStream')
-const { pipeline } = require('stream');
+var helpers = require('../helpers/helpers')
 
 module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange) {
   Profiles.findArgo(id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange)
@@ -33,19 +32,7 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
 
 module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, compression, data, presRange) {
   Profiles.findGoship(res, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, compression, data, presRange)
-    .then(pipefittings => {
-      pipeline(
-        pipefittings[0],
-        pipefittings[1],
-        JSONStream.stringify(),
-        res.type('json'),
-        (err) => {
-          if(err){
-            console.log(err.message)
-          }
-        }
-      )
-    },
+    .then(pipefittings => helpers.pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
