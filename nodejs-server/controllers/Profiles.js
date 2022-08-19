@@ -5,10 +5,8 @@ var Profiles = require('../service/ProfilesService');
 var helpers = require('../helpers/helpers')
 
 module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange) {
-  Profiles.findArgo(id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Profiles.findArgo(res, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
@@ -18,10 +16,8 @@ module.exports.findArgo = function findArgo (req, res, next, id, startDate, endD
 };
 
 module.exports.findArgometa = function findArgometa (req, res, next, id, platform) {
-  Profiles.findArgometa(id, platform)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Profiles.findArgometa(res, id, platform)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })

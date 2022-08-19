@@ -22,7 +22,7 @@ const geojsonArea = require('@mapbox/geojson-area');
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,data,presRange) {
+exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
@@ -69,7 +69,7 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve(null)
+    let metafilter = Promise.resolve([{_id: null}])
     let metacomplete = false
     if(platform){
         let match = {
@@ -81,19 +81,17 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_match.bind(null, argo['argo'], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter))
 
-    // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
-    let metalookup = Promise.resolve(null)
-    if(!metacomplete){
-        metalookup = datafilter.then(helpers.meta_lookup.bind(null, argo['argoMeta']))
-    }
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
 
-    // send both metafilter and datafilter results to postprocessing:
-    Promise.all([metafilter, datafilter, metalookup])
-        .then(search_result => {return helpers.postprocess(pp_params, search_result)})
-        .then(result => { if(result.hasOwnProperty('code')) reject(result); else resolve(result)})
-        .catch(err => reject({"code": 500, "message": "Server error"}))
+          let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res)
+
+          resolve([search_result[1], postprocess])
+
+        })
+
   });
 }
 
@@ -105,7 +103,7 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
  * platform String Unique platform ID to search for. (optional)
  * returns List
  **/
-exports.findArgometa = function(id,platform) {
+exports.findArgometa = function(res, id,platform) {
   return new Promise(function(resolve, reject) {
     let match = {
         '_id': id,
@@ -114,7 +112,8 @@ exports.findArgometa = function(id,platform) {
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
     const query = argo['argoMeta'].aggregate([{$match:match}]);
-    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
 
