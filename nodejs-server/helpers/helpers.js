@@ -648,7 +648,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   if(metadata.hasOwnProperty('levels')){
     metalevels = metadata.levels // relevant for grids
   } else if (!dk.includes('pressure')){
-    metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pres key, since they're all implicitly single-level pres=0 surface measurements
+    metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pressure key, since they're all implicitly single-level pres=0 surface measurements
   }
   for(let j=0; j<chunk.data.length; j++){ // loop over levels
     let reinflate = {}
@@ -785,7 +785,7 @@ module.exports.locate_meta = function(meta_id, meta_list, meta_model){
     return new Promise(function(resolve, reject){resolve(my_meta)})
   } else {
     // go looking in mongo
-    let metaquery = meta_model.findOne({ _id: meta_id });
+    let metaquery = meta_model.findOne({ _id: meta_id }).lean();
     return metaquery.exec();
   }
 }
