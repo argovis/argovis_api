@@ -333,7 +333,7 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   // <params> the return object from parameter_sanitization,
   // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
   // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
-  // return a cursor over that which matches the above
+  // return a promise to search <model> for all of the above.
 
   let spacetimeMatch = []
   let proxMatch = []
@@ -739,6 +739,28 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
             }
             next()
           })
+    }
+  });
+  
+  postprocess._flush = function(callback){
+    if(nDocs == 0){
+      res.status(404)
+    }
+    return callback()
+  }
+
+  return postprocess
+}
+
+module.exports.meta_xform = function(res){
+  // transform stream that only looks for 404s
+
+  let nDocs = 0
+  const postprocess = new Transform({
+    objectMode: true,
+    transform(chunk, encoding, next){
+      this.push(chunk)
+      next()
     }
   });
   

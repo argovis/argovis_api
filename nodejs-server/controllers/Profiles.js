@@ -42,7 +42,7 @@ module.exports.findGoship = function findGoship (req, res, next, id, startDate, 
 };
 
 module.exports.findGoshipmeta = function findGoshipmeta (req, res, next, id, woceline, cchdo_cruise) {
-  Profiles.findGoshipmeta(id, woceline, cchdo_cruise)
+  Profiles.findGoshipmeta(res, id, woceline, cchdo_cruise)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);

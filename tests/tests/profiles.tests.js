@@ -112,6 +112,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/goship/meta?id=972_m0").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/goship/meta'].get.responses['200'].content['application/json'].schema);
       });
+    }); 
+
+    describe("GET /goship/meta", function () {
+      it("goship metadata 404s correctly", async function () {
+        const response = await request.get("/goship/meta?id=xxx").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
     });    
 
     describe("GET /goship", function () {

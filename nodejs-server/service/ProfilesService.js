@@ -204,7 +204,7 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
-exports.findGoshipmeta = function(id,woceline,cchdo_cruise) {
+exports.findGoshipmeta = function(res, id,woceline,cchdo_cruise) {
   return new Promise(function(resolve, reject) {
     let match = {
         '_id': id,
@@ -214,7 +214,8 @@ exports.findGoshipmeta = function(id,woceline,cchdo_cruise) {
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
     const query = goship['goshipMeta'].aggregate([{$match:match}]);
-    resolve([query.cursor()])
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
 
