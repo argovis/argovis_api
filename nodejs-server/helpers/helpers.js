@@ -916,10 +916,9 @@ module.exports.geoarea = function(polygon, multipolygon, radius){
   return geospan
 }
 
-module.exports.pipeline = function(res, pipefittings){
+module.exports.data_pipeline = function(res, pipefittings){
   pipeline(
-    pipefittings[0],
-    pipefittings[1],
+    ...pipefittings,
     JSONStream.stringify(),
     res.type('json'),
     (err) => {

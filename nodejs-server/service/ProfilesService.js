@@ -214,10 +214,9 @@ exports.findGoshipmeta = function(id,woceline,cchdo_cruise) {
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
     const query = goship['goshipMeta'].aggregate([{$match:match}]);
-    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+    resolve([query.cursor()])
   });
 }
-
 
 /**
  * List all possible values for certain tc query string parameters

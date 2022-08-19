@@ -32,7 +32,7 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
 
 module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, compression, data, presRange) {
   Profiles.findGoship(res, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, compression, data, presRange)
-    .then(pipefittings => helpers.pipeline.bind(null, res)(pipefittings),
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
@@ -41,12 +41,9 @@ module.exports.findGoship = function findGoship (req, res, next, id, startDate, 
     });
 };
 
-
 module.exports.findGoshipmeta = function findGoshipmeta (req, res, next, id, woceline, cchdo_cruise) {
   Profiles.findGoshipmeta(id, woceline, cchdo_cruise)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
