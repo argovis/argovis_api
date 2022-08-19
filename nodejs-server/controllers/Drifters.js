@@ -2,12 +2,11 @@
 
 var utils = require('../utils/writer.js');
 var Drifters = require('../service/DriftersService');
+var helpers = require('../helpers/helpers')
 
 module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, platform, wmo) {
-  Drifters.drifterMetaSearch(platform, wmo)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Drifters.drifterMetaSearch(res,platform, wmo)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
@@ -17,10 +16,8 @@ module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, p
 };
 
 module.exports.drifterSearch = function drifterSearch (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, wmo, platform, compression, data) {
-  Drifters.drifterSearch(id, startDate, endDate, polygon, multipolygon, center, radius, wmo, platform, compression, data)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Drifters.drifterSearch(res,id, startDate, endDate, polygon, multipolygon, center, radius, wmo, platform, compression, data)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
