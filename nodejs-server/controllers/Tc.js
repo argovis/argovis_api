@@ -2,12 +2,11 @@
 
 var utils = require('../utils/writer.js');
 var Tc = require('../service/TcService');
+var helpers = require('../helpers/helpers')
 
 module.exports.findTC = function findTC (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, name, compression, data) {
-  Tc.findTC(id, startDate, endDate, polygon, multipolygon, center, radius, name, compression, data)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Tc.findTC(res, id, startDate, endDate, polygon, multipolygon, center, radius, name, compression, data)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
@@ -17,10 +16,8 @@ module.exports.findTC = function findTC (req, res, next, id, startDate, endDate,
 };
 
 module.exports.findTCmeta = function findTCmeta (req, res, next, id, name) {
-  Tc.findTCmeta(id,name)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Tc.findTCmeta(res,id,name)
+   .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
