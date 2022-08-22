@@ -11,10 +11,11 @@ const geojsonArea = require('@mapbox/geojson-area');
  * returns List
  **/
 
-exports.findgridMeta = function(id) {
+exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
     const query = Grid.gridMeta.aggregate([{$match:{'_id':id}}]);
-    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
 
@@ -34,7 +35,7 @@ exports.findgridMeta = function(id) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
+exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
     // generic helper for all grid search and filter routes
 
@@ -69,7 +70,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     /// currently no explicit metadata parameters to start search on for grid, but leaving the boilerplate in anyway...
-    let metafilter = Promise.resolve(null)
+    let metafilter = Promise.resolve([{_id: null}])
     let metacomplete = false
     // if(name){
     //     metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
@@ -77,19 +78,16 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
     // }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_match.bind(null, Grid[gridName], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter))
 
-    // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
-    let metalookup = Promise.resolve(null)
-    if(!metacomplete){
-        metalookup = datafilter.then(helpers.meta_lookup.bind(null, Grid['gridMeta']))
-    }
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
 
-    // send both metafilter and datafilter results to postprocessing:
-    Promise.all([metafilter, datafilter, metalookup])
-        .then(search_result => {return helpers.postprocess(pp_params, search_result)})
-        .then(result => { if(result.hasOwnProperty('code')) reject(result); else resolve(result)})
-        .catch(err => reject({"code": 500, "message": "Server error"}))
+          let postprocess = helpers.post_xform(Grid['gridMeta'], pp_params, search_result, res)
+
+          resolve([search_result[1], postprocess])
+
+        })
 
   });
 }

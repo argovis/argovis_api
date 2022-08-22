@@ -1,4 +1,7 @@
 const geojsonArea = require('@mapbox/geojson-area');
+const Transform = require('stream').Transform
+const { pipeline } = require('stream');
+const JSONStream = require('JSONStream')
 
 module.exports = {}
 
@@ -380,6 +383,61 @@ module.exports.datatable_match = function(model, params, local_filter, foreign_d
   return model.aggregate(aggPipeline).exec()
 }
 
+module.exports.datatable_stream = function(model, params, local_filter, foreign_docs){
+  // given <model>, a mongoose model pointing to a data collection,
+  // <params> the return object from parameter_sanitization,
+  // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
+  // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
+  // return a cursor over that which matches the above
+
+  let spacetimeMatch = []
+  let proxMatch = []
+  let foreignMatch = []
+
+  // construct match stages as required
+  /// prox match construction
+  if(params.center && params.radius) {
+    proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [params.center[0], params.center[1]]}, maxDistance: 1000*params.radius, distanceField: "distcalculated"}}) 
+    proxMatch.push({ $unset: "distcalculated" })
+  }
+  /// spacetime match construction
+  if(params.startDate || params.endDate || params.polygon || params.multipolygon){
+    spacetimeMatch[0] = {$match: {}}
+    if (params.startDate && params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lte: params.endDate}
+    } else if (params.startDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
+    } else if (params.endDate){
+      spacetimeMatch[0]['$match']['timestamp'] = {$lte: params.endDate}
+    }
+    if(params.polygon) {
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
+    }
+    if(params.multipolygon){
+      params.multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
+    }
+    // zoom in on subsequent polygon regions; will be unindexed.
+    if(params.multipolygon && params.multipolygon.length > 1){
+      for(let i=1; i<params.multipolygon.length; i++){
+        spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
+      }
+    }
+    spacetimeMatch.push({$sort: {'timestamp':-1}})
+  }
+
+  /// construct filter for matching metadata docs if required
+  if(foreign_docs.length > 0 && foreign_docs[0]._id !== null){
+    let metaIDs = new Set(foreign_docs.map(x => x['_id']))
+    foreignMatch.push({$match:{'metadata':{$in:Array.from(metaIDs)}}})
+  }
+
+  // set up aggregation and return promise to evaluate:
+  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
+
+  return model.aggregate(aggPipeline).cursor()
+}
+
 module.exports.postprocess = function(pp_params, search_result){
   // given <pp_params> which defines level filtering, data selection and compression decisions,
   // <search_result>[0] the array of documents returned from the metadata collection for this search,
@@ -533,6 +591,205 @@ module.exports.postprocess = function(pp_params, search_result){
 
 }
 
+module.exports.postprocess_stream = function(chunk, metadata, pp_params){
+  // <chunk>: raw data table document
+  // <metadata>: metadata doc corresponding to this chunk
+  // <pp_params>: kv which defines level filtering, data selection and compression decisions
+  // returns chunk mutated into its final, user-facing form
+  // or return false to drop this item from the stream
+
+  // declare some variables at scope
+  let keys = []       // data keys to keep when filtering down data
+  let notkeys = []    // data ketys that disqualify a document if present
+  let my_meta = null  // metadata document corresponding to chunk
+  let coerced_pressure = false
+  let metadata_only = false
+  
+  // determine which data keys should be kept or tossed, if necessary
+  if(pp_params.data){
+    keys = pp_params.data.filter(e => e.charAt(0)!='~')
+    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
+    if(keys.includes('metadata-only')){
+      metadata_only = true
+      keys.splice(keys.indexOf('metadata-only'))
+    }
+  }
+
+  // identify data_keys and units, could be on chunk or metadata
+  let dk = null
+  let u = null
+  if(chunk.hasOwnProperty('data_keys')) {
+    dk = chunk.data_keys  
+    u = chunk.units
+  }
+  else{
+    dk = metadata.data_keys
+    u = metadata.units
+  }
+
+  // bail out on this document if it contains any ~keys:
+  if(dk.some(item => notkeys.includes(item))) return false
+
+  // force return of pressure for anything that has a pressure data key
+  if(dk.includes('pressure') && !keys.includes('pressure')){
+    keys.push('pressure')
+    coerced_pressure = true
+  }
+
+  // turn upstream units into a lookup table by data_key
+  let units = {}
+  for(let k=0; k<dk.length; k++){
+    units[dk[k]] = u[k]
+  }
+
+  // reinflate data arrays as a dictionary keyed by depth, and only keep requested data
+  let reinflated_levels = {}
+  let metalevels = null
+  if(metadata.hasOwnProperty('levels')){
+    metalevels = metadata.levels // relevant for grids
+  } else if (!dk.includes('pressure')){
+    metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pressure key, since they're all implicitly single-level pres=0 surface measurements
+  }
+  for(let j=0; j<chunk.data.length; j++){ // loop over levels
+    let reinflate = {}
+    for(k=0; k<chunk.data[j].length; k++){ // loop over data variables
+      if( (keys.includes(dk[k]) || keys.includes('all')) && !isNaN(chunk.data[j][k]) && chunk.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
+        reinflate[dk[k]] = chunk.data[j][k]
+      }
+    }
+    if(Object.keys(reinflate).length > (coerced_pressure ? 1 : 0)){ // ie only keep levels that retained some data other than a coerced pressure record
+      let lvl = metalevels ? metalevels[j] : reinflate.pressure
+      reinflated_levels[lvl] = reinflate
+    }
+  }
+
+  // filter by presRange
+  let levels = []
+  if(pp_params.presRange){
+    levels = Object.keys(reinflated_levels).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
+  } else {
+    levels = Object.keys(reinflated_levels)
+  }
+  levels = levels.map(n=>Number(n)).sort((a,b)=>a-b)
+
+  // translate level-keyed dictionary back to a sorted list of per-level dictionaries
+  if(metalevels && pp_params.presRange){
+    /// need to make a levels property on the data document that overrides the levels property on the metadata doc if level filtering has happened, for grid-like objects
+    chunk.levels = levels
+  }
+  chunk.data = levels.map(k=>reinflated_levels[String(k)])
+
+  // if we wanted data and none is left, abandon this document
+  if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
+
+  // drop data on metadata only requests
+  if(!pp_params.data || metadata_only){
+    delete chunk.data
+    delete chunk.levels
+  }
+
+  // manage data_keys and units
+  if(keys.includes('all') && !metadata_only){
+    chunk.data_keys = dk
+    chunk.units = units
+  }
+  else if( (keys.length > (coerced_pressure ? 1 : 0)) && !metadata_only){
+    chunk.data_keys = keys
+    chunk.units = units
+    for(const prop in units){
+      if(!keys.includes(prop)) delete chunk.units[prop]
+    }
+  }
+
+  // deflate data if requested
+  if(pp_params.compression && pp_params.data && !metadata_only){
+    chunk.data = chunk.data.map(x => {
+      let lvl = []
+      for(let ii=0; ii<chunk.data_keys.length; ii++){
+        if(x.hasOwnProperty(chunk.data_keys[ii])){
+          lvl.push(x[chunk.data_keys[ii]])
+        } else {
+          lvl.push(null)
+        }
+      }
+      return lvl
+    })
+    chunk.units = chunk.data_keys.map(x => chunk.units[x])
+  }
+
+  return chunk
+}
+
+module.exports.post_xform = function(metaModel, pp_params, search_result, res){
+
+  let nDocs = 0
+  const postprocess = new Transform({
+    objectMode: true,
+    transform(chunk, encoding, next){
+      // wait on a promise to get this chunk's metadata back
+      module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
+          .then(meta => {
+            // keep track of new metadata docs so we don't look them up twice
+            if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
+            // munge the chunk and push it downstream if it isn't rejected.
+            let doc = module.exports.postprocess_stream(chunk, meta, pp_params)
+             if(doc){
+                this.push(doc)
+                nDocs++
+            }
+            next()
+          })
+    }
+  });
+  
+  postprocess._flush = function(callback){
+    if(nDocs == 0){
+      res.status(404)
+    }
+    return callback()
+  }
+
+  return postprocess
+}
+
+module.exports.meta_xform = function(res){
+  // transform stream that only looks for 404s
+
+  let nDocs = 0
+  const postprocess = new Transform({
+    objectMode: true,
+    transform(chunk, encoding, next){
+      this.push(chunk)
+      next()
+    }
+  });
+  
+  postprocess._flush = function(callback){
+    if(nDocs == 0){
+      res.status(404)
+    }
+    return callback()
+  }
+
+  return postprocess
+}
+
+module.exports.locate_meta = function(meta_id, meta_list, meta_model){
+  // <meta_id>: id of meta document of interest
+  // <meta_list>: current array of fetched meta docs
+  // <meta_model>: collection model tp go looking in
+  // return a promise that resolves to the metadata record sought.
+
+  let my_meta = meta_list.find(x => x._id == meta_id)
+  if(typeof my_meta !== 'undefined'){
+    return new Promise(function(resolve, reject){resolve(my_meta)})
+  } else {
+    // go looking in mongo
+    let metaquery = meta_model.findOne({ _id: meta_id }).lean();
+    return metaquery.exec();
+  }
+}
+
 module.exports.meta_lookup = function(meta_model, data_docs){
   // given an array <data_docs> of docs from a data collection,
   // return a promise for all matching metadata documents in model <meta_model>
@@ -583,23 +840,24 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   }
 
   /// determine path steps
-  let path = url.split('?')[0].split('/').slice(3)
+  let path = url.split('?')[0].split('/').slice(1)
 
   /// tokenize query string
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
   let standard_routes = ['argo', 'goship', 'drifters', 'tc', 'grids']
+
   if(standard_routes.includes(path[0])){
     //// core data routes
     if(path.length==1 || (path[0]=='grids' && path.length==2)){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
-      if(qString.get('id') || qString.get('platform') || qString.get('wmo') || qString.get('name')){
+      if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1
       }
 
       //// query parameters that specify a larger but still circumscribed number of records
-      else if(qString.get('woceline') || qString.get('cchdo_cruise')){
+      else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') ){
         c = 10
       }
 
@@ -681,6 +939,18 @@ module.exports.geoarea = function(polygon, multipolygon, radius){
   return geospan
 }
 
+module.exports.data_pipeline = function(res, pipefittings){
+  pipeline(
+    ...pipefittings,
+    JSONStream.stringify(),
+    res.type('json'),
+    (err) => {
+      if(err){
+        console.log(err.message)
+      }
+    }
+  )
+}
 
 
 

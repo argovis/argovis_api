@@ -2,12 +2,11 @@
 
 var utils = require('../utils/writer.js');
 var Grid = require('../service/GridService');
+var helpers = require('../helpers/helpers')
 
 module.exports.findgrid = function findgrid (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange, gridName) {
-  Grid.findgrid(gridName, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Grid.findgrid(res,gridName, id, startDate, endDate, polygon, multipolygon, center, radius, compression, data, presRange)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })
@@ -17,10 +16,8 @@ module.exports.findgrid = function findgrid (req, res, next, id, startDate, endD
 };
 
 module.exports.findgridMeta = function findgridMeta (req, res, next, id) {
-  Grid.findgridMeta(id)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
+  Grid.findgridMeta(res,id)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
     })

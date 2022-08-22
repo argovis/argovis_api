@@ -18,9 +18,9 @@ module.exports.tokenbucket = function (req, res, next) {
 	let bucketsize = 100
 	let tokenrespawntime = 1000 // ms to respawn one token
 	let requestCost = 1 //default cost, for metadata-only requests
-	let cellprice = 0.001 // token cost of 1 sq deg day
+	let cellprice = 0.0001 // token cost of 1 sq deg day
 	let metaDiscount = 100 // scaledown factor to discount metadata-only request by relative to data requests
-	let maxbulk = 100000 // maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
+	let maxbulk = 1000000 // maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
 	let argokey = 'guest'
 	if(req.headers['x-argokey']){
 		argokey = req.headers['x-argokey']
@@ -63,7 +63,7 @@ module.exports.tokenbucket = function (req, res, next) {
 		else if(tokensnow >= 0){
 			hsetAsync(userbucket.key, "ntokens", tokensnow-requestCost, "lastUpdate", t).then(next())
 		} else {
-			throw({"code": 429, "message": "You have temporarily exceeded your API request limit. Try again in a minute, but limit your requests to small bursts, or wait a few seconds between requests long term."})
+			throw({"code": 429, "message": "You have temporarily exceeded your API request limit. You will be able to issue another request in "+String(-1*tokensnow)+" seconds. Long term, requests like the one you just made can be made every "+String(requestCost)+" seconds."})
 		}
 	})
 	.catch(err => {

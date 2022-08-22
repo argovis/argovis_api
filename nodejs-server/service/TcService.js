@@ -18,7 +18,7 @@ const helpers = require('../helpers/helpers')
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radius,name,compression,data) {
+exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,name,compression,data) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -51,7 +51,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve(null)
+    let metafilter = Promise.resolve([{_id: null}])
     let metacomplete = false
     if(name){
         metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
@@ -59,19 +59,16 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_match.bind(null, tc['tc'], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, tc['tc'], params, local_filter))
 
-    // if no metafilter search was performed, need to look up metadata for anything that matched datafilter
-    let metalookup = Promise.resolve(null)
-    if(!metacomplete){
-        metalookup = datafilter.then(helpers.meta_lookup.bind(null, tc['tcMeta']))
-    }
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
 
-    // send both metafilter and datafilter results to postprocessing:
-    Promise.all([metafilter, datafilter, metalookup])
-        .then(search_result => {return helpers.postprocess(pp_params, search_result)})
-        .then(result => { if(result.hasOwnProperty('code')) reject(result); else resolve(result)})
-        .catch(err => reject({"code": 500, "message": "Server error"}))
+          let postprocess = helpers.post_xform(tc['tcMeta'], pp_params, search_result, res)
+
+          resolve([search_result[1], postprocess])
+
+        })
   });
 }
 
@@ -83,7 +80,7 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
  * name String name of tropical cyclone (optional)
  * returns List
  **/
-exports.findTCmeta = function(id,name) {
+exports.findTCmeta = function(res, id,name) {
   return new Promise(function(resolve, reject) {
 
     let match = {
@@ -93,7 +90,8 @@ exports.findTCmeta = function(id,name) {
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
     const query = tc['tcMeta'].aggregate([{$match:match}]);
-    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
 
