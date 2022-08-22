@@ -840,23 +840,24 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   }
 
   /// determine path steps
-  let path = url.split('?')[0].split('/').slice(3)
+  let path = url.split('?')[0].split('/').slice(1)
 
   /// tokenize query string
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
   let standard_routes = ['argo', 'goship', 'drifters', 'tc', 'grids']
+
   if(standard_routes.includes(path[0])){
     //// core data routes
     if(path.length==1 || (path[0]=='grids' && path.length==2)){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
-      if(qString.get('id') || qString.get('platform') || qString.get('wmo') || qString.get('name')){
+      if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1
       }
 
       //// query parameters that specify a larger but still circumscribed number of records
-      else if(qString.get('woceline') || qString.get('cchdo_cruise')){
+      else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') ){
         c = 10
       }
 

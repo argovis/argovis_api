@@ -8,9 +8,9 @@ const $RefParser = require("@apidevtools/json-schema-ref-parser");
 const helpers = require('/tests/tests/helpers')
 
 const c = 1
-const cellprice = 0.001
+const cellprice = 0.0001
 const metaDiscount = 100
-const maxbulk = 100000
+const maxbulk = 1000000
 const bucketSize = 100
 
 $RefParser.dereference(rawspec, (err, schema) => {
@@ -117,25 +117,25 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("cost functions", function () {
       it("cost of entire globe for a day with data for a standard API route", async function () {
-        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z&data=doxy', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice);
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z&data=doxy', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice);
       });
     }); 
 
     describe("cost functions", function () {
       it("cost of entire globe for a day with data for a standard API route", async function () {
-        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice/metaDiscount);
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice/metaDiscount);
       });
     }); 
 
     describe("cost functions", function () {
-      it("cost of 15 deg box near equator for 6 months with data for a standard API route should prohibit more than a few such requests in parallel", async function () {
-        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-07-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk)*10).to.be.greaterThan(bucketSize);
+      it("cost of 15 deg box near equator for 2 years with data for a standard API route should prohibit more than a few such requests in parallel", async function () {
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2002-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk)*10).to.be.greaterThan(bucketSize);
       });
     }); 
 
     describe("cost functions", function () {
-      it("cost of 15 deg box near equator for 10 years with data for a standard API route should be out of scope", async function () {
-        expect(helpers.cost('https://argovis-api.colorado.edu/argo?startDate=2000-01-01T00:00:00Z&endDate=2010-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk).code).to.eql(413);
+      it("cost of 15 deg box near equator for 30 years with data for a standard API route should be out of scope", async function () {
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2030-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk).code).to.eql(413);
       });
     }); 
 }
