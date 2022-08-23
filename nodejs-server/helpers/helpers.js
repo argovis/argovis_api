@@ -831,7 +831,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
 
   let earliest_records = {
     'argo': Date("1997-07-28T20:26:20.002Z"),
-    'goship': Date("1977-10-07T00:00:00Z"),
+    'cchdo': Date("1977-10-07T00:00:00Z"),
     'drifters': Date("1987-10-02T13:00:00Z"),
     'ohc_kg': Date("2005-01-15T00:00:00Z"),
     'temperature_rg': Date("2004-01-15T00:00:00Z"),
@@ -846,7 +846,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
-  let standard_routes = ['argo', 'goship', 'drifters', 'tc', 'grids']
+  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids']
 
   if(standard_routes.includes(path[0])){
     //// core data routes
