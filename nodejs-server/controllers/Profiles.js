@@ -4,6 +4,16 @@ var utils = require('../utils/writer.js');
 var Profiles = require('../service/ProfilesService');
 var helpers = require('../helpers/helpers')
 
+module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
+  Profiles.argoVocab(parameter)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange) {
   Profiles.findArgo(res, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
