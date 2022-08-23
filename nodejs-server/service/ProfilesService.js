@@ -61,6 +61,10 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     }
 
     // decide y/n whether to service this request
+    if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),platform].some(x=>x)){
+      reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id or platform search."})
+      return
+    }
     let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
       reject(bailout)
@@ -73,19 +77,9 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
         local_filter = [{$match:{'_id':id}}]
     }
 
-    // custom addition for argo: negatable, array-based source.source matching:
+    // optional source filtering
     if(source){
-      let sourcematch = {}
-      let smatches = source.filter(e => e.charAt(0)!='~')
-      let snegations = source.filter(e => e.charAt(0)=='~').map(x => x.substring(1))
-      if(smatches.length > 0 && snegations.length > 0){
-        sourcematch['source.source'] = {'$all': smatches, '$nin': snegations}
-      } else if (smatches.length > 0){
-        sourcematch['source.source'] = {'$all': smatches}
-      } else if (snegations.length > 0){
-        sourcematch['source.source'] = {'$nin': snegations}
-      }
-      local_filter.push({$match: sourcematch})
+      local_filter.push(helpers.source_filter(source))
     }
 
     // postprocessing parameters
@@ -157,12 +151,13 @@ exports.findArgometa = function(res, id,platform) {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * woceline String WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
+ * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
  * compression String Data compression strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,compression,data,presRange) {
+exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -174,6 +169,10 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
     }
 
     // decide y/n whether to service this request
+    if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),cchdo_cruise,woceline].some(x=>x)){
+      reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id, CCHDO cruise ID, or WOCE line search."})
+      return
+    }
     let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
       reject(bailout)
@@ -184,6 +183,11 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
     let local_filter = []
     if(id){
         local_filter = [{$match:{'_id':id}}]
+    }
+
+    // optional source filtering
+    if(source){
+      local_filter.push(helpers.source_filter(source))
     }
 
     // postprocessing parameters
@@ -254,10 +258,18 @@ exports.goshipVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
     let lookup = {
         'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
-        'cchdo_cruise': 'cchdo_cruise_id'
+        'cchdo_cruise': 'cchdo_cruise_id',
+        'source': 'source.source'
     }
 
-    goship['goshipMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+    let model = null
+    if(parameter=='source'){
+      model = goship['goship']
+    } else {
+      model = goship['goshipMeta']
+    }
+
+    model.find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;

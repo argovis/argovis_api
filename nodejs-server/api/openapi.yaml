@@ -876,6 +876,20 @@ paths:
         schema:
           type: number
           example: 518
+      - name: source
+        in: query
+        description: Experimental program source(s) to search for; document must match
+          all sources to be returned. Accepts ~ negation to filter out documents.
+          See /profiles/vocabulary?parameter=source for list of options.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "argo_bgc,~argo_core"
+          items:
+            type: string
       - name: compression
         in: query
         description: Data compression strategy to apply.
@@ -1028,6 +1042,7 @@ paths:
           enum:
           - woceline
           - cchdo_cruise
+          - source
       responses:
         "200":
           description: OK

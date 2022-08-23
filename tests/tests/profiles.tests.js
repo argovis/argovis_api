@@ -128,6 +128,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /goship/vocabulary", function () {
+      it("make sure goship identifies set of sources correctly", async function () {
+        const response = await request.get("/goship/vocabulary?parameter=source").set({'x-argokey': 'developer'});
+        expect(response.body).to.have.members(['cchdo_woce'])
+      });
+    }); 
+
+    describe("GET /goship", function () {
+      it("check that a source filter on goship works as expected", async function () {
+        const response = await request.get("/goship?source=cchdo_woce&startDate=1996-04-01T00:00:00Z&endDate=1996-05-01T00:00:00Z").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(5)
+      });
+    }); 
+
     // argo
 
     describe("GET /argo", function () {
@@ -245,7 +259,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
-
     describe("GET /argo", function () {
       it("argo data filtered by source negation", async function () {
         const response = await request.get("/argo?polygon=[[-34,1],[-34,3],[-36,3],[-36,1],[-34,1]]&startDate=2011-11-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
@@ -253,7 +266,19 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /argo/vocabulary", function () {
+      it("get list of argo profiles", async function () {
+        const response = await request.get("/argo/vocabulary?parameter=platform").set({'x-argokey': 'developer'});
+         expect(response.body).to.have.members(['4901283', '13857']) 
+      });
+    });
 
+    describe("GET /argo", function () {
+      it("filters on source correctly", async function () {
+        const response = await request.get("/argo?startDate=2011-10-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_bgc").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(3);
+      });
+    });
 
     // legacy profiles route
 
