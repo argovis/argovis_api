@@ -26,7 +26,7 @@ var sourceinfo = Schema({
   date_updated: {type: Date, required: false},
 })
 
-const goshipSchema = Schema({
+const cchdoSchema = Schema({
   _id: {type: String, required: true},
   metadata: {type: String, required: true},
   geolocation: {type: geolocation, required: true},
@@ -41,7 +41,7 @@ const goshipSchema = Schema({
   cast: {type: Number, required: true}
 });
 
-const goshipMetaSchema = Schema({
+const cchdoMetaSchema = Schema({
   _id: {type: String, required: true},
   date_updated_argovis: {type: Date, required: true},
   data_type: {type: String, required: true},
@@ -55,5 +55,5 @@ const goshipMetaSchema = Schema({
 });
 
 module.exports = {}
-module.exports.goshipMeta = mongoose.model('goshipMeta', goshipMetaSchema, 'goshipMeta');
-module.exports.goship = mongoose.model('goship', goshipSchema, 'goship');
+module.exports.cchdoMeta = mongoose.model('cchdoMeta', cchdoMetaSchema, 'cchdoMeta');
+module.exports.cchdo = mongoose.model('cchdo', cchdoSchema, 'cchdo');

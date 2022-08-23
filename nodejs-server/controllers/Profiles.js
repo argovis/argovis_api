@@ -39,8 +39,8 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
     });
 };
 
-module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange) {
-  Profiles.findGoship(res, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange)
+module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange) {
+  Profiles.findCCHDO(res, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
@@ -50,8 +50,8 @@ module.exports.findGoship = function findGoship (req, res, next, id, startDate, 
     });
 };
 
-module.exports.findGoshipmeta = function findGoshipmeta (req, res, next, id, woceline, cchdo_cruise) {
-  Profiles.findGoshipmeta(res, id, woceline, cchdo_cruise)
+module.exports.findCCHDOmeta = function findCCHDOmeta (req, res, next, id, woceline, cchdo_cruise) {
+  Profiles.findCCHDOmeta(res, id, woceline, cchdo_cruise)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
@@ -61,8 +61,8 @@ module.exports.findGoshipmeta = function findGoshipmeta (req, res, next, id, woc
     });
 };
 
-module.exports.goshipVocab = function goshipVocab (req, res, next, parameter) {
-  Profiles.goshipVocab(parameter)
+module.exports.cchdoVocab = function cchdoVocab (req, res, next, parameter) {
+  Profiles.cchdoVocab(parameter)
     .then(function (response) {
       utils.writeJson(res, response);
     },
