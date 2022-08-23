@@ -519,13 +519,13 @@
             }
          }
       },
-      "/goship": {
+      "/cchdo": {
          "get": {
             "tags": [
                "profiles"
             ],
-            "summary": "GO-SHIP search and filter.",
-            "operationId": "findGoship",
+            "summary": "CCHDO search and filter.",
+            "operationId": "findCCHDO",
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
@@ -588,7 +588,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/goship"
+                              "$ref": "#/components/schemas/cchdo"
                            }
                         }
                      }
@@ -606,13 +606,13 @@
             }
          }
       },
-      "/goship/meta": {
+      "/cchdo/meta": {
          "get": {
             "tags": [
                "profiles"
             ],
             "summary": "GO-SHIP metadata search and filter.",
-            "operationId": "findGoshipmeta",
+            "operationId": "findCCHDOmeta",
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
@@ -632,7 +632,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/goshipMeta"
+                              "$ref": "#/components/schemas/cchdoMeta"
                            }
                         }
                      }
@@ -650,13 +650,13 @@
             }
          }
       },
-      "/goship/vocabulary": {
+      "/cchdo/vocabulary": {
          "get": {
             "tags": [
                "profiles"
             ],
             "summary": "List all possible values for certain CCHDO query string parameters",
-            "operationId": "goshipVocab",
+            "operationId": "cchdoVocab",
             "parameters": [
                {
                   "in": "query",
@@ -2532,7 +2532,7 @@
                "enum": ["ve","vn","err_lon","err_lat","err_ve","err_vn","gap","sst","sst1","sst2","err_sst","err_sst1","err_sst2","flg_sst","flg_sst1","flg_sst2"]
             }
          },
-         "goship": {
+         "cchdo": {
             "type": "object",
             "required": ["_id","metadata","geolocation","basin","timestamp", "data_keys", "units", "source", "station", "cast"],
             "properties": {
@@ -2566,10 +2566,10 @@
                   }
                },
                "data_keys": {
-                  "$ref": "#/components/schemas/goship_data_keys"
+                  "$ref": "#/components/schemas/cchdo_data_keys"
                },
                "units": {
-                  "$ref": "#/components/schemas/goship_units"
+                  "$ref": "#/components/schemas/cchdo_units"
                },
                "station": {
                   "type": "string"
@@ -2767,7 +2767,7 @@
                }
             }
          },
-         "goshipMeta": {
+         "cchdoMeta": {
             "type": "object",
             "required": ["_id", "date_updated_argovis", "data_type", "expocode", "cchdo_cruise_id", "woce_lines"],
             "properties":{
@@ -2810,7 +2810,7 @@
                }
             }
          },
-         "goship_units": {
+         "cchdo_units": {
             "anyOf": [
                {
                   "type": "array",
@@ -2997,7 +2997,7 @@
                }
             ] 
          },
-         "goship_data_keys": {
+         "cchdo_data_keys": {
             "type": "array",
             "items": {
                "type": "string",

@@ -1,6 +1,6 @@
 'use strict';
 const Profile = require('../models/profile');
-const goship = require('../models/goship');
+const cchdo = require('../models/cchdo');
 const argo = require('../models/argo');
 const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
@@ -157,7 +157,7 @@ exports.findArgometa = function(res, id,platform) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,data,presRange) {
+exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -207,17 +207,17 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
         }
         Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
-        metafilter = goship['goshipMeta'].aggregate([{$match: match}]).exec()
+        metafilter = cchdo['cchdoMeta'].aggregate([{$match: match}]).exec()
         metacomplete = true
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, goship['goship'], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
           
-          let postprocess = helpers.post_xform(goship['goshipMeta'], pp_params, search_result, res)
+          let postprocess = helpers.post_xform(cchdo['cchdoMeta'], pp_params, search_result, res)
           
           resolve([search_result[1], postprocess])
           
@@ -233,7 +233,7 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
-exports.findGoshipmeta = function(res, id,woceline,cchdo_cruise) {
+exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
   return new Promise(function(resolve, reject) {
     let match = {
         '_id': id,
@@ -242,7 +242,7 @@ exports.findGoshipmeta = function(res, id,woceline,cchdo_cruise) {
     }
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
-    const query = goship['goshipMeta'].aggregate([{$match:match}]);
+    const query = cchdo['cchdoMeta'].aggregate([{$match:match}]);
     let postprocess = helpers.meta_xform(res)
     resolve([query.cursor(), postprocess])
   });
@@ -254,7 +254,7 @@ exports.findGoshipmeta = function(res, id,woceline,cchdo_cruise) {
  * parameter String GO-SHIP query string parameter to summarize possible values of.
  * returns List
  **/
-exports.goshipVocab = function(parameter) {
+exports.cchdoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
     let lookup = {
         'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
@@ -264,9 +264,9 @@ exports.goshipVocab = function(parameter) {
 
     let model = null
     if(parameter=='source'){
-      model = goship['goship']
+      model = cchdo['cchdo']
     } else {
-      model = goship['goshipMeta']
+      model = cchdo['cchdoMeta']
     }
 
     model.find().distinct(lookup[parameter], function (err, vocab) {
