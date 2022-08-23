@@ -77,19 +77,9 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
         local_filter = [{$match:{'_id':id}}]
     }
 
-    // custom addition for argo: negatable, array-based source.source matching:
+    // optional source filtering
     if(source){
-      let sourcematch = {}
-      let smatches = source.filter(e => e.charAt(0)!='~')
-      let snegations = source.filter(e => e.charAt(0)=='~').map(x => x.substring(1))
-      if(smatches.length > 0 && snegations.length > 0){
-        sourcematch['source.source'] = {'$all': smatches, '$nin': snegations}
-      } else if (smatches.length > 0){
-        sourcematch['source.source'] = {'$all': smatches}
-      } else if (snegations.length > 0){
-        sourcematch['source.source'] = {'$nin': snegations}
-      }
-      local_filter.push({$match: sourcematch})
+      local_filter.push(helpers.source_filter(source))
     }
 
     // postprocessing parameters
@@ -179,6 +169,10 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
     }
 
     // decide y/n whether to service this request
+    if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),cchdo_cruise,woceline].some(x=>x)){
+      reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id, CCHDO cruise ID, or WOCE line search."})
+      return
+    }
     let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
       reject(bailout)
@@ -189,6 +183,11 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
     let local_filter = []
     if(id){
         local_filter = [{$match:{'_id':id}}]
+    }
+
+    // optional source filtering
+    if(source){
+      local_filter.push(helpers.source_filter(source))
     }
 
     // postprocessing parameters
@@ -259,10 +258,18 @@ exports.goshipVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
     let lookup = {
         'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
-        'cchdo_cruise': 'cchdo_cruise_id'
+        'cchdo_cruise': 'cchdo_cruise_id',
+        'source': 'source.source'
     }
 
-    goship['goshipMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+    let model = null
+    if(parameter=='source'){
+      model = goship['goship']
+    } else {
+      model = goship['goshipMeta']
+    }
+
+    model.find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;

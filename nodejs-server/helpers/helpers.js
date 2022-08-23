@@ -952,6 +952,22 @@ module.exports.data_pipeline = function(res, pipefittings){
   )
 }
 
+module.exports.source_filter = function(sourcelist){
+  // sourcelist: argument passed to `source` query string variable: comma separated string of sources, with ~negation
+  // returns an aggregation stage reflecting negatable source.source searches
 
+  let sourcematch = {}
+  let smatches = sourcelist.filter(e => e.charAt(0)!='~')
+  let snegations = sourcelist.filter(e => e.charAt(0)=='~').map(x => x.substring(1))
+  if(smatches.length > 0 && snegations.length > 0){
+    sourcematch['source.source'] = {'$all': smatches, '$nin': snegations}
+  } else if (smatches.length > 0){
+    sourcematch['source.source'] = {'$all': smatches}
+  } else if (snegations.length > 0){
+    sourcematch['source.source'] = {'$nin': snegations}
+  }
+
+  return {$match: sourcematch}
+}
 
 
