@@ -33,8 +33,8 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
     });
 };
 
-module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, compression, data, presRange) {
-  Profiles.findGoship(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, compression, data, presRange)
+module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange) {
+  Profiles.findGoship(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     })
