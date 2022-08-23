@@ -61,6 +61,10 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     }
 
     // decide y/n whether to service this request
+    if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),platform].some(x=>x)){
+      reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id or platform search."})
+      return
+    }
     let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
       reject(bailout)
