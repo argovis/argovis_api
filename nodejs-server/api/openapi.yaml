@@ -769,12 +769,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
-  /goship:
+  /cchdo:
     get:
       tags:
       - profiles
-      summary: GO-SHIP search and filter.
-      operationId: findGoship
+      summary: CCHDO search and filter.
+      operationId: findCCHDO
       parameters:
       - name: id
         in: query
@@ -938,7 +938,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/goship'
+                  $ref: '#/components/schemas/cchdo'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -959,12 +959,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Profiles
-  /goship/meta:
+  /cchdo/meta:
     get:
       tags:
       - profiles
       summary: GO-SHIP metadata search and filter.
-      operationId: findGoshipmeta
+      operationId: findCCHDOmeta
       parameters:
       - name: id
         in: query
@@ -1003,7 +1003,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/goshipMeta'
+                  $ref: '#/components/schemas/cchdoMeta'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -1024,12 +1024,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Profiles
-  /goship/vocabulary:
+  /cchdo/vocabulary:
     get:
       tags:
       - profiles
       summary: List all possible values for certain CCHDO query string parameters
-      operationId: goshipVocab
+      operationId: cchdoVocab
       parameters:
       - name: parameter
         in: query
@@ -3544,7 +3544,7 @@ components:
         - flg_sst
         - flg_sst1
         - flg_sst2
-    goship:
+    cchdo:
       required:
       - _id
       - basin
@@ -3583,9 +3583,9 @@ components:
             - missing_location
             - missing_timestamp
         data_keys:
-          $ref: '#/components/schemas/goship_data_keys'
+          $ref: '#/components/schemas/cchdo_data_keys'
         units:
-          $ref: '#/components/schemas/goship_units'
+          $ref: '#/components/schemas/cchdo_units'
         station:
           type: string
         cast:
@@ -4324,7 +4324,7 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           type: type
         timestamp: 2000-01-23T04:56:07.000+00:00
-    goshipMeta:
+    cchdoMeta:
       required:
       - _id
       - cchdo_cruise_id
@@ -4374,7 +4374,7 @@ components:
         instrument: instrument
         _id: _id
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
-    goship_units:
+    cchdo_units:
       anyOf:
       - type: array
         items:
@@ -4725,7 +4725,7 @@ components:
             type: string
           user_sample_number_btl:
             type: string
-    goship_data_keys:
+    cchdo_data_keys:
       type: array
       items:
         type: string

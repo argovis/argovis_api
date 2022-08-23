@@ -13,6 +13,16 @@ module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
     });
 };
 
+module.exports.cchdoVocab = function cchdoVocab (req, res, next, parameter) {
+  Profiles.cchdoVocab(parameter)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange) {
   Profiles.findArgo(id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange)
     .then(function (response) {
@@ -33,8 +43,8 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
     });
 };
 
-module.exports.findGoship = function findGoship (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange) {
-  Profiles.findGoship(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange)
+module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange) {
+  Profiles.findCCHDO(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -43,18 +53,8 @@ module.exports.findGoship = function findGoship (req, res, next, id, startDate, 
     });
 };
 
-module.exports.findGoshipmeta = function findGoshipmeta (req, res, next, id, woceline, cchdo_cruise) {
-  Profiles.findGoshipmeta(id, woceline, cchdo_cruise)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
-
-module.exports.goshipVocab = function goshipVocab (req, res, next, parameter) {
-  Profiles.goshipVocab(parameter)
+module.exports.findCCHDOmeta = function findCCHDOmeta (req, res, next, id, woceline, cchdo_cruise) {
+  Profiles.findCCHDOmeta(id, woceline, cchdo_cruise)
     .then(function (response) {
       utils.writeJson(res, response);
     })
