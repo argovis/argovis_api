@@ -6,6 +6,25 @@ const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
 
 /**
+ * List all possible values for certain Argo query string parameters
+ *
+ * parameter String Argo query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.argoVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Argo search and filter.
  *
  * id String Unique ID to search for. (optional)
@@ -219,7 +238,7 @@ exports.findGoshipmeta = function(res, id,woceline,cchdo_cruise) {
 }
 
 /**
- * List all possible values for certain tc query string parameters
+ * List all possible values for certain CCHDO query string parameters
  *
  * parameter String GO-SHIP query string parameter to summarize possible values of.
  * returns List
