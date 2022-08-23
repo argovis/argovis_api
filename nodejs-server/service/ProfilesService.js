@@ -21,6 +21,25 @@ exports.argoVocab = function(parameter) {
 
 
 /**
+ * List all possible values for certain CCHDO query string parameters
+ *
+ * parameter String GO-SHIP query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.cchdoVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Argo search and filter.
  *
  * id String Unique ID to search for. (optional)
@@ -163,7 +182,7 @@ exports.findArgometa = function(id,platform) {
 
 
 /**
- * GO-SHIP search and filter.
+ * CCHDO search and filter.
  *
  * id String Unique ID to search for. (optional)
  * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
@@ -180,7 +199,7 @@ exports.findArgometa = function(id,platform) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,data,presRange) {
+exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,data,presRange) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -253,7 +272,7 @@ exports.findGoship = function(id,startDate,endDate,polygon,multipolygon,center,r
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
-exports.findGoshipmeta = function(id,woceline,cchdo_cruise) {
+exports.findCCHDOmeta = function(id,woceline,cchdo_cruise) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -279,25 +298,6 @@ exports.findGoshipmeta = function(id,woceline,cchdo_cruise) {
   "_id" : "_id",
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
 } ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
-
-/**
- * List all possible values for certain CCHDO query string parameters
- *
- * parameter String GO-SHIP query string parameter to summarize possible values of.
- * returns List
- **/
-exports.goshipVocab = function(parameter) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
