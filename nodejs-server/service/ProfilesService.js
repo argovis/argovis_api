@@ -13,13 +13,22 @@ const geojsonArea = require('@mapbox/geojson-area');
  **/
 exports.argoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    let lookup = {
+        'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
+        'source': 'source.source'
     }
+
+    if(parameter == 'source'){
+      resolve(['argo_core', 'argo_bgc', 'argo_deep'])
+      return
+    }
+    argo['argoMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+      resolve(vocab)
+    })
   });
 }
 
@@ -54,7 +63,6 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
-      //request looks huge or malformed, reject it
       reject(bailout)
       return
     }
@@ -168,7 +176,6 @@ exports.findGoship = function(res, id,startDate,endDate,polygon,multipolygon,cen
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
-      //request looks huge or malformed, reject it
       reject(bailout)
       return
     }

@@ -32,7 +32,6 @@ exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
     if(bailout){
-      //request looks huge or malformed, reject it
       reject(bailout)
       return
     }

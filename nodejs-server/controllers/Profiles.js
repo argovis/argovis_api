@@ -8,6 +8,9 @@ module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
   Profiles.argoVocab(parameter)
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
