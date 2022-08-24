@@ -282,11 +282,12 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
   }
 
   if(polygon){
-    params.polygon = module.exports.polygon_sanitation(polygon)
+    polygon = module.exports.polygon_sanitation(polygon)
     if(polygon.hasOwnProperty('code')){
       // error, return and bail out
       return polygon
     }
+    params.polygon = polygon
   }
 
   if(multipolygon){
@@ -850,7 +851,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
 
   if(standard_routes.includes(path[0])){
     //// core data routes
-    if(path.length==1 || (path[0]=='grids' && path.length==2)){
+    if(path.length==1 || (path[0]=='grids' && path.length==2 && path[1]!='vocabulary' && path[1]!='meta')){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1
@@ -880,7 +881,6 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
               ///// cost out request
               let geospan = module.exports.geoarea(params.polygon,params.multipolygon,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
               let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
-
               if(geospan*dayspan > maxbulk){
                 return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
               }
@@ -898,7 +898,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
 
   /// all other routes unconstrained for now
 
-    return c
+  return c
 }
 
 module.exports.maxgeo = function(polygon, multipolygon, center, radius){
