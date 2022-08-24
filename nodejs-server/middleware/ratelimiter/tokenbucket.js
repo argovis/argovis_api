@@ -58,6 +58,7 @@ module.exports.tokenbucket = function (req, res, next) {
 		let tokensnow = Math.min(userbucket.ntokens + Math.round((t - userbucket.lastUpdate)/tokenrespawntime), bucketsize)
 		requestCost = helpers.cost(req['url'], requestCost, cellprice, metaDiscount, maxbulk)
 		if(requestCost.hasOwnProperty('code')){
+			hsetAsync(userbucket.key, "ntokens", tokensnow-1, "lastUpdate", t) // penalize spamming us with bad requests a little
 			throw(requestCost)
 		}
 		else if(tokensnow >= 0){
