@@ -684,7 +684,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
 
   // if we asked for specific data and one of the desired variables isn't found anywhere, abandon this document
-  if(pp_params.data && !metadata_only){
+  if(pp_params.data && (pp_params.data.length > 1 || pp_params.data[0]!=='metadata-only')){
     for(k=0; k<keys.length; k++){
       if(keys[k] != 'all'){
         if(!chunk.data.some(level => Object.keys(level).includes(keys[k]))){
