@@ -746,6 +746,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
   postprocess._flush = function(callback){
     if(nDocs == 0){
       res.status(404)
+      this.push({"code":404, "message": "No documents found matching search."})
     }
     return callback()
   }
@@ -831,13 +832,13 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
 
   let earliest_records = {
-    'argo': Date("1997-07-28T20:26:20.002Z"),
-    'cchdo': Date("1977-10-07T00:00:00Z"),
-    'drifters': Date("1987-10-02T13:00:00Z"),
-    'ohc_kg': Date("2005-01-15T00:00:00Z"),
-    'temperature_rg': Date("2004-01-15T00:00:00Z"),
-    'salinity_rg': Date("2004-01-15T00:00:00Z"),
-    'tc': Date("1851-06-25T00:00:00Z")
+    'argo': new Date("1997-07-28T20:26:20.002Z"),
+    'cchdo': new Date("1977-10-07T00:00:00Z"),
+    'drifters': new Date("1987-10-02T13:00:00Z"),
+    'ohc_kg': new Date("2005-01-15T00:00:00Z"),
+    'temperature_rg': new Date("2004-01-15T00:00:00Z"),
+    'salinity_rg': new Date("2004-01-15T00:00:00Z"),
+    'tc': new Date("1851-06-25T00:00:00Z")
   }
 
   /// determine path steps
@@ -870,7 +871,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
           return params
         }
               params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
-              params.endDate = params.endDate ? params.endDate : Date()
+              params.endDate = params.endDate ? params.endDate : new Date()
 
               ///// decline requests that are too geographically enormous
               let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, params.center, params.radius)
