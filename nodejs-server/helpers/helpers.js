@@ -658,7 +658,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
         reinflate[dk[k]] = chunk.data[j][k]
       }
     }
-    if(Object.keys(reinflate).length > (coerced_pressure ? 1 : 0)){ // ie only keep levels that retained some data other than a coerced pressure record
+    if(keys.includes('all') || keys.every(val => val=='all' || Object.keys(reinflate).includes(val))){ // ie only keep levels that have all requested keys
       let lvl = metalevels ? metalevels[j] : reinflate.pressure
       reinflated_levels[lvl] = reinflate
     }

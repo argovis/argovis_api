@@ -173,6 +173,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /argo", function () {
+      it("shouldnt return a profile unless it has all the requested data", async function () {
+        const response = await request.get("/argo?id=4901283_021&data=salinity,doxy,chla").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
+
+    describe("GET /argo", function () {
       it("argo with data filter should return correct data_keys", async function () {
         const response = await request.get("/argo?id=4901283_021&data=salinity,doxy").set({'x-argokey': 'developer'});
         expect(response.body[0].data_keys).to.have.members(['salinity', 'doxy', 'pressure'])
