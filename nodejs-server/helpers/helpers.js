@@ -601,7 +601,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
 
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
-  let notkeys = []    // data ketys that disqualify a document if present
+  let notkeys = []    // data keys that disqualify a document if present
   let my_meta = null  // metadata document corresponding to chunk
   let coerced_pressure = false
   let metadata_only = false
@@ -658,7 +658,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
         reinflate[dk[k]] = chunk.data[j][k]
       }
     }
-    if(keys.includes('all') || keys.every(val => val=='all' || Object.keys(reinflate).includes(val))){ // ie only keep levels that have all requested keys
+    if(keys.includes('all') || keys.some(val => (val!='pressure' || !coerced_pressure) && Object.keys(reinflate).includes(val))){ // ie only keep levels that have at least some explicitly requested keys
       let lvl = metalevels ? metalevels[j] : reinflate.pressure
       reinflated_levels[lvl] = reinflate
     }
@@ -682,6 +682,17 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
 
   // if we wanted data and none is left, abandon this document
   if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
+
+  // if we asked for specific data and one of the desired variables isn't found anywhere, abandon this document
+  if(pp_params.data && !metadata_only){
+    for(k=0; k<keys.length; k++){
+      if(keys[k] != 'all'){
+        if(!chunk.data.some(level => Object.keys(level).includes(keys[k]))){
+          return false
+        }
+      }
+    }
+  }
 
   // drop data on metadata only requests
   if(!pp_params.data || metadata_only){
