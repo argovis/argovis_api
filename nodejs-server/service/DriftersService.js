@@ -37,10 +37,11 @@ exports.drifterMetaSearch = function(res,platform,wmo) {
  * wmo BigDecimal World Meteorological Organization identification number (optional)
  * platform String Unique platform ID to search for. (optional)
  * compression String Data compression strategy to apply. (optional)
+ * mostrecent String set true to get back only the most recent record from your search. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,center,radius,wmo,platform,compression,data) {
+exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,center,radius,wmo,platform,compression,mostrecent,data) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -68,7 +69,8 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
     let pp_params = {
         compression: compression,
         data: data,
-        presRange: null
+        presRange: null,
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise

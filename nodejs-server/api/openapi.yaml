@@ -369,6 +369,16 @@ paths:
         schema:
           type: string
           example: LANE
+      - name: mostrecent
+        in: query
+        description: set true to get back only the most recent record from your search.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
       - name: compression
         in: query
         description: Data compression strategy to apply.
@@ -630,6 +640,16 @@ paths:
         schema:
           type: string
           example: basic-minification
+      - name: mostrecent
+        in: query
+        description: set true to get back only the most recent record from your search.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -899,6 +919,16 @@ paths:
         schema:
           type: string
           example: basic-minification
+      - name: mostrecent
+        in: query
+        description: set true to get back only the most recent record from your search.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -1191,6 +1221,16 @@ paths:
         schema:
           type: string
           example: basic-minification
+      - name: mostrecent
+        in: query
+        description: set true to get back only the most recent record from your search.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -2102,6 +2142,16 @@ paths:
         schema:
           type: string
           example: basic-minification
+      - name: mostrecent
+        in: query
+        description: set true to get back only the most recent record from your search.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -5403,6 +5453,17 @@ components:
       schema:
         type: number
         example: 50
+    mostrecent:
+      name: mostrecent
+      in: query
+      description: set true to get back only the most recent record from your search.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - "true"
     data:
       name: data
       in: query
