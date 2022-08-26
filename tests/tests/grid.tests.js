@@ -48,7 +48,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /grids/ohc_kg", function () {
       it("grids with data filter should return correct units, as a list when compressed", async function () {
-        const response = await request.get("/grids/ohc_kg?polygon=[[107,-64],[108,-64],[108,-65],[107,-65],[107,-64]]&data=ohc_kg&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/grids/ohc_kg?polygon=[[107,-64],[108,-64],[108,-65],[107,-65],[107,-64]]&data=ohc_kg&compression=array").set({'x-argokey': 'developer'});
         expect(response.body[0].units).to.deep.equal(["J/m^2"])
       });
     });
@@ -112,7 +112,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /grids/temperature_rg", function () {
       it("fetch gridded data with pressure bracket", async function () {
-        const response = await request.get("/grids/temperature_rg?id=20190115000000_20.5_-64.5&presRange=10,100&data=temperature_rg&compression=basic-minification").set({'x-argokey': 'developer'});
+        const response = await request.get("/grids/temperature_rg?id=20190115000000_20.5_-64.5&presRange=10,100&data=temperature_rg&compression=array").set({'x-argokey': 'developer'});
         expect(response.body[0]['data']).to.eql( [[ 0.37 ], [ 0.11 ], [ -0.318 ], [ -0.959 ], [ -1.37 ], [ -1.508 ], [ -1.468 ], [ -1.206 ], [ -0.745 ], [ -0.275 ]]);
       });
     });

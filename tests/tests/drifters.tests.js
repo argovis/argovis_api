@@ -48,7 +48,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /drifters", function () {
       it("drifters with data filter should return correct units, as a list when compressed", async function () {
-        const response = await request.get("/drifters?polygon=[[-17,14],[-18,14],[-18,15],[-17,15],[-17,14]]&data=sst,ve&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/drifters?polygon=[[-17,14],[-18,14],[-18,15],[-17,15],[-17,14]]&data=sst,ve&compression=array").set({'x-argokey': 'developer'});
         expect(response.body[0].units).to.deep.equal(["Kelvin","m/s"])
       });
     });
@@ -146,14 +146,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /drifters", function () {
       it("ignore compression without data", async function () {
-        const response = await request.get("/drifters?id=101143_0&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/drifters?id=101143_0&compression=array").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     }); 
 
     describe("GET /drifters", function () {
       it("ignore compression on metadata-only flag", async function () {
-        const response = await request.get("/drifters?id=101143_0&compression=basic&data=sst,metadata-only").set({'x-argokey': 'developer'});
+        const response = await request.get("/drifters?id=101143_0&compression=array&data=sst,metadata-only").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     }); 
