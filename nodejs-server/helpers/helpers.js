@@ -424,7 +424,6 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
         spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
       }
     }
-    spacetimeMatch.push({$sort: {'timestamp':-1}})
   }
 
   /// construct filter for matching metadata docs if required
@@ -434,7 +433,7 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   }
 
   // set up aggregation and return promise to evaluate:
-  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
+  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch).push({$sort: {'timestamp':-1}})
 
   return model.aggregate(aggPipeline).cursor()
 }
@@ -748,6 +747,9 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
              if(doc){
                 this.push(doc)
                 nDocs++
+                if(pp_params.mostRecent){
+                  this._flush()
+                }
             }
             next()
           })

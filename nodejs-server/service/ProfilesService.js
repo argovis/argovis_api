@@ -86,7 +86,8 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     let pp_params = {
         compression: compression,
         data: data,
-        presRange: presRange
+        presRange: presRange,
+        mostRecent: mostRecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
