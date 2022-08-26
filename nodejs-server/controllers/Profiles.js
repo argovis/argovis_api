@@ -23,8 +23,8 @@ module.exports.cchdoVocab = function cchdoVocab (req, res, next, parameter) {
     });
 };
 
-module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange) {
-  Profiles.findArgo(id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, data, presRange)
+module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, mostrecent, data, presRange) {
+  Profiles.findArgo(id, startDate, endDate, polygon, multipolygon, center, radius, platform, source, compression, mostrecent, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -43,8 +43,8 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
     });
 };
 
-module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange) {
-  Profiles.findCCHDO(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, data, presRange)
+module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange) {
+  Profiles.findCCHDO(id, startDate, endDate, polygon, multipolygon, center, radius, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange)
     .then(function (response) {
       utils.writeJson(res, response);
     })
