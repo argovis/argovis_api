@@ -51,7 +51,7 @@ exports.cchdoVocab = function(parameter) {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * platform String Unique platform ID to search for. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
- * compression String Data compression strategy to apply. (optional)
+ * compression String Data minification strategy to apply. (optional)
  * data argo_data_keys Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
@@ -194,7 +194,7 @@ exports.findArgometa = function(id,platform) {
  * woceline String WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
- * compression String Data compression strategy to apply. (optional)
+ * compression String Data minification strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
@@ -323,7 +323,7 @@ exports.findCCHDOmeta = function(id,woceline,cchdo_cruise) {
  * dac String Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
  * woceline String WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options. (optional)
- * compression String Data compression strategy to apply. (optional)
+ * compression String Data minification strategy to apply. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. See /profiles/vocabulary?parameter=data for possible values. (optional)
  * returns List
  **/
