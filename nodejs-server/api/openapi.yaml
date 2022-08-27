@@ -369,6 +369,14 @@ paths:
         schema:
           type: string
           example: LANE
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
       - name: compression
         in: query
         description: Data minification strategy to apply.
@@ -631,9 +639,21 @@ paths:
         explode: true
         schema:
           type: string
+<<<<<<< HEAD
           enum:
           - array
           - minimal
+=======
+          example: basic-minification
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+>>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -902,9 +922,21 @@ paths:
         explode: true
         schema:
           type: string
+<<<<<<< HEAD
           enum:
           - array
           - minimal
+=======
+          example: basic-minification
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+>>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -1196,9 +1228,21 @@ paths:
         explode: true
         schema:
           type: string
+<<<<<<< HEAD
           enum:
           - array
           - minimal
+=======
+          example: basic-minification
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+>>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -2111,9 +2155,21 @@ paths:
         explode: true
         schema:
           type: string
+<<<<<<< HEAD
           enum:
           - array
           - minimal
+=======
+          example: basic-minification
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+>>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -5417,6 +5473,15 @@ components:
       schema:
         type: number
         example: 50
+    mostrecent:
+      name: mostrecent
+      in: query
+      description: get back only the n records with the most recent values of timestamp.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
     data:
       name: data
       in: query
