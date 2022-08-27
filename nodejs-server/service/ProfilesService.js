@@ -46,11 +46,12 @@ exports.argoVocab = function(parameter) {
  * platform String Unique platform ID to search for. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
+ * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data argo_data_keys Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,data,presRange) {
+exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
@@ -153,11 +154,12 @@ exports.findArgometa = function(res, id,platform) {
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
+ * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,data,presRange) {
+exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
