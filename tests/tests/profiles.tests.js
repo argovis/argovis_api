@@ -288,9 +288,37 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /argo", function () {
-      it("map compression reponds appropriately", async function () {
+      it("minimal compression reponds appropriately", async function () {
         const response = await request.get("/argo?startDate=2011-10-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_bgc&compression=minimal").set({'x-argokey': 'developer'});
          expect(response.body).to.eql([{"_id" : "4901283_023", "geolocation" : { "type" : "Point", "coordinates" : [ -34.50668290323591, 2.238459475658293 ] }, "timestamp": "2011-11-18T08:41:51.000Z"},{"_id" : "4901283_022", "geolocation" : { "type" : "Point", "coordinates" : [ -35.670215, 2.313375 ] }, "timestamp" : "2011-11-08T08:44:06.000Z"},{"_id" : "4901283_021", "geolocation" : { "type" : "Point", "coordinates" : [ -35.430227, 1.315393 ] }, "timestamp" : "2011-10-29T08:43:51.000Z"}]) 
+      });
+    });
+    
+    describe("GET /argo", function () {
+      it("gets correct time for most recent result", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=1").set({'x-argokey': 'developer'});
+         expect(response.body[0].timestamp).to.eql('2011-11-18T08:41:51.000Z');
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("only gets one result", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=1").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(1);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("gets most recent 2 results", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=2").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(2);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("confirm mostrecent and data queries work together nicely", async function () {
+        const response = await request.get("/argo?platform=4901283&data=temperature_sfile&mostrecent=2").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(2);
       });
     });
 

@@ -47,7 +47,8 @@ exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,
     let pp_params = {
         compression: compression,
         data: data,
-        presRange: null
+        presRange: null,
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
