@@ -3442,10 +3442,9 @@
          "mostrecent": {
             "in": "query",
             "name": "mostrecent",
-            "description": "set true to get back only the most recent record from your search.",
+            "description": "get back only the n records with the most recent values of timestamp.",
             "schema": {
-               "type": "string",
-               "enum": ["true"]
+               "type": "number"
             }
          },
          "data": {
