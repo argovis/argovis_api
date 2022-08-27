@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Tc = require('../service/TcService');
 
-module.exports.findTC = function findTC (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, name, compression, data) {
-  Tc.findTC(id, startDate, endDate, polygon, multipolygon, center, radius, name, compression, data)
+module.exports.findTC = function findTC (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, name, mostrecent, compression, data) {
+  Tc.findTC(id, startDate, endDate, polygon, multipolygon, center, radius, name, mostrecent, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })
