@@ -639,12 +639,9 @@ paths:
         explode: true
         schema:
           type: string
-<<<<<<< HEAD
           enum:
           - array
           - minimal
-=======
-          example: basic-minification
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -653,7 +650,6 @@ paths:
         explode: true
         schema:
           type: number
->>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -922,12 +918,9 @@ paths:
         explode: true
         schema:
           type: string
-<<<<<<< HEAD
           enum:
           - array
           - minimal
-=======
-          example: basic-minification
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -936,7 +929,6 @@ paths:
         explode: true
         schema:
           type: number
->>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -1228,12 +1220,9 @@ paths:
         explode: true
         schema:
           type: string
-<<<<<<< HEAD
           enum:
           - array
           - minimal
-=======
-          example: basic-minification
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -1242,7 +1231,6 @@ paths:
         explode: true
         schema:
           type: number
->>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -2155,12 +2143,9 @@ paths:
         explode: true
         schema:
           type: string
-<<<<<<< HEAD
           enum:
           - array
           - minimal
-=======
-          example: basic-minification
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -2169,7 +2154,6 @@ paths:
         explode: true
         schema:
           type: number
->>>>>>> templates
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
