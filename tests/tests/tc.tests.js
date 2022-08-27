@@ -48,7 +48,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /tc", function () {
       it("tc with data filter should return correct units, as a list when compressed", async function () {
-        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind&compression=basic").set({'x-argokey': 'developer'});
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind&compression=array").set({'x-argokey': 'developer'});
         expect(response.body[0].units).to.deep.equal(["kt"])
       });
     });

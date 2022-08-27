@@ -379,13 +379,15 @@ paths:
           type: number
       - name: compression
         in: query
-        description: Data compression strategy to apply.
+        description: Data minification strategy to apply.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: basic-minification
+          enum:
+          - array
+          - minimal
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -631,13 +633,15 @@ paths:
           example: 50
       - name: compression
         in: query
-        description: Data compression strategy to apply.
+        description: Data minification strategy to apply.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: basic-minification
+          enum:
+          - array
+          - minimal
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -908,13 +912,15 @@ paths:
             type: string
       - name: compression
         in: query
-        description: Data compression strategy to apply.
+        description: Data minification strategy to apply.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: basic-minification
+          enum:
+          - array
+          - minimal
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -1208,13 +1214,15 @@ paths:
             type: string
       - name: compression
         in: query
-        description: Data compression strategy to apply.
+        description: Data minification strategy to apply.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: basic-minification
+          enum:
+          - array
+          - minimal
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -1538,13 +1546,15 @@ paths:
           example: A10
       - name: compression
         in: query
-        description: Data compression strategy to apply.
+        description: Data minification strategy to apply.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: basic-minification
+          enum:
+          - array
+          - minimal
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -2127,13 +2137,15 @@ paths:
           example: "4902911"
       - name: compression
         in: query
-        description: Data compression strategy to apply.
+        description: Data minification strategy to apply.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: basic-minification
+          enum:
+          - array
+          - minimal
       - name: mostrecent
         in: query
         description: get back only the n records with the most recent values of timestamp.
@@ -5328,13 +5340,15 @@ components:
     compression:
       name: compression
       in: query
-      description: Data compression strategy to apply.
+      description: Data minification strategy to apply.
       required: false
       style: form
       explode: true
       schema:
         type: string
-        example: basic-minification
+        enum:
+        - array
+        - minimal
     genericID:
       name: id
       in: query

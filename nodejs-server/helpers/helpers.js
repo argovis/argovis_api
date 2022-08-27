@@ -566,7 +566,7 @@ module.exports.postprocess = function(pp_params, search_result){
     }
 
     /// deflate data if requested
-    if(pp_params.compression && pp_params.data && !metadata_only){
+    if(pp_params.compression=='array' && pp_params.data && !metadata_only){
       doc.data = doc.data.map(x => {
         let lvl = []
         for(let ii=0; ii<doc.data_keys.length; ii++){
@@ -714,7 +714,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   }
 
   // deflate data if requested
-  if(pp_params.compression && pp_params.data && !metadata_only){
+  if(pp_params.compression == 'array' && pp_params.data && !metadata_only){
     chunk.data = chunk.data.map(x => {
       let lvl = []
       for(let ii=0; ii<chunk.data_keys.length; ii++){
@@ -727,6 +727,12 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
       return lvl
     })
     chunk.units = chunk.data_keys.map(x => chunk.units[x])
+  }
+
+  // return a minimal version if requested
+  if(pp_params.compression == 'minimal'){
+    let sourceset = new Set(chunk.source.map(x => x.source).flat())
+    chunk = [chunk['_id'], chunk.geolocation.coordinates[0], chunk.geolocation.coordinates[1], chunk.timestamp, Array.from(sourceset) ]
   }
 
   return chunk
