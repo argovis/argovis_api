@@ -424,7 +424,6 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
         spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
       }
     }
-    spacetimeMatch.push({$sort: {'timestamp':-1}})
   }
 
   /// construct filter for matching metadata docs if required
@@ -435,6 +434,7 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
 
   // set up aggregation and return promise to evaluate:
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
+  aggPipeline.push({$sort: {'timestamp':-1}})
 
   return model.aggregate(aggPipeline).cursor()
 }
@@ -744,10 +744,16 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
             // keep track of new metadata docs so we don't look them up twice
             if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
             // munge the chunk and push it downstream if it isn't rejected.
-            let doc = module.exports.postprocess_stream(chunk, meta, pp_params)
-             if(doc){
+            let doc = null
+            if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+                /// ie dont even bother with post if we've exceeded our mostrecent cap
+                doc = module.exports.postprocess_stream(chunk, meta, pp_params)
+            }
+            if(doc){
+              if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
                 this.push(doc)
-                nDocs++
+              }
+              nDocs++
             }
             next()
           })

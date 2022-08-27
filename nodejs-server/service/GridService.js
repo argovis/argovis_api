@@ -31,11 +31,12 @@ exports.findgridMeta = function(res,id) {
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * compression String Data compression strategy to apply. (optional)
+ * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,center,radius,compression,data,presRange) {
+exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,center,radius,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // generic helper for all grid search and filter routes
 
@@ -64,7 +65,8 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     let pp_params = {
         compression: compression,
         data: data,
-        presRange: presRange
+        presRange: presRange,
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
