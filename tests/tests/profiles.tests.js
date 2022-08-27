@@ -289,15 +289,29 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /argo", function () {
       it("gets correct time for most recent result", async function () {
-        const response = await request.get("/argo?platform=4901283&mostrecent=true").set({'x-argokey': 'developer'});
+        const response = await request.get("/argo?platform=4901283&mostrecent=1").set({'x-argokey': 'developer'});
          expect(response.body[0].timestamp).to.eql('2011-11-18T08:41:51.000Z');
       });
     });
 
     describe("GET /argo", function () {
       it("only gets one result", async function () {
-        const response = await request.get("/argo?platform=4901283&mostrecent=true").set({'x-argokey': 'developer'});
+        const response = await request.get("/argo?platform=4901283&mostrecent=1").set({'x-argokey': 'developer'});
          expect(response.body.length).to.eql(1);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("gets most recent 2 results", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=2").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(2);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("confirm mostrecent and data queries work together nicely", async function () {
+        const response = await request.get("/argo?platform=4901283&data=temperature_sfile&mostrecent=2").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(2);
       });
     });
 

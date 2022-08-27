@@ -744,13 +744,16 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
             // keep track of new metadata docs so we don't look them up twice
             if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
             // munge the chunk and push it downstream if it isn't rejected.
-            let doc = module.exports.postprocess_stream(chunk, meta, pp_params)
-             if(doc){
+            let doc = null
+            if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+                /// ie dont even bother with post if we've exceeded our mostrecent cap
+                doc = module.exports.postprocess_stream(chunk, meta, pp_params)
+            }
+            if(doc){
+              if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
                 this.push(doc)
-                nDocs++
-                if(pp_params.mostrecent){
-                  this.emit('end')
-                }
+              }
+              nDocs++
             }
             next()
           })
