@@ -287,6 +287,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /argo", function () {
+      it("gets correct time for most recent result", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=true").set({'x-argokey': 'developer'});
+         expect(response.body[0].timestamp).to.eql('2011-11-18T08:41:51.000Z');
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("only gets one result", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=true").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(1);
+      });
+    });
+
     // legacy profiles route
 
     describe("GET /profiles", function () {

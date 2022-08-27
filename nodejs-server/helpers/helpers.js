@@ -433,7 +433,8 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   }
 
   // set up aggregation and return promise to evaluate:
-  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch).push({$sort: {'timestamp':-1}})
+  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
+  aggPipeline.push({$sort: {'timestamp':-1}})
 
   return model.aggregate(aggPipeline).cursor()
 }
@@ -747,8 +748,8 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
              if(doc){
                 this.push(doc)
                 nDocs++
-                if(pp_params.mostRecent){
-                  this._flush()
+                if(pp_params.mostrecent){
+                  this.emit('end')
                 }
             }
             next()
