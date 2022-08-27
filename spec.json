@@ -3334,10 +3334,10 @@
          "compression": {
             "in": "query",
             "name": "compression",
-            "description": "Data compression strategy to apply.",
+            "description": "Data minification strategy to apply.",
             "schema": {
                "type": "string",
-               "example": "basic-minification"
+               "enum": ["array","minimal"]
             }
          },
          "genericID": {
