@@ -371,14 +371,12 @@ paths:
           example: LANE
       - name: mostrecent
         in: query
-        description: set true to get back only the most recent record from your search.
+        description: get back only the n records with the most recent values of timestamp.
         required: false
         style: form
         explode: true
         schema:
-          type: string
-          enum:
-          - "true"
+          type: number
       - name: compression
         in: query
         description: Data compression strategy to apply.
@@ -642,14 +640,12 @@ paths:
           example: basic-minification
       - name: mostrecent
         in: query
-        description: set true to get back only the most recent record from your search.
+        description: get back only the n records with the most recent values of timestamp.
         required: false
         style: form
         explode: true
         schema:
-          type: string
-          enum:
-          - "true"
+          type: number
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -921,14 +917,12 @@ paths:
           example: basic-minification
       - name: mostrecent
         in: query
-        description: set true to get back only the most recent record from your search.
+        description: get back only the n records with the most recent values of timestamp.
         required: false
         style: form
         explode: true
         schema:
-          type: string
-          enum:
-          - "true"
+          type: number
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -1223,14 +1217,12 @@ paths:
           example: basic-minification
       - name: mostrecent
         in: query
-        description: set true to get back only the most recent record from your search.
+        description: get back only the n records with the most recent values of timestamp.
         required: false
         style: form
         explode: true
         schema:
-          type: string
-          enum:
-          - "true"
+          type: number
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -2144,14 +2136,12 @@ paths:
           example: basic-minification
       - name: mostrecent
         in: query
-        description: set true to get back only the most recent record from your search.
+        description: get back only the n records with the most recent values of timestamp.
         required: false
         style: form
         explode: true
         schema:
-          type: string
-          enum:
-          - "true"
+          type: number
       - name: data
         in: query
         description: "Keys of data to include. Return only documents that have all\
@@ -5456,14 +5446,12 @@ components:
     mostrecent:
       name: mostrecent
       in: query
-      description: set true to get back only the most recent record from your search.
+      description: get back only the n records with the most recent values of timestamp.
       required: false
       style: form
       explode: true
       schema:
-        type: string
-        enum:
-        - "true"
+        type: number
     data:
       name: data
       in: query
