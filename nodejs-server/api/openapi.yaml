@@ -29,8 +29,10 @@ tags:
 - name: grid
   description: "Gridded products derived from Argo floats, simulation, or satalite\
     \ product"
-- name: profiles
-  description: "Profile data, including BGC and profile metadata"
+- name: argo
+  description: "Argo profile data, including core, BGC and deep floats"
+- name: cchdo
+  description: CCHDO profile data.
 - name: drifters
   description: Data and metadata for drifters.
 paths:
@@ -801,7 +803,7 @@ paths:
   /cchdo:
     get:
       tags:
-      - profiles
+      - cchdo
       summary: CCHDO search and filter.
       operationId: findCCHDO
       parameters:
@@ -997,11 +999,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Cchdo
   /cchdo/meta:
     get:
       tags:
-      - profiles
+      - cchdo
       summary: GO-SHIP metadata search and filter.
       operationId: findCCHDOmeta
       parameters:
@@ -1062,11 +1064,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Cchdo
   /cchdo/vocabulary:
     get:
       tags:
-      - profiles
+      - cchdo
       summary: List all possible values for certain CCHDO query string parameters
       operationId: cchdoVocab
       parameters:
@@ -1111,11 +1113,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Cchdo
   /argo:
     get:
       tags:
-      - profiles
+      - argo
       summary: Argo search and filter.
       operationId: findArgo
       parameters:
@@ -1296,11 +1298,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Argo
   /argo/meta:
     get:
       tags:
-      - profiles
+      - argo
       summary: Argo metadata search and filter.
       operationId: findArgometa
       parameters:
@@ -1350,11 +1352,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Argo
   /argo/vocabulary:
     get:
       tags:
-      - profiles
+      - argo
       summary: List all possible values for certain Argo query string parameters
       operationId: argoVocab
       parameters:
@@ -1398,11 +1400,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Argo
   /argo/overview:
     get:
       tags:
-      - profiles
+      - argo
       summary: Summarizes some collection-level statistics about Argo data.
       operationId: argoOverview
       responses:
@@ -1430,11 +1432,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Argo
   /argo/dacs:
     get:
       tags:
-      - profiles
+      - argo
       summary: Summarizes some datacenter-level statistics about Argo data.
       operationId: argoDACs
       responses:
@@ -1462,11 +1464,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Argo
   /argo/bgc:
     get:
       tags:
-      - profiles
+      - argo
       summary: Summarizes some float-level statistics for Argo BGC floats.
       operationId: argoBGC
       responses:
@@ -1494,7 +1496,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: Profiles
+      x-swagger-router-controller: Argo
   /drifters:
     get:
       tags:

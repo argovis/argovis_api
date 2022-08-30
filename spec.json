@@ -47,8 +47,12 @@
          "description": "Gridded products derived from Argo floats, simulation, or satalite product"
       },
       {
-         "name": "profiles",
-         "description": "Profile data, including BGC and profile metadata"
+         "name": "argo",
+         "description": "Argo profile data, including core, BGC and deep floats"
+      },
+      {
+         "name": "cchdo",
+         "description": "CCHDO profile data."
       },
       {
          "name": "drifters",
@@ -532,7 +536,7 @@
       "/cchdo": {
          "get": {
             "tags": [
-               "profiles"
+               "cchdo"
             ],
             "summary": "CCHDO search and filter.",
             "operationId": "findCCHDO",
@@ -622,7 +626,7 @@
       "/cchdo/meta": {
          "get": {
             "tags": [
-               "profiles"
+               "cchdo"
             ],
             "summary": "GO-SHIP metadata search and filter.",
             "operationId": "findCCHDOmeta",
@@ -666,7 +670,7 @@
       "/cchdo/vocabulary": {
          "get": {
             "tags": [
-               "profiles"
+               "cchdo"
             ],
             "summary": "List all possible values for certain CCHDO query string parameters",
             "operationId": "cchdoVocab",
@@ -711,7 +715,7 @@
       "/argo": {
          "get": {
             "tags": [
-               "profiles"
+               "argo"
             ],
             "summary": "Argo search and filter.",
             "operationId": "findArgo",
@@ -793,7 +797,7 @@
       "/argo/meta": {
          "get": {
             "tags": [
-               "profiles"
+               "argo"
             ],
             "summary": "Argo metadata search and filter.",
             "operationId": "findArgometa",
@@ -834,7 +838,7 @@
       "/argo/vocabulary": {
          "get": {
             "tags": [
-               "profiles"
+               "argo"
             ],
             "summary": "List all possible values for certain Argo query string parameters",
             "operationId": "argoVocab",
@@ -879,7 +883,7 @@
       "/argo/overview": {
          "get": {
             "tags": [
-               "profiles"
+               "argo"
             ],
             "summary": "Summarizes some collection-level statistics about Argo data.",
             "operationId": "argoOverview",
@@ -940,7 +944,7 @@
       "/argo/dacs": {
          "get": {
             "tags": [
-               "profiles"
+               "argo"
             ],
             "summary": "Summarizes some datacenter-level statistics about Argo data.",
             "operationId": "argoDACs",
@@ -995,7 +999,7 @@
       "/argo/bgc": {
          "get": {
             "tags": [
-               "profiles"
+               "argo"
             ],
             "summary": "Summarizes some float-level statistics for Argo BGC floats.",
             "operationId": "argoBGC",
