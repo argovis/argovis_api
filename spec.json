@@ -2480,18 +2480,6 @@
                "example": "LANE"
             }
          },
-         "date": {
-            "in": "query",
-            "name": "date",
-            "required": true,
-            "description": "date-time formatted string",
-            "allowReserved": true,
-            "schema": {
-               "type": "string",
-               "format": "date-time",
-               "example": "2010-01-01T00:00:00Z"
-            }
-         },
          "startDate": {
             "in": "query",
             "name": "startDate",
@@ -2539,15 +2527,6 @@
                   "maxItems": 2
                },
                "example": "10,20.1"
-            }
-         },
-         "dac": {
-            "in": "query",
-            "name": "dac",
-            "description": "Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac for list of options.",
-            "schema": {
-               "type": "string",
-               "example": "KO"
             }
          },
          "profileSource": {
@@ -2601,15 +2580,6 @@
                "example": "4902911_0"
             }
          },
-         "profileID": {
-            "in": "query",
-            "name": "id",
-            "description": "Unique profile ID to search for.",
-            "schema": {
-               "type": "string",
-               "example": "4902911_0"
-            }
-         },
          "platformID": {
             "in": "query",
             "name": "platform",
@@ -2617,22 +2587,6 @@
             "schema": {
                "type": "string",
                "example": "4902911"
-            }
-         },
-         "platformList": {
-            "in": "query",
-            "name": "platforms",
-            "description": "List of platform IDs",
-            "required": true,
-            "style": "form",
-            "explode": false,
-            "allowReserved": true,
-            "schema": {
-               "type": "array",
-               "items": {
-                  "anyOf": [ {"type": "string"}, {"type": "number"}]
-               },
-               "example": "4902911,4902912"
             }
          },
          "polygon": {
@@ -2653,16 +2607,6 @@
             "schema": {
                "type": "string",
                "example": "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
-            }
-         },
-         "box": {
-            "in": "query",
-            "name": "box",
-            "description": "box region of interest described as [[lower left lon, lower left lat], [upper right lon, upper right lat]]",
-            "allowReserved": true,
-            "schema": {
-               "type": "string",
-               "example": "[[-74.2,40.5],[-73.6,40.9]]"
             }
          },
          "center": {
@@ -2697,16 +2641,6 @@
             "description": "get back only the n records with the most recent values of timestamp.",
             "schema": {
                "type": "number"
-            }
-         },
-         "platform": {
-            "in": "query",
-            "name": "platform",
-            "required": true,
-            "description": "platform ID",
-            "schema": {
-               "anyOf": [ {"type": "string"}, {"type": "number"}],
-               "example": "4902911"
             }
          },
          "lat": {
