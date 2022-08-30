@@ -504,6 +504,7 @@ paths:
           type: string
           enum:
           - name
+          - data_keys
       responses:
         "200":
           description: OK
@@ -1073,6 +1074,7 @@ paths:
           - woceline
           - cchdo_cruise
           - source
+          - data_keys
       responses:
         "200":
           description: OK
@@ -1359,6 +1361,7 @@ paths:
           enum:
           - platform
           - source
+          - data_keys
       responses:
         "200":
           description: OK
@@ -2368,6 +2371,7 @@ paths:
           enum:
           - wmo
           - platform
+          - data_keys
       responses:
         "200":
           description: OK
