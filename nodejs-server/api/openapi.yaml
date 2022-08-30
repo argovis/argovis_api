@@ -761,6 +761,18 @@ paths:
       - grid
       summary: List all grid names currently available
       operationId: gridVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: Grid query string parameter to summarize possible values of.
+          Note grid names correspond exactly to grid data_keys.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - data_keys
       responses:
         "200":
           description: OK

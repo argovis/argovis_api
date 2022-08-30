@@ -96,9 +96,10 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
 /**
  * List all grid names currently available
  *
+ * parameter String Grid query string parameter to summarize possible values of. Note grid names correspond exactly to grid data_keys.
  * returns List
  **/
-exports.gridVocab = function() {
+exports.gridVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
     Grid['gridMeta'].find().distinct('data_keys', function (err, vocab) {
       if (err){

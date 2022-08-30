@@ -499,6 +499,18 @@
             ],
             "summary": "List all grid names currently available",
             "operationId": "gridVocab",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "parameter",
+                  "required": true,
+                  "description": "Grid query string parameter to summarize possible values of. Note grid names correspond exactly to grid data_keys.",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["data_keys"]
+                  }
+               }
+            ],
             "responses": {
                "200": {
                   "description": "OK",
