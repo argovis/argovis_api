@@ -872,6 +872,177 @@
             }
          }
       },
+      "/argo/overview": {
+         "get": {
+            "tags": [
+               "profiles"
+            ],
+            "summary": "Summarizes some collection-level statistics about Argo data.",
+            "operationId": "argoOverview",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "_id": {
+                                 "type": "string",
+                                 "enum": ["argo_overview"]
+                              },
+                              "summary": {
+                                 "type": "object",
+                                 "properties": {
+                                    "nCore": {
+                                       "type": "number"
+                                    },
+                                    "nBGC": {
+                                       "type": "number"
+                                    },
+                                    "nDeep": {
+                                       "type": "number"
+                                    },
+                                    "mostrecent": {                       
+                                       "type": "string",
+                                       "format": "date-time",
+                                       "example": "2010-01-01T00:00:00Z"
+                                    },
+                                    "datacenters": {
+                                       "type": "array",
+                                       "items": {
+                                          "type": "string"
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/argo/dacs": {
+         "get": {
+            "tags": [
+               "profiles"
+            ],
+            "summary": "Summarizes some datacenter-level statistics about Argo data.",
+            "operationId": "argoDACs",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "_id": {
+                                 "type": "string",
+                                 "enum": ["argo_dacs"]
+                              },
+                              "summary": {
+                                 "type": "array",
+                                 "items": {
+                                    "type": "object",
+                                    "properties": {
+                                       "_id": {
+                                          "type": "string"
+                                       },
+                                       "n": {
+                                          "type": "number"
+                                       },
+                                       "mostrecent": {                       
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "example": "2010-01-01T00:00:00Z"
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/argo/bgc": {
+         "get": {
+            "tags": [
+               "profiles"
+            ],
+            "summary": "Summarizes some float-level statistics for Argo BGC floats.",
+            "operationId": "argoBGC",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object",
+                           "properties": {
+                              "_id": {
+                                 "type": "string",
+                                 "enum": ["argo_bgc"]
+                              },
+                              "summary": {
+                                 "type": "array",
+                                 "items": {
+                                    "type": "object",
+                                    "properties": {
+                                       "_id": {
+                                          "type": "string"
+                                       },
+                                       "n": {
+                                          "type": "number"
+                                       },
+                                       "mostrecent": {                       
+                                          "type": "string",
+                                          "format": "date-time",
+                                          "example": "2010-01-01T00:00:00Z"
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/profiles": {
          "get": {
             "tags": [

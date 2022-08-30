@@ -6,6 +6,91 @@ const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
 
 /**
+ * Summarizes some float-level statistics for Argo BGC floats.
+ *
+ * returns inline_response_200_3
+ **/
+exports.argoBGC = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "summary" : [ {
+    "_id" : "_id",
+    "n" : 0.8008281904610115,
+    "mostrecent" : "2010-01-01T00:00:00Z"
+  }, {
+    "_id" : "_id",
+    "n" : 0.8008281904610115,
+    "mostrecent" : "2010-01-01T00:00:00Z"
+  } ],
+  "_id" : "argo_bgc"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Summarizes some datacenter-level statistics about Argo data.
+ *
+ * returns inline_response_200_2
+ **/
+exports.argoDACs = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "summary" : [ {
+    "_id" : "_id",
+    "n" : 0.8008281904610115,
+    "mostrecent" : "2010-01-01T00:00:00Z"
+  }, {
+    "_id" : "_id",
+    "n" : 0.8008281904610115,
+    "mostrecent" : "2010-01-01T00:00:00Z"
+  } ],
+  "_id" : "argo_dacs"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Summarizes some collection-level statistics about Argo data.
+ *
+ * returns inline_response_200_1
+ **/
+exports.argoOverview = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "summary" : {
+    "datacenters" : [ "datacenters", "datacenters" ],
+    "nCore" : 0.8008281904610115,
+    "nBGC" : 6.027456183070403,
+    "nDeep" : 1.4658129805029452,
+    "mostrecent" : "2010-01-01T00:00:00Z"
+  },
+  "_id" : "argo_overview"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * List all possible values for certain Argo query string parameters
  *
  * parameter String Argo query string parameter to summarize possible values of.
