@@ -2,6 +2,7 @@
 const tc = require('../models/tc');
 const moment = require('moment');
 const helpers = require('../helpers/helpers')
+const summaries = require('../models/summary');
 
 /**
  * Tropical cyclone search and filter.
@@ -104,6 +105,10 @@ exports.findTCmeta = function(res, id,name) {
  **/
 exports.tcVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
+    if(parameter == 'data_keys'){
+      const query = summaries.find({"_id":"tc_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
 
     let lookup = {
         'name': 'name' // <parameter value> : <corresponding key in metadata document>

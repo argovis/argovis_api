@@ -2,8 +2,48 @@
 const Profile = require('../models/profile');
 const cchdo = require('../models/cchdo');
 const argo = require('../models/argo');
+const summaries = require('../models/summary');
 const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
+
+/**
+ * Summarizes some float-level statistics for Argo BGC floats.
+ *
+ * returns inline_response_200_3
+ **/
+exports.argoBGC = function() {
+  return new Promise(function(resolve, reject) {
+    const query = summaries.find({"_id":"argo_bgc"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+  });
+}
+
+
+/**
+ * Summarizes some datacenter-level statistics about Argo data.
+ *
+ * returns inline_response_200_2
+ **/
+exports.argoDACs = function() {
+  return new Promise(function(resolve, reject) {
+    const query = summaries.find({"_id":"argo_dacs"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+  });
+}
+
+
+/**
+ * Summarizes some collection-level statistics about Argo data.
+ *
+ * returns inline_response_200_1
+ **/
+exports.argoOverview = function() {
+  return new Promise(function(resolve, reject) {
+    const query = summaries.find({"_id":"argo_overview"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
+  });
+}
+
 
 /**
  * List all possible values for certain Argo query string parameters
@@ -13,15 +53,20 @@ const geojsonArea = require('@mapbox/geojson-area');
  **/
 exports.argoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
+    if(parameter == 'source'){
+      resolve(['argo_core', 'argo_bgc', 'argo_deep'])
+      return
+    }
+    if(parameter == 'data_keys'){
+      const query = summaries.find({"_id":"argo_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
+
     let lookup = {
         'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
         'source': 'source.source'
     }
 
-    if(parameter == 'source'){
-      resolve(['argo_core', 'argo_bgc', 'argo_deep'])
-      return
-    }
     argo['argoMeta'].find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
@@ -260,6 +305,12 @@ exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
  **/
 exports.cchdoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
+    if(parameter == 'data_keys'){
+      // data_keys is a summary lookup
+      const query = summaries.find({"_id":"cchdo_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
+
     let lookup = {
         'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
         'cchdo_cruise': 'cchdo_cruise_id',
