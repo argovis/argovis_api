@@ -3,6 +3,7 @@ const Grid = require('../models/grid');
 const helpers = require('../helpers/helpers')
 const GJV = require('geojson-validation');
 const geojsonArea = require('@mapbox/geojson-area');
+const summaries = require('../models/summary');
 
 /**
  * Metadata for grids by ID
@@ -101,12 +102,9 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
  **/
 exports.gridVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    Grid['gridMeta'].find().distinct('data_keys', function (err, vocab) {
-      if (err){
-        reject({"code": 500, "message": "Server error"});
-        return;
-      }
-      resolve(vocab)
-    })
+    if(parameter == 'data_keys'){
+      const query = summaries.find({"_id":"grid_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
   });
 }
