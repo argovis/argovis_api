@@ -39,14 +39,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
-    describe("arrayinflate", function () {
-      it("inflates a minified measurement back into a regular measurement", async function () {
-        keys = ['pres', 'psal', 'temp']
-        meas = [36.4, 34.914, 7.987]
-        expect(helpers.arrayinflate(keys,meas)).to.deep.equal({"pres": 36.4, "psal": 34.914, "temp": 7.987})  
-      });
-    }); 
-
     describe("validlonlat", function () {
       it("flags an invalid longitude", async function () {
         points = [[-185.2236986,70.1153552],[-183.9932299,56.4218209],[-155.5166674,56.7123646],[-154.1104174,69.8748184],[-185.2236986,70.1153552]]
@@ -54,46 +46,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
-    describe("has_data", function () {
-      it("rejects a profile for not having one of the requested variables", async function () {
-        keys = ['temp', 'nitrate']
-        profile = {'data_keys': ['temp', 'pres'], 'data': [[20,0], [19,10], [10,20]]}
-        expect(helpers.has_data(profile,keys,false)).to.be.false  
-      });
-    }); 
-
-    describe("has_data", function () {
-      it("rejects a profile for having nothing but nan in the requested variable", async function () {
-        keys = ['temp', 'nitrate']
-        profile = {'data_keys': ['nitrate', 'temp'], 'data': [[Number.NaN,0], [Number.NaN,10], [Number.NaN,20]]}
-        expect(helpers.has_data(profile,keys,true)).to.be.false  
-      });
-    }); 
-
-    describe("has_data", function () {
-      it("rejects a profile with some but not all the desired data", async function () {
-        keys = ['temp', 'nitrate']
-        profile = {'data_keys': ['nitrate', 'pres'], 'data': [[1,0], [2,10], [3,20]]}
-        expect(helpers.has_data(profile,keys,false)).to.be.false 
-      });
-    }); 
-
-    describe("has_data", function () {
-      it("accepts a profile with all the desired data", async function () {
-        keys = ['pres', 'nitrate']
-        profile = {'data_keys': ['nitrate', 'pres'], 'data': [[1,0], [2,10], [3,20]]}
-        expect(helpers.has_data(profile,keys,false)).to.be.true 
-      });
-    }); 
-
-    describe("has_data", function () {
-      it("handles an empty data array", async function () {
-        keys = ['pres', 'nitrate']
-        profile = {'data_keys': ['nitrate', 'pres'], 'data': []}
-        expect(helpers.has_data(profile,keys,true)).to.be.false 
-      });
-    });
-  
     describe("maxgeo", function () {
       it("block a request for a polygon covering an entire hemisphere", async function () {
         const max = helpers.maxgeo({type: "Polygon", coordinates: [[[0,90],[0,-90],[179.9,-90],[179.9,90],[0,90]]]}, null, null, null)
