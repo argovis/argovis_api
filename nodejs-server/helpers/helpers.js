@@ -911,7 +911,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
               c = geospan*dayspan*cellprice
 
               ///// metadata discount
-              if(!url.includes('data') || url.includes('metadata-only')){
+              if(!url.includes('data') || url.includes('metadata-only') || url.includes('compression=minimal')){
                 c /= metaDiscount
               }
           }
