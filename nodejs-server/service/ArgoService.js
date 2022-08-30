@@ -1,5 +1,8 @@
 'use strict';
-
+const argo = require('../models/argo');
+const summaries = require('../models/summary');
+const helpers = require('../helpers/helpers')
+const geojsonArea = require('@mapbox/geojson-area');
 
 /**
  * Summarizes some float-level statistics for Argo BGC floats.
@@ -8,24 +11,8 @@
  **/
 exports.argoBGC = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "summary" : [ {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  }, {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  } ],
-  "_id" : "argo_bgc"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = summaries.find({"_id":"argo_bgc"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
@@ -37,24 +24,8 @@ exports.argoBGC = function() {
  **/
 exports.argoDACs = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "summary" : [ {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  }, {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  } ],
-  "_id" : "argo_dacs"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = summaries.find({"_id":"argo_dacs"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
@@ -66,22 +37,8 @@ exports.argoDACs = function() {
  **/
 exports.argoOverview = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "summary" : {
-    "datacenters" : [ "datacenters", "datacenters" ],
-    "nCore" : 0.8008281904610115,
-    "nBGC" : 6.027456183070403,
-    "nDeep" : 1.4658129805029452,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  },
-  "_id" : "argo_overview"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = summaries.find({"_id":"argo_overview"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
@@ -94,13 +51,27 @@ exports.argoOverview = function() {
  **/
 exports.argoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    if(parameter == 'source'){
+      resolve(['argo_core', 'argo_bgc', 'argo_deep'])
+      return
     }
+    if(parameter == 'data_keys'){
+      const query = summaries.find({"_id":"argo_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
+
+    let lookup = {
+        'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
+        'source': 'source.source'
+    }
+
+    argo['argoMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+      resolve(vocab)
+    })
   });
 }
 
@@ -123,77 +94,70 @@ exports.argoVocab = function(parameter) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,mostrecent,data,presRange) {
+exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "metadata" : "metadata",
-  "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ "", "" ],
-  "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "vertical_sampling_scheme" : "vertical_sampling_scheme",
-  "cycle_number" : 6.027456183070403,
-  "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "profile_direction" : "profile_direction",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "metadata" : "metadata",
-  "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ "", "" ],
-  "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "vertical_sampling_scheme" : "vertical_sampling_scheme",
-  "cycle_number" : 6.027456183070403,
-  "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "profile_direction" : "profile_direction",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
     }
+
+    // decide y/n whether to service this request
+    if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),platform].some(x=>x)){
+      reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id or platform search."})
+      return
+    }
+    let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
+    if(bailout){
+      reject(bailout)
+      return
+    }
+
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = []
+    if(id){
+        local_filter = [{$match:{'_id':id}}]
+    }
+
+    // optional source filtering
+    if(source){
+      local_filter.push(helpers.source_filter(source))
+    }
+
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        data: data,
+        presRange: presRange,
+        mostrecent: mostrecent
+    }
+
+    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+    let metafilter = Promise.resolve([{_id: null}])
+    let metacomplete = false
+    if(platform){
+        let match = {
+            'platform': platform
+        }
+
+        metafilter = argo['argoMeta'].aggregate([{$match: match}]).exec()
+        metacomplete = true
+    }
+
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter))
+
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
+
+          let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res)
+
+          resolve([search_result[1], postprocess])
+
+        })
+
   });
 }
 
@@ -205,45 +169,17 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
  * platform String Unique platform ID to search for. (optional)
  * returns List
  **/
-exports.findArgometa = function(id,platform) {
+exports.findArgometa = function(res, id,platform) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "country" : "country",
-  "positioning_system" : "positioning_system",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "units" : "",
-  "platform" : "platform",
-  "platform_type" : "platform_type",
-  "wmo_inst_type" : "wmo_inst_type",
-  "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring"
-}, {
-  "country" : "country",
-  "positioning_system" : "positioning_system",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "units" : "",
-  "platform" : "platform",
-  "platform_type" : "platform_type",
-  "wmo_inst_type" : "wmo_inst_type",
-  "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
-  "_id" : "_id",
-  "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    let match = {
+        '_id': id,
+        'platform': platform
     }
+    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+
+    const query = argo['argoMeta'].aggregate([{$match:match}]);
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
 

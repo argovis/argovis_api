@@ -1,27 +1,11 @@
 'use strict';
-
-
-/**
- * List all possible values for certain CCHDO query string parameters
- *
- * parameter String GO-SHIP query string parameter to summarize possible values of.
- * returns List
- **/
-exports.cchdoVocab = function(parameter) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
+const cchdo = require('../models/cchdo');
+const summaries = require('../models/summary');
+const helpers = require('../helpers/helpers')
+const geojsonArea = require('@mapbox/geojson-area');
 
 /**
- * CCHDO search and filter.
+ * GO-SHIP search and filter.
  *
  * id String Unique ID to search for. (optional)
  * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
@@ -39,70 +23,74 @@ exports.cchdoVocab = function(parameter) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
+exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "cast" : 6.027456183070403,
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "station" : "station",
-  "data_keys" : [ "ammonium_btl", "ammonium_btl" ],
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "cast" : 6.027456183070403,
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "station" : "station",
-  "data_keys" : [ "ammonium_btl", "ammonium_btl" ],
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
     }
+
+    // decide y/n whether to service this request
+    if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),cchdo_cruise,woceline].some(x=>x)){
+      reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id, CCHDO cruise ID, or WOCE line search."})
+      return
+    }
+    let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
+    if(bailout){
+      reject(bailout)
+      return
+    }
+
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = []
+    if(id){
+        local_filter = [{$match:{'_id':id}}]
+    }
+
+    // optional source filtering
+    if(source){
+      local_filter.push(helpers.source_filter(source))
+    }
+
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        data: data,
+        presRange: presRange,
+        mostrecent: mostrecent
+    }
+
+    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+    let metafilter = Promise.resolve([{_id: null}])
+    let metacomplete = false
+    if(woceline||cchdo_cruise){
+        let match = {
+            'woce_lines': woceline,
+            'cchdo_cruise_id': cchdo_cruise
+        }
+        Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+
+        metafilter = cchdo['cchdoMeta'].aggregate([{$match: match}]).exec()
+        metacomplete = true
+    }
+
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter))
+
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
+          
+          let postprocess = helpers.post_xform(cchdo['cchdoMeta'], pp_params, search_result, res)
+          
+          resolve([search_result[1], postprocess])
+          
+        })
   });
 }
-
 
 /**
  * GO-SHIP metadata search and filter.
@@ -112,37 +100,54 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,ra
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
-exports.findCCHDOmeta = function(id,woceline,cchdo_cruise) {
+exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "country" : "country",
-  "expocode" : "expocode",
-  "woce_lines" : [ "woce_lines", "woce_lines" ],
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "cchdo_cruise_id" : 0.8008281904610115,
-  "data_type" : "data_type",
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "_id" : "_id",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "country" : "country",
-  "expocode" : "expocode",
-  "woce_lines" : [ "woce_lines", "woce_lines" ],
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "cchdo_cruise_id" : 0.8008281904610115,
-  "data_type" : "data_type",
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "_id" : "_id",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    let match = {
+        '_id': id,
+        'woce_lines': woceline,
+        'cchdo_cruise_id': cchdo_cruise
     }
+    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+
+    const query = cchdo['cchdoMeta'].aggregate([{$match:match}]);
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
 
+/**
+ * List all possible values for certain CCHDO query string parameters
+ *
+ * parameter String GO-SHIP query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.cchdoVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    if(parameter == 'data_keys'){
+      // data_keys is a summary lookup
+      const query = summaries.find({"_id":"cchdo_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
+
+    let lookup = {
+        'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
+        'cchdo_cruise': 'cchdo_cruise_id',
+        'source': 'source.source'
+    }
+
+    let model = null
+    if(parameter=='source'){
+      model = cchdo['cchdo']
+    } else {
+      model = cchdo['cchdoMeta']
+    }
+
+    model.find().distinct(lookup[parameter], function (err, vocab) {
+      if (err){
+        reject({"code": 500, "message": "Server error"});
+        return;
+      }
+      resolve(vocab)
+    })
+  });
+}
