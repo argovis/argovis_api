@@ -123,9 +123,10 @@ exports.findgridMeta = function(id) {
 /**
  * List all grid names currently available
  *
+ * parameter String Grid query string parameter to summarize possible values of. Note grid names correspond exactly to grid data_keys.
  * returns List
  **/
-exports.gridVocab = function() {
+exports.gridVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ "", "" ];
