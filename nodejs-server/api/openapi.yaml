@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: "2.0"
+  version: "0.1"
 externalDocs:
   description: Find us on GitHub
   url: https://github.com/argovis/argovis_api
@@ -1983,6 +1983,25 @@ components:
         enum:
         - wind
         - surface_pressure
+    columnGrid:
+      required:
+      - _id
+      - d
+      - g
+      - t
+      type: object
+      properties:
+        _id:
+          type: string
+        g:
+          $ref: '#/components/schemas/geoJSONpoint'
+        t:
+          type: string
+          format: date-time
+        d:
+          type: array
+          items:
+            type: number
     grid:
       required:
       - _id
@@ -2153,6 +2172,456 @@ components:
         - ohc_kg
         - temperature_rg
         - salinity_rg
+    Profile:
+      required:
+      - _id
+      - basin
+      - cycle_number
+      - data_type
+      - date_updated_argovis
+      - geolocation
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        basin:
+          type: number
+        data_type:
+          type: string
+        doi:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        instrument:
+          type: string
+        data:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+        data_keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/dataKey'
+        data_warning:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+        date_updated_argovis:
+          type: string
+          format: date-time
+        pi_name:
+          type: array
+          items:
+            type: string
+        country:
+          type: string
+        data_center:
+          type: string
+        source_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/profile_source_info'
+        profile_direction:
+          type: string
+        geolocation_argoqc:
+          type: number
+        timestamp_argoqc:
+          type: number
+        cycle_number:
+          type: number
+        fleetmonitoring:
+          type: string
+        oceanops:
+          type: string
+        data_keys_mode:
+          type: object
+        platform_id:
+          type: string
+        platform_type:
+          type: string
+        positioning_system:
+          type: string
+        vertical_sampling_scheme:
+          type: string
+        wmo_inst_type:
+          type: string
+    dataKey:
+      type: string
+      anyOf:
+      - $ref: '#/components/schemas/argoDataKey'
+      - $ref: '#/components/schemas/goshipDataKey'
+    argoDataKey:
+      pattern: "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pres)|(psal)|(psal_sfile)|(temp)|(temp_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})(_argoqc)?|all|metadata-only)$"
+      type: string
+    goshipDataKey:
+      type: string
+      enum:
+      - ammonium_btl
+      - ammonium_btl_woceqc
+      - bottle_latitude_btl
+      - bottle_longitude_btl
+      - bottle_number_btl
+      - bottle_number_btl_woceqc
+      - bottle_time_btl
+      - carbon_tetrachloride_btl
+      - carbon_tetrachloride_btl_woceqc
+      - cfc_113_btl
+      - cfc_113_btl_woceqc
+      - cfc_11_btl
+      - cfc_11_btl_woceqc
+      - cfc_12_btl
+      - cfc_12_btl_woceqc
+      - chlorophyll_a_btl
+      - chlorophyll_a_btl_woceqc
+      - chlorophyll_a_ug_kg_btl
+      - chlorophyll_a_ug_kg_btl_woceqc
+      - ctd_beamcp_ctd
+      - ctd_beamcp_ctd_woceqc
+      - ctd_fluor_arbitrary_ctd
+      - ctd_fluor_ctd
+      - ctd_fluor_ctd_woceqc
+      - ctd_fluor_raw_btl
+      - ctd_fluor_raw_btl_woceqc
+      - ctd_fluor_raw_ctd
+      - ctd_fluor_raw_ctd_woceqc
+      - ctd_number_of_observations_ctd
+      - ctd_pressure_raw_btl
+      - ctd_temperature_unk_ctd
+      - ctd_temperature_unk_ctd_woceqc
+      - ctd_transmissometer_ctd
+      - ctd_transmissometer_ctd_woceqc
+      - ctd_transmissometer_raw_btl
+      - ctd_transmissometer_raw_btl_woceqc
+      - ctd_transmissometer_raw_ctd
+      - ctd_transmissometer_raw_ctd_woceqc
+      - del_carbon_13_dic_btl
+      - del_carbon_13_dic_btl_woceqc
+      - del_carbon_14_dic_btl
+      - del_carbon_14_dic_btl_woceqc
+      - del_carbon_14_dic_error_btl
+      - del_oxygen_18_btl
+      - del_oxygen_18_btl_woceqc
+      - del_oxygen_18_error_btl
+      - delta_helium_3_btl
+      - delta_helium_3_btl_woceqc
+      - delta_helium_3_error_btl
+      - dissolved_organic_carbon_btl
+      - dissolved_organic_carbon_btl_woceqc
+      - dissolved_organic_nitrogen_btl
+      - dissolved_organic_nitrogen_btl_woceqc
+      - doxy_btl
+      - doxy_btl_woceqc
+      - doxy_ctd
+      - doxy_ctd_woceqc
+      - fco2_btl
+      - fco2_btl_woceqc
+      - fco2_temperature_btl
+      - helium_btl
+      - helium_btl_woceqc
+      - helium_error_btl
+      - hplc_placeholder_btl_woceqc
+      - methyl_chloroform_btl
+      - methyl_chloroform_btl_woceqc
+      - neon_btl
+      - neon_btl_woceqc
+      - neon_error_btl
+      - nitrate_btl
+      - nitrate_btl_woceqc
+      - nitrite_btl
+      - nitrite_btl_woceqc
+      - nitrite_nitrate_btl
+      - nitrite_nitrate_btl_woceqc
+      - nitrous_oxide_btl
+      - nitrous_oxide_btl_woceqc
+      - oxygen_btl
+      - oxygen_btl_woceqc
+      - oxygen_ml_l_btl
+      - oxygen_ml_l_btl_woceqc
+      - par_ctd
+      - par_ctd_woceqc
+      - partial_co2_temperature_btl
+      - partial_pressure_of_co2_btl
+      - partial_pressure_of_co2_btl_woceqc
+      - particulate_organic_carbon_btl
+      - particulate_organic_carbon_btl_woceqc
+      - particulate_organic_nitrogen_btl
+      - particulate_organic_nitrogen_btl_woceqc
+      - ph_sws_btl
+      - ph_sws_btl_woceqc
+      - ph_temperature_btl
+      - ph_total_h_scale_btl
+      - ph_total_h_scale_btl_woceqc
+      - phaeophytin_btl
+      - phaeophytin_btl_woceqc
+      - phaeophytin_ug_l_btl
+      - phaeophytin_ug_l_btl_woceqc
+      - phosphate_btl
+      - phosphate_btl_woceqc
+      - potential_temperature_68_btl
+      - potential_temperature_c_btl
+      - pres
+      - psal_btl
+      - psal_btl_woceqc
+      - psal_ctd
+      - psal_ctd_woceqc
+      - radium_226_btl
+      - radium_226_btl_woceqc
+      - radium_228_btl
+      - radium_228_btl_woceqc
+      - ref_temperature_btl
+      - ref_temperature_btl_woceqc
+      - ref_temperature_c_btl
+      - ref_temperature_c_btl_woceqc
+      - rev_pressure_btl
+      - rev_pressure_btl_woceqc
+      - rev_temperature_90_btl
+      - rev_temperature_90_btl_woceqc
+      - rev_temperature_btl
+      - rev_temperature_btl_woceqc
+      - rev_temperature_c_btl
+      - rev_temperature_c_btl_woceqc
+      - salinity_btl
+      - salinity_btl_woceqc
+      - sample_btl
+      - sample_ctd
+      - silicate_btl
+      - silicate_btl_woceqc
+      - sulfur_hexifluoride_btl
+      - sulfur_hexifluoride_btl_woceqc
+      - temperature_btl
+      - temperature_btl_woceqc
+      - temperature_ctd
+      - temperature_ctd_woceqc
+      - total_alkalinity_btl
+      - total_alkalinity_btl_woceqc
+      - total_carbon_btl
+      - total_carbon_btl_woceqc
+      - total_dissolved_nitrogen_btl
+      - total_dissolved_nitrogen_btl_woceqc
+      - tritium_btl
+      - tritium_btl_woceqc
+      - tritium_error_btl
+      - "~ammonium_btl"
+      - "~ammonium_btl_woceqc"
+      - "~bottle_latitude_btl"
+      - "~bottle_longitude_btl"
+      - "~bottle_number_btl"
+      - "~bottle_number_btl_woceqc"
+      - "~bottle_time_btl"
+      - "~carbon_tetrachloride_btl"
+      - "~carbon_tetrachloride_btl_woceqc"
+      - "~cfc_113_btl"
+      - "~cfc_113_btl_woceqc"
+      - "~cfc_11_btl"
+      - "~cfc_11_btl_woceqc"
+      - "~cfc_12_btl"
+      - "~cfc_12_btl_woceqc"
+      - "~chlorophyll_a_btl"
+      - "~chlorophyll_a_btl_woceqc"
+      - "~chlorophyll_a_ug_kg_btl"
+      - "~chlorophyll_a_ug_kg_btl_woceqc"
+      - "~ctd_beamcp_ctd"
+      - "~ctd_beamcp_ctd_woceqc"
+      - "~ctd_fluor_arbitrary_ctd"
+      - "~ctd_fluor_ctd"
+      - "~ctd_fluor_ctd_woceqc"
+      - "~ctd_fluor_raw_btl"
+      - "~ctd_fluor_raw_btl_woceqc"
+      - "~ctd_fluor_raw_ctd"
+      - "~ctd_fluor_raw_ctd_woceqc"
+      - "~ctd_number_of_observations_ctd"
+      - "~ctd_pressure_raw_btl"
+      - "~ctd_temperature_unk_ctd"
+      - "~ctd_temperature_unk_ctd_woceqc"
+      - "~ctd_transmissometer_ctd"
+      - "~ctd_transmissometer_ctd_woceqc"
+      - "~ctd_transmissometer_raw_btl"
+      - "~ctd_transmissometer_raw_btl_woceqc"
+      - "~ctd_transmissometer_raw_ctd"
+      - "~ctd_transmissometer_raw_ctd_woceqc"
+      - "~del_carbon_13_dic_btl"
+      - "~del_carbon_13_dic_btl_woceqc"
+      - "~del_carbon_14_dic_btl"
+      - "~del_carbon_14_dic_btl_woceqc"
+      - "~del_carbon_14_dic_error_btl"
+      - "~del_oxygen_18_btl"
+      - "~del_oxygen_18_btl_woceqc"
+      - "~del_oxygen_18_error_btl"
+      - "~delta_helium_3_btl"
+      - "~delta_helium_3_btl_woceqc"
+      - "~delta_helium_3_error_btl"
+      - "~dissolved_organic_carbon_btl"
+      - "~dissolved_organic_carbon_btl_woceqc"
+      - "~dissolved_organic_nitrogen_btl"
+      - "~dissolved_organic_nitrogen_btl_woceqc"
+      - "~doxy_btl"
+      - "~doxy_btl_woceqc"
+      - "~doxy_ctd"
+      - "~doxy_ctd_woceqc"
+      - "~fco2_btl"
+      - "~fco2_btl_woceqc"
+      - "~fco2_temperature_btl"
+      - "~helium_btl"
+      - "~helium_btl_woceqc"
+      - "~helium_error_btl"
+      - "~hplc_placeholder_btl_woceqc"
+      - "~methyl_chloroform_btl"
+      - "~methyl_chloroform_btl_woceqc"
+      - "~neon_btl"
+      - "~neon_btl_woceqc"
+      - "~neon_error_btl"
+      - "~nitrate_btl"
+      - "~nitrate_btl_woceqc"
+      - "~nitrite_btl"
+      - "~nitrite_btl_woceqc"
+      - "~nitrite_nitrate_btl"
+      - "~nitrite_nitrate_btl_woceqc"
+      - "~nitrous_oxide_btl"
+      - "~nitrous_oxide_btl_woceqc"
+      - "~oxygen_btl"
+      - "~oxygen_btl_woceqc"
+      - "~oxygen_ml_l_btl"
+      - "~oxygen_ml_l_btl_woceqc"
+      - "~par_ctd"
+      - "~par_ctd_woceqc"
+      - "~partial_co2_temperature_btl"
+      - "~partial_pressure_of_co2_btl"
+      - "~partial_pressure_of_co2_btl_woceqc"
+      - "~particulate_organic_carbon_btl"
+      - "~particulate_organic_carbon_btl_woceqc"
+      - "~particulate_organic_nitrogen_btl"
+      - "~particulate_organic_nitrogen_btl_woceqc"
+      - "~ph_sws_btl"
+      - "~ph_sws_btl_woceqc"
+      - "~ph_temperature_btl"
+      - "~ph_total_h_scale_btl"
+      - "~ph_total_h_scale_btl_woceqc"
+      - "~phaeophytin_btl"
+      - "~phaeophytin_btl_woceqc"
+      - "~phaeophytin_ug_l_btl"
+      - "~phaeophytin_ug_l_btl_woceqc"
+      - "~phosphate_btl"
+      - "~phosphate_btl_woceqc"
+      - "~potential_temperature_68_btl"
+      - "~potential_temperature_c_btl"
+      - "~pres"
+      - "~psal_btl"
+      - "~psal_btl_woceqc"
+      - "~psal_ctd"
+      - "~psal_ctd_woceqc"
+      - "~radium_226_btl"
+      - "~radium_226_btl_woceqc"
+      - "~radium_228_btl"
+      - "~radium_228_btl_woceqc"
+      - "~ref_temperature_btl"
+      - "~ref_temperature_btl_woceqc"
+      - "~ref_temperature_c_btl"
+      - "~ref_temperature_c_btl_woceqc"
+      - "~rev_pressure_btl"
+      - "~rev_pressure_btl_woceqc"
+      - "~rev_temperature_90_btl"
+      - "~rev_temperature_90_btl_woceqc"
+      - "~rev_temperature_btl"
+      - "~rev_temperature_btl_woceqc"
+      - "~rev_temperature_c_btl"
+      - "~rev_temperature_c_btl_woceqc"
+      - "~salinity_btl"
+      - "~salinity_btl_woceqc"
+      - "~sample_btl"
+      - "~sample_ctd"
+      - "~silicate_btl"
+      - "~silicate_btl_woceqc"
+      - "~sulfur_hexifluoride_btl"
+      - "~sulfur_hexifluoride_btl_woceqc"
+      - "~temperature_btl"
+      - "~temperature_btl_woceqc"
+      - "~temperature_ctd"
+      - "~temperature_ctd_woceqc"
+      - "~total_alkalinity_btl"
+      - "~total_alkalinity_btl_woceqc"
+      - "~total_carbon_btl"
+      - "~total_carbon_btl_woceqc"
+      - "~total_dissolved_nitrogen_btl"
+      - "~total_dissolved_nitrogen_btl_woceqc"
+      - "~tritium_btl"
+      - "~tritium_btl_woceqc"
+      - "~tritium_error_btl"
+    platformMeta:
+      type: object
+      properties:
+        _id:
+          anyOf:
+          - type: string
+          - type: number
+        platform_number:
+          anyOf:
+          - type: string
+          - type: number
+        most_recent_date:
+          type: string
+          format: date-time
+        most_recent_date_added:
+          type: string
+          format: date-time
+        number_of_profiles:
+          type: integer
+        POSITIONING_SYSTEM:
+          type: string
+        PI_NAME:
+          type: string
+        dac:
+          type: string
+    platformRecent:
+      type: object
+      properties:
+        _id:
+          anyOf:
+          - type: string
+          - type: number
+        platform_number:
+          anyOf:
+          - type: string
+          - type: number
+        most_recent_date:
+          type: string
+          format: date-time
+        number_of_profiles:
+          type: integer
+        cycle_number:
+          type: integer
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        dac:
+          type: string
+    summary:
+      type: object
+      properties:
+        _id:
+          type: string
+        summary:
+          type: object
+    profileCollectionSummary:
+      type: object
+      properties:
+        numberOfProfiles:
+          type: integer
+        dacs:
+          type: array
+          items:
+            type: string
+        numberDeep:
+          type: integer
+        numberBgc:
+          type: integer
+        lastAdded:
+          type: string
+          format: date-time
     geoJSONpoint:
       required:
       - coordinates
@@ -2215,6 +2684,24 @@ components:
         - source
         url: url
         doi: doi
+    profile_source_info:
+      required:
+      - source
+      type: object
+      properties:
+        data_keys_source:
+          type: array
+          items:
+            type: string
+        source:
+          type: array
+          items:
+            type: string
+        source_url:
+          type: string
+        date_updated_source:
+          type: string
+          format: date-time
     drifter_source_info:
       required:
       - source
@@ -4442,6 +4929,23 @@ components:
       explode: true
       schema:
         type: number
+    data:
+      name: data
+      in: query
+      description: "Keys of data to include. Return only documents that have all data\
+        \ requested, within the pressure range if specified. Accepts ~ negation to\
+        \ filter out documents including the specified data. Omission of this parameter\
+        \ will result in metadata only responses. See /profiles/vocabulary?parameter=data\
+        \ for possible values."
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "pres,doxy,~psal"
+        items:
+          $ref: '#/components/schemas/dataKey'
     platform:
       name: platform
       in: query
