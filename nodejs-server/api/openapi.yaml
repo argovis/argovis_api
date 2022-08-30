@@ -1388,6 +1388,102 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Profiles
+  /argo/overview:
+    get:
+      tags:
+      - profiles
+      summary: Summarizes some collection-level statistics about Argo data.
+      operationId: argoOverview
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /argo/dacs:
+    get:
+      tags:
+      - profiles
+      summary: Summarizes some datacenter-level statistics about Argo data.
+      operationId: argoDACs
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
+  /argo/bgc:
+    get:
+      tags:
+      - profiles
+      summary: Summarizes some float-level statistics for Argo BGC floats.
+      operationId: argoBGC
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Profiles
   /profiles:
     get:
       tags:
@@ -5150,6 +5246,65 @@ components:
           type: integer
       example:
         sum: 0
+    inline_response_200_1:
+      type: object
+      properties:
+        _id:
+          type: string
+          enum:
+          - argo_overview
+        summary:
+          $ref: '#/components/schemas/inline_response_200_1_summary'
+      example:
+        summary:
+          datacenters:
+          - datacenters
+          - datacenters
+          nCore: 0.80082819046101150206595775671303272247314453125
+          nBGC: 6.02745618307040320615897144307382404804229736328125
+          nDeep: 1.46581298050294517310021547018550336360931396484375
+          mostrecent: 2010-01-01T00:00:00Z
+        _id: argo_overview
+    inline_response_200_2:
+      type: object
+      properties:
+        _id:
+          type: string
+          enum:
+          - argo_dacs
+        summary:
+          type: array
+          items:
+            $ref: '#/components/schemas/inline_response_200_2_summary'
+      example:
+        summary:
+        - _id: _id
+          "n": 0.80082819046101150206595775671303272247314453125
+          mostrecent: 2010-01-01T00:00:00Z
+        - _id: _id
+          "n": 0.80082819046101150206595775671303272247314453125
+          mostrecent: 2010-01-01T00:00:00Z
+        _id: argo_dacs
+    inline_response_200_3:
+      type: object
+      properties:
+        _id:
+          type: string
+          enum:
+          - argo_bgc
+        summary:
+          type: array
+          items:
+            $ref: '#/components/schemas/inline_response_200_2_summary'
+      example:
+        summary:
+        - _id: _id
+          "n": 0.80082819046101150206595775671303272247314453125
+          mostrecent: 2010-01-01T00:00:00Z
+        - _id: _id
+          "n": 0.80082819046101150206595775671303272247314453125
+          mostrecent: 2010-01-01T00:00:00Z
+        _id: argo_bgc
     platform:
       example: "4902911"
       anyOf:
@@ -5172,6 +5327,46 @@ components:
           type: type
         type: type
         properties: {}
+    inline_response_200_1_summary:
+      type: object
+      properties:
+        nCore:
+          type: number
+        nBGC:
+          type: number
+        nDeep:
+          type: number
+        mostrecent:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+        datacenters:
+          type: array
+          items:
+            type: string
+      example:
+        datacenters:
+        - datacenters
+        - datacenters
+        nCore: 0.80082819046101150206595775671303272247314453125
+        nBGC: 6.02745618307040320615897144307382404804229736328125
+        nDeep: 1.46581298050294517310021547018550336360931396484375
+        mostrecent: 2010-01-01T00:00:00Z
+    inline_response_200_2_summary:
+      type: object
+      properties:
+        _id:
+          type: string
+        "n":
+          type: number
+        mostrecent:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      example:
+        _id: _id
+        "n": 0.80082819046101150206595775671303272247314453125
+        mostrecent: 2010-01-01T00:00:00Z
   responses:
     badRequest:
       description: Bad Request
