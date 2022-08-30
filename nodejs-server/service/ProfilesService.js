@@ -53,19 +53,20 @@ exports.argoOverview = function() {
  **/
 exports.argoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    let lookup = {
-        'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
-        'source': 'source.source'
-    }
-
     if(parameter == 'source'){
       resolve(['argo_core', 'argo_bgc', 'argo_deep'])
       return
     }
     if(parameter == 'data_keys'){
-      const query = summaries.find({"_id":"argo_data_keys"})
-      query.exec(helpers.queryCallback.bind(null,x=>{x['data_keys']}, resolve, reject))
+      const query = summaries.find({"_id":"argo_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }
+
+    let lookup = {
+        'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
+        'source': 'source.source'
+    }
+
     argo['argoMeta'].find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
@@ -304,6 +305,12 @@ exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
  **/
 exports.cchdoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
+    if(parameter == 'data_keys'){
+      // data_keys is a summary lookup
+      const query = summaries.find({"_id":"cchdo_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
+
     let lookup = {
         'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
         'cchdo_cruise': 'cchdo_cruise_id',

@@ -1,6 +1,7 @@
 'use strict';
 const Drifter = require('../models/drifter');
 const helpers = require('../helpers/helpers')
+const summaries = require('../models/summary');
 
 /**
  * Search, reduce and download drifter metadata.
@@ -111,6 +112,10 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
  **/
 exports.drifterVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
+    if(parameter == 'data_keys'){
+      const query = summaries.find({"_id":"drifter_data_keys"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    }
 
     let lookup = {
         'wmo': 'wmo', // <parameter value> : <corresponding key in metadata document>
