@@ -62,6 +62,10 @@ exports.argoVocab = function(parameter) {
       resolve(['argo_core', 'argo_bgc', 'argo_deep'])
       return
     }
+    if(parameter == 'data_keys'){
+      const query = summaries.find({"_id":"argo_data_keys"})
+      query.exec(helpers.queryCallback.bind(null,x=>{x['data_keys']}, resolve, reject))
+    }
     argo['argoMeta'].find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
