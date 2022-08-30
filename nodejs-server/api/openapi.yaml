@@ -31,10 +31,6 @@ tags:
     \ product"
 - name: profiles
   description: "Profile data, including BGC and profile metadata"
-- name: platforms
-  description: Platform metadata
-- name: dacs
-  description: Summary and metadata for data assembly centers represented in the dataset
 - name: drifters
   description: Data and metadata for drifters.
 paths:
