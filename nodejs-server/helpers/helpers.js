@@ -43,14 +43,6 @@ module.exports.geoWeightedSum = function(terms){
     return sum
 }
 
-module.exports.arrayinflate = function(keys, measarray){
-  let meas = {}
-  for(let i=0; i<keys.length; i++){
-    meas[keys[i]] = measarray[i]
-  }
-  return meas
-}
-
 module.exports.validlonlat = function(shape){
     // shape: array of lon lat arrays, [[lon 0, lat 0], [lon 1, lat 1], [lon 2, lat 2]...]
     // returns true if all longitudes are in -180 to 180 and all latitudes are in -90 to 90, as required by mongo's geojson representation.
@@ -59,155 +51,10 @@ module.exports.validlonlat = function(shape){
 
 }
 
-module.exports.intersects = function(arrayA, arrayB){
-    // returns true if arrayA and arrayB have at least one element in common
-    return arrayA.filter(value => arrayB.includes(value)).length > 0
-}
-
 module.exports.zip = function(arrays){
     return arrays[0].map(function(_,i){
         return arrays.map(function(array){return array[i]})
     });
-}
-
-module.exports.has_data = function(profile, keys, check_levels){
-  // return false if any of the keys in the keys array have no data in profile.data, or if a ~key is present
-  // Assume data_keys indicated which variables are present unless check_levels==true
-
-  // must be false if no data
-  if(!('data' in profile) || profile.data.length == 0){
-    return false
-  }
-
-  // collect not-keys, and return false if any are present
-  let notkeys = keys.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
-  for(let i=0; i<notkeys.length; i++){
-    if(profile.data_keys.includes(notkeys[i])){
-      return false
-    }
-  }
-
-  // no further questions if we just want everything except the nots
-  if(keys.includes('all')){
-    return true
-  }
-
-  // collect only actual data keys, not flags or nots, and return false for any profiles that dont have these
-  let datakeys = keys.filter(e => e!='metadata-only' && e.charAt(0)!='~')
-  for(let i=0; i<datakeys.length; i++){
-    if(!profile.data_keys.includes(datakeys[i])){
-      return false
-    }
-  }
-
-  // must have pressure regardless
-  if(!profile.data_keys.includes('pres')){
-    return false
-  }
-
-  // turn profile.data into per-variable arrays, and check that the requested ones have some interesting data
-  if(check_levels){
-    let vars = module.exports.zip(profile.data)
-    for(let i=0; i<datakeys.length; i++){
-      let d = vars[profile.data_keys.indexOf(datakeys[i])]
-      if(d.every(e => isNaN(e))){
-        return false
-      }
-    }  
-  }
-
-  return true
-}
-
-module.exports.variable_bracket = function(key, min, max, profile){
-  // given a profile, a data key and a min and max value,
-  // filter out levels in the profile for which the value of the key variable falls outside the [min, max] range.
-
-  if ('data' in profile){
-    let column_idx = profile.data_keys.findIndex(elt => elt==key)
-    if(column_idx >= 0){
-      profile.data = profile.data.filter(level => level[column_idx] < max && level[column_idx]>min)
-    }
-  }
-
-  return profile
-}
-
-module.exports.reduce_data = function(profile, keys, suppress_pressure){
-  // profile == profile object returned from mongo
-  // keys == list of keys to keep from profile.data
-  // don't admit levels with only pressure info if suppress_pressure=true
-  // return the original profile, with p.data and p.data_keys mutated to suit the requested keys
-
-  if ( !('data' in profile) || profile.data.length==0) {
-    // nothing to do
-    return profile
-  }
-
-  let vars = module.exports.zip(profile.data)
-  let keepers = profile.data_keys.map(x => keys.includes(x))
-  let data = []
-  let data_keys = []
-  for(let i=0; i<keepers.length; i++){
-    if(keepers[i]){
-      data.push(vars[i])
-      data_keys.push(profile.data_keys[i])
-    }
-  }
-
-  profile.data_keys = data_keys
-  if(data.length > 0) {
-    profile.data = module.exports.zip(data) 
-  }
-
-  // filter out levels that have only pressure and qc, unless pres or that qc was specifically requested;
-  // if pres was coerced in, don't allow pres alone to preserve the level.
-  let value_columns = data_keys.map( key => (!key.includes('pres') && !key.includes('_qc')) || keys.includes(key))
-  if(suppress_pressure){
-    value_columns[data_keys.indexOf('pres')] = false
-  }
-  profile.data = profile.data.filter(level => level.filter((val, i) => value_columns[i]).some(e => !isNaN(e) && e!==null))
-
-  return profile
-}
-
-module.exports.filter_data = function(profiles, data, presRange){
-    // profiles (mandatory) == array of profile docs as returned from mongo
-    // data (nullable) == array of data variables to be filtered on and possibly returned
-    // presRange (nullable) == pressure range of interest [min,max]
-    // returns array of profiles with any profile removed that doesn't have information for each variable listed in data within presRange, and filters profile.data down to the requested keys, or no keys if metadata-only present in data list.
-
-    if(presRange){
-      // throw out levels out of range
-      profiles = profiles.map(p => module.exports.variable_bracket.bind(null, 'pres', presRange[0], presRange[1])(p) )
-      // throw out profiles with no levels left
-      profiles = profiles.filter(p => ('data' in p) && (p.data.length > 0) )
-    }
-
-    // coerce data to always have pres, if anything
-    suppress_pressure = false
-    if(data && !data.includes('pres') && !data.includes('all')){
-        data.push('pres')
-        suppress_pressure = true
-    }
-
-    // keep only profiles that have all the requested data and none of the not-data after the level filter
-    if(data){
-      profiles = profiles.filter(p => module.exports.has_data(p, data, presRange) )   
-    }
-
-    if(!data || data.includes('metadata-only')){
-      // no more need for profile.data
-      for(let i = 0; i<profiles.length; i++){
-        delete profiles[i].data
-      }
-    }
-    else if(data && !data.includes('all')){
-      // keep only per-level data requested by the user, and only levels with more than none of said data.
-      profiles = profiles.map(p => module.exports.reduce_data(p, data, suppress_pressure))
-    }
-
-    return profiles
 }
 
 module.exports.polygon_sanitation = function(poly){
@@ -236,32 +83,6 @@ module.exports.polygon_sanitation = function(poly){
   }
 
   return p
-}
-
-module.exports.box_sanitation = function(box){
-  // given a string <box> that describes a box as [[lllon,lllat], [urlon,urlat]],
-  // make sure it is formatted sensibly, an return it as a json object
-
-  try {
-    box = JSON.parse(box);
-  } catch (e) {
-    return {"code": 400, "message": "Box region wasn't proper JSON; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
-  }
-  if(box.length != 2 || 
-     box[0].length != 2 || 
-     box[1].length != 2 || 
-     typeof box[0][0] != 'number' ||
-     typeof box[0][1] != 'number' ||
-     typeof box[1][0] != 'number' || 
-     typeof box[1][1] != 'number') {
-    return {"code": 400, "message": "Box region wasn't specified correctly; format should be [[lower left lon,lower left lat],[upper right lon,upper right lat]]"};
-  }
-
-  if(!module.exports.validlonlat(box)){
-    return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
-  }
-
-  return box
 }
 
 module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,center,radius){
@@ -329,61 +150,6 @@ module.exports.request_sanitation = function(polygon, box, center, radius, multi
   return false
 }
 
-module.exports.datatable_match = function(model, params, local_filter, foreign_docs){
-  // given <model>, a mongoose model pointing to a data collection,
-  // <params> the return object from parameter_sanitization,
-  // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
-  // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
-  // return a promise to search <model> for all of the above.
-
-  let spacetimeMatch = []
-  let proxMatch = []
-  let foreignMatch = []
-
-  // construct match stages as required
-  /// prox match construction
-  if(params.center && params.radius) {
-    proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [params.center[0], params.center[1]]}, maxDistance: 1000*params.radius, distanceField: "distcalculated"}}) 
-    proxMatch.push({ $unset: "distcalculated" })
-  }
-  /// spacetime match construction
-  if(params.startDate || params.endDate || params.polygon || params.multipolygon){
-    spacetimeMatch[0] = {$match: {}}
-    if (params.startDate && params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lte: params.endDate}
-    } else if (params.startDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
-    } else if (params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$lte: params.endDate}
-    }
-    if(params.polygon) {
-      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
-    }
-    if(params.multipolygon){
-      params.multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
-      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
-    }
-    // zoom in on subsequent polygon regions; will be unindexed.
-    if(params.multipolygon && params.multipolygon.length > 1){
-      for(let i=1; i<params.multipolygon.length; i++){
-        spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
-      }
-    }
-    spacetimeMatch.push({$sort: {'timestamp':-1}})
-  }
-
-  /// construct filter for matching metadata docs if required
-  if(foreign_docs){
-    let metaIDs = new Set(foreign_docs.map(x => x['_id']))
-    foreignMatch.push({$match:{'metadata':{$in:Array.from(metaIDs)}}})
-  }
-
-  // set up aggregation and return promise to evaluate:
-  let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
-
-  return model.aggregate(aggPipeline).exec()
-}
-
 module.exports.datatable_stream = function(model, params, local_filter, foreign_docs){
   // given <model>, a mongoose model pointing to a data collection,
   // <params> the return object from parameter_sanitization,
@@ -437,159 +203,6 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   aggPipeline.push({$sort: {'timestamp':-1}})
 
   return model.aggregate(aggPipeline).cursor()
-}
-
-module.exports.postprocess = function(pp_params, search_result){
-  // given <pp_params> which defines level filtering, data selection and compression decisions,
-  // <search_result>[0] the array of documents returned from the metadata collection for this search,
-  // <search_result>[1] the array of documents returned from the data collection for this search,
-  // and <search_results>[2] the array of documents retuned from the metadata collection corresponding to the metadata pointers of <search_result>[1] if not present in <search_result>[0],
-  // perform the requested filters and transforms
-
-  // declare some variables at scope
-  let polished = []   // array of documents passing filters and munged to perfection to be returned
-  let keys = []       // data keys to keep when filtering down data
-  let notkeys = []    // data ketys that disqualify a document if present
-  let coerced_pressure = false
-  let metadata_only = false
-
-  // bail immediately if nothing came back from the data collection
-  if(search_result[1].length == 0){
-    return {"code": 404, "message": "Not found: No matching results found in database."}
-  }
-  
-  // construct metadata lookup object
-  let upstream_meta = (search_result[0] === null) ? search_result[2] : search_result[0]
-  let meta_lookup = {}
-  for(let i=0; i<upstream_meta.length; i++){
-    meta_lookup[upstream_meta[i]['_id']] = upstream_meta[i]
-  }
-
-  // determine which data keys should be kept or tossed, if necessary
-  if(pp_params.data){
-    keys = pp_params.data.filter(e => e.charAt(0)!='~')
-    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
-    if(keys.includes('metadata-only')){
-      metadata_only = true
-      keys.splice(keys.indexOf('metadata-only'))
-    }
-  }
-
-  // loop through documents and let the munging begin
-  for(let i=0; i<search_result[1].length; i++){
-    let doc = search_result[1][i] // sugar
-
-    /// identify data_keys and units, could be on either document
-    let dk = null
-    let u = null
-    if(doc.hasOwnProperty('data_keys')) {
-      dk = doc.data_keys  
-      u = doc.units
-    }
-    else{
-      dk = meta_lookup[doc.metadata].data_keys
-      u = meta_lookup[doc.metadata].units
-    }
-
-    /// bail out on this document if it contains any ~keys:
-    if(dk.some(item => notkeys.includes(item))) continue
-
-    /// force return of pressure for anything that has a pressure data key
-    if(dk.includes('pressure') && !keys.includes('pressure')){
-      keys.push('pressure')
-      coerced_pressure = true
-    }
-
-    /// turn upstream units into a lookup table by data_key
-    let units = {}
-    for(let k=0; k<dk.length; k++){
-      units[dk[k]] = u[k]
-    }
-
-    /// reinflate data arrays as a dictionary keyed by depth, and only keep requested data
-    let reinflated_levels = {}
-    let metalevels = null
-    if(meta_lookup[doc.metadata].hasOwnProperty('levels')){
-      metalevels = meta_lookup[doc.metadata].levels // relevant for grids
-    } else if (!dk.includes('pressure')){
-      metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pres key, since they're all implicitly single-level pres=0 surface measurements
-    }
-    for(let j=0; j<doc.data.length; j++){ // loop over levels
-      let reinflate = {}
-      for(k=0; k<doc.data[j].length; k++){ // loop over data variables
-        if( (keys.includes(dk[k]) || keys.includes('all')) && !isNaN(doc.data[j][k]) && doc.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
-          reinflate[dk[k]] = doc.data[j][k]
-        }
-      }
-      if(Object.keys(reinflate).length > (coerced_pressure ? 1 : 0)){ // ie only keep levels that retained some data other than a coerced pressure record
-        let lvl = metalevels ? metalevels[j] : reinflate.pressure
-        reinflated_levels[lvl] = reinflate
-      }
-    }
-
-    /// filter by presRange
-    let levels = []
-    if(pp_params.presRange){
-      levels = Object.keys(reinflated_levels).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
-    } else {
-      levels = Object.keys(reinflated_levels)
-    }
-    levels = levels.map(n=>Number(n)).sort((a,b)=>a-b)
-
-    /// translate level-keyed dictionary back to a sorted list of per-level dictionaries
-    if(metalevels && pp_params.presRange){
-      /// need to make a levels property on the data document that overrides the levels property on the metadata doc if level filtering has happened, for grid-like objects
-      doc.levels = levels
-    }
-    doc.data = levels.map(k=>reinflated_levels[String(k)])
-
-    /// if we wanted data and none is left, abandon this document
-    if(keys.length>(coerced_pressure ? 1 : 0) && doc.data.length==0) continue
-
-    /// drop data on metadata only requests
-    if(!pp_params.data || metadata_only){
-      delete doc.data
-      delete doc.levels
-    }
-
-    /// manage data_keys and units
-    if(keys.includes('all') && !metadata_only){
-      doc.data_keys = dk
-      doc.units = units
-    }
-    else if( (keys.length > (coerced_pressure ? 1 : 0)) && !metadata_only){
-      doc.data_keys = keys
-      doc.units = units
-      for(const prop in units){
-        if(!keys.includes(prop)) delete doc.units[prop]
-      }
-    }
-
-    /// deflate data if requested
-    if(pp_params.compression=='array' && pp_params.data && !metadata_only){
-      doc.data = doc.data.map(x => {
-        let lvl = []
-        for(let ii=0; ii<doc.data_keys.length; ii++){
-          if(x.hasOwnProperty(doc.data_keys[ii])){
-            lvl.push(x[doc.data_keys[ii]])
-          } else {
-            lvl.push(null)
-          }
-        }
-        return lvl
-      })
-      doc.units = doc.data_keys.map(x => doc.units[x])
-    }
-
-    polished.push(doc)
-  }
-
-  if(polished.length == 0){
-    return {"code": 404, "message": "Not found: No matching results found in database."}
-  }
-
-  return polished
-
 }
 
 module.exports.postprocess_stream = function(chunk, metadata, pp_params){
@@ -813,16 +426,6 @@ module.exports.locate_meta = function(meta_id, meta_list, meta_model){
     let metaquery = meta_model.findOne({ _id: meta_id }).lean();
     return metaquery.exec();
   }
-}
-
-module.exports.meta_lookup = function(meta_model, data_docs){
-  // given an array <data_docs> of docs from a data collection,
-  // return a promise for all matching metadata documents in model <meta_model>
-
-  let metakeys = new Set(data_docs.map(x => x['metadata']))
-  let aggPipeline = [{$match:{'_id':{$in:Array.from(metakeys)}}}]
-  return meta_model.aggregate(aggPipeline).exec()
-
 }
 
 module.exports.lookup_key = function(userModel, apikey, resolve, reject){
