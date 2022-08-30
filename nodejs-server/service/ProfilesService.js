@@ -2,6 +2,7 @@
 const Profile = require('../models/profile');
 const cchdo = require('../models/cchdo');
 const argo = require('../models/argo');
+const summaries = require('../models/summary');
 const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
 
@@ -12,24 +13,8 @@ const geojsonArea = require('@mapbox/geojson-area');
  **/
 exports.argoBGC = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "summary" : [ {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  }, {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  } ],
-  "_id" : "argo_bgc"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = summaries.find({"_id":"argo_bgc"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
@@ -41,24 +26,8 @@ exports.argoBGC = function() {
  **/
 exports.argoDACs = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "summary" : [ {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  }, {
-    "_id" : "_id",
-    "n" : 0.8008281904610115,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  } ],
-  "_id" : "argo_dacs"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = summaries.find({"_id":"argo_dacs"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 
@@ -70,22 +39,8 @@ exports.argoDACs = function() {
  **/
 exports.argoOverview = function() {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "summary" : {
-    "datacenters" : [ "datacenters", "datacenters" ],
-    "nCore" : 0.8008281904610115,
-    "nBGC" : 6.027456183070403,
-    "nDeep" : 1.4658129805029452,
-    "mostrecent" : "2010-01-01T00:00:00Z"
-  },
-  "_id" : "argo_overview"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = summaries.find({"_id":"argo_overview"})
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
 

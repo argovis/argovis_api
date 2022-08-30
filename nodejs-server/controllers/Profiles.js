@@ -8,6 +8,9 @@ module.exports.argoBGC = function argoBGC (req, res, next) {
   Profiles.argoBGC()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -18,6 +21,9 @@ module.exports.argoDACs = function argoDACs (req, res, next) {
   Profiles.argoDACs()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -28,6 +34,9 @@ module.exports.argoOverview = function argoOverview (req, res, next) {
   Profiles.argoOverview()
     .then(function (response) {
       utils.writeJson(res, response);
+    },
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
