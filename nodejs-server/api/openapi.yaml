@@ -4201,18 +4201,6 @@ components:
       schema:
         type: string
         example: LANE
-    date:
-      name: date
-      in: query
-      description: date-time formatted string
-      required: true
-      style: form
-      explode: true
-      allowReserved: true
-      schema:
-        type: string
-        format: date-time
-        example: 2010-01-01T00:00:00Z
     startDate:
       name: startDate
       in: query
@@ -4265,17 +4253,6 @@ components:
           maxItems: 2
           minItems: 2
           type: number
-    dac:
-      name: dac
-      in: query
-      description: Data Assembly Center to search for. See /profiles/vocabulary?parameter=dac
-        for list of options.
-      required: false
-      style: form
-      explode: true
-      schema:
-        type: string
-        example: KO
     profileSource:
       name: source
       in: query
@@ -4335,16 +4312,6 @@ components:
       schema:
         type: string
         example: 4902911_0
-    profileID:
-      name: id
-      in: query
-      description: Unique profile ID to search for.
-      required: false
-      style: form
-      explode: true
-      schema:
-        type: string
-        example: 4902911_0
     platformID:
       name: platform
       in: query
@@ -4355,21 +4322,6 @@ components:
       schema:
         type: string
         example: "4902911"
-    platformList:
-      name: platforms
-      in: query
-      description: List of platform IDs
-      required: true
-      style: form
-      explode: false
-      allowReserved: true
-      schema:
-        type: array
-        example: "4902911,4902912"
-        items:
-          anyOf:
-          - type: string
-          - type: number
     polygon:
       name: polygon
       in: query
@@ -4394,18 +4346,6 @@ components:
       schema:
         type: string
         example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
-    box:
-      name: box
-      in: query
-      description: "box region of interest described as [[lower left lon, lower left\
-        \ lat], [upper right lon, upper right lat]]"
-      required: false
-      style: form
-      explode: true
-      allowReserved: true
-      schema:
-        type: string
-        example: "[[-74.2,40.5],[-73.6,40.9]]"
     center:
       name: center
       in: query
@@ -4442,18 +4382,6 @@ components:
       explode: true
       schema:
         type: number
-    platform:
-      name: platform
-      in: query
-      description: platform ID
-      required: true
-      style: form
-      explode: true
-      schema:
-        example: "4902911"
-        anyOf:
-        - type: string
-        - type: number
     lat:
       name: lat
       in: query
