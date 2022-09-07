@@ -30,9 +30,9 @@ exports.cchdoVocab = function(parameter) {
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
- * woceline String WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options. (optional)
- * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
- * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /profiles/vocabulary?parameter=source for list of options. (optional)
+ * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
+ * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
@@ -108,8 +108,8 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,ra
  * GO-SHIP metadata search and filter.
  *
  * id String Unique ID to search for. (optional)
- * woceline String WOCE line to search for. See /profiles/vocabulary?parameter=woceline for list of options. (optional)
- * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise for list of options. (optional)
+ * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
 exports.findCCHDOmeta = function(id,woceline,cchdo_cruise) {
