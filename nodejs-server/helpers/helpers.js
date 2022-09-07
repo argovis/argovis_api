@@ -171,11 +171,11 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   if(params.startDate || params.endDate || params.polygon || params.multipolygon){
     spacetimeMatch[0] = {$match: {}}
     if (params.startDate && params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lte: params.endDate}
+      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lt: params.endDate}
     } else if (params.startDate){
       spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
     } else if (params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$lte: params.endDate}
+      spacetimeMatch[0]['$match']['timestamp'] = {$lt: params.endDate}
     }
     if(params.polygon) {
       spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
