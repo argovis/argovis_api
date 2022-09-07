@@ -21,15 +21,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /cchdo", function () {
-      it("searches for cchdo profiles with data=metadata-only", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=metadata-only").set({'x-argokey': 'developer'});
+      it("searches for cchdo profiles with data=except-data-values", async function () {
+        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=except-data-values").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/cchdo'].get.responses['200'].content['application/json'].schema);
       });
     });
 
     describe("GET /cchdo", function () {
-      it("cchdo metadata-only should still have units and data_keys", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=metadata-only").set({'x-argokey': 'developer'});
+      it("cchdo except-data-values should still have units and data_keys", async function () {
+        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=except-data-values").set({'x-argokey': 'developer'});
         expect(response.body[0]).to.contain.keys('data_keys', 'units')
       });
     });
@@ -152,15 +152,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /argo", function () {
-      it("searches for argo profiles with data=metadata-only", async function () {
-        const response = await request.get("/argo?id=4901283_021&data=metadata-only").set({'x-argokey': 'developer'});
+      it("searches for argo profiles with data=except-data-values", async function () {
+        const response = await request.get("/argo?id=4901283_021&data=except-data-values").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
       });
     });
 
     describe("GET /argo", function () {
-      it("argo metadata-only should still have units and data_keys for BGC profiles", async function () {
-        const response = await request.get("/argo?id=4901283_021&data=metadata-only").set({'x-argokey': 'developer'});
+      it("argo except-data-values should still have units and data_keys for BGC profiles", async function () {
+        const response = await request.get("/argo?id=4901283_021&data=except-data-values").set({'x-argokey': 'developer'});
         expect(response.body[0]).to.contain.keys('data_keys', 'units')
       });
     });
