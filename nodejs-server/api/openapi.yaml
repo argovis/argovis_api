@@ -400,7 +400,7 @@ paths:
           type: array
           example: "wind,~surface_pressure"
           items:
-            pattern: "^((~)?((wind)|(surface_pressure){1})|all|metadata-only)$"
+            pattern: "^((~)?((wind)|(surface_pressure){1})|all|except-data-values)$"
             type: string
       responses:
         "200":
@@ -889,7 +889,7 @@ paths:
           example: 50
       - name: woceline
         in: query
-        description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
           for list of options.
         required: false
         style: form
@@ -899,7 +899,7 @@ paths:
           example: A10
       - name: cchdo_cruise
         in: query
-        description: CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise
+        description: CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise
           for list of options.
         required: false
         style: form
@@ -911,7 +911,7 @@ paths:
         in: query
         description: Experimental program source(s) to search for; document must match
           all sources to be returned. Accepts ~ negation to filter out documents.
-          See /profiles/vocabulary?parameter=source for list of options.
+          See /<data route>/vocabulary?parameter=source for list of options.
         required: false
         style: form
         explode: false
@@ -954,7 +954,7 @@ paths:
           type: array
           example: "temperature_btl,~salinity_ctd"
           items:
-            pattern: "^((~)?((ammonium_btl)|(ammonium_btl_woceqc)|(bionbr_btl)|(bottle_latitude_btl)|(bottle_longitude_btl)|(bottle_number_btl)|(bottle_number_btl_woceqc)|(bottle_salinity_btl)|(bottle_salinity_btl_woceqc)|(bottle_time_btl)|(carbon_tetrachloride_btl)|(carbon_tetrachloride_btl_woceqc)|(cfc_113_btl)|(cfc_113_btl_woceqc)|(cfc_11_btl)|(cfc_11_btl_woceqc)|(cfc_12_btl)|(cfc_12_btl_woceqc)|(chlorophyll_a_btl)|(chlorophyll_a_btl_woceqc)|(chlorophyll_a_ug_kg_btl)|(chlorophyll_a_ug_kg_btl_woceqc)|(co2_mole_fraction_btl)|(co2_mole_fraction_btl_woceqc)|(ctd_beamcp_ctd)|(ctd_beamcp_ctd_woceqc)|(ctd_beta700_raw_btl)|(ctd_beta700_raw_btl_woceqc)|(ctd_beta700_raw_ctd)|(ctd_beta700_raw_ctd_woceqc)|(ctd_cdom_raw_ctd)|(ctd_cdom_raw_ctd_woceqc)|(ctd_fluor_arbitrary_ctd)|(ctd_fluor_ctd)|(ctd_fluor_ctd_woceqc)|(ctd_fluor_raw_btl)|(ctd_fluor_raw_btl_woceqc)|(ctd_fluor_raw_ctd)|(ctd_fluor_raw_ctd_woceqc)|(ctd_nitrate_ctd)|(ctd_nitrate_ctd_woceqc)|(ctd_number_of_observations_ctd)|(ctd_optode_oxygen_ctd)|(ctd_optode_oxygen_ctd_woceqc)|(ctd_optode_oxygen_raw_ctd)|(ctd_optode_oxygen_raw_ctd_woceqc)|(ctd_pressure_raw_btl)|(ctd_temperature_unk_ctd)|(ctd_temperature_unk_ctd_woceqc)|(ctd_transmissometer_ctd)|(ctd_transmissometer_ctd_woceqc)|(ctd_transmissometer_raw_btl)|(ctd_transmissometer_raw_btl_woceqc)|(ctd_transmissometer_raw_ctd)|(ctd_transmissometer_raw_ctd_woceqc)|(ctd_turbidity_ntu_ctd)|(del_carbon_13_dic_btl)|(del_carbon_13_dic_btl_woceqc)|(del_carbon_14_dic_btl)|(del_carbon_14_dic_btl_woceqc)|(del_carbon_14_dic_error_btl)|(del_oxygen_18_btl)|(del_oxygen_18_btl_woceqc)|(del_oxygen_18_error_btl)|(delta_helium_3_btl)|(delta_helium_3_btl_woceqc)|(delta_helium_3_error_btl)|(dissolved_organic_carbon_btl)|(dissolved_organic_carbon_btl_woceqc)|(fm_depth_btl)|(fm_depth_ctd)|(fm_depth_ctd_woceqc)|(geotraces_sample_btl)|(helium_btl)|(helium_btl_woceqc)|(helium_error_btl)|(methyl_chloroform_btl)|(methyl_chloroform_btl_woceqc)|(neon_btl)|(neon_btl_woceqc)|(neon_error_btl)|(nitrate_btl)|(nitrate_btl_woceqc)|(nitrite_btl)|(nitrite_btl_woceqc)|(nitrite_nitrate_btl)|(nitrite_nitrate_btl_woceqc)|(nitrous_oxide_btl)|(nitrous_oxide_btl_woceqc)|(odf_pressure_btl)|(oxygen_btl)|(oxygen_btl_woceqc)|(oxygen_ctd)|(oxygen_ctd_woceqc)|(oxygen_ml_l_btl)|(oxygen_ml_l_btl_woceqc)|(package_depth_btl)|(par_ctd)|(par_ctd_woceqc)|(partial_co2_temperature_btl)|(partial_pressure_of_co2_btl)|(partial_pressure_of_co2_btl_woceqc)|(particulate_organic_carbon_btl)|(particulate_organic_carbon_btl_woceqc)|(particulate_organic_nitrogen_btl)|(particulate_organic_nitrogen_btl_woceqc)|(ph_sws_btl)|(ph_sws_btl_woceqc)|(ph_temperature_btl)|(ph_total_h_scale_btl)|(ph_total_h_scale_btl_woceqc)|(ph_unknown_scale_btl)|(ph_unknown_scale_btl_woceqc)|(phaeophytin_btl)|(phaeophytin_btl_woceqc)|(phaeophytin_ug_l_btl)|(phaeophytin_ug_l_btl_woceqc)|(phosphate_btl)|(phosphate_btl_woceqc)|(potential_temperature_68_btl)|(potential_temperature_c_btl)|(potential_temperature_c_ctd)|(pressure)|(pressure_btl_woceqc)|(pressure_ctd_woceqc)|(ref_temperature_btl)|(ref_temperature_btl_woceqc)|(ref_temperature_c_btl)|(ref_temperature_c_btl_woceqc)|(reference_salinity_btl)|(reference_salinity_btl_woceqc)|(rev_pressure_btl)|(rev_pressure_btl_woceqc)|(rev_temperature_90_btl)|(rev_temperature_90_btl_woceqc)|(rev_temperature_btl)|(rev_temperature_btl_woceqc)|(rev_temperature_c_btl)|(rev_temperature_c_btl_woceqc)|(salinity_btl)|(salinity_btl_woceqc)|(salinity_ctd)|(salinity_ctd_woceqc)|(sample_btl)|(sample_ctd)|(silicate_btl)|(silicate_btl_woceqc)|(sm_depth_btl)|(sm_depth_ctd)|(sm_depth_ctd_woceqc)|(sulfur_hexifluoride_btl)|(sulfur_hexifluoride_btl_woceqc)|(temperature_btl)|(temperature_btl_woceqc)|(temperature_ctd)|(temperature_ctd_woceqc)|(total_alkalinity_btl)|(total_alkalinity_btl_woceqc)|(total_carbon_btl)|(total_carbon_btl_woceqc)|(total_dissolved_nitrogen_btl)|(total_dissolved_nitrogen_btl_woceqc)|(total_organic_carbon_l_btl)|(total_organic_carbon_l_btl_woceqc)|(tritium_btl)|(tritium_btl_woceqc)|(tritium_error_btl)|(urea_btl)|(urea_btl_woceqc)|(user_bottle_number_btl)|(user_bottle_number_btl_woceqc)|(user_sample_number_btl){1})|all|metadata-only)$"
+            pattern: "^((~)?((ammonium_btl)|(ammonium_btl_woceqc)|(bionbr_btl)|(bottle_latitude_btl)|(bottle_longitude_btl)|(bottle_number_btl)|(bottle_number_btl_woceqc)|(bottle_salinity_btl)|(bottle_salinity_btl_woceqc)|(bottle_time_btl)|(carbon_tetrachloride_btl)|(carbon_tetrachloride_btl_woceqc)|(cfc_113_btl)|(cfc_113_btl_woceqc)|(cfc_11_btl)|(cfc_11_btl_woceqc)|(cfc_12_btl)|(cfc_12_btl_woceqc)|(chlorophyll_a_btl)|(chlorophyll_a_btl_woceqc)|(chlorophyll_a_ug_kg_btl)|(chlorophyll_a_ug_kg_btl_woceqc)|(co2_mole_fraction_btl)|(co2_mole_fraction_btl_woceqc)|(ctd_beamcp_ctd)|(ctd_beamcp_ctd_woceqc)|(ctd_beta700_raw_btl)|(ctd_beta700_raw_btl_woceqc)|(ctd_beta700_raw_ctd)|(ctd_beta700_raw_ctd_woceqc)|(ctd_cdom_raw_ctd)|(ctd_cdom_raw_ctd_woceqc)|(ctd_fluor_arbitrary_ctd)|(ctd_fluor_ctd)|(ctd_fluor_ctd_woceqc)|(ctd_fluor_raw_btl)|(ctd_fluor_raw_btl_woceqc)|(ctd_fluor_raw_ctd)|(ctd_fluor_raw_ctd_woceqc)|(ctd_nitrate_ctd)|(ctd_nitrate_ctd_woceqc)|(ctd_number_of_observations_ctd)|(ctd_optode_oxygen_ctd)|(ctd_optode_oxygen_ctd_woceqc)|(ctd_optode_oxygen_raw_ctd)|(ctd_optode_oxygen_raw_ctd_woceqc)|(ctd_pressure_raw_btl)|(ctd_temperature_unk_ctd)|(ctd_temperature_unk_ctd_woceqc)|(ctd_transmissometer_ctd)|(ctd_transmissometer_ctd_woceqc)|(ctd_transmissometer_raw_btl)|(ctd_transmissometer_raw_btl_woceqc)|(ctd_transmissometer_raw_ctd)|(ctd_transmissometer_raw_ctd_woceqc)|(ctd_turbidity_ntu_ctd)|(del_carbon_13_dic_btl)|(del_carbon_13_dic_btl_woceqc)|(del_carbon_14_dic_btl)|(del_carbon_14_dic_btl_woceqc)|(del_carbon_14_dic_error_btl)|(del_oxygen_18_btl)|(del_oxygen_18_btl_woceqc)|(del_oxygen_18_error_btl)|(delta_helium_3_btl)|(delta_helium_3_btl_woceqc)|(delta_helium_3_error_btl)|(dissolved_organic_carbon_btl)|(dissolved_organic_carbon_btl_woceqc)|(fm_depth_btl)|(fm_depth_ctd)|(fm_depth_ctd_woceqc)|(geotraces_sample_btl)|(helium_btl)|(helium_btl_woceqc)|(helium_error_btl)|(methyl_chloroform_btl)|(methyl_chloroform_btl_woceqc)|(neon_btl)|(neon_btl_woceqc)|(neon_error_btl)|(nitrate_btl)|(nitrate_btl_woceqc)|(nitrite_btl)|(nitrite_btl_woceqc)|(nitrite_nitrate_btl)|(nitrite_nitrate_btl_woceqc)|(nitrous_oxide_btl)|(nitrous_oxide_btl_woceqc)|(odf_pressure_btl)|(oxygen_btl)|(oxygen_btl_woceqc)|(oxygen_ctd)|(oxygen_ctd_woceqc)|(oxygen_ml_l_btl)|(oxygen_ml_l_btl_woceqc)|(package_depth_btl)|(par_ctd)|(par_ctd_woceqc)|(partial_co2_temperature_btl)|(partial_pressure_of_co2_btl)|(partial_pressure_of_co2_btl_woceqc)|(particulate_organic_carbon_btl)|(particulate_organic_carbon_btl_woceqc)|(particulate_organic_nitrogen_btl)|(particulate_organic_nitrogen_btl_woceqc)|(ph_sws_btl)|(ph_sws_btl_woceqc)|(ph_temperature_btl)|(ph_total_h_scale_btl)|(ph_total_h_scale_btl_woceqc)|(ph_unknown_scale_btl)|(ph_unknown_scale_btl_woceqc)|(phaeophytin_btl)|(phaeophytin_btl_woceqc)|(phaeophytin_ug_l_btl)|(phaeophytin_ug_l_btl_woceqc)|(phosphate_btl)|(phosphate_btl_woceqc)|(potential_temperature_68_btl)|(potential_temperature_c_btl)|(potential_temperature_c_ctd)|(pressure)|(pressure_btl_woceqc)|(pressure_ctd_woceqc)|(ref_temperature_btl)|(ref_temperature_btl_woceqc)|(ref_temperature_c_btl)|(ref_temperature_c_btl_woceqc)|(reference_salinity_btl)|(reference_salinity_btl_woceqc)|(rev_pressure_btl)|(rev_pressure_btl_woceqc)|(rev_temperature_90_btl)|(rev_temperature_90_btl_woceqc)|(rev_temperature_btl)|(rev_temperature_btl_woceqc)|(rev_temperature_c_btl)|(rev_temperature_c_btl_woceqc)|(salinity_btl)|(salinity_btl_woceqc)|(salinity_ctd)|(salinity_ctd_woceqc)|(sample_btl)|(sample_ctd)|(silicate_btl)|(silicate_btl_woceqc)|(sm_depth_btl)|(sm_depth_ctd)|(sm_depth_ctd_woceqc)|(sulfur_hexifluoride_btl)|(sulfur_hexifluoride_btl_woceqc)|(temperature_btl)|(temperature_btl_woceqc)|(temperature_ctd)|(temperature_ctd_woceqc)|(total_alkalinity_btl)|(total_alkalinity_btl_woceqc)|(total_carbon_btl)|(total_carbon_btl_woceqc)|(total_dissolved_nitrogen_btl)|(total_dissolved_nitrogen_btl_woceqc)|(total_organic_carbon_l_btl)|(total_organic_carbon_l_btl_woceqc)|(tritium_btl)|(tritium_btl_woceqc)|(tritium_error_btl)|(urea_btl)|(urea_btl_woceqc)|(user_bottle_number_btl)|(user_bottle_number_btl_woceqc)|(user_sample_number_btl){1})|all|except-data-values)$"
             type: string
       - name: presRange
         in: query
@@ -1018,7 +1018,7 @@ paths:
           example: 4902911_0
       - name: woceline
         in: query
-        description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
           for list of options.
         required: false
         style: form
@@ -1028,7 +1028,7 @@ paths:
           example: A10
       - name: cchdo_cruise
         in: query
-        description: CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise
+        description: CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise
           for list of options.
         required: false
         style: form
@@ -1214,7 +1214,7 @@ paths:
         in: query
         description: Experimental program source(s) to search for; document must match
           all sources to be returned. Accepts ~ negation to filter out documents.
-          See /profiles/vocabulary?parameter=source for list of options.
+          See /<data route>/vocabulary?parameter=source for list of options.
         required: false
         style: form
         explode: false
@@ -1635,7 +1635,7 @@ paths:
           type: array
           example: "sst,err_sst"
           items:
-            pattern: "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|metadata-only)$"
+            pattern: "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|except-data-values)$"
             type: string
       responses:
         "200":
@@ -4011,7 +4011,7 @@ components:
     argo_data_keys:
       type: array
       items:
-        pattern: "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pressure)|(salinity)|(salinity_sfile)|(temperature)|(temperature_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})((_std)|(_med){1})?(_argoqc)?|all|metadata-only)$"
+        pattern: "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pressure)|(salinity)|(salinity_sfile)|(temperature)|(temperature_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})((_std)|(_med){1})?(_argoqc)?|all|except-data-values)$"
         type: string
     errorResponse:
       required:
@@ -4258,7 +4258,7 @@ components:
       in: query
       description: Experimental program source(s) to search for; document must match
         all sources to be returned. Accepts ~ negation to filter out documents. See
-        /profiles/vocabulary?parameter=source for list of options.
+        /<data route>/vocabulary?parameter=source for list of options.
       required: false
       style: form
       explode: false
@@ -4271,7 +4271,7 @@ components:
     woceline:
       name: woceline
       in: query
-      description: WOCE line to search for. See /profiles/vocabulary?parameter=woceline
+      description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
         for list of options.
       required: false
       style: form
@@ -4282,7 +4282,7 @@ components:
     cchdo_cruise:
       name: cchdo_cruise
       in: query
-      description: CCHDO cruise ID to search for. See /profiles/vocabulary?parameter=cchdo_cruise
+      description: CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise
         for list of options.
       required: false
       style: form
