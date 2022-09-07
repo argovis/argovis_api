@@ -19,8 +19,8 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /grids/ohc_kg", function () {
-      it("searches for grids profiles with data=metadata-only", async function () {
-        const response = await request.get("/grids/ohc_kg?polygon=[[107,-64],[108,-64],[108,-65],[107,-65],[107,-64]]&data=metadata-only").set({'x-argokey': 'developer'});
+      it("searches for grids profiles with data=except-data-values", async function () {
+        const response = await request.get("/grids/ohc_kg?polygon=[[107,-64],[108,-64],[108,-65],[107,-65],[107,-64]]&data=except-data-values").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/grids/{gridName}'].get.responses['200'].content['application/json'].schema);
       });
     });

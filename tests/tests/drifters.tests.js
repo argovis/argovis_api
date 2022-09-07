@@ -19,8 +19,8 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /drifters", function () {
-      it("searches for drifters profiles with data=metadata-only", async function () {
-        const response = await request.get("/drifters?polygon=[[-17,14],[-18,14],[-18,15],[-17,15],[-17,14]]&data=metadata-only").set({'x-argokey': 'developer'});
+      it("searches for drifters profiles with data=except-data-values", async function () {
+        const response = await request.get("/drifters?polygon=[[-17,14],[-18,14],[-18,15],[-17,15],[-17,14]]&data=except-data-values").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/drifters'].get.responses['200'].content['application/json'].schema);
       });
     });
@@ -124,9 +124,9 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /drifters", function () {
-      it("fetch proximate drifter data", async function () {
+      it("fetch proximate drifter data, excluding document exactly at endDate", async function () {
         const response = await request.get("/drifters?center=-17.743450164794922,14.746769905090332&radius=100&startDate=2012-03-15T00:00:00Z&endDate=2012-03-16T00:00:00Z").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(3);
+        expect(response.body.length).to.eql(2);
       });
     }); 
 
@@ -152,8 +152,8 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /drifters", function () {
-      it("ignore compression on metadata-only flag", async function () {
-        const response = await request.get("/drifters?id=101143_0&compression=array&data=sst,metadata-only").set({'x-argokey': 'developer'});
+      it("ignore compression on except-data-values flag", async function () {
+        const response = await request.get("/drifters?id=101143_0&compression=array&data=sst,except-data-values").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     }); 

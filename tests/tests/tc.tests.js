@@ -19,8 +19,8 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /tc", function () {
-      it("searches for tc profiles with data=metadata-only", async function () {
-        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=metadata-only").set({'x-argokey': 'developer'});
+      it("searches for tc profiles with data=except-data-values", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=except-data-values").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/tc'].get.responses['200'].content['application/json'].schema);
       });
     });

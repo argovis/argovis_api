@@ -17,9 +17,9 @@ module.exports = {}
 module.exports.tokenbucket = function (req, res, next) {
 	let bucketsize = 100
 	let tokenrespawntime = 1000 // ms to respawn one token
-	let requestCost = 1 //default cost, for metadata-only requests
+	let requestCost = 1 //default cost, for except-data-values requests
 	let cellprice = 0.0001 // token cost of 1 sq deg day
-	let metaDiscount = 100 // scaledown factor to discount metadata-only request by relative to data requests
+	let metaDiscount = 100 // scaledown factor to discount except-data-values request by relative to data requests
 	let maxbulk = 1000000 // maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
 	let argokey = 'guest'
 	if(req.headers['x-argokey']){

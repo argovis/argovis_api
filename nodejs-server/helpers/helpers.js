@@ -223,9 +223,9 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   if(pp_params.data){
     keys = pp_params.data.filter(e => e.charAt(0)!='~')
     notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
-    if(keys.includes('metadata-only')){
+    if(keys.includes('except-data-values')){
       metadata_only = true
-      keys.splice(keys.indexOf('metadata-only'))
+      keys.splice(keys.indexOf('except-data-values'))
     }
   }
 
@@ -297,7 +297,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
 
   // if we asked for specific data and one of the desired variables isn't found anywhere, abandon this document
-  if(pp_params.data && (pp_params.data.length > 1 || pp_params.data[0]!=='metadata-only')){
+  if(pp_params.data && (pp_params.data.length > 1 || pp_params.data[0]!=='except-data-values')){
     for(k=0; k<keys.length; k++){
       if(keys[k] != 'all'){
         if(!chunk.data.some(level => Object.keys(level).includes(keys[k]))){
@@ -454,7 +454,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   // return the tokenbucket price for this URL.
   // c == defualt cost
   // cellprice == token cost of 1 sq deg day
-  // metaDiscount == scaledown factor to discount metadata-only request by relative to data requests
+  // metaDiscount == scaledown factor to discount except-data-values request by relative to data requests
   // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
 
   let earliest_records = {
@@ -514,7 +514,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
               c = geospan*dayspan*cellprice
 
               ///// metadata discount
-              if(!url.includes('data') || url.includes('metadata-only') || url.includes('compression=minimal')){
+              if(!url.includes('data') || url.includes('except-data-values') || url.includes('compression=minimal')){
                 c /= metaDiscount
               }
           }
