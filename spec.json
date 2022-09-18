@@ -31,22 +31,6 @@
    ],
    "tags": [
       {
-         "name": "ar",
-         "description": "atmospheric river shapes"
-      },
-      {
-         "name": "covar",
-         "description": "Argo float position forcast product"
-      },
-      {
-         "name": "tc",
-         "description": "tropical cyclone data"
-      },
-      {
-         "name": "grid",
-         "description": "Gridded products derived from Argo floats, simulation, or satalite product"
-      },
-      {
          "name": "argo",
          "description": "Argo profile data, including core, BGC and deep floats"
       },
@@ -57,13 +41,29 @@
       {
          "name": "drifters",
          "description": "Data and metadata for drifters."
+      },
+      {
+         "name": "grid",
+         "description": "Gridded products derived from Argo floats, simulation, or satalite product"
+      },
+      {
+         "name": "tc",
+         "description": "tropical cyclone data"
+      },
+      {
+         "name": "ar (experimental)",
+         "description": "atmospheric river shapes"
+      },
+      {
+         "name": "covar (experimental)",
+         "description": "Argo float position forcast product"
       }
    ],
    "paths": {
       "/ar": {
          "get": {
             "tags": [
-               "ar"
+               "ar (experimental)"
             ],
             "summary": "Find and filter atmo river shapes.",
             "operationId": "findAR",   
@@ -104,7 +104,7 @@
       "/covarGrid": {
          "get": {
             "tags": [
-               "covar"
+               "covar (experimental)"
             ],
             "summary": "Probability distribution field for a float at point lat-lon after forcastDays.",
             "operationId": "findCovar",
@@ -145,7 +145,7 @@
       "/covarSum": {
          "get": {
             "tags": [
-               "covar"
+               "covar (experimental)"
             ],
             "summary": "Sum of probability distribution field over a region for a float starting at point lat-lon after forcastDays.",
             "operationId": "sumCovar",
