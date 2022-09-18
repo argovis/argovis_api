@@ -32,6 +32,7 @@ exports.findCovar = function(lat,lon,forcastDays) {
             reject({"code": 500, "message": "Server error"});
             return;
         }
+
         if (covars == null){
             reject({"code": 404, "message": "Not found: No matching results found in database."});
             return;
@@ -84,6 +85,6 @@ exports.sumCovar = function(lat,lon,forcastDays,polygon) {
         let p = covars.features.map(x => x.properties.Probability*(pointInPolygon(x.geometry, polygon) ? 1:0)).reduce((a, b) => a + b, 0)
         resolve({"sum":p});
     })
-
   });
 }
+

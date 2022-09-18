@@ -1,7 +1,14 @@
 'use strict';
 const arShapes = require('../models/arShapes');
-const helpers = require('../helpers/helpers')
+const helpers = require('../helpers/helpers');
 
+/**
+ * Find and filter atmo river shapes.
+ *
+ * date Date three hour increments starting at 2004-01-01T00:00:00 and ending at 2017-04-02T03:00:00 (optional)
+ * _id String ID of an atmospheric river object (optional)
+ * returns List
+ **/
 exports.findAR = function(date,_id) {
   return new Promise(function(resolve, reject) {
     if(date && _id){
@@ -23,5 +30,4 @@ exports.findAR = function(date,_id) {
     query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
-
 
