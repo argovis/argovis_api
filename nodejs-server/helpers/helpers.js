@@ -502,30 +502,33 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
         if(params.hasOwnProperty('code')){
           return params
         }
-              params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
-              params.endDate = params.endDate ? params.endDate : new Date()
+        params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
+        params.endDate = params.endDate ? params.endDate : new Date()
 
-              ///// decline requests that are too geographically enormous
-              let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, params.center, params.radius)
-              if(checksize.hasOwnProperty('code')){
-                return checksize
-              }
+        ///// decline requests that are too geographically enormous
+        let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, params.center, params.radius)
+        if(checksize.hasOwnProperty('code')){
+          return checksize
+        }
 
-              ///// cost out request
-              let geospan = module.exports.geoarea(params.polygon,params.multipolygon,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
-              let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
-              if(geospan*dayspan > maxbulk){
-                return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
-              }
-              c = geospan*dayspan*cellprice
+        ///// cost out request
+        let geospan = module.exports.geoarea(params.polygon,params.multipolygon,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
+        let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
+        if(geospan*dayspan > maxbulk){
+          return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
+        }
+        c = geospan*dayspan*cellprice
+        if(isNaN(c)){
+          c = 1 // protect against NaNs messing up user's token alotment
+        }
 
-              ///// metadata discount
-              if(!url.includes('data') || url.includes('except-data-values') || url.includes('compression=minimal')){
-                c /= metaDiscount
-              }
+        ///// metadata discount
+        if(!url.includes('data') || url.includes('except-data-values') || url.includes('compression=minimal')){
+          c /= metaDiscount
+        }
+      }
+
           }
-
-    }
     //// */meta and */vocabulary routes unconstrained for now  
   }
 
