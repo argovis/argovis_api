@@ -344,8 +344,14 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
 
   // return a minimal version if requested
   if(pp_params.compression == 'minimal'){
-    let sourceset = new Set(chunk.source.map(x => x.source).flat())
-    chunk = [chunk['_id'], chunk.geolocation.coordinates[0], chunk.geolocation.coordinates[1], chunk.timestamp, Array.from(sourceset) ]
+    let sourceset = null
+    if(chunk.hasOwnProperty('source')){
+      sourceset = new Set(chunk.source.map(x => x.source).flat())
+    }
+    chunk = [chunk['_id'], chunk.geolocation.coordinates[0], chunk.geolocation.coordinates[1], chunk.timestamp]
+    if(sourceset){
+      chunk.push(Array.from(sourceset))
+    }
   }
 
   return chunk

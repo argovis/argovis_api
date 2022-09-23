@@ -158,6 +158,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /drifters", function () {
+      it("minimal compression on drifters", async function () {
+        const response = await request.get("/drifters?compression=minimal&startDate=2012-03-15T00:00:00Z&endDate=2012-03-16T00:00:00Z").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(2);
+      });
+    }); 
+
     describe("GET /drifters/meta", function () {
       it("fetch drifter metadata by platform number", async function () {
         const response = await request.get("/drifters/meta?platform=101143").set({'x-argokey': 'developer'});
