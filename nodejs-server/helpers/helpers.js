@@ -527,8 +527,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
           c /= metaDiscount
         }
       }
-
-          }
+    }
     //// */meta and */vocabulary routes unconstrained for now  
   }
 
