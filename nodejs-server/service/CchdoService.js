@@ -30,6 +30,7 @@ exports.cchdoVocab = function(parameter) {
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * metadata String metadata pointer (optional)
  * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
@@ -39,7 +40,7 @@ exports.cchdoVocab = function(parameter) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
+exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
