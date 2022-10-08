@@ -86,6 +86,7 @@ exports.argoVocab = function(parameter) {
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * metadata String metadata pointer (optional)
  * platform String Unique platform ID to search for. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
@@ -94,7 +95,9 @@ exports.argoVocab = function(parameter) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,platform,source,compression,mostrecent,data,presRange) {
+
+exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,metadata,platform,source,compression,mostrecent,data,presRange) {
+
   return new Promise(function(resolve, reject) {
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
