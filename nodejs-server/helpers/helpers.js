@@ -491,7 +491,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       }
 
       //// query parameters that specify a larger but still circumscribed number of records
-      else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') ){
+      else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') || qString.get('metadata') ){
         c = 10
       }
 

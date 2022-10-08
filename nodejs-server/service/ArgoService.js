@@ -62,10 +62,18 @@ exports.argoVocab = function(parameter) {
 
     let lookup = {
         'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
-        'source': 'source.source'
+        'source': 'source.source',
+        'metadata': 'metadata'
     }
 
-    argo['argoMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+    let model = null
+    if(parameter=='metadata'){
+      model = argo['argo']
+    } else {
+      model = argo['argoMeta']
+    }
+
+    model.find().distinct(lookup[parameter], function (err, vocab) {
       if (err){
         reject({"code": 500, "message": "Server error"});
         return;

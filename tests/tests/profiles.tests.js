@@ -135,6 +135,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /cchdo/vocabulary", function () {
+      it("make sure cchdo identifies metadata groups correctly", async function () {
+        const response = await request.get("/cchdo/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
+        expect(response.body).to.have.members(['972_m0'])
+      });
+    }); 
+
     describe("GET /cchdo", function () {
       it("check that a source filter on cchdo works as expected", async function () {
         const response = await request.get("/cchdo?source=cchdo_woce&startDate=1996-04-01T00:00:00Z&endDate=1996-05-01T00:00:00Z").set({'x-argokey': 'developer'});
@@ -282,9 +289,16 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /argo/vocabulary", function () {
-      it("get list of argo profiles", async function () {
+      it("get list of argo platforms", async function () {
         const response = await request.get("/argo/vocabulary?parameter=platform").set({'x-argokey': 'developer'});
          expect(response.body).to.have.members(['4901283', '13857']) 
+      });
+    });
+
+    describe("GET /argo/vocabulary", function () {
+      it("get list of argo metadata groups", async function () {
+        const response = await request.get("/argo/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
+         expect(response.body).to.have.members(["4901283_m1", "4901283_m0", "13857_m0"]) 
       });
     });
 

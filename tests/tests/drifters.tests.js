@@ -102,6 +102,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });     
 
+    describe("GET /drifters/vocabulary", function () {
+      it("fetch possible drifter metadata keys", async function () {
+        const response = await request.get("/drifters/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
+        expect(response.body).to.have.members(['101143', '101528'])
+      });
+    }); 
+
     describe("GET /drifters", function () {
       it("fetch drifter data with a polygon filter", async function () {
         const response = await request.get("/drifters?polygon=[[-18,14],[-17,14],[-17,15],[-18,15],[-18,14]]").set({'x-argokey': 'developer'});

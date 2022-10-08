@@ -120,7 +120,7 @@ exports.tcVocab = function(parameter) {
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }
 
-    if(patameter == 'metadata'){
+    if(parameter == 'metadata'){
       tc['tc'].find().distinct('metadata', function (err, vocab) {
         if (err){
           reject({"code": 500, "message": "Server error"});

@@ -127,18 +127,30 @@ exports.drifterVocab = function(parameter) {
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }
 
-    let lookup = {
-        'wmo': 'wmo', // <parameter value> : <corresponding key in metadata document>
-        'platform': 'platform'
+    if(parameter == 'metadata'){
+      Drifter['drifter'].find().distinct('metadata', function (err, vocab) {
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        resolve(vocab)
+      })
     }
 
-    Drifter['drifterMeta'].find().distinct(lookup[parameter], function (err, vocab) {
-      if (err){
-        reject({"code": 500, "message": "Server error"});
-        return;
+    if(parameter =='wmo' || parameter == 'platform'){
+      let lookup = {
+          'wmo': 'wmo', // <parameter value> : <corresponding key in metadata document>
+          'platform': 'platform'
       }
-      resolve(vocab)
-    })
+
+      Drifter['drifterMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        resolve(vocab)
+      })
+    }
   });
 }
 

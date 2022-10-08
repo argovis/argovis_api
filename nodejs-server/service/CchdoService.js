@@ -142,11 +142,12 @@ exports.cchdoVocab = function(parameter) {
     let lookup = {
         'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
         'cchdo_cruise': 'cchdo_cruise_id',
-        'source': 'source.source'
+        'source': 'source.source',
+        'metadata': 'metadata'
     }
 
     let model = null
-    if(parameter=='source'){
+    if(parameter=='source' || parameter=='metadata'){
       model = cchdo['cchdo']
     } else {
       model = cchdo['cchdoMeta']
