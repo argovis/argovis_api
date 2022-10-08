@@ -120,16 +120,24 @@ exports.tcVocab = function(parameter) {
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }
 
-    let lookup = {
-        'name': 'name' // <parameter value> : <corresponding key in metadata document>
+    if(patameter == 'metadata'){
+      tc['tc'].find().distinct('metadata', function (err, vocab) {
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        resolve(vocab)
+      })
     }
 
-    tc['tcMeta'].find().distinct(lookup[parameter], function (err, vocab) {
-      if (err){
-        reject({"code": 500, "message": "Server error"});
-        return;
-      }
-      resolve(vocab)
-    })
+    if(parameter == 'name'){
+      tc['tcMeta'].find().distinct('name', function (err, vocab) {
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        resolve(vocab)
+      })
+    }
   });
 }
