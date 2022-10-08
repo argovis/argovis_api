@@ -170,7 +170,17 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/drifters/meta?platform=101143").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
+    }); 
+
+    describe("GET /drifters", function () {
+      it("metadata group lookup", async function () {
+        const response = await request.get("/drifters?metadata=101143").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(10);
+      });
     });     
   }
 })
+
+
+
 

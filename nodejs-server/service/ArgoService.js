@@ -119,9 +119,17 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     }
 
     // local filter: fields in data collection other than geolocation and timestamp 
-    let local_filter = []
+    let local_filter = {$match:{}}
     if(id){
-        local_filter = [{$match:{'_id':id}}]
+        local_filter['$match']['_id'] = id
+    }
+    if(metadata){
+      local_filter['$match']['metadata'] = metadata
+    }
+    if(Object.keys(local_filter['$match']).length > 0){
+      local_filter = [local_filter]
+    } else {
+      local_filter = []
     }
 
     // optional source filtering

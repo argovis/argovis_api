@@ -142,6 +142,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /cchdo", function () {
+      it("check metadata group request", async function () {
+        const response = await request.get("/cchdo?metadata=972_m0").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(5)
+      });
+    }); 
+
+
     // argo
 
     describe("GET /argo", function () {
@@ -322,5 +330,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /argo", function () {
+      it("check metadata batch request", async function () {
+        const response = await request.get("/argo?metadata=4901283_m1").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(2);
+      });
+    });
+
   }
 })
+

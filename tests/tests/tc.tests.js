@@ -115,6 +115,17 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.have.members(['DEMO', 'UNNAMED']) 
       });
     });
+
+    describe("GET /tc?metadata", function () {
+      it("should be 5 data records corresponding to this metadata key", async function () {
+        const response = await request.get("/tc?metadata=AL011851").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(5);  
+      });
+    }); 
+
   }
 })
+
+
+
 
