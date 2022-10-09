@@ -1,5 +1,6 @@
 'use strict';
-
+const summaries = require('../models/summary');
+const helpers = require('../helpers/helpers')
 
 /**
  * Fetch a document from the summary collection by ID.
@@ -9,13 +10,7 @@
  **/
 exports.fetchSummary = function(id) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = { };
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = summaries.find({"_id":id}).lean()
+    query.exec(helpers.queryCallback.bind(null,null, resolve, reject))
   });
 }
-

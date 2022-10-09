@@ -3,8 +3,7 @@ var Schema = mongoose.Schema;
 
 var summarySchema = Schema(
     {
-      _id: {type: String, required: true},
-      summary: {type: Schema.Types.Mixed, required: true}
+      _id: {type: String, required: true}
     }
   );
 
