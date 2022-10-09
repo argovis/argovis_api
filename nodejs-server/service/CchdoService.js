@@ -14,6 +14,7 @@ const geojsonArea = require('@mapbox/geojson-area');
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * metadata String metadata pointer (optional)
  * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
@@ -23,7 +24,8 @@ const geojsonArea = require('@mapbox/geojson-area');
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
+
+exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -46,9 +48,17 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
     }
 
     // local filter: fields in data collection other than geolocation and timestamp 
-    let local_filter = []
+    let local_filter = {$match:{}}
     if(id){
-        local_filter = [{$match:{'_id':id}}]
+        local_filter['$match']['_id'] = id
+    }
+    if(metadata){
+      local_filter['$match']['metadata'] = metadata
+    }
+    if(Object.keys(local_filter['$match']).length > 0){
+      local_filter = [local_filter]
+    } else {
+      local_filter = []
     }
 
     // optional source filtering
@@ -132,11 +142,12 @@ exports.cchdoVocab = function(parameter) {
     let lookup = {
         'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
         'cchdo_cruise': 'cchdo_cruise_id',
-        'source': 'source.source'
+        'source': 'source.source',
+        'metadata': 'metadata'
     }
 
     let model = null
-    if(parameter=='source'){
+    if(parameter=='source' || parameter=='metadata'){
       model = cchdo['cchdo']
     } else {
       model = cchdo['cchdoMeta']

@@ -110,11 +110,36 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /tc/vocabulary", function () {
-      it("check tc vocab", async function () {
+      it("check tc name vocab", async function () {
         const response = await request.get("/tc/vocabulary?parameter=name").set({'x-argokey': 'developer'});
         expect(response.body).to.have.members(['DEMO', 'UNNAMED']) 
       });
     });
+
+    describe("GET /tc/vocabulary", function () {
+      it("check tc metadata vocab", async function () {
+        const response = await request.get("/tc/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
+        expect(response.body).to.have.members(['AL011851', 'AL041851']) 
+      });
+    });
+
+    describe("GET /tc/vocabulary", function () {
+      it("check tc data_keys vocab", async function () {
+        const response = await request.get("/tc/vocabulary?parameter=data_keys").set({'x-argokey': 'developer'});
+        expect(response.body).to.have.members(["surface_pressure", "wind"]) 
+      });
+    });
+
+    describe("GET /tc?metadata", function () {
+      it("should be 5 data records corresponding to this metadata key", async function () {
+        const response = await request.get("/tc?metadata=AL011851").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(5);  
+      });
+    }); 
+
   }
 })
+
+
+
 

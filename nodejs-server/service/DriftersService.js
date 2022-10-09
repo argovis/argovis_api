@@ -35,6 +35,7 @@ exports.drifterMetaSearch = function(res,platform,wmo) {
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * metadata String metadata pointer (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
  * platform String Unique platform ID to search for. (optional)
  * compression String Data minification strategy to apply. (optional)
@@ -42,7 +43,8 @@ exports.drifterMetaSearch = function(res,platform,wmo) {
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,center,radius,wmo,platform,compression,mostrecent,data) {
+
+exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,center,radius,metadata,wmo,platform,compression,mostrecent,data) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -61,9 +63,17 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
     }
 
     // local filter: fields in data collection other than geolocation and timestamp 
-    let local_filter = []
+    let local_filter = {$match:{}}
     if(id){
-        local_filter = [{$match:{'_id':id}}]
+        local_filter['$match']['_id'] = id
+    }
+    if(metadata){
+      local_filter['$match']['metadata'] = metadata
+    }
+    if(Object.keys(local_filter['$match']).length > 0){
+      local_filter = [local_filter]
+    } else {
+      local_filter = []
     }
 
     // postprocessing parameters
@@ -117,18 +127,30 @@ exports.drifterVocab = function(parameter) {
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }
 
-    let lookup = {
-        'wmo': 'wmo', // <parameter value> : <corresponding key in metadata document>
-        'platform': 'platform'
+    if(parameter == 'metadata'){
+      Drifter['drifter'].find().distinct('metadata', function (err, vocab) {
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        resolve(vocab)
+      })
     }
 
-    Drifter['drifterMeta'].find().distinct(lookup[parameter], function (err, vocab) {
-      if (err){
-        reject({"code": 500, "message": "Server error"});
-        return;
+    if(parameter =='wmo' || parameter == 'platform'){
+      let lookup = {
+          'wmo': 'wmo', // <parameter value> : <corresponding key in metadata document>
+          'platform': 'platform'
       }
-      resolve(vocab)
-    })
+
+      Drifter['drifterMeta'].find().distinct(lookup[parameter], function (err, vocab) {
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        resolve(vocab)
+      })
+    }
   });
 }
 
