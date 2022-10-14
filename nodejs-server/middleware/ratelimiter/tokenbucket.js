@@ -65,7 +65,7 @@ module.exports.tokenbucket = function (req, res, next) {
 			hsetAsync(userbucket.key, "ntokens", tokensnow-requestCost, "lastUpdate", t).then(next())
 		} else {
 			console.log('request rejected on token bucket:', req['url'], tokensnow)
-			throw({"code": 429, "message": "You have temporarily exceeded your API request limit. You will be able to issue another request in "+String(-1*tokensnow)+" seconds. Long term, requests like the one you just made can be made every "+String(requestCost)+" seconds."})
+			throw({"code": 429, delay: [-1*tokensnow, requestCost], "message": "You have temporarily exceeded your API request limit. You will be able to issue another request in "+String(-1*tokensnow)+" seconds. Long term, requests like the one you just made can be made every "+String(requestCost)+" seconds."})
 		}
 	})
 	.catch(err => {
