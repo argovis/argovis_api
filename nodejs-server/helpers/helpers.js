@@ -296,6 +296,9 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   // if we wanted data and none is left, abandon this document
   if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
 
+  // if we asked for a pressure range and no levels are in that pressure range, abandon this document
+  if(pp_params.presRange && levels.length==0) return false
+
   // if we asked for specific data and one of the desired variables isn't found anywhere, abandon this document
   if(pp_params.data && (pp_params.data.length > 1 || pp_params.data[0]!=='except-data-values')){
     for(k=0; k<keys.length; k++){
