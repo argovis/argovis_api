@@ -218,7 +218,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   let my_meta = null  // metadata document corresponding to chunk
   let coerced_pressure = false
   let metadata_only = false
-  
+
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
     keys = pp_params.data.filter(e => e.charAt(0)!='~')
@@ -258,6 +258,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
 
   // reinflate data arrays as a dictionary keyed by depth, and only keep requested data
   let reinflated_levels = {}
+  let reinflated_levels_with_coerced_pressure = {}
   let metalevels = null
   if(metadata.hasOwnProperty('levels')){
     metalevels = metadata.levels // relevant for grids
@@ -271,16 +272,20 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
         reinflate[dk[k]] = chunk.data[j][k]
       }
     }
+    let lvl = metalevels ? metalevels[j] : reinflate.pressure
+    reinflated_levels_with_coerced_pressure[lvl] = reinflate // keep this for pressure filtering below
     if(keys.includes('all') || keys.some(val => (val!='pressure' || !coerced_pressure) && Object.keys(reinflate).includes(val))){ // ie only keep levels that have at least some explicitly requested keys
-      let lvl = metalevels ? metalevels[j] : reinflate.pressure
       reinflated_levels[lvl] = reinflate
     }
   }
 
-  // filter by presRange
+  // filter by presRange, drop profile if no levels left
   let levels = []
   if(pp_params.presRange){
-    levels = Object.keys(reinflated_levels).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
+    levels = Object.keys(reinflated_levels_with_coerced_pressure).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
+    if(levels.length==0){
+      return false
+    }
   } else {
     levels = Object.keys(reinflated_levels)
   }
@@ -295,9 +300,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
 
   // if we wanted data and none is left, abandon this document
   if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
-
-  // if we asked for a pressure range and no levels are in that pressure range, abandon this document
-  if(pp_params.presRange && levels.length==0) return false
 
   // if we asked for specific data and one of the desired variables isn't found anywhere, abandon this document
   if(pp_params.data && (pp_params.data.length > 1 || pp_params.data[0]!=='except-data-values')){
