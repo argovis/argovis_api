@@ -94,7 +94,21 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
     Promise.all([metafilter, datafilter])
         .then(search_result => {
           
-          let postprocess = helpers.post_xform(cchdo['cchdoMeta'], pp_params, search_result, res)
+          let stub = function(data, metadata){
+              // given a data and corresponding metadata document,
+              // return the record that should be returned when the compression=minimal API flag is set
+              // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+              return [
+                data['_id'], 
+                data.geolocation.coordinates[0], 
+                data.geolocation.coordinates[1], 
+                data.timestamp,
+                metadata.woce_lines,
+                metadata.cchdo_cruise_id
+              ]
+          }
+
+          let postprocess = helpers.post_xform(cchdo['cchdoMeta'], pp_params, search_result, res, stub)
           
           resolve([search_result[1], postprocess])
           

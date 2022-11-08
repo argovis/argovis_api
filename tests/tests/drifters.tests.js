@@ -166,9 +166,9 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /drifters", function () {
-      it("minimal compression on drifters", async function () {
-        const response = await request.get("/drifters?compression=minimal&startDate=2012-03-15T00:00:00Z&endDate=2012-03-16T00:00:00Z").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(2);
+      it("should return appropriate minimal representation of this measurement", async function () {
+        const response = await request.get("/drifters?id=101143_0&compression=minimal").set({'x-argokey': 'developer'});
+        expect(response.body).to.eql([['101143_0', -17.74345, 14.74677, "2012-03-15T22:00:00.000Z",1300915]]);  
       });
     }); 
 
