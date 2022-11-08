@@ -159,7 +159,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /cchdo", function () {
       it("should return appropriate minimal representation of this measurement", async function () {
         const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&compression=minimal").set({'x-argokey': 'developer'});
-        expect(response.body).to.eql([['expo_08PD0196_1_sta_016_cast_001', -57.6833, -42.8133, "1996-04-01T10:24:00.000Z", [ "AR08" ], 972]]);  
+        expect(response.body).to.eql([['expo_08PD0196_1_sta_016_cast_001', -57.6833, -42.8133, "1996-04-01T10:24:00.000Z", [ "cchdo_woce" ], [ "AR08" ], 972]]);  
       });
     }); 
 

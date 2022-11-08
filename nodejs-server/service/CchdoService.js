@@ -98,11 +98,15 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
               // given a data and corresponding metadata document,
               // return the record that should be returned when the compression=minimal API flag is set
               // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+              
+              let sourceset = new Set(data.source.map(x => x.source).flat())
+
               return [
                 data['_id'], 
                 data.geolocation.coordinates[0], 
                 data.geolocation.coordinates[1], 
                 data.timestamp,
+                Array.from(sourceset),
                 metadata.woce_lines,
                 metadata.cchdo_cruise_id
               ]
