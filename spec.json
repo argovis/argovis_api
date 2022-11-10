@@ -1160,6 +1160,9 @@
             "operationId": "drifterMetaSearch",
             "parameters": [
                {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
                   "$ref": "#/components/parameters/platformID"
                },
                {
