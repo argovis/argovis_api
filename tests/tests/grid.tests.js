@@ -130,6 +130,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.length).to.eql(2);
       });
     });
+
+    describe("GET /grids/ohc_kg", function () {
+      it("should return appropriate minimal representation of this measurement", async function () {
+        const response = await request.get("/grids/ohc_kg?id=20050115000000_107.5_-64.5&compression=minimal").set({'x-argokey': 'developer'});
+        expect(response.body).to.eql([['20050115000000_107.5_-64.5', 107.5, -64.5, "2005-01-15T00:00:00.000Z"]]);  
+      });
+    }); 
   }
 })
 

@@ -137,6 +137,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /tc", function () {
+      it("should return appropriate minimal representation of this measurement", async function () {
+        const response = await request.get("/tc?id=AL011851_18510625000000&compression=minimal").set({'x-argokey': 'developer'});
+        expect(response.body).to.eql([['AL011851_18510625000000', -94.8, 28, "1851-06-25T00:00:00.000Z"]]);  
+      });
+    }); 
+
   }
 })
 

@@ -205,10 +205,11 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   return model.aggregate(aggPipeline).cursor()
 }
 
-module.exports.postprocess_stream = function(chunk, metadata, pp_params){
+module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <chunk>: raw data table document
   // <metadata>: metadata doc corresponding to this chunk
   // <pp_params>: kv which defines level filtering, data selection and compression decisions
+  // <stub>: function accepting one data document and its corresponding metadata document, returns appropriate representation for the compression=minimal flag.
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
 
@@ -218,6 +219,11 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
   let my_meta = null  // metadata document corresponding to chunk
   let coerced_pressure = false
   let metadata_only = false
+
+  // return a minimal stub right away if requested
+  if(pp_params.compression == 'minimal'){
+    return stub(chunk, metadata)
+  }
 
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
@@ -347,22 +353,10 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params){
     chunk.units = chunk.data_keys.map(x => chunk.units[x])
   }
 
-  // return a minimal version if requested
-  if(pp_params.compression == 'minimal'){
-    let sourceset = null
-    if(chunk.hasOwnProperty('source')){
-      sourceset = new Set(chunk.source.map(x => x.source).flat())
-    }
-    chunk = [chunk['_id'], chunk.geolocation.coordinates[0], chunk.geolocation.coordinates[1], chunk.timestamp]
-    if(sourceset){
-      chunk.push(Array.from(sourceset))
-    }
-  }
-
   return chunk
 }
 
-module.exports.post_xform = function(metaModel, pp_params, search_result, res){
+module.exports.post_xform = function(metaModel, pp_params, search_result, res, stub){
 
   let nDocs = 0
   const postprocess = new Transform({
@@ -377,7 +371,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res){
             let doc = null
             if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
                 /// ie dont even bother with post if we've exceeded our mostrecent cap
-                doc = module.exports.postprocess_stream(chunk, meta, pp_params)
+                doc = module.exports.postprocess_stream(chunk, meta, pp_params, stub)
             }
             if(doc){
               if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
