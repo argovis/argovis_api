@@ -6,13 +6,16 @@ const summaries = require('../models/summary');
 /**
  * Search, reduce and download drifter metadata.
  *
+ * id String Unique ID to search for. (optional)
  * platform String Unique platform ID to search for. (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
  * returns List
  **/
-exports.drifterMetaSearch = function(res,platform,wmo) {
+
+exports.drifterMetaSearch = function(res,id,platform,wmo) {
   return new Promise(function(resolve, reject) {
     let match = {
+        '_id': id, 
         'wmo': wmo,
         'platform': platform
     }

@@ -4,8 +4,8 @@ var utils = require('../utils/writer.js');
 var Drifters = require('../service/DriftersService');
 var helpers = require('../helpers/helpers')
 
-module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, platform, wmo) {
-  Drifters.drifterMetaSearch(res,platform, wmo)
+module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, id, platform, wmo) {
+  Drifters.drifterMetaSearch(res,id,platform, wmo)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
