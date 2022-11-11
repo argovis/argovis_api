@@ -1710,6 +1710,15 @@ paths:
       summary: "Search, reduce and download drifter metadata."
       operationId: drifterMetaSearch
       parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
       - name: platform
         in: query
         description: Unique platform ID to search for.

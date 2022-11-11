@@ -4,11 +4,12 @@
 /**
  * Search, reduce and download drifter metadata.
  *
+ * id String Unique ID to search for. (optional)
  * platform String Unique platform ID to search for. (optional)
  * wmo BigDecimal World Meteorological Organization identification number (optional)
  * returns List
  **/
-exports.drifterMetaSearch = function(platform,wmo) {
+exports.drifterMetaSearch = function(id,platform,wmo) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Drifters = require('../service/DriftersService');
 
-module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, platform, wmo) {
-  Drifters.drifterMetaSearch(platform, wmo)
+module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, id, platform, wmo) {
+  Drifters.drifterMetaSearch(id, platform, wmo)
     .then(function (response) {
       utils.writeJson(res, response);
     })
