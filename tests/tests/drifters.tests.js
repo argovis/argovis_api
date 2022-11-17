@@ -179,6 +179,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /drifters/meta", function () {
+      it("fetch drifter metadata by meta id", async function () {
+        const response = await request.get("/drifters/meta?id=101528").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    }); 
+
     describe("GET /drifters", function () {
       it("metadata group lookup", async function () {
         const response = await request.get("/drifters?metadata=101143").set({'x-argokey': 'developer'});
