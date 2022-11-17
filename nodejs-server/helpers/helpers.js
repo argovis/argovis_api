@@ -482,6 +482,10 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids']
 
   if(standard_routes.includes(path[0])){
+    //// metadata routes
+    if(path.length==2 && path[1] == 'meta'){
+      return 0.2
+    }
     //// core data routes
     if(path.length==1 || (path[0]=='grids' && path.length==2 && path[1]!='vocabulary' && path[1]!='meta')){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
