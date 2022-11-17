@@ -89,6 +89,18 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("cost of 15 deg box near equator for 30 years with data for a standard API route should be out of scope", async function () {
         expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2030-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk).code).to.eql(413);
       });
+    });
+
+    describe("cost functions", function () {
+      it("cost of metadata request should be a flat 0.2", async function () {
+        expect(helpers.cost('/argo/meta?id=4901283_m0', c, cellprice, metaDiscount, maxbulk)).to.eql(0.2);
+      });
+    }); 
+
+    describe("cost functions", function () {
+      it("cost of metadata request should be a flat 0.2", async function () {
+        expect(helpers.cost('/grids/meta?id=ohc_kg', c, cellprice, metaDiscount, maxbulk)).to.eql(0.2);
+      });
     }); 
 }
 
