@@ -63,7 +63,8 @@ exports.argoVocab = function(parameter) {
     let lookup = {
         'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
         'source': 'source.source',
-        'metadata': 'metadata'
+        'metadata': 'metadata',
+        'platform_type': 'platform_type'
     }
 
     let model = null
@@ -156,10 +157,12 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     let metafilter = Promise.resolve([{_id: null}])
     let metacomplete = false
-    if(platform){
+    if(platform || platform_type){
         let match = {
-            'platform': platform
+            'platform': platform,
+            'platform_type': platform_type
         }
+        Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
         metafilter = argo['argoMeta'].aggregate([{$match: match}]).exec()
         metacomplete = true
