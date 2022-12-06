@@ -63,7 +63,8 @@ exports.argoVocab = function(parameter) {
     let lookup = {
         'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
         'source': 'source.source',
-        'metadata': 'metadata'
+        'metadata': 'metadata',
+        'platform_type': 'platform_type'
     }
 
     let model = null
@@ -96,6 +97,7 @@ exports.argoVocab = function(parameter) {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * metadata String metadata pointer (optional)
  * platform String Unique platform ID to search for. (optional)
+ * platform_type String Make/model of platform (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
@@ -104,8 +106,7 @@ exports.argoVocab = function(parameter) {
  * returns List
  **/
 
-exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,metadata,platform,source,compression,mostrecent,data,presRange) {
-
+exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
@@ -156,10 +157,12 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     let metafilter = Promise.resolve([{_id: null}])
     let metacomplete = false
-    if(platform){
+    if(platform || platform_type){
         let match = {
-            'platform': platform
+            'platform': platform,
+            'platform_type': platform_type
         }
+        Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
         metafilter = argo['argoMeta'].aggregate([{$match: match}]).exec()
         metacomplete = true

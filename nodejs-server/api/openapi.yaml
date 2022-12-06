@@ -1238,6 +1238,15 @@ paths:
         schema:
           type: string
           example: "4902911"
+      - name: platform_type
+        in: query
+        description: Make/model of platform
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: PALACE
       - name: source
         in: query
         description: Experimental program source(s) to search for; document must match
@@ -1401,6 +1410,7 @@ paths:
           - source
           - data_keys
           - metadata
+          - platform_type
       responses:
         "200":
           description: OK
@@ -4412,6 +4422,16 @@ components:
       schema:
         type: string
         example: "4902911"
+    platform_type:
+      name: platform_type
+      in: query
+      description: Make/model of platform
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: PALACE
     polygon:
       name: polygon
       in: query
