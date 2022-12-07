@@ -222,6 +222,90 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /argo", function () {
+      it("argo with data filter should return correct data_keys_mode", async function () {
+        const response = await request.get("/argo?id=4901283_021&data=salinity,doxy").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys_mode).to.deep.equal({'salinity':"D",'doxy':"D",'pressure':"D"})
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with data filter should return correct data_keys_mode, as a list when compressed", async function () {
+        const response = await request.get("/argo?id=4901283_021&data=salinity,doxy&compression=array").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys_mode).to.deep.equal(["D","D","D"])
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_018").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys).to.deep.equal([ "pressure", "pressure_argoqc", "temperature", "temperature_argoqc" ])
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct units on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_018").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal({"pressure": "decibar", "pressure_argoqc": "null", "temperature":"degree_Celsius", "temperature_argoqc":"null" })
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with data=all filter should return correct units on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_018&data=all").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal({"pressure": "decibar", "pressure_argoqc": "null", "temperature":"degree_Celsius", "temperature_argoqc":"null" })
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys_mode on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_018").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys_mode).to.deep.equal({"pressure": "R", "pressure_argoqc": "null", "temperature":"R", "temperature_argoqc":"null" })
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with data=metadataOnly filter should still return correct data_keys_mode on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_018&data=except-data-values").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys_mode).to.deep.equal({"pressure": "R", "pressure_argoqc": "null", "temperature":"R", "temperature_argoqc":"null" })
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with compression=array should return correct data_keys_mode on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_018&compression=array").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys_mode).to.deep.equal(["R", "null", "R", "null"])
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with compression=array should return correct units on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_018&compression=array").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal(["decibar", "null", "degree_Celsius", "null"])
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys on a bgc profile", async function () {
+        const response = await request.get("/argo?id=4901283_021").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys).to.deep.equal([ "doxy", "doxy_argoqc", "pressure", "pressure_argoqc", "salinity", "salinity_argoqc", "salinity_sfile", "salinity_sfile_argoqc", "temperature", "temperature_argoqc", "temperature_sfile", "temperature_sfile_argoqc" ])
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct units on a bgc profile", async function () {
+        const response = await request.get("/argo?id=4901283_021").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.equal({ "doxy": "micromole/kg", "doxy_argoqc": "null", "pressure":"decibar", "pressure_argoqc": "null", "salinity":"psu", "salinity_argoqc":"null", "salinity_sfile":"psu", "salinity_sfile_argoqc":"null", "temperature":"degree_Celsius", "temperature_argoqc":"null", "temperature_sfile": "degree_Celsius", "temperature_sfile_argoqc": "null" })
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys_mode on a bgc profile", async function () {
+        const response = await request.get("/argo?id=4901283_021").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys_mode).to.deep.equal({ "doxy": "D", "doxy_argoqc": "null", "pressure":"D", "pressure_argoqc": "null", "salinity":"D", "salinity_argoqc":"null", "salinity_sfile":"D", "salinity_sfile_argoqc":"null", "temperature":"D", "temperature_argoqc":"null", "temperature_sfile": "D", "temperature_sfile_argoqc": "null" })
+      });
+    });
+
+    describe("GET /argo", function () {
       it("argo with data=all filter should return argo-consistent data", async function () {
         const response = await request.get("/argo?id=4901283_021&data=all").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);

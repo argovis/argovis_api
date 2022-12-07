@@ -348,7 +348,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // manage data_keys, units and any data_adjacent objects
-  if(keys.includes('all') && !metadata_only){
+  if(keys.includes('all') || !pp_params.data || metadata_only){
     chunk.data_keys = dk
     chunk.units = units
     if(pp_params.data_adjacent){
@@ -357,7 +357,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       }
     }
   }
-  else if( (keys.length > (coerced_pressure ? 1 : 0)) && !metadata_only){
+  else if( (keys.length > (coerced_pressure ? 1 : 0))){
     chunk.data_keys = keys
     chunk.units = units
     for(const prop in units){
@@ -366,9 +366,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     if(pp_params.data_adjacent){
       for (const [key, val] of Object.entries(data_adjacent)){
         chunk[key] = val
-        console.log(key, val, chunk)
         for(const adj_prop in val){
-          console.log(adj_prop)
           if(!keys.includes(adj_prop)) delete chunk[key][adj_prop] 
         }
       }
@@ -388,6 +386,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       }
       return lvl
     })
+  }
+  if(pp_params.compression == 'array'){
     chunk.units = chunk.data_keys.map(x => chunk.units[x])
     if(pp_params.data_adjacent){
       for(let i=0; i<pp_params.data_adjacent.length; i++){
