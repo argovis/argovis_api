@@ -71,7 +71,8 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
         compression: compression,
         data: data,
         presRange: presRange,
-        mostrecent: mostrecent
+        mostrecent: mostrecent,
+        data_adjacent: ['units']
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
