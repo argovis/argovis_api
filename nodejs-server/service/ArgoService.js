@@ -151,7 +151,8 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
         compression: compression,
         data: data,
         presRange: presRange,
-        mostrecent: mostrecent
+        mostrecent: mostrecent,
+        data_adjacent: ['data_keys_mode']
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise

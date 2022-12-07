@@ -246,6 +246,19 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     dk = metadata.data_keys
     u = metadata.units
   }
+  // do the same for any other units-like structure in pp_params.data_adjacent
+  let da = {}
+  if(pp_params.data_adjacent){
+    for (let i=0; i<pp_params.data_adjacent.length; i++) {
+      let k = pp_params.data_adjacent[i]
+      if(chunk.hasOwnProperty(k)){
+        da[k] = chunk[k]
+      } 
+      else {
+        da[k] = metadata[k]
+      }
+    }
+  }
 
   // bail out on this document if it contains any ~keys:
   if(dk.some(item => notkeys.includes(item))) return false
@@ -260,6 +273,16 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   let units = {}
   for(let k=0; k<dk.length; k++){
     units[dk[k]] = u[k]
+  }
+  // do the same for each pp_params.data_adjacent
+  let data_adjacent = {}
+  if(pp_params.data_adjacent){
+    for (const [key, val] of Object.entries(da)) {
+      data_adjacent[key] = {}
+      for(let k=0; k<dk.length; k++){
+        data_adjacent[key][dk[k]] = da[key][k]
+      }     
+    }
   }
 
   // reinflate data arrays as a dictionary keyed by depth, and only keep requested data
@@ -324,16 +347,31 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     delete chunk.levels
   }
 
-  // manage data_keys and units
+  // manage data_keys, units and any data_adjacent objects
   if(keys.includes('all') && !metadata_only){
     chunk.data_keys = dk
     chunk.units = units
+    if(pp_params.data_adjacent){
+      for (const [key, val] of Object.entries(data_adjacent)){
+        chunk[key] = val
+      }
+    }
   }
   else if( (keys.length > (coerced_pressure ? 1 : 0)) && !metadata_only){
     chunk.data_keys = keys
     chunk.units = units
     for(const prop in units){
       if(!keys.includes(prop)) delete chunk.units[prop]
+    }
+    if(pp_params.data_adjacent){
+      for (const [key, val] of Object.entries(data_adjacent)){
+        chunk[key] = val
+        console.log(key, val, chunk)
+        for(const adj_prop in val){
+          console.log(adj_prop)
+          if(!keys.includes(adj_prop)) delete chunk[key][adj_prop] 
+        }
+      }
     }
   }
 
@@ -351,6 +389,11 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       return lvl
     })
     chunk.units = chunk.data_keys.map(x => chunk.units[x])
+    if(pp_params.data_adjacent){
+      for(let i=0; i<pp_params.data_adjacent.length; i++){
+        chunk[pp_params.data_adjacent[i]] = chunk.data_keys.map(x => chunk[pp_params.data_adjacent[i]][x])
+      }
+    }
   }
 
   return chunk
