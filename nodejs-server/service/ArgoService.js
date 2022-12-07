@@ -132,7 +132,6 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   "metadata" : "metadata",
   "geolocation_argoqc" : 1.4658129805029452,
   "data" : [ "", "" ],
-  "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
   "basin" : 0.8008281904610115,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
@@ -163,7 +162,6 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   "metadata" : "metadata",
   "geolocation_argoqc" : 1.4658129805029452,
   "data" : [ "", "" ],
-  "data_keys_mode" : [ "data_keys_mode", "data_keys_mode" ],
   "basin" : 0.8008281904610115,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",

@@ -3988,13 +3988,11 @@ components:
         data_keys:
           $ref: '#/components/schemas/argo_data_keys'
         units:
-          $ref: '#/components/schemas/argo_units'
+          $ref: '#/components/schemas/data_adjacent'
         cycle_number:
           type: number
         data_keys_mode:
-          type: array
-          items:
-            type: string
+          $ref: '#/components/schemas/data_adjacent'
         geolocation_argoqc:
           type: number
         profile_direction:
@@ -4009,9 +4007,7 @@ components:
         data:
         - ""
         - ""
-        data_keys_mode:
-        - data_keys_mode
-        - data_keys_mode
+        data_keys_mode: null
         basin: 0.80082819046101150206595775671303272247314453125
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
@@ -4058,7 +4054,7 @@ components:
         data_keys:
           $ref: '#/components/schemas/argo_data_keys'
         units:
-          $ref: '#/components/schemas/argo_units'
+          $ref: '#/components/schemas/data_adjacent'
         country:
           type: string
         data_center:
@@ -4100,7 +4096,7 @@ components:
         _id: _id
         oceanops: oceanops
         fleetmonitoring: fleetmonitoring
-    argo_units:
+    data_adjacent:
       anyOf:
       - type: array
         items:
