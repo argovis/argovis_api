@@ -235,16 +235,26 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
 
-  // identify data_keys and units, could be on chunk or metadata
+  // identify data_keys, could be on chunk or metadata
   let dk = null
-  let u = null
   if(chunk.hasOwnProperty('data_keys')) {
     dk = chunk.data_keys  
-    u = chunk.units
   }
   else{
     dk = metadata.data_keys
-    u = metadata.units
+  }
+  // do the same for any other units-like structure in pp_params.data_adjacent
+  let da = {}
+  if(pp_params.data_adjacent){
+    for (let i=0; i<pp_params.data_adjacent.length; i++) {
+      let k = pp_params.data_adjacent[i]
+      if(chunk.hasOwnProperty(k)){
+        da[k] = chunk[k]
+      } 
+      else {
+        da[k] = metadata[k]
+      }
+    }
   }
 
   // bail out on this document if it contains any ~keys:
@@ -256,10 +266,15 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     coerced_pressure = true
   }
 
-  // turn upstream units into a lookup table by data_key
-  let units = {}
-  for(let k=0; k<dk.length; k++){
-    units[dk[k]] = u[k]
+  // turn data adjacent variables into lookup tables by data_key
+  let data_adjacent = {}
+  if(pp_params.data_adjacent){
+    for (const [key, val] of Object.entries(da)) {
+      data_adjacent[key] = {}
+      for(let k=0; k<dk.length; k++){
+        data_adjacent[key][dk[k]] = da[key][k]
+      }     
+    }
   }
 
   // reinflate data arrays as a dictionary keyed by depth, and only keep requested data
@@ -324,16 +339,24 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     delete chunk.levels
   }
 
-  // manage data_keys and units
-  if(keys.includes('all') && !metadata_only){
+  // manage data_keys, any data_adjacent objects
+  if(keys.includes('all') || !pp_params.data || metadata_only){
     chunk.data_keys = dk
-    chunk.units = units
+    if(pp_params.data_adjacent){
+      for (const [key, val] of Object.entries(data_adjacent)){
+        chunk[key] = val
+      }
+    }
   }
-  else if( (keys.length > (coerced_pressure ? 1 : 0)) && !metadata_only){
+  else if( (keys.length > (coerced_pressure ? 1 : 0))){
     chunk.data_keys = keys
-    chunk.units = units
-    for(const prop in units){
-      if(!keys.includes(prop)) delete chunk.units[prop]
+    if(pp_params.data_adjacent){
+      for (const [key, val] of Object.entries(data_adjacent)){
+        chunk[key] = val
+        for(const adj_prop in val){
+          if(!keys.includes(adj_prop)) delete chunk[key][adj_prop] 
+        }
+      }
     }
   }
 
@@ -350,7 +373,13 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       }
       return lvl
     })
-    chunk.units = chunk.data_keys.map(x => chunk.units[x])
+  }
+  if(pp_params.compression == 'array'){
+    if(pp_params.data_adjacent){
+      for(let i=0; i<pp_params.data_adjacent.length; i++){
+        chunk[pp_params.data_adjacent[i]] = chunk.data_keys.map(x => chunk[pp_params.data_adjacent[i]][x])
+      }
+    }
   }
 
   return chunk

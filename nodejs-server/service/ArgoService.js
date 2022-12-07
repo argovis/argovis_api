@@ -151,7 +151,8 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
         compression: compression,
         data: data,
         presRange: presRange,
-        mostrecent: mostrecent
+        mostrecent: mostrecent,
+        data_adjacent: ['units','data_keys_mode']
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
@@ -195,10 +196,8 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
           resolve([search_result[1], postprocess])
 
         })
-
   });
 }
-
 
 /**
  * Argo metadata search and filter.

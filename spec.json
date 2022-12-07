@@ -2389,16 +2389,13 @@
                   "$ref": "#/components/schemas/argo_data_keys"
                },
                "units": {
-                  "$ref": "#/components/schemas/argo_units"
+                  "$ref": "#/components/schemas/data_adjacent"
                },
                "cycle_number": {
                   "type": "number"
                },
                "data_keys_mode": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
+                  "$ref": "#/components/schemas/data_adjacent"
                },
                "geolocation_argoqc": {
                   "type": "number"
@@ -2428,7 +2425,7 @@
                   "$ref": "#/components/schemas/argo_data_keys"
                },
                "units": {
-                   "$ref": "#/components/schemas/argo_units"
+                   "$ref": "#/components/schemas/data_adjacent"
                },
                "country": {
                   "type": "string"
@@ -2465,7 +2462,7 @@
                }
             }
          },
-         "argo_units": {
+         "data_adjacent": {
             "anyOf": [
                {
                   "type": "array",
