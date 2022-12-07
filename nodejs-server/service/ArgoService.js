@@ -196,10 +196,8 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
           resolve([search_result[1], postprocess])
 
         })
-
   });
 }
-
 
 /**
  * Argo metadata search and filter.
