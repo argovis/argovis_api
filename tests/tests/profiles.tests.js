@@ -78,8 +78,8 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /cchdo", function () {
       it("cchdo with data=all filter should return correct units", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all&compression=array").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.have.members([ null, null, null, null, null, null, null, "psu", null, null, "decibar", null, null, null, "Celsius", "psu", "decibar", null, "micromole/kg", null, "Celsius", null ])
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.deep.eql({salinity_ctd: 'null',bottle_salinity_btl_woceqc: 'null',sample_ctd: 'null',bottle_number_btl: 'null',doxy_ctd: 'null',pressure_ctd_woceqc: 'null',oxygen_btl_woceqc: 'null',salinity_btl: 'psu',salinity_ctd_woceqc: 'null',doxy_ctd_woceqc: 'null',ctd_pressure_raw_btl: 'decibar',salinity_btl_woceqc: 'null',temperature_ctd: 'null',temperature_ctd_woceqc: 'null',temperature_btl: 'Celsius',bottle_salinity_btl: 'psu',pressure: 'decibar',temperature_btl_woceqc: 'null',oxygen_btl: 'micromole/kg',sample_btl: 'null',potential_temperature_c_btl: 'Celsius',bottle_number_btl_woceqc: 'null'})
       });
     });
 
