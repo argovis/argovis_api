@@ -4241,1138 +4241,760 @@ components:
         properties:
           ammonium_btl:
             type: string
-            nullable: true
           ammonium_btl_woceqc:
             type: string
-            nullable: true
           argon_btl:
             type: string
-            nullable: true
           argon_btl_woceqc:
             type: string
-            nullable: true
           argon_error_btl:
             type: string
-            nullable: true
           bacterial_cell_count_btl:
             type: string
-            nullable: true
           bacterial_cell_count_btl_woceqc:
             type: string
-            nullable: true
           barium_btl:
             type: string
-            nullable: true
           barium_btl_woceqc:
             type: string
-            nullable: true
           barium_l_btl:
             type: string
-            nullable: true
           barium_l_btl_woceqc:
             type: string
-            nullable: true
           bionbr_btl:
             type: string
-            nullable: true
           bnlid_btl:
             type: string
-            nullable: true
           bottle_latitude_btl:
             type: string
-            nullable: true
           bottle_longitude_btl:
             type: string
-            nullable: true
           bottle_number_btl:
             type: string
-            nullable: true
           bottle_number_btl_woceqc:
             type: string
-            nullable: true
           bottle_salinity_btl:
             type: string
-            nullable: true
           bottle_salinity_btl_woceqc:
             type: string
-            nullable: true
           bottle_time_btl:
             type: string
-            nullable: true
           calcium_btl:
             type: string
-            nullable: true
           calcium_btl_woceqc:
             type: string
-            nullable: true
           carbon_tetrachloride_btl:
             type: string
-            nullable: true
           carbon_tetrachloride_btl_woceqc:
             type: string
-            nullable: true
           carbon_tetrachloride_l_btl:
             type: string
-            nullable: true
           carbon_tetrachloride_l_btl_woceqc:
             type: string
-            nullable: true
           cdom_nasa_placeholder_btl:
             type: string
-            nullable: true
           cdom_nasa_placeholder_btl_woceqc:
             type: string
-            nullable: true
           cdom_ucsb_placeholder_btl:
             type: string
-            nullable: true
           cdom_ucsb_placeholder_btl_woceqc:
             type: string
-            nullable: true
           cesium_134_bq_btl:
             type: string
-            nullable: true
           cesium_134_bq_btl_woceqc:
             type: string
-            nullable: true
           cesium_137_bq_btl:
             type: string
-            nullable: true
           cesium_137_bq_btl_woceqc:
             type: string
-            nullable: true
           cesium_137_bq_error_btl:
             type: string
-            nullable: true
           cfc_113_btl:
             type: string
-            nullable: true
           cfc_113_btl_woceqc:
             type: string
-            nullable: true
           cfc_113_l_btl:
             type: string
-            nullable: true
           cfc_113_l_btl_woceqc:
             type: string
-            nullable: true
           cfc_11_btl:
             type: string
-            nullable: true
           cfc_11_btl_woceqc:
             type: string
-            nullable: true
           cfc_11_error_btl:
             type: string
-            nullable: true
           cfc_11_l_btl:
             type: string
-            nullable: true
           cfc_11_l_btl_woceqc:
             type: string
-            nullable: true
           cfc_12_btl:
             type: string
-            nullable: true
           cfc_12_btl_woceqc:
             type: string
-            nullable: true
           cfc_12_error_btl:
             type: string
-            nullable: true
           cfc_12_l_btl:
             type: string
-            nullable: true
           cfc_12_l_btl_woceqc:
             type: string
-            nullable: true
           chlorophyll_a_btl:
             type: string
-            nullable: true
           chlorophyll_a_btl_woceqc:
             type: string
-            nullable: true
           chlorophyll_a_ug_kg_btl:
             type: string
-            nullable: true
           chlorophyll_a_ug_kg_btl_woceqc:
             type: string
-            nullable: true
           co2_mole_fraction_btl:
             type: string
-            nullable: true
           co2_mole_fraction_btl_woceqc:
             type: string
-            nullable: true
           ctd_beamcp_btl:
             type: string
-            nullable: true
           ctd_beamcp_ctd:
             type: string
-            nullable: true
           ctd_beamcp_ctd_woceqc:
             type: string
-            nullable: true
           ctd_beta700_raw_btl:
             type: string
-            nullable: true
           ctd_beta700_raw_btl_woceqc:
             type: string
-            nullable: true
           ctd_beta700_raw_ctd:
             type: string
-            nullable: true
           ctd_beta700_raw_ctd_woceqc:
             type: string
-            nullable: true
           ctd_cdom_ctd:
             type: string
-            nullable: true
           ctd_cdom_ctd_woceqc:
             type: string
-            nullable: true
           ctd_cdom_raw_btl:
             type: string
-            nullable: true
           ctd_cdom_raw_btl_woceqc:
             type: string
-            nullable: true
           ctd_cdom_raw_ctd:
             type: string
-            nullable: true
           ctd_cdom_raw_ctd_woceqc:
             type: string
-            nullable: true
           ctd_fluor_arbitrary_ctd:
             type: string
-            nullable: true
           ctd_fluor_btl:
             type: string
-            nullable: true
           ctd_fluor_btl_woceqc:
             type: string
-            nullable: true
           ctd_fluor_ctd:
             type: string
-            nullable: true
           ctd_fluor_ctd_woceqc:
             type: string
-            nullable: true
           ctd_fluor_raw_btl:
             type: string
-            nullable: true
           ctd_fluor_raw_btl_woceqc:
             type: string
-            nullable: true
           ctd_fluor_raw_ctd:
             type: string
-            nullable: true
           ctd_fluor_raw_ctd_woceqc:
             type: string
-            nullable: true
           ctd_nitrate_ctd:
             type: string
-            nullable: true
           ctd_nitrate_ctd_woceqc:
             type: string
-            nullable: true
           ctd_number_of_observations_ctd:
             type: string
-            nullable: true
           ctd_optode_oxygen_btl:
             type: string
-            nullable: true
           ctd_optode_oxygen_btl_woceqc:
             type: string
-            nullable: true
           ctd_optode_oxygen_ctd:
             type: string
-            nullable: true
           ctd_optode_oxygen_ctd_woceqc:
             type: string
-            nullable: true
           ctd_optode_oxygen_raw_btl:
             type: string
-            nullable: true
           ctd_optode_oxygen_raw_btl_woceqc:
             type: string
-            nullable: true
           ctd_optode_oxygen_raw_ctd:
             type: string
-            nullable: true
           ctd_optode_oxygen_raw_ctd_woceqc:
             type: string
-            nullable: true
           ctd_oxygen_umol_l_ctd:
             type: string
-            nullable: true
           ctd_pressure_raw_btl:
             type: string
-            nullable: true
           ctd_temperature_unk_ctd:
             type: string
-            nullable: true
           ctd_temperature_unk_ctd_woceqc:
             type: string
-            nullable: true
           ctd_transmissometer_btl:
             type: string
-            nullable: true
           ctd_transmissometer_btl_woceqc:
             type: string
-            nullable: true
           ctd_transmissometer_ctd:
             type: string
-            nullable: true
           ctd_transmissometer_ctd_woceqc:
             type: string
-            nullable: true
           ctd_transmissometer_raw_btl:
             type: string
-            nullable: true
           ctd_transmissometer_raw_btl_woceqc:
             type: string
-            nullable: true
           ctd_transmissometer_raw_ctd:
             type: string
-            nullable: true
           ctd_transmissometer_raw_ctd_woceqc:
             type: string
-            nullable: true
           ctd_turbidity_ftu_ctd:
             type: string
-            nullable: true
           ctd_turbidity_ftu_ctd_woceqc:
             type: string
-            nullable: true
           ctd_turbidity_ntu_ctd:
             type: string
-            nullable: true
           ctd_turbidity_ntu_ctd_woceqc:
             type: string
-            nullable: true
           cyanobacteria_cell_count_btl:
             type: string
-            nullable: true
           cyanobacteria_cell_count_btl_woceqc:
             type: string
-            nullable: true
           d15n_n2_btl:
             type: string
-            nullable: true
           d15n_n2_btl_woceqc:
             type: string
-            nullable: true
           d15n_n2_error_btl:
             type: string
-            nullable: true
           d15n_nitrite_nitrate_btl:
             type: string
-            nullable: true
           d15n_nitrite_nitrate_btl_woceqc:
             type: string
-            nullable: true
           d15n_no3_btl:
             type: string
-            nullable: true
           d15n_no3_btl_woceqc:
             type: string
-            nullable: true
           d15n_no3_error_btl:
             type: string
-            nullable: true
           d18o_nitrate_btl:
             type: string
-            nullable: true
           d18o_nitrate_btl_woceqc:
             type: string
-            nullable: true
           d18o_nitrite_nitrate_btl:
             type: string
-            nullable: true
           d18o_nitrite_nitrate_btl_woceqc:
             type: string
-            nullable: true
           del_carbon_13_dic_btl:
             type: string
-            nullable: true
           del_carbon_13_dic_btl_woceqc:
             type: string
-            nullable: true
           del_carbon_13_dic_error_btl:
             type: string
-            nullable: true
           del_carbon_14_dic_btl:
             type: string
-            nullable: true
           del_carbon_14_dic_btl_woceqc:
             type: string
-            nullable: true
           del_carbon_14_dic_error_btl:
             type: string
-            nullable: true
           del_nitrogen_15_btl:
             type: string
-            nullable: true
           del_nitrogen_15_btl_woceqc:
             type: string
-            nullable: true
           del_oxygen_18_btl:
             type: string
-            nullable: true
           del_oxygen_18_btl_woceqc:
             type: string
-            nullable: true
           del_oxygen_18_error_btl:
             type: string
-            nullable: true
           delta_helium_3_btl:
             type: string
-            nullable: true
           delta_helium_3_btl_woceqc:
             type: string
-            nullable: true
           delta_helium_3_error_btl:
             type: string
-            nullable: true
           density_salinity2_btl:
             type: string
-            nullable: true
           density_salinity2_btl_woceqc:
             type: string
-            nullable: true
           density_salinity_btl:
             type: string
-            nullable: true
           density_salinity_btl_woceqc:
             type: string
-            nullable: true
           density_salinity_practical_salinity2_btl:
             type: string
-            nullable: true
           density_salinity_practical_salinity2_btl_woceqc:
             type: string
-            nullable: true
           density_salinity_practical_salinity_btl:
             type: string
-            nullable: true
           density_salinity_practical_salinity_btl_woceqc:
             type: string
-            nullable: true
           dissolved_organic_carbon_13_btl:
             type: string
-            nullable: true
           dissolved_organic_carbon_13_btl_woceqc:
             type: string
-            nullable: true
           dissolved_organic_carbon_13_error_btl:
             type: string
-            nullable: true
           dissolved_organic_carbon_14_btl:
             type: string
-            nullable: true
           dissolved_organic_carbon_14_btl_woceqc:
             type: string
-            nullable: true
           dissolved_organic_carbon_14_error_btl:
             type: string
-            nullable: true
           dissolved_organic_carbon_btl:
             type: string
-            nullable: true
           dissolved_organic_carbon_btl_woceqc:
             type: string
-            nullable: true
           dissolved_organic_nitrogen_btl:
             type: string
-            nullable: true
           dissolved_organic_nitrogen_btl_woceqc:
             type: string
-            nullable: true
           downcast_oxygen_btl:
             type: string
-            nullable: true
           downcast_oxygen_btl_woceqc:
             type: string
-            nullable: true
           downcast_pressure_btl:
             type: string
-            nullable: true
           downcast_pressure_btl_woceqc:
             type: string
-            nullable: true
           doxy_btl:
             type: string
-            nullable: true
           doxy_btl_woceqc:
             type: string
-            nullable: true
           doxy_ctd:
             type: string
-            nullable: true
           doxy_ctd_woceqc:
             type: string
-            nullable: true
           fco2_btl:
             type: string
-            nullable: true
           fco2_btl_woceqc:
             type: string
-            nullable: true
           fco2_in_situ_btl:
             type: string
-            nullable: true
           fco2_temperature_btl:
             type: string
-            nullable: true
           fm_depth_btl:
             type: string
-            nullable: true
           fm_depth_ctd:
             type: string
-            nullable: true
           fm_depth_ctd_woceqc:
             type: string
-            nullable: true
           fucose_btl:
             type: string
-            nullable: true
           fucose_btl_woceqc:
             type: string
-            nullable: true
           geotraces_sample_btl:
             type: string
-            nullable: true
           helium_btl:
             type: string
-            nullable: true
           helium_btl_woceqc:
             type: string
-            nullable: true
           helium_error_btl:
             type: string
-            nullable: true
           hplc_19_hexanoyloxyfucoxanthin_btl:
             type: string
-            nullable: true
           hplc_19_hexanoyloxyfucoxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_19butanoyloxyfucoxanthin_btl:
             type: string
-            nullable: true
           hplc_19butanoyloxyfucoxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_alloxanthin_btl:
             type: string
-            nullable: true
           hplc_alloxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_alpha_beta_carotenes_btl:
             type: string
-            nullable: true
           hplc_alpha_beta_carotenes_btl_woceqc:
             type: string
-            nullable: true
           hplc_chlorophyll_c1_c2_btl:
             type: string
-            nullable: true
           hplc_chlorophyll_c1_c2_btl_woceqc:
             type: string
-            nullable: true
           hplc_chlorophyll_c2_btl:
             type: string
-            nullable: true
           hplc_chlorophyll_c2_btl_woceqc:
             type: string
-            nullable: true
           hplc_chlorophyll_c3_btl:
             type: string
-            nullable: true
           hplc_chlorophyll_c3_btl_woceqc:
             type: string
-            nullable: true
           hplc_chlorophyllide_a_btl:
             type: string
-            nullable: true
           hplc_chlorophyllide_a_btl_woceqc:
             type: string
-            nullable: true
           hplc_diadinoxanthin_btl:
             type: string
-            nullable: true
           hplc_diadinoxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_diatoxanthin_btl:
             type: string
-            nullable: true
           hplc_diatoxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_divinyl_chlorophyll_a_btl:
             type: string
-            nullable: true
           hplc_divinyl_chlorophyll_a_btl_woceqc:
             type: string
-            nullable: true
           hplc_lutein_btl:
             type: string
-            nullable: true
           hplc_lutein_btl_woceqc:
             type: string
-            nullable: true
           hplc_monovinyl_chlorophyll_a_btl:
             type: string
-            nullable: true
           hplc_monovinyl_chlorophyll_a_btl_woceqc:
             type: string
-            nullable: true
           hplc_monovinyl_chlorophyll_b_btl:
             type: string
-            nullable: true
           hplc_monovinyl_chlorophyll_b_btl_woceqc:
             type: string
-            nullable: true
           hplc_neoxanthin_btl:
             type: string
-            nullable: true
           hplc_neoxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_peridinin_btl:
             type: string
-            nullable: true
           hplc_peridinin_btl_woceqc:
             type: string
-            nullable: true
           hplc_pheophorbide_a_btl:
             type: string
-            nullable: true
           hplc_pheophorbide_a_btl_woceqc:
             type: string
-            nullable: true
           hplc_pheophytin_a_btl:
             type: string
-            nullable: true
           hplc_pheophytin_a_btl_woceqc:
             type: string
-            nullable: true
           hplc_placeholder_btl_woceqc:
             type: string
-            nullable: true
           hplc_prasinoxanthin_btl:
             type: string
-            nullable: true
           hplc_prasinoxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_tot_chl_a_btl:
             type: string
-            nullable: true
           hplc_tot_chl_a_btl_woceqc:
             type: string
-            nullable: true
           hplc_tot_chl_b_btl:
             type: string
-            nullable: true
           hplc_tot_chl_b_btl_woceqc:
             type: string
-            nullable: true
           hplc_tot_chl_c_btl:
             type: string
-            nullable: true
           hplc_tot_chl_c_btl_woceqc:
             type: string
-            nullable: true
           hplc_violaxanthin_btl:
             type: string
-            nullable: true
           hplc_violaxanthin_btl_woceqc:
             type: string
-            nullable: true
           hplc_zeaxanthin_btl:
             type: string
-            nullable: true
           hplc_zeaxanthin_btl_woceqc:
             type: string
-            nullable: true
           hpld_antheraxanthin_btl:
             type: string
-            nullable: true
           hpld_antheraxanthin_btl_woceqc:
             type: string
-            nullable: true
           krypton_btl:
             type: string
-            nullable: true
           krypton_btl_woceqc:
             type: string
-            nullable: true
           krypton_error_btl:
             type: string
-            nullable: true
           methane_btl:
             type: string
-            nullable: true
           methane_l_btl:
             type: string
-            nullable: true
           methane_l_btl_woceqc:
             type: string
-            nullable: true
           methyl_chloroform_btl:
             type: string
-            nullable: true
           methyl_chloroform_btl_woceqc:
             type: string
-            nullable: true
           n2_argon_ratio_btl:
             type: string
-            nullable: true
           n2_argon_ratio_btl_woceqc:
             type: string
-            nullable: true
           n2_argon_ratio_error_btl:
             type: string
-            nullable: true
           n2_argon_ratio_unstripped_btl:
             type: string
-            nullable: true
           n2_argon_ratio_unstripped_btl_woceqc:
             type: string
-            nullable: true
           n2_argon_ratio_unstripped_error_btl:
             type: string
-            nullable: true
           neon_btl:
             type: string
-            nullable: true
           neon_btl_woceqc:
             type: string
-            nullable: true
           neon_error_btl:
             type: string
-            nullable: true
           nitrate_btl:
             type: string
-            nullable: true
           nitrate_btl_woceqc:
             type: string
-            nullable: true
           nitrate_error_btl:
             type: string
-            nullable: true
           nitrite_btl:
             type: string
-            nullable: true
           nitrite_btl_woceqc:
             type: string
-            nullable: true
           nitrite_error_btl:
             type: string
-            nullable: true
           nitrite_nitrate_btl:
             type: string
-            nullable: true
           nitrite_nitrate_btl_woceqc:
             type: string
-            nullable: true
           nitrite_nitrate_l_btl:
             type: string
-            nullable: true
           nitrite_nitrate_l_btl_woceqc:
             type: string
-            nullable: true
           nitrous_oxide_btl:
             type: string
-            nullable: true
           nitrous_oxide_btl_woceqc:
             type: string
-            nullable: true
           odf_pressure_btl:
             type: string
-            nullable: true
           oxygen_btl:
             type: string
-            nullable: true
           oxygen_btl_woceqc:
             type: string
-            nullable: true
           oxygen_ml_l_btl:
             type: string
-            nullable: true
           oxygen_ml_l_btl_woceqc:
             type: string
-            nullable: true
           package_depth_btl:
             type: string
-            nullable: true
           par_btl:
             type: string
-            nullable: true
           par_btl_woceqc:
             type: string
-            nullable: true
           par_ctd:
             type: string
-            nullable: true
           par_ctd_woceqc:
             type: string
-            nullable: true
           par_raw_btl:
             type: string
-            nullable: true
           par_raw_btl_woceqc:
             type: string
-            nullable: true
           partial_co2_temperature_btl:
             type: string
-            nullable: true
           partial_pressure_of_co2_btl:
             type: string
-            nullable: true
           partial_pressure_of_co2_btl_woceqc:
             type: string
-            nullable: true
           particulate_organic_carbon_btl:
             type: string
-            nullable: true
           particulate_organic_carbon_btl_woceqc:
             type: string
-            nullable: true
           particulate_organic_nitrogen_btl:
             type: string
-            nullable: true
           particulate_organic_nitrogen_btl_woceqc:
             type: string
-            nullable: true
           ph_nbs_btl:
             type: string
-            nullable: true
           ph_nbs_btl_woceqc:
             type: string
-            nullable: true
           ph_sws_btl:
             type: string
-            nullable: true
           ph_sws_btl_woceqc:
             type: string
-            nullable: true
           ph_temperature_btl:
             type: string
-            nullable: true
           ph_total_h_scale_btl:
             type: string
-            nullable: true
           ph_total_h_scale_btl_woceqc:
             type: string
-            nullable: true
           ph_unknown_scale_btl:
             type: string
-            nullable: true
           ph_unknown_scale_btl_woceqc:
             type: string
-            nullable: true
           phaeophytin_btl:
             type: string
-            nullable: true
           phaeophytin_btl_woceqc:
             type: string
-            nullable: true
           phaeophytin_ug_l_btl:
             type: string
-            nullable: true
           phaeophytin_ug_l_btl_woceqc:
             type: string
-            nullable: true
           phosphate_btl:
             type: string
-            nullable: true
           phosphate_btl_woceqc:
             type: string
-            nullable: true
           phosphate_error_btl:
             type: string
-            nullable: true
           phosphate_l_btl:
             type: string
-            nullable: true
           phosphate_l_btl_woceqc:
             type: string
-            nullable: true
           phytoplankton_cell_count_btl:
             type: string
-            nullable: true
           phytoplankton_cell_count_btl_woceqc:
             type: string
-            nullable: true
           potential_temperature_68_btl:
             type: string
-            nullable: true
           potential_temperature_c_btl:
             type: string
-            nullable: true
           potential_temperature_c_btl_woceqc:
             type: string
-            nullable: true
           potential_temperature_c_ctd:
             type: string
-            nullable: true
           potential_temperature_ctd:
             type: string
-            nullable: true
           potential_temperature_ctd_woceqc:
             type: string
-            nullable: true
           pressure:
             type: string
-            nullable: true
           pressure_btl_woceqc:
             type: string
-            nullable: true
           pressure_ctd_woceqc:
             type: string
-            nullable: true
           radium_226_btl:
             type: string
-            nullable: true
           radium_226_btl_woceqc:
             type: string
-            nullable: true
           radium_226_error_btl:
             type: string
-            nullable: true
           radium_228_226_btl:
             type: string
-            nullable: true
           radium_228_226_btl_woceqc:
             type: string
-            nullable: true
           radium_228_226_error_btl:
             type: string
-            nullable: true
           radium_228_btl:
             type: string
-            nullable: true
           radium_228_btl_woceqc:
             type: string
-            nullable: true
           radium_228_error_btl:
             type: string
-            nullable: true
           ref_temperature_btl:
             type: string
-            nullable: true
           ref_temperature_btl_woceqc:
             type: string
-            nullable: true
           ref_temperature_c_btl:
             type: string
-            nullable: true
           ref_temperature_c_btl_woceqc:
             type: string
-            nullable: true
           reference_salinity_btl:
             type: string
-            nullable: true
           reference_salinity_btl_woceqc:
             type: string
-            nullable: true
           rev_pressure_btl:
             type: string
-            nullable: true
           rev_pressure_btl_woceqc:
             type: string
-            nullable: true
           rev_temperature_90_btl:
             type: string
-            nullable: true
           rev_temperature_90_btl_woceqc:
             type: string
-            nullable: true
           rev_temperature_btl:
             type: string
-            nullable: true
           rev_temperature_btl_woceqc:
             type: string
-            nullable: true
           rev_temperature_c_btl:
             type: string
-            nullable: true
           rev_temperature_c_btl_woceqc:
             type: string
-            nullable: true
           salinity_btl:
             type: string
-            nullable: true
           salinity_btl_woceqc:
             type: string
-            nullable: true
           salinity_ctd:
             type: string
-            nullable: true
           salinity_ctd_woceqc:
             type: string
-            nullable: true
           sample_btl:
             type: string
-            nullable: true
           sample_ctd:
             type: string
-            nullable: true
           sigma0_btl:
             type: string
-            nullable: true
           silicate_btl:
             type: string
-            nullable: true
           silicate_btl_woceqc:
             type: string
-            nullable: true
           silicate_error_btl:
             type: string
-            nullable: true
           silicate_l_btl:
             type: string
-            nullable: true
           silicate_l_btl_woceqc:
             type: string
-            nullable: true
           sm_depth_btl:
             type: string
-            nullable: true
           sm_depth_ctd:
             type: string
-            nullable: true
           sm_depth_ctd_woceqc:
             type: string
-            nullable: true
           somma_salinity_btl:
             type: string
-            nullable: true
           spar_raw_btl:
             type: string
-            nullable: true
           spar_raw_btl_woceqc:
             type: string
-            nullable: true
           stable_isotope_probing_placeholder_btl:
             type: string
-            nullable: true
           stable_isotope_probing_placeholder_btl_woceqc:
             type: string
-            nullable: true
           sulfur_hexifluoride_btl:
             type: string
-            nullable: true
           sulfur_hexifluoride_btl_woceqc:
             type: string
-            nullable: true
           temperature_btl:
             type: string
-            nullable: true
           temperature_btl_woceqc:
             type: string
-            nullable: true
           temperature_ctd:
             type: string
-            nullable: true
           temperature_ctd_woceqc:
             type: string
-            nullable: true
           total_alkalinity_btl:
             type: string
-            nullable: true
           total_alkalinity_btl_woceqc:
             type: string
-            nullable: true
           total_carbon_btl:
             type: string
-            nullable: true
           total_carbon_btl_woceqc:
             type: string
-            nullable: true
           total_dissolved_nitrogen_btl:
             type: string
-            nullable: true
           total_dissolved_nitrogen_btl_woceqc:
             type: string
-            nullable: true
           total_dissolved_phosphorus_btl:
             type: string
-            nullable: true
           total_dissolved_phosphorus_btl_woceqc:
             type: string
-            nullable: true
           total_organic_carbon_btl:
             type: string
-            nullable: true
           total_organic_carbon_btl_woceqc:
             type: string
-            nullable: true
           total_organic_carbon_l_btl:
             type: string
-            nullable: true
           total_organic_carbon_l_btl_woceqc:
             type: string
-            nullable: true
           total_organic_nitrogen_btl:
             type: string
-            nullable: true
           total_organic_nitrogen_btl_woceqc:
             type: string
-            nullable: true
           total_organic_nitrogen_l_btl:
             type: string
-            nullable: true
           total_organic_nitrogen_l_btl_woceqc:
             type: string
-            nullable: true
           trifluoromethylsulfur_pentafluoride_btl:
             type: string
-            nullable: true
           trifluoromethylsulfur_pentafluoride_btl_woceqc:
             type: string
-            nullable: true
           tritium_btl:
             type: string
-            nullable: true
           tritium_btl_woceqc:
             type: string
-            nullable: true
           tritium_error_btl:
             type: string
-            nullable: true
           urea_btl:
             type: string
-            nullable: true
           urea_btl_woceqc:
             type: string
-            nullable: true
           user_bottle_number_btl:
             type: string
-            nullable: true
           user_bottle_number_btl_woceqc:
             type: string
-            nullable: true
           user_sample_number_btl:
             type: string
-            nullable: true
           user_station_number_btl:
             type: string
-            nullable: true
           xenon_btl:
             type: string
-            nullable: true
           xenon_btl_woceqc:
             type: string
-            nullable: true
           xenon_error_btl:
             type: string
-            nullable: true
     cchdo_data_keys:
       type: array
       items:
