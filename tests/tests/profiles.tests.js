@@ -71,15 +71,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /cchdo", function () {
       it("cchdo with data=all filter should return correct data_keys", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members([ "temperature_btl_woceqc", "bottle_number_btl_woceqc", "bottle_number_btl", "temperature_btl", "oxygen_btl_woceqc", "pressure", "pressure_ctd_woceqc", "oxygen_btl", "temperature_ctd", "salinity_btl", "oxygen_ctd", "potential_temperature_c_btl", "sample_ctd", "sample_btl", "salinity_btl_woceqc", "bottle_salinity_btl_woceqc", "oxygen_ctd_woceqc", "ctd_pressure_raw_btl", "bottle_salinity_btl", "temperature_ctd_woceqc", "salinity_ctd_woceqc", "salinity_ctd" ])
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_keys).to.have.members([ "salinity_ctd", "bottle_salinity_btl_woceqc", "sample_ctd", "bottle_number_btl", "doxy_ctd", "pressure_ctd_woceqc", "oxygen_btl_woceqc", "salinity_btl", "salinity_ctd_woceqc", "doxy_ctd_woceqc", "ctd_pressure_raw_btl", "salinity_btl_woceqc", "temperature_ctd", "temperature_ctd_woceqc", "temperature_btl", "bottle_salinity_btl", "pressure", "temperature_btl_woceqc", "oxygen_btl", "sample_btl", "potential_temperature_c_btl", "bottle_number_btl_woceqc" ])
       });
     });
 
     describe("GET /cchdo", function () {
       it("cchdo with data=all filter should return correct units", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal({"temperature_btl_woceqc":  "null","bottle_number_btl_woceqc":  "null","bottle_number_btl":  "null","temperature_btl":  "Celsius","oxygen_btl_woceqc":  "null","pressure":  "decibar","pressure_ctd_woceqc":  "null","oxygen_btl":  "micromole/kg","temperature_ctd":  "null","salinity_btl":  "psu","oxygen_ctd":  "null","potential_temperature_c_btl":  "Celsius","sample_ctd":  "null","sample_btl":  "null","salinity_btl_woceqc":  "null","bottle_salinity_btl_woceqc":  "null","oxygen_ctd_woceqc":  "null","ctd_pressure_raw_btl":  "decibar","bottle_salinity_btl":  "psu","temperature_ctd_woceqc":  "null","salinity_ctd_woceqc":  "null","salinity_ctd" :  "null"})
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all&compression=array").set({'x-argokey': 'developer'});
+        expect(response.body[0].units).to.have.members([ null, null, null, null, null, null, null, "psu", null, null, "decibar", null, null, null, "Celsius", "psu", "decibar", null, "micromole/kg", null, "Celsius", null ])
       });
     });
 
