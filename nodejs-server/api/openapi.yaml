@@ -15,8 +15,7 @@ externalDocs:
   description: Find us on GitHub
   url: https://github.com/argovis/argovis_api
 servers:
-- url: 'https://argovisbeta01.colorado.edu/api'
-  description: API dev and demo channel
+- url: /
 security:
 - name: []
 tags:
