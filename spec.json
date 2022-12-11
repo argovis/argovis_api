@@ -20,8 +20,8 @@
    },
    "servers": [
       {
-         "url": "https://argovis-api.colorado.edu",
-         "description": "Server Hosted by University of Colorado, Boulder"
+         "url": "https://argovisbeta01.colorado.edu/api",
+         "description": "API dev and demo channel"
       }
    ],
    "security": [
