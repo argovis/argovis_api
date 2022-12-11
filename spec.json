@@ -20,7 +20,7 @@
    },
    "servers": [
       {
-         "url": "https://argovisbeta01.colorado.edu\/api",
+         "url": "https://argovisbeta01.colorado.edu/api",
          "description": "API dev and demo channel"
       }
    ],
