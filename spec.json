@@ -18,7 +18,10 @@
       "description": "Find us on GitHub",
       "url": "https://github.com/argovis/argovis_api"
    },
-   "servers": [],
+   "servers": [
+      "https://argovisbeta01.colorado.edu/api",
+      "/"
+   ],
    "security": [
       {
          "name": []
