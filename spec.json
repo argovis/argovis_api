@@ -19,8 +19,12 @@
       "url": "https://github.com/argovis/argovis_api"
    },
    "servers": [
-      "https://argovisbeta01.colorado.edu/api",
-      "/"
+      {
+         "url": "https://argovisbeta01.colorado.edu/api"
+      },
+      {
+         "url": "/"
+      }
    ],
    "security": [
       {
