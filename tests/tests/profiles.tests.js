@@ -470,6 +470,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /argo", function () {
+      it("shouldnt return a profile with no levels in presRange, even if not returning actual data levels, in minimal mode", async function () {
+        const response = await request.get("/argo?presRange=2000,10000&compression=minimal").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
+
+    describe("GET /argo", function () {
       it("should return profiles in presRange, even if not returning actual data levels", async function () {
         const response = await request.get("/argo?presRange=1000,2000").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3);

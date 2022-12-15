@@ -220,11 +220,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   let coerced_pressure = false
   let metadata_only = false
 
-  // return a minimal stub right away if requested
-  if(pp_params.compression == 'minimal'){
-    return stub(chunk, metadata)
-  }
-
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
     keys = pp_params.data.filter(e => e.charAt(0)!='~')
@@ -380,6 +375,11 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
         chunk[pp_params.data_adjacent[i]] = chunk.data_keys.map(x => chunk[pp_params.data_adjacent[i]][x])
       }
     }
+  }
+
+  // return a minimal stub if requested
+  if(pp_params.compression == 'minimal'){
+    return stub(chunk, metadata)
   }
 
   return chunk
