@@ -14,7 +14,7 @@ const summaries = require('../models/summary');
 
 exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    const query = Grid.gridMeta.aggregate([{$match:{'_id':id}}]);
+    const query = Grid[helpers.find_grid_collection(id)+'Meta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
     resolve([query.cursor(), postprocess])
   });
@@ -68,20 +68,15 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
         data: data,
         presRange: presRange,
         mostrecent: mostrecent,
-        data_adjacent: ['units']
+        data_adjacent: ['units', 'metadata']
     }
 
-    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    /// currently no explicit metadata parameters to start search on for grid, but leaving the boilerplate in anyway...
-    let metafilter = Promise.resolve([{_id: null}])
-    let metacomplete = false
-    // if(name){
-    //     metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
-    //     metacomplete = true
-    // }
+    // metadata table filter: just get the entire table for simplicity's sake, grid metadata is tiny
+    let metafilter = Grid[helpers.find_grid_collection(gridName) + 'Meta'].find({}).lean()
+    let metacomplete = true
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[helpers.find_grid_collection(gridName)], params, local_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
@@ -98,7 +93,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
               ]
           }
 
-          let postprocess = helpers.post_xform(Grid['gridMeta'], pp_params, search_result, res, stub)
+          let postprocess = grid_post_xform(pp_params, search_result, stub)
 
           resolve([search_result[1], postprocess])
 
@@ -120,4 +115,138 @@ exports.gridVocab = function(parameter) {
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }
   });
+}
+
+let grid_post_xform = function(pp_params, search_result, stub){
+  // grid-specialized version of the post_xform helper function.
+
+  let nDocs = 0
+  const postprocess = new Transform({
+    objectMode: true,
+    transform(chunk, encoding, next){
+
+      // munge the chunk and push it downstream if it isn't rejected.
+      let doc = null
+      if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          /// ie dont even bother with post if we've exceeded our mostrecent cap
+          doc = grid_postprocess_stream(chunk, search_result[0], pp_params, stub)
+      }
+      if(doc){
+        if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          this.push(doc)
+        }
+        nDocs++
+      }
+      next()
+    }
+  });
+  
+  postprocess._flush = function(callback){
+    if(nDocs == 0){
+      res.status(404)
+      this.push({"code":404, "message": "No documents found matching search."})
+    }
+    return callback()
+  }
+
+  return postprocess
+}
+
+let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
+  // grid-specialized version of the postprocess_stream helper
+
+  // <chunk>: raw data table document
+  // <metadata>: full metadata table for this collection
+  // <pp_params>: kv which defines level filtering, data selection and compression decisions
+  // <stub>: function accepting one data document and its corresponding metadata document, returns appropriate representation for the compression=minimal flag.
+  // returns chunk mutated into its final, user-facing form
+  // or return false to drop this item from the stream
+
+  // declare some variables at scope
+  let keys = []       // data keys to keep when filtering down data
+  let notkeys = []    // data keys that disqualify a document if present
+  let metadata_only = false
+
+  // determine which data keys should be kept or tossed, if necessary
+  if(pp_params.data){
+    keys = pp_params.data.filter(e => e.charAt(0)!='~')
+    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
+    if(keys.includes('except-data-values')){
+      metadata_only = true
+      keys.splice(keys.indexOf('except-data-values'))
+    }
+  }
+
+  // bail out on this document if it contains any ~keys:
+  if(chunk.data_keys.some(item => notkeys.includes(item))) return false
+
+  // drop non-requested grids, data_keys and corresponding adjacent data
+  let filtered_keys = []
+  for(let i=0; i<chunk.data_keys.length; i++){
+    if(!keys.includes('all') && !keys.includes(chunk.data_keys[i])){
+      chunk.data.splice(i,1)
+      for(let k=0; k<pp_params.data_adjacent.length; k++){
+        chunk[pp_params.data_adjacent[k]].splice(i,1)
+      }
+    } else {
+      filtered_keys.append(chunk.data_keys[i])
+    }
+  }
+  chunk.data_keys = filtered_keys
+
+  // use presRange to identify per-grid index ranges, and filter appropriately
+  if(pp_params.presRange){
+    chunk.levels = []
+    for(let i=0; i<chunk.data_keys.length; i++){
+      // identify a range of level indexes for this grid
+      let meta = metadata.filter(x => x._id == chunk.metadata[i])[0]
+      let index_range = []
+      index_range[0] = meta.levels.findIndex(n => n >= pp_params.presRange[0]);
+      index_range[1] = meta.levels.reverse().findIndex(n => n <= pp_params.presRange[1]);
+      meta.levels.reverse() // restore order
+      if(index_range[0] == -1) index_range[0] = 0
+      if(index_range[1] == -1) index_range[1] = meta.levels.length - 1
+    
+      // reduce data to levels of interest for this grid
+      chunk.data[i].slice(index_range[0], index_range[1]+1)
+      // keep track of remaining levels for this grid
+      chunk.levels[i] = meta.levels
+      chunk.levels[i].slice(index_range[0], index_range[1]+1)
+    }
+  }
+
+  // abandon doc if no levels in any grid are left
+  if(chunk.data.every(x => x.length == 0)){
+    return false
+  }
+
+  // drop data on metadata only requests
+  if(!pp_params.data || metadata_only){
+    delete chunk.data
+    delete chunk.levels
+  }
+
+  // inflate data if requested
+  if(!pp_params.compression){
+    let d = {}
+    for(let i=0; i<chunk.data_keys.length; i++){
+      d[chunk.data_keys[i]] = chunk.data[i]
+    }
+    chunk.data = d
+    for(let k=0; k<pp_params.data_adjacent.length; k++){
+      let a = {}
+      for(let i=0; i<chunk.data_keys.length; i++){
+        a[chunk.data_keys[i]] = chunk[pp_params.data_adjacent[k]][i]
+      }
+      chunk[pp_params.data_adjacent[k]] = a
+
+    }
+  }
+
+  // return a minimal stub if requested
+  if(pp_params.compression == 'minimal'){
+    return stub(chunk, metadata)
+  }
+
+  return chunk
 }

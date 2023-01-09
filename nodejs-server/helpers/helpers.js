@@ -637,4 +637,13 @@ module.exports.source_filter = function(sourcelist){
   return {$match: sourcematch}
 }
 
+module.exports.find_grid_collection = function(prefix){
+  // map a grid's prefix onto its collection name.
+
+  if (["rg09_temperature", "rg09_salinity", "kg21_ohc15to300"].some(k => k.includes(prefix))) {
+    return 'grid_1_1_0.5_0.5'
+  } else {
+    return ''
+  }
+}
 

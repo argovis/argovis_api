@@ -102,6 +102,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(helpers.cost('/grids/meta?id=ohc_kg', c, cellprice, metaDiscount, maxbulk)).to.eql(0.2);
       });
     }); 
+
+    describe("grid prefixes", function () {
+      it('checks mapping between grid names and collection names', async function () {
+        expect(helpers.find_grid_collection('rg09_temperature_200401_Total').to.eql('grid_1_1_0.5_0.5'));
+      });
+    });
 }
 
 })
