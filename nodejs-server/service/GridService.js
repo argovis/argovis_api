@@ -22,11 +22,11 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : [ "", "" ],
+  "metadata" : "",
   "data" : [ "", "" ],
   "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
-  "units" : [ "", "" ],
+  "units" : "",
   "basin" : 0.8008281904610115,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
@@ -34,11 +34,11 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : [ "", "" ],
+  "metadata" : "",
   "data" : [ "", "" ],
   "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
-  "units" : [ "", "" ],
+  "units" : "",
   "basin" : 0.8008281904610115,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],

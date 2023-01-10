@@ -1478,22 +1478,22 @@
                   "type": "string"
                },
                "metadata": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
+                  "anyOf": [
+                     {
+                        "type": "array",
+                        "items": {
                            "type": "string"
-                        },
-                        {
-                           "type": "object",
-                           "properties": {
-                              "kg21_ohc15to300": {"type":"string"},
-                              "rg09_temperature": {"type": "string"},
-                              "rg09_salinity": {"type": "string"}
-                           }
                         }
-                     ]   
-                  }
+                     },
+                     {
+                        "type": "object",
+                        "properties": {
+                           "kg21_ohc15to300": {"type":"string"},
+                           "rg09_temperature": {"type": "string"},
+                           "rg09_salinity": {"type": "string"}
+                        }
+                     }
+                  ]   
                },
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
@@ -1502,22 +1502,22 @@
                   "$ref": "#/components/schemas/grid_data_keys"
                },
                "units": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
+                  "anyOf": [
+                     {
+                        "type": "array",
+                        "items": {
                            "type": "string"
-                        },
-                        {
-                           "type": "object",
-                           "properties": {
-                              "kg21_ohc15to300": {"type":"string"},
-                              "rg09_temperature": {"type": "string"},
-                              "rg09_salinity": {"type": "string"}
-                           }
                         }
-                     ]   
-                  }
+                     },
+                     {
+                        "type": "object",
+                        "properties": {
+                           "kg21_ohc15to300": {"type":"string"},
+                           "rg09_temperature": {"type": "string"},
+                           "rg09_salinity": {"type": "string"}
+                        }
+                     }
+                  ]   
                },
                "basin": {
                   "type": "number"
