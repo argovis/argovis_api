@@ -2100,9 +2100,7 @@ components:
           type: array
           items:
             anyOf:
-            - type: array
-              items:
-                type: string
+            - type: string
             - type: object
               properties:
                 kg21_ohc15to300:
@@ -2119,9 +2117,7 @@ components:
           type: array
           items:
             anyOf:
-            - type: array
-              items:
-                type: string
+            - type: string
             - type: object
               properties:
                 kg21_ohc15to300:
