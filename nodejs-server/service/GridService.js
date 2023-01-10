@@ -4,6 +4,7 @@ const helpers = require('../helpers/helpers')
 const GJV = require('geojson-validation');
 const geojsonArea = require('@mapbox/geojson-area');
 const summaries = require('../models/summary');
+const Transform = require('stream').Transform;
 
 /**
  * Metadata for grids by ID
@@ -72,7 +73,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     }
 
     // metadata table filter: just get the entire table for simplicity's sake, grid metadata is tiny
-    let metafilter = Grid[helpers.find_grid_collection(gridName) + 'Meta'].find({}).lean()
+    let metafilter = Grid[helpers.find_grid_collection(gridName) + 'Meta'].find({}).lean().exec()
     let metacomplete = true
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
@@ -93,7 +94,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
               ]
           }
 
-          let postprocess = grid_post_xform(pp_params, search_result, stub)
+          let postprocess = grid_post_xform(pp_params, search_result, res, stub)
 
           resolve([search_result[1], postprocess])
 
@@ -117,7 +118,7 @@ exports.gridVocab = function(parameter) {
   });
 }
 
-let grid_post_xform = function(pp_params, search_result, stub){
+let grid_post_xform = function(pp_params, search_result, res, stub){
   // grid-specialized version of the post_xform helper function.
 
   let nDocs = 0
@@ -175,6 +176,8 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
       metadata_only = true
       keys.splice(keys.indexOf('except-data-values'))
     }
+  } else {
+    keys = chunk.data_keys
   }
 
   // bail out on this document if it contains any ~keys:
@@ -189,7 +192,7 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
         chunk[pp_params.data_adjacent[k]].splice(i,1)
       }
     } else {
-      filtered_keys.append(chunk.data_keys[i])
+      filtered_keys.push(chunk.data_keys[i])
     }
   }
   chunk.data_keys = filtered_keys
@@ -214,7 +217,7 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
       chunk.levels[i].slice(index_range[0], index_range[1]+1)
     }
   }
-
+  
   // abandon doc if no levels in any grid are left
   if(chunk.data.every(x => x.length == 0)){
     return false
@@ -227,6 +230,7 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // inflate data if requested
+
   if(!pp_params.compression){
     let d = {}
     for(let i=0; i<chunk.data_keys.length; i++){
