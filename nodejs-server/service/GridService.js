@@ -22,9 +22,9 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "metadata",
+  "metadata" : [ "metadata", "metadata" ],
   "data" : [ "", "" ],
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
+  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",
@@ -34,9 +34,9 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : "metadata",
+  "metadata" : [ "metadata", "metadata" ],
   "data" : [ "", "" ],
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
+  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "units" : "",
@@ -69,7 +69,7 @@ exports.findgridMeta = function(id) {
   "data_type" : "data_type",
   "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
   "latcell" : 5.637376656633329,
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
+  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "loncell" : 5.962133916683182,
   "_id" : "_id",
   "units" : "",
@@ -92,7 +92,7 @@ exports.findgridMeta = function(id) {
   "data_type" : "data_type",
   "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
   "latcell" : 5.637376656633329,
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
+  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "loncell" : 5.962133916683182,
   "_id" : "_id",
   "units" : "",

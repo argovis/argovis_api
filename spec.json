@@ -1478,7 +1478,10 @@
                   "type": "string"
                },
                "metadata": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
                },
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
@@ -1503,9 +1506,9 @@
                         {
                            "type": "object",
                            "properties": {
-                              "ohc_kg": {"type":"number"},
-                              "temperature_rg": {"type": "number"},
-                              "salinity_rg": {"type": "number"}
+                              "kg21_ohc15to300": {"type":"number"},
+                              "rg09_temperature": {"type": "number"},
+                              "rg09_salinity": {"type": "number"}
                            }
                         }
                      ]   
@@ -1595,9 +1598,9 @@
                {
                   "type": "object",
                   "properties": {
-                     "ohc_kg": {"type":"string"},
-                     "temperature_rg": {"type": "string"},
-                     "salinity_rg": {"type": "string"}
+                     "kg21_ohc15to300": {"type":"string"},
+                     "rg09_temperature": {"type": "string"},
+                     "rg09_salinity": {"type": "string"}
                   }
                }
             ]  
@@ -1606,7 +1609,7 @@
             "type": "array",
             "items": {
                "type": "string",
-               "enum": ["ohc_kg", "temperature_rg", "salinity_rg"]
+               "enum": ["rg09_temperature", "rg09_salinity", "kg21_ohc15to300"]
             }
          },
          "geoJSONpoint": {
