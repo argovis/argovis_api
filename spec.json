@@ -1482,10 +1482,7 @@
                   "items": {
                      "anyOf": [
                         {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
+                           "type": "string"
                         },
                         {
                            "type": "object",
@@ -1509,10 +1506,7 @@
                   "items": {
                      "anyOf": [
                         {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
+                           "type": "string"
                         },
                         {
                            "type": "object",
