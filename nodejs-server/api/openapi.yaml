@@ -2132,25 +2132,23 @@ components:
           type: string
           format: date-time
         data:
-          type: array
-          items:
-            anyOf:
-            - type: array
+          anyOf:
+          - type: array
+            items:
+              type: array
               items:
                 type: number
-            - type: object
-              properties:
-                kg21_ohc15to300:
-                  type: number
-                rg09_temperature:
-                  type: number
-                rg09_salinity:
-                  type: number
+          - type: object
+            properties:
+              kg21_ohc15to300:
+                type: array
+              rg09_temperature:
+                type: array
+              rg09_salinity:
+                type: array
       example:
         metadata: ""
-        data:
-        - ""
-        - ""
+        data: ""
         data_keys:
         - rg09_temperature
         - rg09_temperature
