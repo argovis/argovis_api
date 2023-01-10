@@ -205,16 +205,17 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
       let meta = metadata.filter(x => x._id == chunk.metadata[i])[0]
       let index_range = []
       index_range[0] = meta.levels.findIndex(n => n >= pp_params.presRange[0]);
-      index_range[1] = meta.levels.reverse().findIndex(n => n <= pp_params.presRange[1]);
+      index_range[1] = meta.levels.length - meta.levels.reverse().findIndex(n => n <= pp_params.presRange[1]) - 1;
+
       meta.levels.reverse() // restore order
       if(index_range[0] == -1) index_range[0] = 0
       if(index_range[1] == -1) index_range[1] = meta.levels.length - 1
     
       // reduce data to levels of interest for this grid
-      chunk.data[i].slice(index_range[0], index_range[1]+1)
+      chunk.data[i] = chunk.data[i].slice(index_range[0], index_range[1]+1)
       // keep track of remaining levels for this grid
       chunk.levels[i] = meta.levels
-      chunk.levels[i].slice(index_range[0], index_range[1]+1)
+      chunk.levels[i] = chunk.levels[i].slice(index_range[0], index_range[1]+1)
     }
   }
   
