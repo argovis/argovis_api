@@ -1472,7 +1472,7 @@
          },
          "grid": {
             "type": "object",
-            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
+            "required": ["_id", "metadata", "geolocation", "data_keys", "units", "basin", "timestamp"],
             "properties": {
                "_id": {
                   "type": "string"
@@ -1480,11 +1480,50 @@
                "metadata": {
                   "type": "array",
                   "items": {
-                     "type": "string"
+                     "anyOf": [
+                        {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        },
+                        {
+                           "type": "object",
+                           "properties": {
+                              "kg21_ohc15to300": {"type":"string"},
+                              "rg09_temperature": {"type": "string"},
+                              "rg09_salinity": {"type": "string"}
+                           }
+                        }
+                     ]   
                   }
                },
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "data_keys": {
+                  "$ref": "#/components/schemas/grid_data_keys"
+               },
+               "units": {
+                  "type": "array",
+                  "items": {
+                     "anyOf": [
+                        {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        },
+                        {
+                           "type": "object",
+                           "properties": {
+                              "kg21_ohc15to300": {"type":"string"},
+                              "rg09_temperature": {"type": "string"},
+                              "rg09_salinity": {"type": "string"}
+                           }
+                        }
+                     ]   
+                  }
                },
                "basin": {
                   "type": "number"
@@ -1513,30 +1552,18 @@
                         }
                      ]   
                   }
-               },
-               "units": {
-                  "$ref": "#/components/schemas/grid_units" 
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/grid_data_keys"
                }
             }
          },
          "gridMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "levels", "lonrange", "latrange", "timerange", "loncell", "latcell"],
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels"],
             "properties": {
                "_id": {
                   "type": "string"
                },
                "data_type": {
                   "type": "string"
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/grid_data_keys"
-               },
-               "units": {
-                  "$ref": "#/components/schemas/grid_units"
                },
                "date_updated_argovis": {
                   "type": "string",
@@ -1553,37 +1580,6 @@
                   "items": {
                      "type": "number"
                   }
-               },
-               "lonrange": {
-                  "type": "array",
-                  "items": {
-                     "type": "number",
-                     "minItems": 2,
-                     "maxItems": 2
-                  }
-               },
-               "latrange": {
-                  "type": "array",
-                  "items": {
-                     "type": "number",
-                     "minItems": 2,
-                     "maxItems": 2
-                  }
-               },
-               "timerange": {
-                  "type": "array",
-                  "items": {
-                     "type": "string",
-                     "format": "date-time",
-                     "minItems": 2,
-                     "maxItems": 2
-                  }
-               },
-               "loncell": {
-                  "type": "number"
-               },
-               "latcell": {
-                  "type": "number"
                }
             }
          },
