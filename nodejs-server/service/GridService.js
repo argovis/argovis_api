@@ -230,8 +230,7 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // inflate data if requested
-
-  if(!pp_params.compression){
+  if(!pp_params.compression && chunk.data){
     let d = {}
     for(let i=0; i<chunk.data_keys.length; i++){
       d[chunk.data_keys[i]] = chunk.data[i]
