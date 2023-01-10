@@ -23,7 +23,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
     var examples = {};
     examples['application/json'] = [ {
   "metadata" : "",
-  "data" : [ "", "" ],
+  "data" : "",
   "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
   "units" : "",
@@ -35,7 +35,7 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
   "metadata" : "",
-  "data" : [ "", "" ],
+  "data" : "",
   "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
   "units" : "",
