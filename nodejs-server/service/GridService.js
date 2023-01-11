@@ -236,6 +236,9 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // inflate data if requested
+  if(chunk.hasOwnProperty('levels')){
+    pp_params.data_adjacent.push('levels')
+  }
   if(!pp_params.compression && chunk.data){
     let d = {}
     for(let i=0; i<chunk.data_keys.length; i++){
@@ -248,7 +251,6 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
         a[chunk.data_keys[i]] = chunk[pp_params.data_adjacent[k]][i]
       }
       chunk[pp_params.data_adjacent[k]] = a
-
     }
   }
 
