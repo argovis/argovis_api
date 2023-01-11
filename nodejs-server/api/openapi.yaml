@@ -558,9 +558,7 @@ paths:
         schema:
           type: string
           enum:
-          - rg09_temperature
-          - rg09_salinity
-          - kg21_ohc15to300
+          - grid_1_1_0.5_0.5
       - name: id
         in: query
         description: Unique ID to search for.
