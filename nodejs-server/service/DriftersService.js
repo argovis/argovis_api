@@ -59,7 +59,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
     }
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
     if(bailout){
       reject(bailout)
       return
@@ -82,7 +82,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
     // postprocessing parameters
     let pp_params = {
         compression: compression,
-        data: data,
+        data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
         mostrecent: mostrecent,
         data_adjacent: ['units']

@@ -41,7 +41,7 @@ exports.findgridMeta = function(res,id) {
 exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,center,radius,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // generic helper for all grid search and filter routes
-
+    console.log('>>>>', gridName)
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){
@@ -51,7 +51,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     }
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
     if(bailout){
       reject(bailout)
       return
@@ -66,18 +66,18 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     // postprocessing parameters
     let pp_params = {
         compression: compression,
-        data: data,
+        data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
         mostrecent: mostrecent,
         data_adjacent: ['units', 'metadata']
     }
 
     // metadata table filter: just get the entire table for simplicity's sake, grid metadata is tiny
-    let metafilter = Grid[helpers.find_grid_collection(gridName) + 'Meta'].find({}).lean().exec()
+    let metafilter = Grid[gridName + 'Meta'].find({}).lean().exec()
     let metacomplete = true
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[helpers.find_grid_collection(gridName)], params, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
@@ -155,6 +155,7 @@ let grid_post_xform = function(pp_params, search_result, res, stub){
 
 let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   // grid-specialized version of the postprocess_stream helper
+  // recall structure is a bit different for `data`, effectively the transpose of the point data
 
   // <chunk>: raw data table document
   // <metadata>: full metadata table for this collection
@@ -162,7 +163,6 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <stub>: function accepting one data document and its corresponding metadata document, returns appropriate representation for the compression=minimal flag.
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
-
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data keys that disqualify a document if present
@@ -170,12 +170,12 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
 
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
-    keys = pp_params.data.filter(e => e.charAt(0)!='~')
-    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
     if(keys.includes('except-data-values')){
       metadata_only = true
       keys.splice(keys.indexOf('except-data-values'))
     }
+    keys = pp_params.data.filter(e => e.charAt(0)!='~')
+    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
   } else {
     keys = chunk.data_keys
   }
@@ -184,18 +184,22 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   if(chunk.data_keys.some(item => notkeys.includes(item))) return false
 
   // drop non-requested grids, data_keys and corresponding adjacent data
-  let filtered_keys = []
-  for(let i=0; i<chunk.data_keys.length; i++){
-    if(!keys.includes('all') && !keys.includes(chunk.data_keys[i])){
-      chunk.data.splice(i,1)
-      for(let k=0; k<pp_params.data_adjacent.length; k++){
-        chunk[pp_params.data_adjacent[k]].splice(i,1)
+  if(pp_params.data){
+    for(let i=0; i<chunk.data_keys.length; i++){
+      if(!keys.includes('all') && !keys.includes(chunk.data_keys[i])){
+        chunk.data[i] = null
+        chunk.data_keys[i] = null
+        for(let k=0; k<pp_params.data_adjacent.length; k++){
+          chunk[pp_params.data_adjacent[k]][i] = null
+        }
       }
-    } else {
-      filtered_keys.push(chunk.data_keys[i])
+    }
+    chunk.data = chunk.data.filter(x => x !== null)
+    chunk.data_keys = chunk.data_keys.filter(x => x !== null)
+    for(let k=0; k<pp_params.data_adjacent.length; k++){
+      chunk[pp_params.data_adjacent[k]] = chunk[pp_params.data_adjacent[k]].filter(x => x !== null)
     }
   }
-  chunk.data_keys = filtered_keys
 
   // use presRange to identify per-grid index ranges, and filter appropriately
   if(pp_params.presRange){
@@ -219,8 +223,8 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
   
-  // abandon doc if no levels in any grid are left
-  if(chunk.data.every(x => x.length == 0)){
+  // abandon doc if data was requested and no levels in any grid are left
+  if(pp_params.data && chunk.data.every(x => x.length == 0)){
     return false
   }
 
