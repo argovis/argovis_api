@@ -207,6 +207,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.eql([['20040115000000_20.5_-64.5', 20.5, -64.5, "2004-01-15T00:00:00.000Z"]]);  
       });
     }); 
+
+    describe("GET /grids/grid_1_1_0.5_0.5", function () {
+      it("should work properly when limiting presRange and returning multiple matches", async function () {
+        const response = await request.get("/grids/grid_1_1_0.5_0.5?polygon=[[22,-65],[22,-64],[26,-64],[26,-65],[22,-65]]&startDate=2000-01-01T00:00:00Z&endDate=2020-01-01T00:00:00Z&data=rg09_temperature&presRange=0,100").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/grids/{gridName}'].get.responses['200'].content['application/json'].schema);
+      });
+    }); 
   }
 })
 
