@@ -166,7 +166,6 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data keys that disqualify a document if present
   let metadata_only = false
-
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
     if(keys.includes('except-data-values')){
@@ -236,9 +235,6 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // inflate data if requested
-  if(chunk.hasOwnProperty('levels')){
-    pp_params.data_adjacent.push('levels')
-  }
   if(!pp_params.compression && chunk.data){
     let d = {}
     for(let i=0; i<chunk.data_keys.length; i++){
@@ -251,6 +247,13 @@ let grid_postprocess_stream = function(chunk, metadata, pp_params, stub){
         a[chunk.data_keys[i]] = chunk[pp_params.data_adjacent[k]][i]
       }
       chunk[pp_params.data_adjacent[k]] = a
+    }
+    if(chunk.hasOwnProperty('levels')){
+      let l = {}
+      for(let i=0; i<chunk.data_keys.length; i++){
+        l[chunk.data_keys[i]] = chunk.levels[i]
+      }
+      chunk.levels = l
     }
   }
 
