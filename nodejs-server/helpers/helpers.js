@@ -136,12 +136,12 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
   return params
 }
 
-module.exports.request_sanitation = function(polygon, box, center, radius, multipolygon){
+module.exports.request_sanitation = function(polygon, center, radius, multipolygon, data){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
 
   // basic sanity checks
-  if((center && box) || (center && polygon) || (box && polygon || (multipolygon && polygon) || (multipolygon && box) || (multipolygon && center))){
-    return {"code": 400, "message": "Please request only one of box, polygon, center or multipolygon."} 
+  if( (center && polygon) || (multipolygon && polygon) || (multipolygon && center)){
+    return {"code": 400, "message": "Please request only one of polygon, center or multipolygon."} 
   }
   if((center && !radius) || (!center && radius)){
     return {"code": 400, "message": "Please specify both radius and center to filter for data less than <radius> km from <center>."}
@@ -637,4 +637,13 @@ module.exports.source_filter = function(sourcelist){
   return {$match: sourcematch}
 }
 
+module.exports.find_grid_collection = function(token){
+  // map a token including a grid's prefix ('rg09_temperature', 'rg09_salinity', ...) onto its collection name.
+
+  if (["rg09_temperature", "rg09_salinity", "kg21_ohc15to300"].some(k => token.includes(k))) {
+    return 'grid_1_1_0.5_0.5'
+  } else {
+    return ''
+  }
+}
 

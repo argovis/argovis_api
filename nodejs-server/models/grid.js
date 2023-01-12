@@ -28,30 +28,23 @@ var sourceinfo = Schema({
 
 const GridSchema = Schema({
   _id: {type: String, required: true},
-  metadata: {type: String, required: true},
+  metadata: {type: [String], required: true},
   geolocation: {type: geolocation, required: true},
   basin: {type: Number, required: true},
   timestamp: {type: Date, required: true},
-  data: [{type: [Number]}]
+  data: [{type: [Number]}],
+  data_keys: {type: [String], required: true},
+  units: {type: [String], required: true},
 });
 
 const GridMetaSchema = Schema({
-    _id: {type: String, required: true},
-    data_type: {type: String, required: true},
-    data_keys: {type: [String], required: true},
-    units: {type: [String], required: true},
-    date_updated_argovis: {type: Date, required: true},
-    source: {type: sourceinfo, required: true},
-    levels: {type: [Number], required: true},
-    lonrange: {type: [Number], required: true},
-    latrange: {type: [Number], required: true},
-    timerange: {type: [Date], required: true},
-    loncell: {type: Number, required: true},
-    latcell: {type: Number, required: true}
+  _id: {type: String, required: true},
+  data_type: {type: String, required: true},
+  date_updated_argovis: {type: Date, required: true},
+  source: {type: sourceinfo, required: true},
+  levels: {type: [Number], required: true}
 });
 
 module.exports = {}
-module.exports.gridMeta = mongoose.model('gridMeta', GridMetaSchema, 'gridMeta');
-module.exports.ohc_kg = mongoose.model('ohc_kg', GridSchema, 'ohc_kg');
-module.exports.salinity_rg = mongoose.model('salinity_rg', GridSchema, 'salinity_rg');
-module.exports.temperature_rg = mongoose.model('temperature_rg', GridSchema, 'temperature_rg');
+module.exports['grid_1_1_0.5_0.5Meta'] = mongoose.model('grid_1_1_0.5_0.5Meta', GridMetaSchema, 'grid_1_1_0.5_0.5Meta');
+module.exports['grid_1_1_0.5_0.5'] = mongoose.model('grid_1_1_0.5_0.5', GridSchema, 'grid_1_1_0.5_0.5');

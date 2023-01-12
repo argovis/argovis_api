@@ -41,7 +41,7 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
       reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id, CCHDO cruise ID, or WOCE line search."})
       return
     }
-    let bailout = helpers.request_sanitation(params.polygon, null, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
     if(bailout){
       reject(bailout)
       return
@@ -69,7 +69,7 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
     // postprocessing parameters
     let pp_params = {
         compression: compression,
-        data: data,
+        data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
         mostrecent: mostrecent,
         data_adjacent: ['units']

@@ -558,9 +558,7 @@ paths:
         schema:
           type: string
           enum:
-          - ohc_kg
-          - temperature_rg
-          - salinity_rg
+          - grid_1_1_0.5_0.5
       - name: id
         in: query
         description: Unique ID to search for.
@@ -773,15 +771,15 @@ paths:
       parameters:
       - name: parameter
         in: query
-        description: Grid query string parameter to summarize possible values of.
-          Note grid names correspond exactly to grid data_keys.
+        description: Grid path or query string parameter to summarize possible values
+          of.
         required: true
         style: form
         explode: true
         schema:
           type: string
           enum:
-          - data_keys
+          - gridName
       responses:
         "200":
           description: OK
@@ -2087,52 +2085,74 @@ components:
       required:
       - _id
       - basin
+      - data_keys
       - geolocation
       - metadata
       - timestamp
+      - units
       type: object
       properties:
         _id:
           type: string
         metadata:
-          type: string
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              kg21_ohc15to300:
+                type: string
+              rg09_temperature:
+                type: string
+              rg09_salinity:
+                type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
+        data_keys:
+          $ref: '#/components/schemas/grid_data_keys'
+        units:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              kg21_ohc15to300:
+                type: string
+              rg09_temperature:
+                type: string
+              rg09_salinity:
+                type: string
         basin:
           type: number
         timestamp:
           type: string
           format: date-time
         data:
-          type: array
-          items:
-            anyOf:
-            - type: array
+          anyOf:
+          - type: array
+            items:
+              type: array
               items:
                 type: number
-            - type: object
-              properties:
-                ohc_kg:
-                  type: number
-                temperature_rg:
-                  type: number
-                salinity_rg:
-                  type: number
-        units:
-          $ref: '#/components/schemas/grid_units'
-        data_keys:
-          $ref: '#/components/schemas/grid_data_keys'
+          - type: object
+            properties:
+              kg21_ohc15to300:
+                type: array
+              rg09_temperature:
+                type: array
+              rg09_salinity:
+                type: array
       example:
-        metadata: metadata
-        data:
-        - ""
-        - ""
+        metadata: ""
+        data: ""
         data_keys:
-        - ohc_kg
-        - ohc_kg
+        - rg09_temperature
+        - rg09_temperature
         _id: _id
-        basin: 0.80082819046101150206595775671303272247314453125
         units: ""
+        basin: 0.80082819046101150206595775671303272247314453125
         geolocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
@@ -2142,27 +2162,16 @@ components:
     gridMeta:
       required:
       - _id
-      - data_keys
       - data_type
       - date_updated_argovis
-      - latcell
-      - latrange
       - levels
-      - loncell
-      - lonrange
       - source
-      - timerange
-      - units
       type: object
       properties:
         _id:
           type: string
         data_type:
           type: string
-        data_keys:
-          $ref: '#/components/schemas/grid_data_keys'
-        units:
-          $ref: '#/components/schemas/grid_units'
         date_updated_argovis:
           type: string
           format: date-time
@@ -2174,44 +2183,9 @@ components:
           type: array
           items:
             type: number
-        lonrange:
-          type: array
-          items:
-            maxItems: 2
-            minItems: 2
-            type: number
-        latrange:
-          type: array
-          items:
-            maxItems: 2
-            minItems: 2
-            type: number
-        timerange:
-          type: array
-          items:
-            maxItems: 2
-            minItems: 2
-            type: string
-            format: date-time
-        loncell:
-          type: number
-        latcell:
-          type: number
       example:
-        timerange:
-        - 2000-01-23T04:56:07.000+00:00
-        - 2000-01-23T04:56:07.000+00:00
         data_type: data_type
-        lonrange:
-        - 6.02745618307040320615897144307382404804229736328125
-        - 6.02745618307040320615897144307382404804229736328125
-        latcell: 5.63737665663332876420099637471139430999755859375
-        data_keys:
-        - ohc_kg
-        - ohc_kg
-        loncell: 5.962133916683182377482808078639209270477294921875
         _id: _id
-        units: ""
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
           source:
@@ -2229,9 +2203,6 @@ components:
         levels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125
-        latrange:
-        - 1.46581298050294517310021547018550336360931396484375
-        - 1.46581298050294517310021547018550336360931396484375
     grid_units:
       anyOf:
       - type: array
@@ -2239,20 +2210,20 @@ components:
           type: string
       - type: object
         properties:
-          ohc_kg:
+          kg21_ohc15to300:
             type: string
-          temperature_rg:
+          rg09_temperature:
             type: string
-          salinity_rg:
+          rg09_salinity:
             type: string
     grid_data_keys:
       type: array
       items:
         type: string
         enum:
-        - ohc_kg
-        - temperature_rg
-        - salinity_rg
+        - rg09_temperature
+        - rg09_salinity
+        - kg21_ohc15to300
     geoJSONpoint:
       required:
       - coordinates
