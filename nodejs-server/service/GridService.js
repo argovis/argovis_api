@@ -105,7 +105,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
 /**
  * List all grid names currently available
  *
- * parameter String Grid query string parameter to summarize possible values of. Note grid names correspond exactly to grid data_keys.
+ * parameter String Grid path or query string parameter to summarize possible values of.
  * returns List
  **/
 exports.gridVocab = function(parameter) {
