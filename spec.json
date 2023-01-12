@@ -426,7 +426,7 @@
                      "items": {
                         "type": "string"
                      },
-                     "example": "salinity_rg"
+                     "example": "rg09_salinity"
                   }
                },
                {
