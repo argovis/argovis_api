@@ -771,15 +771,15 @@ paths:
       parameters:
       - name: parameter
         in: query
-        description: Grid query string parameter to summarize possible values of.
-          Note grid names correspond exactly to grid data_keys.
+        description: Grid path or query string parameter to summarize possible values
+          of.
         required: true
         style: form
         explode: true
         schema:
           type: string
           enum:
-          - data_keys
+          - gridName
       responses:
         "200":
           description: OK
