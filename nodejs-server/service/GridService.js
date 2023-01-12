@@ -22,24 +22,24 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
+  "metadata" : "",
+  "data" : "",
+  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
-  "basin" : 0.8008281904610115,
   "units" : "",
+  "basin" : 0.8008281904610115,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
+  "metadata" : "",
+  "data" : "",
+  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
   "_id" : "_id",
-  "basin" : 0.8008281904610115,
   "units" : "",
+  "basin" : 0.8008281904610115,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -65,14 +65,8 @@ exports.findgridMeta = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "timerange" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "data_type" : "data_type",
-  "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
-  "latcell" : 5.637376656633329,
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
-  "loncell" : 5.962133916683182,
   "_id" : "_id",
-  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
@@ -85,17 +79,10 @@ exports.findgridMeta = function(id) {
     "doi" : "doi"
   } ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ],
-  "latrange" : [ 1.4658129805029452, 1.4658129805029452 ]
+  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
 }, {
-  "timerange" : [ "2000-01-23T04:56:07.000+00:00", "2000-01-23T04:56:07.000+00:00" ],
   "data_type" : "data_type",
-  "lonrange" : [ 6.027456183070403, 6.027456183070403 ],
-  "latcell" : 5.637376656633329,
-  "data_keys" : [ "ohc_kg", "ohc_kg" ],
-  "loncell" : 5.962133916683182,
   "_id" : "_id",
-  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
@@ -108,8 +95,7 @@ exports.findgridMeta = function(id) {
     "doi" : "doi"
   } ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ],
-  "latrange" : [ 1.4658129805029452, 1.4658129805029452 ]
+  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -123,7 +109,7 @@ exports.findgridMeta = function(id) {
 /**
  * List all grid names currently available
  *
- * parameter String Grid query string parameter to summarize possible values of. Note grid names correspond exactly to grid data_keys.
+ * parameter String Grid path or query string parameter to summarize possible values of.
  * returns List
  **/
 exports.gridVocab = function(parameter) {
