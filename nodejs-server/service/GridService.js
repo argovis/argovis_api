@@ -110,8 +110,8 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
  **/
 exports.gridVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    if(parameter == 'data_keys'){
-      const query = summaries.find({"_id":"grid_data_keys"}).lean()
+    if(parameter == 'gridName'){
+      const query = summaries.find({"_id":"gridSummaries"}).lean()
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }
   });
