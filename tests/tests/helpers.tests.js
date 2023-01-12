@@ -99,7 +99,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("cost functions", function () {
       it("cost of metadata request should be a flat 0.2", async function () {
-        expect(helpers.cost('/grids/meta?id=ohc_kg', c, cellprice, metaDiscount, maxbulk)).to.eql(0.2);
+        expect(helpers.cost('/grids/meta?id=kg21_ohc15to300', c, cellprice, metaDiscount, maxbulk)).to.eql(0.2);
       });
     }); 
 
