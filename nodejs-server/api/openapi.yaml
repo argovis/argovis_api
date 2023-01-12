@@ -670,7 +670,7 @@ paths:
         allowReserved: true
         schema:
           type: array
-          example: salinity_rg
+          example: rg09_salinity
           items:
             type: string
       - name: presRange
