@@ -495,9 +495,9 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
     'argo': new Date("1997-07-28T20:26:20.002Z"),
     'cchdo': new Date("1977-10-07T00:00:00Z"),
     'drifters': new Date("1987-10-02T13:00:00Z"),
-    'ohc_kg': new Date("2005-01-15T00:00:00Z"),
-    'temperature_rg': new Date("2004-01-15T00:00:00Z"),
-    'salinity_rg': new Date("2004-01-15T00:00:00Z"),
+    'kg21_ohc15to300': new Date("2005-01-15T00:00:00Z"),
+    'rg09_temperature': new Date("2004-01-15T00:00:00Z"),
+    'rg09_salinity': new Date("2004-01-15T00:00:00Z"),
     'tc': new Date("1851-06-25T00:00:00Z")
   }
 
