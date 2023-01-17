@@ -49,17 +49,14 @@ exports.findCovar = function(lat,lon,forcastDays) {
  * Probabilities of floats moving between two points in a range of forecast projections
  *
  * id String Unique ID to search for. (optional)
- * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
- * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
- * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
- * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
- * forecastGeolocation List Longitude,latitude of forecast location. (optional)
+ * forecastOrigin List Longitude,latitude of forecast origin location. (optional)
+ * forecastGeolocation List Longitude,latitude of forecast destination location. (optional)
  * metadata String metadata pointer (optional)
  * compression String Data minification strategy to apply. (optional)
  * data List Forecast durations to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.findCovariance = function(id,polygon,multipolygon,center,radius,forecastGeolocation,metadata,compression,data) {
+exports.findCovariance = function(id,forecastOrigin,forecastGeolocation,metadata,compression,data) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization

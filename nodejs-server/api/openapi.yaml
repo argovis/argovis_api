@@ -290,32 +290,9 @@ paths:
         schema:
           type: string
           example: 4902911_0
-      - name: polygon
+      - name: forecastOrigin
         in: query
-        description: "array of [lon, lat] vertices describing a polygon bounding the\
-          \ region of interest; final point must match initial point"
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
-      - name: multipolygon
-        in: query
-        description: array of polygon regions; region of interest is taken as the
-          intersection of all listed polygons.
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
-      - name: center
-        in: query
-        description: center to measure max radius from when defining circular region
-          of interest; must be used in conjunction with query string parameter 'radius'.
+        description: "Longitude,latitude of forecast origin location."
         required: false
         style: form
         explode: false
@@ -327,19 +304,9 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
-      - name: radius
-        in: query
-        description: km from centerpoint when defining circular region of interest;
-          must be used in conjunction with query string parameter 'center'.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 50
       - name: forecastGeolocation
         in: query
-        description: "Longitude,latitude of forecast location."
+        description: "Longitude,latitude of forecast destination location."
         required: false
         style: form
         explode: false
@@ -2137,8 +2104,8 @@ components:
     covariance:
       required:
       - _id
-      - forecastGeolocation
       - geolocation
+      - geolocation_forecast
       - metadata
       type: object
       properties:
@@ -2155,7 +2122,7 @@ components:
                 type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
-        forecastGeolocation:
+        geolocation_forecast:
           $ref: '#/components/schemas/geoJSONpoint'
         data:
           anyOf:
@@ -2209,8 +2176,8 @@ components:
       example:
         metadata: ""
         data: ""
+        geolocation_forecast: null
         _id: _id
-        forecastGeolocation: null
         geolocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
@@ -6153,10 +6120,25 @@ components:
           maxItems: 2
           minItems: 2
           type: number
+    forecastOrigin:
+      name: forecastOrigin
+      in: query
+      description: "Longitude,latitude of forecast origin location."
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
     forecastGeolocation:
       name: forecastGeolocation
       in: query
-      description: "Longitude,latitude of forecast location."
+      description: "Longitude,latitude of forecast destination location."
       required: false
       style: form
       explode: false

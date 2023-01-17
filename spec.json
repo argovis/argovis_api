@@ -212,16 +212,7 @@
                   "$ref": "#/components/parameters/genericID"
                },
                {
-                  "$ref": "#/components/parameters/polygon"
-               },
-               {
-                  "$ref": "#/components/parameters/multipolygon"
-               },
-               {
-                  "$ref": "#/components/parameters/center"
-               },
-               {
-                  "$ref": "#/components/parameters/radius"
+                  "$ref": "#/components/parameters/forecastOrigin"
                },
                {
                   "$ref": "#/components/parameters/forecastGeolocation"
@@ -1473,7 +1464,7 @@
          },
          "covariance": {
             "type": "object",
-            "required": ["_id", "metadata", "geolocation", "forecastGeolocation"],
+            "required": ["_id", "metadata", "geolocation", "geolocation_forecast"],
             "properties": {
                "_id": {
                   "type": "string"
@@ -1497,7 +1488,7 @@
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
                },
-               "forecastGeolocation": {
+               "geolocation_forecast": {
                    "$ref": "#/components/schemas/geoJSONpoint"
                },
                "data": {
@@ -3242,10 +3233,27 @@
                "example": "10,20.1"
             }
          },
+         "forecastOrigin": {
+            "in": "query",
+            "name": "forecastOrigin",
+            "description": "Longitude,latitude of forecast origin location.",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
          "forecastGeolocation": {
             "in": "query",
             "name": "forecastGeolocation",
-            "description": "Longitude,latitude of forecast location.",
+            "description": "Longitude,latitude of forecast destination location.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
