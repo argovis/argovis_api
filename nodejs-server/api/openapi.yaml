@@ -279,7 +279,7 @@ paths:
       - covar (experimental)
       summary: Probabilities of floats moving between two points in a range of forecast
         projections
-      operationId: findTC
+      operationId: findCovariance
       parameters:
       - name: id
         in: query
@@ -420,7 +420,7 @@ paths:
       tags:
       - covar (experimental)
       summary: Covariance metadata search and filter.
-      operationId: findCovarMeta
+      operationId: findCovariancerMeta
       parameters:
       - name: id
         in: query

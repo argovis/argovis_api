@@ -43,61 +43,6 @@ exports.findCovar = function(lat,lon,forcastDays) {
 
 
 /**
- * Covariance metadata search and filter.
- *
- * id String Unique ID to search for. (optional)
- * returns List
- **/
-exports.findCovarMeta = function(id) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "data_type" : "data_type",
-  "data_keys" : [ "90", "90" ],
-  "_id" : "_id",
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
-}, {
-  "data_type" : "data_type",
-  "data_keys" : [ "90", "90" ],
-  "_id" : "_id",
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
-
-/**
  * Probabilities of floats moving between two points in a range of forecast projections
  *
  * id String Unique ID to search for. (optional)
@@ -111,7 +56,7 @@ exports.findCovarMeta = function(id) {
  * data List Forecast durations to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.findTC = function(id,polygon,multipolygon,center,radius,forecastGeolocation,metadata,compression,data) {
+exports.findCovariance = function(id,polygon,multipolygon,center,radius,forecastGeolocation,metadata,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -130,6 +75,61 @@ exports.findTC = function(id,polygon,multipolygon,center,radius,forecastGeolocat
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   }
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Covariance metadata search and filter.
+ *
+ * id String Unique ID to search for. (optional)
+ * returns List
+ **/
+exports.findCovariancerMeta = function(id) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "data_type" : "data_type",
+  "data_keys" : [ "90", "90" ],
+  "_id" : "_id",
+  "source" : [ {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  }, {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  } ],
+  "units" : "",
+  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
+}, {
+  "data_type" : "data_type",
+  "data_keys" : [ "90", "90" ],
+  "_id" : "_id",
+  "source" : [ {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  }, {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  } ],
+  "units" : "",
+  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
