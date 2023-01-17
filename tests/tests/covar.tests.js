@@ -40,6 +40,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.sum).to.eql(0.14285714285714285+0.07142857142857142);
       });
     });
+
+
+
+    describe("GET /covariance", function () {
+      it("returns one covariance grid result", async function () {
+        const response = await request.get("/covariance?").set({'x-argokey': 'developer'});    
+        expect(response.body).to.be.jsonSchema(schema.paths['/covariance'].get.responses['200'].content['application/json'].schema);
+      });
+    });
   }
 })
 

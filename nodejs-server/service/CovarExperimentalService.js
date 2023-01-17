@@ -2,6 +2,8 @@
 const covar = require('../models/covar');
 const GJV = require('geojson-validation');
 const pointInPolygon = require('@turf/boolean-point-in-polygon').default;
+const helpers = require('../helpers/helpers')
+const gridHelpers = require('../helpers/gridHelpers')
 
 /**
  * Probability distribution field for a float at point lat-lon after forcastDays.
@@ -19,7 +21,7 @@ exports.findCovar = function(lat,lon,forcastDays) {
         return;
     }
 
-    const query = covar.findOne({forcastDays: forcastDays, geolocation: {
+    const query = covar['covar'].findOne({forcastDays: forcastDays, geolocation: {
                                 $near: {
                                     $geometry: point
                                     //$maxDistance: radius
@@ -59,29 +61,73 @@ exports.findCovar = function(lat,lon,forcastDays) {
  **/
 exports.findCovariance = function(id,polygon,multipolygon,center,radius,forecastGeolocation,metadata,compression,data) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "metadata" : "",
-  "data" : "",
-  "_id" : "_id",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  }
-}, {
-  "metadata" : "",
-  "data" : "",
-  "_id" : "_id",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  }
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,null,null,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
     }
+
+    // decide y/n whether to service this request
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    if(bailout){
+      reject(bailout)
+      return
+    }
+
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = {$match:{}}
+    if(id){
+        local_filter['$match']['_id'] = id
+    }
+    if(forecastGeolocation){
+      local_filter['$match']['geolocation_forecast'] = forecastGeolocation
+    }
+    if(Object.keys(local_filter['$match']).length > 0){
+      local_filter = [local_filter]
+    } else {
+      local_filter = []
+    }
+
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
+        data_adjacent: ['units', 'metadata']
+    }
+
+    // metadata table filter: just get the entire table for simplicity's sake, there's only one document
+    let metafilter = covar['covarianceMeta'].find({}).lean().exec()
+    let metacomplete = true
+
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, covar['covariance'], params, local_filter))
+
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
+
+          let stub = function(data, metadata){
+              // given a data and corresponding metadata document,
+              // return the record that should be returned when the compression=minimal API flag is set
+              // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+              return [
+                data['_id'], 
+                data.geolocation.coordinates[0], 
+                data.geolocation.coordinates[1], 
+                data.geolocation_forecast.coordinates[0], 
+                data.geolocation_forecast.coordinates[1], 
+                data.timestamp
+              ]
+          }
+
+          let postprocess = gridHelpers.grid_post_xform(pp_params, search_result, res, stub)
+
+          resolve([search_result[1], postprocess])
+
+        })
+
   });
 }
 
@@ -92,53 +138,14 @@ exports.findCovariance = function(id,polygon,multipolygon,center,radius,forecast
  * id String Unique ID to search for. (optional)
  * returns List
  **/
-exports.findCovariancerMeta = function(id) {
+exports.findCovariancerMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "data_type" : "data_type",
-  "data_keys" : [ "90", "90" ],
-  "_id" : "_id",
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
-}, {
-  "data_type" : "data_type",
-  "data_keys" : [ "90", "90" ],
-  "_id" : "_id",
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "units" : "",
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    const query = covar['covarianceMeta'].aggregate([{$match:{'_id':id}}]);
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
+
 
 
 /**
@@ -158,7 +165,7 @@ exports.sumCovar = function(lat,lon,forcastDays,polygon) {
         return;
     }
 
-    const query = covar.findOne({forcastDays: forcastDays, geolocation: {
+    const query = covar['covar'].findOne({forcastDays: forcastDays, geolocation: {
                                 $near: {
                                     $geometry: point
                                     //$maxDistance: radius

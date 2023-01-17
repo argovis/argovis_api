@@ -17,9 +17,10 @@ module.exports.findCovar = function findCovar (req, res, next, lat, lon, forcast
 };
 
 module.exports.findCovariance = function findCovariance (req, res, next, id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data) {
-  CovarExperimental.findCovariance(id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data)
-    .then(function (response) {
-      utils.writeJson(res, response);
+  CovarExperimental.findCovariance(res, id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -27,9 +28,10 @@ module.exports.findCovariance = function findCovariance (req, res, next, id, pol
 };
 
 module.exports.findCovariancerMeta = function findCovariancerMeta (req, res, next, id) {
-  CovarExperimental.findCovariancerMeta(id)
-    .then(function (response) {
-      utils.writeJson(res, response);
+  CovarExperimental.findCovariancerMeta(res,id)
+    .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
+    function (response) {
+      utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
       utils.writeJson(res, response);
