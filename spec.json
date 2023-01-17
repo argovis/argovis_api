@@ -200,6 +200,119 @@
             }
          }
       },
+      "/covariance": {
+         "get": {
+            "tags": [
+               "covar (experimental)"
+            ],
+            "summary": "Probabilities of floats moving between two points in a range of forecast projections",
+            "operationId": "findTC",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/forecastGeolocation"
+               },
+               {
+                  "$ref": "#/components/parameters/metadata"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Forecast durations to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((90)|(180)|(270)|(360)|(450)|(540)|(630)|(720)|(810)|(900)|(990)|(1080)|(1170)|(1260)|(1350)|(1440)|(1530)|(1620)|(1710)|(1800){1})|all|except-data-values)$"
+                     },
+                     "example": "90"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/covariance"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/covariance/meta": {
+         "get": {
+            "tags": [
+               "covar (experimental)"
+            ],
+            "summary": "Covariance metadata search and filter.",
+            "operationId": "findCovarMeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/covarianceMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/tc": {
          "get": {
             "tags": [
@@ -1355,6 +1468,145 @@
                },
                "geolocation": {
                   "$ref": "#/components/schemas/geoJSONpoint"
+               }
+            }
+         },
+         "covariance": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "forecastGeolocation"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "metadata": {
+                  "anyOf": [
+                     {
+                        "type": "array",
+                        "items": {
+                           "type": "string"
+                        }
+                     },
+                     {
+                        "type": "object",
+                        "properties": {
+                           "covariance": {"type":"string"}
+                        }
+                     }
+                  ]   
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "forecastGeolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "data": {
+                  "anyOf": [
+                     {
+                        "type": "array",
+                        "items": {
+                           "type": "array",
+                           "items": {
+                              "type": "number"
+                           }
+                        }
+                     },
+                     {
+                        "type": "object",
+                        "properties": {
+                           "90": {"type":"array", "item":{"type": "number"}},
+                           "180": {"type":"array", "item":{"type": "number"}},
+                           "270": {"type":"array", "item":{"type": "number"}},
+                           "360": {"type":"array", "item":{"type": "number"}},
+                           "450": {"type":"array", "item":{"type": "number"}},
+                           "540": {"type":"array", "item":{"type": "number"}},
+                           "630": {"type":"array", "item":{"type": "number"}},
+                           "720": {"type":"array", "item":{"type": "number"}},
+                           "810": {"type":"array", "item":{"type": "number"}},
+                           "900": {"type":"array", "item":{"type": "number"}},
+                           "990": {"type":"array", "item":{"type": "number"}},
+                           "1080": {"type":"array", "item":{"type": "number"}},
+                           "1170": {"type":"array", "item":{"type": "number"}},
+                           "1260": {"type":"array", "item":{"type": "number"}},
+                           "1350": {"type":"array", "item":{"type": "number"}},
+                           "1440": {"type":"array", "item":{"type": "number"}},
+                           "1530": {"type":"array", "item":{"type": "number"}},
+                           "1620": {"type":"array", "item":{"type": "number"}},
+                           "1710": {"type":"array", "item":{"type": "number"}},
+                           "1800": {"type":"array", "item":{"type": "number"}}
+                        }
+                     }
+                  ]   
+               }
+            }
+         },
+         "covarianceMeta": {
+            "type": "object",
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels", "data_keys", "units"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
+               },
+               "levels": {
+                  "type": "array",
+                  "items": {
+                     "type": "number"
+                  }
+               },
+               "data_keys": {
+                  "type": "array",
+                  "items": {
+                     "type": "string",
+                     "enum": ["90", "180", "270", "360", "450", "540", "630", "720", "810", "900", "990", "1080", "1170", "1260", "1350", "1440", "1530", "1620", "1710", "1800"]
+                  }
+               },
+               "units": {
+                  "anyOf": [
+                     {
+                        "type": "array",
+                        "items": {
+                           "type": "string"
+                        }
+                     },
+                     {
+                        "type": "object",
+                        "properties": {
+                           "90": {"type": "string"},
+                           "180": {"type": "string"},
+                           "270": {"type": "string"},
+                           "360": {"type": "string"},
+                           "450": {"type": "string"},
+                           "540": {"type": "string"},
+                           "630": {"type": "string"},
+                           "720": {"type": "string"},
+                           "810": {"type": "string"},
+                           "900": {"type": "string"},
+                           "990": {"type": "string"},
+                           "1080": {"type": "string"},
+                           "1170": {"type": "string"},
+                           "1260": {"type": "string"},
+                           "1350": {"type": "string"},
+                           "1440": {"type": "string"},
+                           "1530": {"type": "string"},
+                           "1620": {"type": "string"},
+                           "1710": {"type": "string"},
+                           "1800": {"type": "string"}
+                        }
+                     }
+                  ]   
                }
             }
          },
@@ -2977,6 +3229,23 @@
             "in": "query",
             "name": "presRange",
             "description": "Pressure range in dbar to filter for; levels outside this range will not be returned.",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
+         "forecastGeolocation": {
+            "in": "query",
+            "name": "forecastGeolocation",
+            "description": "Longitude,latitude of forecast location.",
             "style": "form",
             "explode": false,
             "allowReserved": true,
