@@ -13,8 +13,8 @@ module.exports.findCovar = function findCovar (req, res, next, lat, lon, forcast
     });
 };
 
-module.exports.findCovariance = function findCovariance (req, res, next, id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data) {
-  CovarExperimental.findCovariance(id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data)
+module.exports.findCovariance = function findCovariance (req, res, next, id, forecastOrigin, forecastGeolocation, metadata, compression, data) {
+  CovarExperimental.findCovariance(id, forecastOrigin, forecastGeolocation, metadata, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })
