@@ -273,6 +273,193 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: CovarExperimental
+  /covariance:
+    get:
+      tags:
+      - covar (experimental)
+      summary: Probabilities of floats moving between two points in a range of forecast
+        projections
+      operationId: findTC
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: forecastGeolocation
+        in: query
+        description: "Longitude,latitude of forecast location."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: metadata
+        in: query
+        description: metadata pointer
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - array
+          - minimal
+      - name: data
+        in: query
+        description: Forecast durations to include. Return only documents that have
+          all data requested. Accepts ~ negation to filter out documents including
+          the specified data. Omission of this parameter will result in metadata only
+          responses.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "90"
+          items:
+            pattern: "^((~)?((90)|(180)|(270)|(360)|(450)|(540)|(630)|(720)|(810)|(900)|(990)|(1080)|(1170)|(1260)|(1350)|(1440)|(1530)|(1620)|(1710)|(1800){1})|all|except-data-values)$"
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/covariance'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: CovarExperimental
+  /covariance/meta:
+    get:
+      tags:
+      - covar (experimental)
+      summary: Covariance metadata search and filter.
+      operationId: findCovarMeta
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/covarianceMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: CovarExperimental
   /tc:
     get:
       tags:
@@ -1947,6 +2134,210 @@ components:
         _id: _id
         forcastDays: 5
         geolocation: null
+    covariance:
+      required:
+      - _id
+      - forecastGeolocation
+      - geolocation
+      - metadata
+      type: object
+      properties:
+        _id:
+          type: string
+        metadata:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              covariance:
+                type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        forecastGeolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        data:
+          anyOf:
+          - type: array
+            items:
+              type: array
+              items:
+                type: number
+          - type: object
+            properties:
+              "90":
+                type: array
+              "180":
+                type: array
+              "270":
+                type: array
+              "360":
+                type: array
+              "450":
+                type: array
+              "540":
+                type: array
+              "630":
+                type: array
+              "720":
+                type: array
+              "810":
+                type: array
+              "900":
+                type: array
+              "990":
+                type: array
+              "1080":
+                type: array
+              "1170":
+                type: array
+              "1260":
+                type: array
+              "1350":
+                type: array
+              "1440":
+                type: array
+              "1530":
+                type: array
+              "1620":
+                type: array
+              "1710":
+                type: array
+              "1800":
+                type: array
+      example:
+        metadata: ""
+        data: ""
+        _id: _id
+        forecastGeolocation: null
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+    covarianceMeta:
+      required:
+      - _id
+      - data_keys
+      - data_type
+      - date_updated_argovis
+      - levels
+      - source
+      - units
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        levels:
+          type: array
+          items:
+            type: number
+        data_keys:
+          type: array
+          items:
+            type: string
+            enum:
+            - "90"
+            - "180"
+            - "270"
+            - "360"
+            - "450"
+            - "540"
+            - "630"
+            - "720"
+            - "810"
+            - "900"
+            - "990"
+            - "1080"
+            - "1170"
+            - "1260"
+            - "1350"
+            - "1440"
+            - "1530"
+            - "1620"
+            - "1710"
+            - "1800"
+        units:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              "90":
+                type: string
+              "180":
+                type: string
+              "270":
+                type: string
+              "360":
+                type: string
+              "450":
+                type: string
+              "540":
+                type: string
+              "630":
+                type: string
+              "720":
+                type: string
+              "810":
+                type: string
+              "900":
+                type: string
+              "990":
+                type: string
+              "1080":
+                type: string
+              "1170":
+                type: string
+              "1260":
+                type: string
+              "1350":
+                type: string
+              "1440":
+                type: string
+              "1530":
+                type: string
+              "1620":
+                type: string
+              "1710":
+                type: string
+              "1800":
+                type: string
+      example:
+        data_type: data_type
+        data_keys:
+        - "90"
+        - "90"
+        _id: _id
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        units: ""
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        levels:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
     tc:
       required:
       - _id
@@ -5751,6 +6142,21 @@ components:
       in: query
       description: Pressure range in dbar to filter for; levels outside this range
         will not be returned.
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    forecastGeolocation:
+      name: forecastGeolocation
+      in: query
+      description: "Longitude,latitude of forecast location."
       required: false
       style: form
       explode: false
