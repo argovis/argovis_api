@@ -16,8 +16,8 @@ module.exports.findCovar = function findCovar (req, res, next, lat, lon, forcast
     });
 };
 
-module.exports.findCovarMeta = function findCovarMeta (req, res, next, id) {
-  CovarExperimental.findCovarMeta(id)
+module.exports.findCovariance = function findCovariance (req, res, next, id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data) {
+  CovarExperimental.findCovariance(id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -26,8 +26,8 @@ module.exports.findCovarMeta = function findCovarMeta (req, res, next, id) {
     });
 };
 
-module.exports.findTC = function findTC (req, res, next, id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data) {
-  CovarExperimental.findTC(id, polygon, multipolygon, center, radius, forecastGeolocation, metadata, compression, data)
+module.exports.findCovariancerMeta = function findCovariancerMeta (req, res, next, id) {
+  CovarExperimental.findCovariancerMeta(id)
     .then(function (response) {
       utils.writeJson(res, response);
     })
