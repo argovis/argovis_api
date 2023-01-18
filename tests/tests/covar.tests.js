@@ -10,36 +10,36 @@ $RefParser.dereference(rawspec, (err, schema) => {
     console.error(err);
   }
   else {
-    // describe("GET /covarGrid", function () {
-    //   it("returns one covar grid result", async function () {
-    //     const response = await request.get("/covarGrid?lat=-58&lon=98&forcastDays=140").set({'x-argokey': 'developer'});    
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/covarGrid'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });
+    describe("GET /covarGrid", function () {
+      it("returns one covar grid result", async function () {
+        const response = await request.get("/covarGrid?lat=-58&lon=98&forcastDays=140").set({'x-argokey': 'developer'});    
+        expect(response.body).to.be.jsonSchema(schema.paths['/covarGrid'].get.responses['200'].content['application/json'].schema);
+      });
+    });
 
-    // describe("GET /covarGrid", function () {
-    //   it("errors on invalid lat", async function () {
-    //     const response = await request.get("/covarGrid?lat=98&lon=-58&forcastDays=140").set({'x-argokey': 'developer'});    
+    describe("GET /covarGrid", function () {
+      it("errors on invalid lat", async function () {
+        const response = await request.get("/covarGrid?lat=98&lon=-58&forcastDays=140").set({'x-argokey': 'developer'});    
 
-    //     expect(response.status).to.eql(400);
-    //   });
-    // });    
+        expect(response.status).to.eql(400);
+      });
+    });    
 
-    // describe("GET /covarGrid", function () {
-    //   it("returns a 404", async function () {
-    //     const response = await request.get("/covarGrid?lat=0&lon=0&forcastDays=240").set({'x-argokey': 'developer'});    
+    describe("GET /covarGrid", function () {
+      it("returns a 404", async function () {
+        const response = await request.get("/covarGrid?lat=0&lon=0&forcastDays=240").set({'x-argokey': 'developer'});    
 
-    //     expect(response.status).to.eql(404);
-    //   });
-    // });
+        expect(response.status).to.eql(404);
+      });
+    });
 
-    // describe("GET /covarSum", function () {
-    //   it("sums up part of a covar grid", async function () {
-    //     const response = await request.get("/covarSum?lon=98&lat=-58&forcastDays=140&polygon=[[-56.2,99],[-55.8,99],[-55.8,103],[-56.2,103],[-56.2,99]]").set({'x-argokey': 'developer'});    
+    describe("GET /covarSum", function () {
+      it("sums up part of a covar grid", async function () {
+        const response = await request.get("/covarSum?lon=98&lat=-58&forcastDays=140&polygon=[[-56.2,99],[-55.8,99],[-55.8,103],[-56.2,103],[-56.2,99]]").set({'x-argokey': 'developer'});    
 
-    //     expect(response.body.sum).to.eql(0.14285714285714285+0.07142857142857142);
-    //   });
-    // });
+        expect(response.body.sum).to.eql(0.14285714285714285+0.07142857142857142);
+      });
+    });
 
 
 
@@ -53,27 +53,19 @@ $RefParser.dereference(rawspec, (err, schema) => {
     //   });
     // });
 
-    // describe("GET /covariance", function () {
-    //   it("returns one covariance grid result by id", async function () {
-    //     const response = await request.get("/covariance?id=-178_-44_-172.0_-44.0").set({'x-argokey': 'developer'});   
-    //     console.log(response.body) 
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/covariance'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });
-
-    describe("GET /grids/meta", function () {
-      it("grid metadata", async function () {
-        const response = await request.get("/grids/meta?id=rg09_temperature_200401_Total").set({'x-argokey': 'developer'});
-        console.log(response.body)
-        expect(response.body).to.be.jsonSchema(schema.paths['/grids/meta'].get.responses['200'].content['application/json'].schema);
+    describe("GET /covariance", function () {
+      it("returns one covariance grid result by id", async function () {
+        const response = await request.get("/covariance?id=-178_-44_-172.0_-44.0").set({'x-argokey': 'developer'});   
+        console.log(response.body) 
+        expect(response.body).to.be.jsonSchema(schema.paths['/covariance'].get.responses['200'].content['application/json'].schema);
       });
-    }); 
+    });
 
     describe("GET /covariance/meta", function () {
       it("returns covariance metadata result by id", async function () {
-        const response = await request.get("/covariance/meta?id=rg09_temperature_200401_Total").set({'x-argokey': 'developer'});   
+        const response = await request.get("/covariance/meta?id=covariance").set({'x-argokey': 'developer'});   
         console.log(response.body) 
-        expect(response.body).to.be.jsonSchema(schema.paths['/grids/meta'].get.responses['200'].content['application/json'].schema);
+        expect(response.body).to.be.jsonSchema(schema.paths['/covariance/meta'].get.responses['200'].content['application/json'].schema);
       });
     });
   }

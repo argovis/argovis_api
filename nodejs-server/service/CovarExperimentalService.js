@@ -4,7 +4,6 @@ const GJV = require('geojson-validation');
 const pointInPolygon = require('@turf/boolean-point-in-polygon').default;
 const helpers = require('../helpers/helpers')
 const gridHelpers = require('../helpers/gridHelpers')
-const Grid = require('../models/grid');
 
 /**
  * Probability distribution field for a float at point lat-lon after forcastDays.
@@ -130,7 +129,6 @@ exports.findCovariance = function(res, id,forecastOrigin,forecastGeolocation,met
   });
 }
 
-
 /**
  * Covariance metadata search and filter.
  *
@@ -139,21 +137,11 @@ exports.findCovariance = function(res, id,forecastOrigin,forecastGeolocation,met
  **/
 exports.findCovariancerMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    //const query = covar['covarianceMeta'].aggregate([{$match:{'_id':id}}]);
-    const query = Grid['grid_1_1_0.5_0.5Meta'].aggregate([{$match:{'_id':id}}]);
-    //query.cursor().next().then(x=>console.log('meta', x))
+    const query = covar['covarianceMeta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
     resolve([query.cursor(), postprocess])
   });
 }
-
-// exports.findgridMeta = function(res,id) {
-//   return new Promise(function(resolve, reject) {
-//     const query = Grid[helpers.find_grid_collection(id)+'Meta'].aggregate([{$match:{'_id':id}}]);
-//     let postprocess = helpers.meta_xform(res)
-//     resolve([query.cursor(), postprocess])
-//   });
-// }
 
 /**
  * Sum of probability distribution field over a region for a float starting at point lat-lon after forcastDays.

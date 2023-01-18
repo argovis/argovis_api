@@ -19,9 +19,11 @@ module.exports.findgridMeta = function findgridMeta (req, res, next, id) {
   Grid.findgridMeta(res,id)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
+      console.log('success', response)
       utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
+      console.log('failure', response)
       utils.writeJson(res, response);
     });
 };

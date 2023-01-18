@@ -14,7 +14,6 @@ const summaries = require('../models/summary');
  **/
 
 exports.findgridMeta = function(res,id) {
-  console.log('>>>>', id)
   return new Promise(function(resolve, reject) {
     const query = Grid[helpers.find_grid_collection(id)+'Meta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
