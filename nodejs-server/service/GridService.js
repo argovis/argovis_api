@@ -14,6 +14,7 @@ const summaries = require('../models/summary');
  **/
 
 exports.findgridMeta = function(res,id) {
+  console.log('>>>>', id)
   return new Promise(function(resolve, reject) {
     const query = Grid[helpers.find_grid_collection(id)+'Meta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
@@ -73,14 +74,12 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
 
     // metadata table filter: just get the entire table for simplicity's sake, grid metadata is tiny
     let metafilter = Grid[gridName + 'Meta'].find({}).lean().exec()
-    let metacomplete = true
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
-
           let stub = function(data, metadata){
               // given a data and corresponding metadata document,
               // return the record that should be returned when the compression=minimal API flag is set
