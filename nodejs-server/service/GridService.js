@@ -15,7 +15,7 @@ const summaries = require('../models/summary');
 
 exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    let gridCollection = helpers.find_grid_collection(id)
+    let gridCollection = gridHelpers.find_grid_collection(id)
     if(gridCollection === ''){
       reject({
         code: 404,
