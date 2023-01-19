@@ -83,6 +83,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.be.jsonSchema(schema.paths['/floatLocationForecast/meta'].get.responses['200'].content['application/json'].schema);
       });
     });
+
+    describe("GET /floatLocationForecast/meta", function () {
+      it("floatLocationForecast metadata 404", async function () {
+        const response = await request.get("/floatLocationForecast/meta?id=xxx").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+        expect(response.body).to.eql({code: 404,message: "No float location metadata matching ID xxx; all float location metadata is stored in the single document id=covariance"});
+      });
+    }); 
   }
 })
 
