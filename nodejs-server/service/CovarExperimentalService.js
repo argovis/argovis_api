@@ -95,7 +95,7 @@ exports.findCovariance = function(res, id,forecastOrigin,forecastGeolocation,met
     let pp_params = {
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
-        data_adjacent: ['units', 'metadata']
+        junk: ['dist']
     }
 
     // metadata table filter: just get the entire table for simplicity's sake, there's only one document

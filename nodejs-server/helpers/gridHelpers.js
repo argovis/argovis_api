@@ -16,7 +16,14 @@ module.exports.grid_postprocess_stream = function(chunk, metadata, pp_params, st
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data keys that disqualify a document if present
   let metadata_only = false
-  
+
+  // delete junk parameters
+  if(pp_params.junk){
+    for(let i=0; i<pp_params.junk.length; i++){
+      delete chunk[pp_params.junk[i]]
+    }
+  }
+
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
     if(keys.includes('except-data-values')){
@@ -29,31 +36,54 @@ module.exports.grid_postprocess_stream = function(chunk, metadata, pp_params, st
     keys = chunk.data_keys
   }
 
+  // identify data_keys, could be on chunk or metadata
+  let dk = null
+  if(chunk.hasOwnProperty('data_keys')) {
+    dk = chunk.data_keys  
+  }
+  else{
+    dk = metadata[0].data_keys // note this only makes sense for single-product grids, like covariance, that have a single consistent piece of metadata per data document
+  }
+
   // bail out on this document if it contains any ~keys:
-  if(chunk.data_keys.some(item => notkeys.includes(item))) return false
+  if(dk.some(item => notkeys.includes(item))) return false
 
   // drop non-requested grids, data_keys and corresponding adjacent data
   if(pp_params.data){
-    for(let i=0; i<chunk.data_keys.length; i++){
-      if(!keys.includes('all') && !keys.includes(chunk.data_keys[i])){
+    for(let i=0; i<dk.length; i++){
+      if(!keys.includes('all') && !keys.includes(dk[i])){
         chunk.data[i] = null
-        chunk.data_keys[i] = null
-        for(let k=0; k<pp_params.data_adjacent.length; k++){
-          chunk[pp_params.data_adjacent[k]][i] = null
+        dk[i] = null
+        if(pp_params.data_adjacent){
+          for(let k=0; k<pp_params.data_adjacent.length; k++){
+            if(chunk.hasOwnProperty(pp_params.data_adjacent[k])){
+              chunk[pp_params.data_adjacent[k]][i] = null
+            } else {
+              metadata[0][pp_params.data_adjacent[k]][i] = null
+            }
+          }
         }
       }
     }
     chunk.data = chunk.data.filter(x => x !== null)
-    chunk.data_keys = chunk.data_keys.filter(x => x !== null)
-    for(let k=0; k<pp_params.data_adjacent.length; k++){
-      chunk[pp_params.data_adjacent[k]] = chunk[pp_params.data_adjacent[k]].filter(x => x !== null)
+    dk = dk.filter(x => x !== null)
+    chunk.data_keys = dk // always place data_keys on the data doc if data filtering has been requested, same for data adjacent variables
+    if(pp_params.data_adjacent){
+      for(let k=0; k<pp_params.data_adjacent.length; k++){
+        if(chunk.hasOwnProperty(pp_params.data_adjacent[k])){
+          chunk[pp_params.data_adjacent[k]] = chunk[pp_params.data_adjacent[k]].filter(x => x !== null)
+        } else {
+          metadata[0][pp_params.data_adjacent[k]] = metadata[0][pp_params.data_adjacent[k]].filter(x => x !== null) // again only for single-product grids with things like units pushed out to the metadata
+          chunk[pp_params.data_adjacent[k]] = metadata[0][pp_params.data_adjacent[k]]
+        }
+      }
     }
   }
 
   // use presRange to identify per-grid index ranges, and filter appropriately
   if(pp_params.presRange){
     chunk.levels = []
-    for(let i=0; i<chunk.data_keys.length; i++){
+    for(let i=0; i<dk.length; i++){
       // identify a range of level indexes for this grid
       let meta = metadata.filter(x => x._id == chunk.metadata[i])[0]
       let index_range = []
@@ -88,21 +118,25 @@ module.exports.grid_postprocess_stream = function(chunk, metadata, pp_params, st
   // inflate data if requested
   if(!pp_params.compression && chunk.data){
     let d = {}
-    for(let i=0; i<chunk.data_keys.length; i++){
-      d[chunk.data_keys[i]] = chunk.data[i]
+    for(let i=0; i<dk.length; i++){
+      d[dk[i]] = chunk.data[i]
     }
     chunk.data = d
-    for(let k=0; k<pp_params.data_adjacent.length; k++){
-      let a = {}
-      for(let i=0; i<chunk.data_keys.length; i++){
-        a[chunk.data_keys[i]] = chunk[pp_params.data_adjacent[k]][i]
+    if(pp_params.data_adjacent){
+      for(let k=0; k<pp_params.data_adjacent.length; k++){
+        let a = {}
+        if(chunk.hasOwnProperty(pp_params.data_adjacent[k])){
+          for(let i=0; i<dk.length; i++){
+            a[dk[i]] = chunk[pp_params.data_adjacent[k]][i]
+          }
+          chunk[pp_params.data_adjacent[k]] = a
+        }
       }
-      chunk[pp_params.data_adjacent[k]] = a
     }
     if(chunk.hasOwnProperty('levels')){
       let l = {}
-      for(let i=0; i<chunk.data_keys.length; i++){
-        l[chunk.data_keys[i]] = chunk.levels[i]
+      for(let i=0; i<dk.length; i++){
+        l[dk[i]] = chunk.levels[i]
       }
       chunk.levels = l
     }
