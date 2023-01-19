@@ -200,6 +200,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
       });
     });
+
+    describe("GET /drifters", function () {
+      it("drifters with no data filter should not inclde data_keys on the data document", async function () {
+        const response = await request.get("/drifters?id=101143_0").set({'x-argokey': 'developer'});
+        expect(response.body[0].hasOwnProperty('data_keys')).to.eql(false);  
+      });
+    }); 
+
+    describe("GET /drifters", function () {
+      it("drifters with no data filter should not inclde units on the data document", async function () {
+        const response = await request.get("/drifters?id=101143_0").set({'x-argokey': 'developer'});
+        expect(response.body[0].hasOwnProperty('units')).to.eql(false);  
+      });
+    }); 
   }
 })
 
