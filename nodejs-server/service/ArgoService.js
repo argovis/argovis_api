@@ -7,7 +7,7 @@ const geojsonArea = require('@mapbox/geojson-area');
 /**
  * Summarizes some float-level statistics for Argo BGC floats.
  *
- * returns inline_response_200_3
+ * returns inline_response_200_2
  **/
 exports.argoBGC = function() {
   return new Promise(function(resolve, reject) {
@@ -20,7 +20,7 @@ exports.argoBGC = function() {
 /**
  * Summarizes some datacenter-level statistics about Argo data.
  *
- * returns inline_response_200_2
+ * returns inline_response_200_1
  **/
 exports.argoDACs = function() {
   return new Promise(function(resolve, reject) {
@@ -33,7 +33,7 @@ exports.argoDACs = function() {
 /**
  * Summarizes some collection-level statistics about Argo data.
  *
- * returns inline_response_200_1
+ * returns inline_response_200
  **/
 exports.argoOverview = function() {
   return new Promise(function(resolve, reject) {

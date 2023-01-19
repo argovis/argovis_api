@@ -168,7 +168,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /grids/meta", function () {
       it("grid metadata", async function () {
-        const response = await request.get("/grids/meta?id=rg09_temperature").set({'x-argokey': 'developer'});
+        const response = await request.get("/grids/meta?id=rg09_temperature_200401_Total").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/grids/meta'].get.responses['200'].content['application/json'].schema);
       });
     }); 
