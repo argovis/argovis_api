@@ -33,7 +33,7 @@ tags:
   description: tropical cyclone data
 - name: ar (experimental)
   description: atmospheric river shapes
-- name: covar (experimental)
+- name: floatLocationForecast
   description: Argo float position forcast product
 - name: summary (experimental)
   description: Summary statistics (mostly for internal use)
@@ -95,165 +95,96 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: ArExperimental
-  /covarGrid:
+  /floatLocationForecast:
     get:
       tags:
-      - covar (experimental)
-      summary: Probability distribution field for a float at point lat-lon after forcastDays.
-      operationId: findCovar
+      - floatLocationForecast
+      summary: Probabilities of floats moving between two points in a range of forecast
+        projections
+      operationId: findfloatLocationForecast
       parameters:
-      - name: lat
+      - name: id
         in: query
-        description: latitude (degrees) of Argo float location
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 90
-          minimum: -90
-          type: number
-          example: 5.25
-      - name: lon
-        in: query
-        description: longitude (degrees) of Argo float location
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 180
-          minimum: -180
-          type: number
-          example: -20.33
-      - name: forcastDays
-        in: query
-        description: number of days over which to project Argo float drift
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 1800
-          minimum: 60
-          type: number
-          example: 60
-          enum:
-          - 60
-          - 120
-          - 140
-          - 240
-          - 360
-          - 480
-          - 720
-          - 840
-          - 960
-          - 1080
-          - 1200
-          - 1320
-          - 1440
-          - 1560
-          - 1680
-          - 1800
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CovarSchema'
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: CovarExperimental
-  /covarSum:
-    get:
-      tags:
-      - covar (experimental)
-      summary: Sum of probability distribution field over a region for a float starting
-        at point lat-lon after forcastDays.
-      operationId: sumCovar
-      parameters:
-      - name: lat
-        in: query
-        description: latitude (degrees) of Argo float location
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 90
-          minimum: -90
-          type: number
-          example: 5.25
-      - name: lon
-        in: query
-        description: longitude (degrees) of Argo float location
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 180
-          minimum: -180
-          type: number
-          example: -20.33
-      - name: forcastDays
-        in: query
-        description: number of days over which to project Argo float drift
-        required: true
-        style: form
-        explode: true
-        schema:
-          maximum: 1800
-          minimum: 60
-          type: number
-          example: 60
-          enum:
-          - 60
-          - 120
-          - 140
-          - 240
-          - 360
-          - 480
-          - 720
-          - 840
-          - 960
-          - 1080
-          - 1200
-          - 1320
-          - 1440
-          - 1560
-          - 1680
-          - 1800
-      - name: polygon
-        in: query
-        description: "array of [lon, lat] vertices describing a polygon bounding the\
-          \ region of interest; final point must match initial point"
+        description: Unique ID to search for.
         required: false
         style: form
         explode: true
-        allowReserved: true
         schema:
           type: string
-          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+          example: 4902911_0
+      - name: forecastOrigin
+        in: query
+        description: "Longitude,latitude of forecast origin location."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: forecastGeolocation
+        in: query
+        description: "Longitude,latitude of forecast destination location."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: metadata
+        in: query
+        description: metadata pointer
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - array
+          - minimal
+      - name: data
+        in: query
+        description: Forecast durations to include. Return only documents that have
+          all data requested. Accepts ~ negation to filter out documents including
+          the specified data. Omission of this parameter will result in metadata only
+          responses.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "90"
+          items:
+            pattern: "^((~)?((90)|(180)|(270)|(360)|(450)|(540)|(630)|(720)|(810)|(900)|(990)|(1080)|(1170)|(1260)|(1350)|(1440)|(1530)|(1620)|(1710)|(1800){1})|all|except-data-values)$"
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                type: array
+                items:
+                  $ref: '#/components/schemas/floatLocationForecast'
+                x-content-type: application/json
         "400":
           description: Bad Request
           content:
@@ -272,7 +203,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: CovarExperimental
+      x-swagger-router-controller: FloatLocationForecast
+  /floatLocationForecast/meta:
+    get:
+      tags:
+      - floatLocationForecast
+      summary: floatLocationForecast metadata search and filter.
+      operationId: findfloatLocationForecastMeta
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/floatLocationForecastMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: FloatLocationForecast
   /tc:
     get:
       tags:
@@ -1450,7 +1426,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
+                $ref: '#/components/schemas/inline_response_200'
         "400":
           description: Bad Request
           content:
@@ -1482,7 +1458,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_2'
+                $ref: '#/components/schemas/inline_response_200_1'
         "400":
           description: Bad Request
           content:
@@ -1514,7 +1490,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_3'
+                $ref: '#/components/schemas/inline_response_200_2'
         "400":
           description: Bad Request
           content:
@@ -1902,51 +1878,210 @@ components:
           - - 6.02745618307040320615897144307382404804229736328125
             - 6.02745618307040320615897144307382404804229736328125
           type: type
-    CovarSchema:
+    floatLocationForecast:
       required:
       - _id
-      - dLat
-      - dLong
-      - features
-      - forcastDays
       - geolocation
+      - geolocation_forecast
+      - metadata
       type: object
       properties:
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/CovarSchema_features'
         _id:
           type: string
-        dLat:
-          type: number
-        dLong:
-          type: number
-        forcastDays:
-          type: integer
+        metadata:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              covariance:
+                type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
+        geolocation_forecast:
+          $ref: '#/components/schemas/geoJSONpoint'
+        data:
+          anyOf:
+          - type: array
+            items:
+              type: array
+              items:
+                type: number
+          - type: object
+            properties:
+              "90":
+                type: array
+              "180":
+                type: array
+              "270":
+                type: array
+              "360":
+                type: array
+              "450":
+                type: array
+              "540":
+                type: array
+              "630":
+                type: array
+              "720":
+                type: array
+              "810":
+                type: array
+              "900":
+                type: array
+              "990":
+                type: array
+              "1080":
+                type: array
+              "1170":
+                type: array
+              "1260":
+                type: array
+              "1350":
+                type: array
+              "1440":
+                type: array
+              "1530":
+                type: array
+              "1620":
+                type: array
+              "1710":
+                type: array
+              "1800":
+                type: array
       example:
-        features:
-        - geometry:
-            coordinates:
-            - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
-            type: type
-          type: type
-          properties: {}
-        - geometry:
-            coordinates:
-            - 0.80082819046101150206595775671303272247314453125
-            - 0.80082819046101150206595775671303272247314453125
-            type: type
-          type: type
-          properties: {}
-        dLat: 6.02745618307040320615897144307382404804229736328125
-        dLong: 1.46581298050294517310021547018550336360931396484375
+        metadata: ""
+        data: ""
+        geolocation_forecast: null
         _id: _id
-        forcastDays: 5
-        geolocation: null
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+    floatLocationForecastMeta:
+      required:
+      - _id
+      - data_keys
+      - data_type
+      - date_updated_argovis
+      - levels
+      - source
+      - units
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        levels:
+          type: array
+          items:
+            type: number
+        data_keys:
+          type: array
+          items:
+            type: string
+            enum:
+            - "90"
+            - "180"
+            - "270"
+            - "360"
+            - "450"
+            - "540"
+            - "630"
+            - "720"
+            - "810"
+            - "900"
+            - "990"
+            - "1080"
+            - "1170"
+            - "1260"
+            - "1350"
+            - "1440"
+            - "1530"
+            - "1620"
+            - "1710"
+            - "1800"
+        units:
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: object
+            properties:
+              "90":
+                type: string
+              "180":
+                type: string
+              "270":
+                type: string
+              "360":
+                type: string
+              "450":
+                type: string
+              "540":
+                type: string
+              "630":
+                type: string
+              "720":
+                type: string
+              "810":
+                type: string
+              "900":
+                type: string
+              "990":
+                type: string
+              "1080":
+                type: string
+              "1170":
+                type: string
+              "1260":
+                type: string
+              "1350":
+                type: string
+              "1440":
+                type: string
+              "1530":
+                type: string
+              "1620":
+                type: string
+              "1710":
+                type: string
+              "1800":
+                type: string
+      example:
+        data_type: data_type
+        data_keys:
+        - "90"
+        - "90"
+        _id: _id
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        units: ""
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        levels:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
     tc:
       required:
       - _id
@@ -5533,15 +5668,6 @@ components:
         message:
           type: string
     inline_response_200:
-      required:
-      - sum
-      type: object
-      properties:
-        sum:
-          type: integer
-      example:
-        sum: 0
-    inline_response_200_1:
       type: object
       properties:
         _id:
@@ -5549,7 +5675,7 @@ components:
           enum:
           - argo_overview
         summary:
-          $ref: '#/components/schemas/inline_response_200_1_summary'
+          $ref: '#/components/schemas/inline_response_200_summary'
       example:
         summary:
           datacenters:
@@ -5560,7 +5686,7 @@ components:
           nDeep: 1.46581298050294517310021547018550336360931396484375
           mostrecent: 2010-01-01T00:00:00Z
         _id: argo_overview
-    inline_response_200_2:
+    inline_response_200_1:
       type: object
       properties:
         _id:
@@ -5570,7 +5696,7 @@ components:
         summary:
           type: array
           items:
-            $ref: '#/components/schemas/inline_response_200_2_summary'
+            $ref: '#/components/schemas/inline_response_200_1_summary'
       example:
         summary:
         - _id: _id
@@ -5580,7 +5706,7 @@ components:
           "n": 0.80082819046101150206595775671303272247314453125
           mostrecent: 2010-01-01T00:00:00Z
         _id: argo_dacs
-    inline_response_200_3:
+    inline_response_200_2:
       type: object
       properties:
         _id:
@@ -5590,7 +5716,7 @@ components:
         summary:
           type: array
           items:
-            $ref: '#/components/schemas/inline_response_200_2_summary'
+            $ref: '#/components/schemas/inline_response_200_1_summary'
       example:
         summary:
         - _id: _id
@@ -5600,24 +5726,7 @@ components:
           "n": 0.80082819046101150206595775671303272247314453125
           mostrecent: 2010-01-01T00:00:00Z
         _id: argo_bgc
-    CovarSchema_features:
-      type: object
-      properties:
-        geometry:
-          $ref: '#/components/schemas/geoJSONpoint'
-        type:
-          type: string
-        properties:
-          type: object
-      example:
-        geometry:
-          coordinates:
-          - 0.80082819046101150206595775671303272247314453125
-          - 0.80082819046101150206595775671303272247314453125
-          type: type
-        type: type
-        properties: {}
-    inline_response_200_1_summary:
+    inline_response_200_summary:
       type: object
       properties:
         nCore:
@@ -5642,7 +5751,7 @@ components:
         nBGC: 6.02745618307040320615897144307382404804229736328125
         nDeep: 1.46581298050294517310021547018550336360931396484375
         mostrecent: 2010-01-01T00:00:00Z
-    inline_response_200_2_summary:
+    inline_response_200_1_summary:
       type: object
       properties:
         _id:
@@ -5751,6 +5860,36 @@ components:
       in: query
       description: Pressure range in dbar to filter for; levels outside this range
         will not be returned.
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    forecastOrigin:
+      name: forecastOrigin
+      in: query
+      description: "Longitude,latitude of forecast origin location."
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    forecastGeolocation:
+      name: forecastGeolocation
+      in: query
+      description: "Longitude,latitude of forecast destination location."
       required: false
       style: form
       explode: false
