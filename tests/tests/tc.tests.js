@@ -152,6 +152,19 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /tc", function () {
+      it("tc with no data filter should not inclde data_keys on the data document", async function () {
+        const response = await request.get("/tc?id=AL011851_18510625000000").set({'x-argokey': 'developer'});
+        expect(response.body[0].hasOwnProperty('data_keys')).to.eql(false);  
+      });
+    }); 
+
+    describe("GET /tc", function () {
+      it("tc with no data filter should not inclde units on the data document", async function () {
+        const response = await request.get("/tc?id=AL011851_18510625000000").set({'x-argokey': 'developer'});
+        expect(response.body[0].hasOwnProperty('units')).to.eql(false);  
+      });
+    }); 
   }
 })
 

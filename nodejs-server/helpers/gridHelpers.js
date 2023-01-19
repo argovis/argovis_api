@@ -182,3 +182,13 @@ module.exports.grid_post_xform = function(pp_params, search_result, res, stub){
 
   return postprocess
 }
+
+module.exports.find_grid_collection = function(token){
+  // map a token including a grid's prefix ('rg09_temperature', 'rg09_salinity', ...) onto its collection name.
+
+  if (["rg09_temperature", "rg09_salinity", "kg21_ohc15to300"].some(k => token.includes(k))) {
+    return 'grid_1_1_0.5_0.5'
+  } else {
+    return ''
+  }
+}
