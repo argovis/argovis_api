@@ -432,6 +432,7 @@ module.exports.meta_xform = function(res){
     objectMode: true,
     transform(chunk, encoding, next){
       this.push(chunk)
+      nDocs++
       next()
     }
   });
@@ -439,6 +440,7 @@ module.exports.meta_xform = function(res){
   postprocess._flush = function(callback){
     if(nDocs == 0){
       res.status(404)
+      this.push({"code":404, "message": "No documents found matching search."})
     }
     return callback()
   }
