@@ -96,6 +96,12 @@ exports.findfloatLocationForecast = function(res, id,forecastOrigin,forecastGeol
  **/
 exports.findfloatLocationForecastMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
+    if(id !== 'covariance'){
+      reject({
+        code: 404,
+        message: "No float location metadata matching ID " + id + "; all float location metadata is stored in the single document id=covariance"
+      })
+    }
     const query = floatLocationForecast['floatLocationForecastMeta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
     resolve([query.cursor(), postprocess])

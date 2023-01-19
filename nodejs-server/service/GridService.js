@@ -15,7 +15,14 @@ const summaries = require('../models/summary');
 
 exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    const query = Grid[helpers.find_grid_collection(id)+'Meta'].aggregate([{$match:{'_id':id}}]);
+    let gridCollection = helpers.find_grid_collection(id)
+    if(gridCollection === ''){
+      reject({
+        code: 404,
+        message: "No grid product matching ID " + id
+      })
+    }
+    const query = Grid[gridCollection + 'Meta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
     resolve([query.cursor(), postprocess])
   });

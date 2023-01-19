@@ -173,6 +173,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /grids/meta", function () {
+      it("grid metadata 404", async function () {
+        const response = await request.get("/grids/meta?id=xxx").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+        expect(response.body).to.eql({code: 404,message: "No grid product matching ID xxx"});
+      });
+    }); 
+
     describe("GET /grids/grid_1_1_0.5_0.5", function () {
       it("fetch gridded data with pressure bracket", async function () {
         const response = await request.get("/grids/grid_1_1_0.5_0.5?id=20040115000000_20.5_-64.5&presRange=10,100&data=rg09_temperature&compression=array").set({'x-argokey': 'developer'});

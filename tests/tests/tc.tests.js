@@ -144,6 +144,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /tc/meta", function () {
+      it("should 404 on ID typos", async function () {
+        const response = await request.get("/tc/meta?id=xxx").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+        expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
+      });
+    });
+
   }
 })
 

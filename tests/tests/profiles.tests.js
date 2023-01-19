@@ -163,6 +163,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("GET /cchdo/meta", function () {
+      it("should 404 on ID typos", async function () {
+        const response = await request.get("/cchdo/meta?id=xxx").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+        expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
+      });
+    });
+
     // argo
 
     describe("GET /argo", function () {
@@ -480,6 +488,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("should return profiles in presRange, even if not returning actual data levels", async function () {
         const response = await request.get("/argo?presRange=1000,2000").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3);
+      });
+    });
+
+    describe("GET /argo/meta", function () {
+      it("should 404 on ID typos", async function () {
+        const response = await request.get("/argo/meta?id=xxx").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+        expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
       });
     });
 
