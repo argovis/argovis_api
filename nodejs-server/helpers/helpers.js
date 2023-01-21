@@ -216,7 +216,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data keys that disqualify a document if present
-  let my_meta = null  // metadata document corresponding to chunk
   let coerced_pressure = false
   let metadata_only = false
 
@@ -240,7 +239,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   if(dk.includes('pressure') && !keys.includes('pressure')){
     keys.push('pressure')
     coerced_pressure = true
-  } // keys is now whatever was in data, including 'all', excluding 'except-data-values', and definitely includes 'pressure'
+  }
 
   // filter down to requested data
   if(pp_params.data && !keys.includes('all')){
@@ -250,7 +249,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       if(!keys.includes(k)){
         // drop it if we didn't ask for it
         delete chunk.data[k]
-        delete chunk.measurement_metadata[k]
+        chunk.measurement_metadata[2].splice(chunk.measurement_metadata[0].indexOf(k),1)
+        chunk.measurement_metadata[0].splice(chunk.measurement_metadata[0].indexOf(k),1)
       } else {
         // abandon profile if a requested measurement is all null
         if(chunk.data[k].every(x => x === null)){
@@ -258,7 +258,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
         }
       }
     }
-    if(Object.keys(chunk.data).length === 0){
+    if(Object.keys(chunk.data).length === (coerced_pressure ? 1 : 0)){
       return false // deleted all our data, bail out
     }
   }
