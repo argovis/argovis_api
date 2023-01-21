@@ -2841,7 +2841,7 @@
          },
          "argo": {
             "type": "object",
-            "required": ["_id","metadata","geolocation","basin","timestamp", "date_updated_argovis", "source", "cycle_number"],
+            "required": ["_id","metadata","geolocation","basin","timestamp", "date_updated_argovis", "source", "cycle_number", "measurement_metadata"],
             "properties": {
                "_id": {
                   "type": "string"
@@ -2860,23 +2860,34 @@
                   "format": "date-time"
                },
                "data": {
+                  "type": "object",
+                  "additionalProperties": {
+                     "type": "array",
+                     "items": {
+                        "type": "number"
+                     }
+                  }
+               },
+               "measurement_metadata": {
                   "type": "array",
                   "items": {
-                     "anyOf": [
+                     "amyOf": [
                         {
                            "type": "array",
                            "items": {
-                              "type": "number"
+                              "type": "string"
                            }
                         },
                         {
-                           "type": "object",
-                           "additionalProperties": {
-                              "type": "number"
+                           "type": "array",
+                           "items": {
+                              "type": "array",
+                              "items": {
+                                 "type": "number"
+                              }
                            }
-                           
                         }
-                     ]   
+                     ]
                   }
                },
                "date_updated_argovis": {
@@ -2896,17 +2907,8 @@
                      "enum": ["degenerate_levels", "missing_basin", "missing_location", "missing_timestamp"]
                   }
                },
-               "data_keys": {
-                  "$ref": "#/components/schemas/argo_data_keys"
-               },
-               "units": {
-                  "$ref": "#/components/schemas/data_adjacent"
-               },
                "cycle_number": {
                   "type": "number"
-               },
-               "data_keys_mode": {
-                  "$ref": "#/components/schemas/data_adjacent"
                },
                "geolocation_argoqc": {
                   "type": "number"
@@ -2931,12 +2933,6 @@
                },
                "data_type": {
                   "type": "string"
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/argo_data_keys"
-               },
-               "units": {
-                   "$ref": "#/components/schemas/data_adjacent"
                },
                "country": {
                   "type": "string"
