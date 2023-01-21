@@ -230,27 +230,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
 
-  // identify data_keys, could be on chunk or metadata
-  let dk = null
-  if(chunk.hasOwnProperty('data_keys')) {
-    dk = chunk.data_keys  
-  }
-  else{
-    dk = metadata.data_keys
-  }
-  // do the same for any other units-like structure in pp_params.data_adjacent
-  let da = {}
-  if(pp_params.data_adjacent){
-    for (let i=0; i<pp_params.data_adjacent.length; i++) {
-      let k = pp_params.data_adjacent[i]
-      if(chunk.hasOwnProperty(k)){
-        da[k] = chunk[k]
-      } 
-      else {
-        da[k] = metadata[k]
-      }
-    }
-  }
+  // identify data_keys
+  let dk = Object.keys(chunk['data'])
 
   // bail out on this document if it contains any ~keys:
   if(dk.some(item => notkeys.includes(item))) return false
@@ -259,124 +240,54 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   if(dk.includes('pressure') && !keys.includes('pressure')){
     keys.push('pressure')
     coerced_pressure = true
-  }
+  } // keys is now whatever was in data, including 'all', excluding 'except-data-values', and definitely includes 'pressure'
 
-  // turn data adjacent variables into lookup tables by data_key
-  let data_adjacent = {}
-  if(pp_params.data_adjacent){
-    for (const [key, val] of Object.entries(da)) {
-      data_adjacent[key] = {}
-      for(let k=0; k<dk.length; k++){
-        data_adjacent[key][dk[k]] = da[key][k]
-      }     
-    }
-  }
-
-  // reinflate data arrays as a dictionary keyed by depth, and only keep requested data
-  let reinflated_levels = {}
-  let reinflated_levels_with_coerced_pressure = {}
-  let metalevels = null
-  if(metadata.hasOwnProperty('levels')){
-    metalevels = metadata.levels // relevant for grids
-  } else if (!dk.includes('pressure')){
-    metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pressure key, since they're all implicitly single-level pres=0 surface measurements
-  }
-  for(let j=0; j<chunk.data.length; j++){ // loop over levels
-    let reinflate = {}
-    for(k=0; k<chunk.data[j].length; k++){ // loop over data variables
-      if( (keys.includes(dk[k]) || keys.includes('all')) && !isNaN(chunk.data[j][k]) && chunk.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
-        reinflate[dk[k]] = chunk.data[j][k]
-      }
-    }
-    let lvl = metalevels ? metalevels[j] : reinflate.pressure
-    reinflated_levels_with_coerced_pressure[lvl] = reinflate // keep this for pressure filtering below
-    if(keys.includes('all') || keys.some(val => (val!='pressure' || !coerced_pressure) && Object.keys(reinflate).includes(val))){ // ie only keep levels that have at least some explicitly requested keys
-      reinflated_levels[lvl] = reinflate
-    }
-  }
-
-  // filter by presRange, drop profile if no levels left
-  let levels = []
-  if(pp_params.presRange){
-    levels = Object.keys(reinflated_levels_with_coerced_pressure).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
-    if(levels.length==0){
-      return false
-    }
-  } else {
-    levels = Object.keys(reinflated_levels)
-  }
-  levels = levels.map(n=>Number(n)).sort((a,b)=>a-b)
-
-  // translate level-keyed dictionary back to a sorted list of per-level dictionaries
-  if(metalevels && pp_params.presRange){
-    /// need to make a levels property on the data document that overrides the levels property on the metadata doc if level filtering has happened, for grid-like objects
-    chunk.levels = levels
-  }
-  chunk.data = levels.map(k=>reinflated_levels[String(k)])
-
-  // if we wanted data and none is left, abandon this document
-  if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
-
-  // if we asked for specific data and one of the desired variables isn't found anywhere, abandon this document
-  if(pp_params.data && (pp_params.data.length > 1 || pp_params.data[0]!=='except-data-values')){
-    for(k=0; k<keys.length; k++){
-      if(keys[k] != 'all'){
-        if(!chunk.data.some(level => Object.keys(level).includes(keys[k]))){
+  // filter down to requested data
+  if(pp_params.data && !keys.includes('all')){
+    let keyset = Object.keys(chunk.data)
+    for(let i=0; i<keyset.length; i++){
+      let k = keyset[i]
+      if(!keys.includes(k)){
+        // drop it if we didn't ask for it
+        delete chunk.data[k]
+        delete chunk.measurement_metadata[k]
+      } else {
+        // abandon profile if a requested measurement is all null
+        if(chunk.data[k].every(x => x === null)){
           return false
         }
       }
     }
+    if(Object.keys(chunk.data).length === 0){
+      return false // deleted all our data, bail out
+    }
   }
+
+  // filter by presRange, drop profile if reqested and available pressures are disjoint
+  if(pp_params.presRange && chunk.data['pressure']){
+    let lowIndex = 0
+    let highIndex = chunk.data['pressure'].length-1
+    if(chunk.data['pressure'][0] > pp_params.presRange[1]){
+      return false // requested pressure range that is completely shallower than pressures available
+    }
+    if(chunk.data['pressure'][highIndex] < pp_params.presRange[0]){
+      return false // requested pressure range that is completely deeper than pressures available
+    }
+    while(lowIndex < highIndex && chunk.data['pressure'][lowIndex] < pp_params.presRange[0]){
+      lowIndex++
+    } // lowIndex now points at the first level index to keep
+    while(highIndex > lowIndex && chunk.data['pressure'][highIndex] > pp_params.presRange[1]){
+      highIndex--
+    } // highIndex now points at the last level index to keep
+    for(let i=0; i<Object.keys(chunk.data).length; i++){
+      let k = Object.keys(chunk.data)[i]
+      chunk.data[k] = chunk.data[k].slice(lowIndex, highIndex+1)
+    }
+  }  
 
   // drop data on metadata only requests
   if(!pp_params.data || metadata_only){
     delete chunk.data
-    delete chunk.levels
-  }
-
-  // manage data_keys, any data_adjacent objects, when pp_params.data is defined or forced by always_import
-  if(keys.includes('all') || (!pp_params.data && pp_params.always_import)){
-    chunk.data_keys = dk
-    if(pp_params.data_adjacent){
-      for (const [key, val] of Object.entries(data_adjacent)){
-        chunk[key] = val
-      }
-    }
-  }
-  else if(keys.length > 0) {
-    chunk.data_keys = keys
-    if(pp_params.data_adjacent){
-      for (const [key, val] of Object.entries(data_adjacent)){
-        chunk[key] = val
-        for(const adj_prop in val){
-          if(!keys.includes(adj_prop)) delete chunk[key][adj_prop] 
-        }
-      }
-    }
-  }
-
-  // deflate data if requested
-  if(pp_params.compression == 'array' && pp_params.data && !metadata_only){
-    chunk.data = chunk.data.map(x => {
-      let lvl = []
-      for(let ii=0; ii<chunk.data_keys.length; ii++){
-        if(x.hasOwnProperty(chunk.data_keys[ii])){
-          lvl.push(x[chunk.data_keys[ii]])
-        } else {
-          lvl.push(null)
-        }
-      }
-      return lvl
-    })
-  }
-  if(pp_params.compression == 'array' && chunk.data_keys){
-    if(pp_params.data_adjacent){
-      for(let i=0; i<pp_params.data_adjacent.length; i++){
-        if(chunk[pp_params.data_adjacent[i]]){
-          chunk[pp_params.data_adjacent[i]] = chunk.data_keys.map(x => chunk[pp_params.data_adjacent[i]][x])
-        }
-      }
-    }
   }
 
   // return a minimal stub if requested
