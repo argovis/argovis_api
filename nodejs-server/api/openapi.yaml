@@ -5491,6 +5491,7 @@ components:
       - cycle_number
       - date_updated_argovis
       - geolocation
+      - measurement_metadata
       - metadata
       - source
       - timestamp
@@ -5508,15 +5509,14 @@ components:
           type: string
           format: date-time
         data:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: number
+        measurement_metadata:
           type: array
-          items:
-            anyOf:
-            - type: array
-              items:
-                type: number
-            - type: object
-              additionalProperties:
-                type: number
+          items: {}
         date_updated_argovis:
           type: string
           format: date-time
@@ -5533,14 +5533,8 @@ components:
             - missing_basin
             - missing_location
             - missing_timestamp
-        data_keys:
-          $ref: '#/components/schemas/argo_data_keys'
-        units:
-          $ref: '#/components/schemas/data_adjacent'
         cycle_number:
           type: number
-        data_keys_mode:
-          $ref: '#/components/schemas/data_adjacent'
         geolocation_argoqc:
           type: number
         profile_direction:
@@ -5551,11 +5545,14 @@ components:
           type: string
       example:
         metadata: metadata
-        geolocation_argoqc: 1.46581298050294517310021547018550336360931396484375
+        geolocation_argoqc: 5.962133916683182377482808078639209270477294921875
         data:
+          key:
+          - 6.02745618307040320615897144307382404804229736328125
+          - 6.02745618307040320615897144307382404804229736328125
+        measurement_metadata:
         - ""
         - ""
-        data_keys_mode: null
         basin: 0.80082819046101150206595775671303272247314453125
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
@@ -5570,17 +5567,13 @@ components:
           - source
           url: url
           doi: doi
-        units: ""
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
         data_warning:
         - degenerate_levels
         - degenerate_levels
         vertical_sampling_scheme: vertical_sampling_scheme
-        cycle_number: 6.02745618307040320615897144307382404804229736328125
-        timestamp_argoqc: 5.962133916683182377482808078639209270477294921875
-        data_keys:
-        - data_keys
-        - data_keys
+        cycle_number: 1.46581298050294517310021547018550336360931396484375
+        timestamp_argoqc: 5.63737665663332876420099637471139430999755859375
         _id: _id
         profile_direction: profile_direction
         geolocation:
@@ -5599,10 +5592,6 @@ components:
           type: string
         data_type:
           type: string
-        data_keys:
-          $ref: '#/components/schemas/argo_data_keys'
-        units:
-          $ref: '#/components/schemas/data_adjacent'
         country:
           type: string
         data_center:
@@ -5628,22 +5617,18 @@ components:
       example:
         country: country
         positioning_system: positioning_system
+        platform_type: platform_type
         pi_name:
         - pi_name
         - pi_name
-        data_center: data_center
-        instrument: instrument
-        units: ""
-        platform: platform
-        platform_type: platform_type
         wmo_inst_type: wmo_inst_type
         data_type: data_type
-        data_keys:
-        - data_keys
-        - data_keys
+        data_center: data_center
+        instrument: instrument
         _id: _id
         oceanops: oceanops
         fleetmonitoring: fleetmonitoring
+        platform: platform
     data_adjacent:
       anyOf:
       - type: array
