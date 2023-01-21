@@ -3163,7 +3163,7 @@
             "description": "Data minification strategy to apply.",
             "schema": {
                "type": "string",
-               "enum": ["array","minimal"]
+               "enum": ["minimal"]
             }
          },
          "genericID": {
