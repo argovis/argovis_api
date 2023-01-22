@@ -243,6 +243,9 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 
   // filter down to requested data
   if(pp_params.data && !keys.includes('all')){
+    if(!chunk.hasOwnProperty('measurement_metadata')){
+      chunk.measurement_metadata = metadata.measurement_metadata
+    }
     let keyset = Object.keys(chunk.data)
     for(let i=0; i<keyset.length; i++){
       let k = keyset[i]
