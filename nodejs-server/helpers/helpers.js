@@ -230,7 +230,12 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // identify data_keys
-  let dk = Object.keys(chunk['data'])
+  let dk = null
+  if(chunk.hasOwnProperty('measurement_metadata')){
+    dk = chunk.measurement_metadata[0]
+  } else {
+    dk = metadata.measurement_metadata[0]
+  }
 
   // bail out on this document if it contains any ~keys:
   if(dk.some(item => notkeys.includes(item))) return false
@@ -246,17 +251,18 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     if(!chunk.hasOwnProperty('measurement_metadata')){
       chunk.measurement_metadata = metadata.measurement_metadata
     }
-    let keyset = Object.keys(chunk.data)
+    let keyset = JSON.parse(JSON.stringify(chunk.measurement_metadata[0]))
     for(let i=0; i<keyset.length; i++){
       let k = keyset[i]
+      let kIndex = chunk.measurement_metadata[0].indexOf(k)
       if(!keys.includes(k)){
         // drop it if we didn't ask for it
-        delete chunk.data[k]
-        chunk.measurement_metadata[2].splice(chunk.measurement_metadata[0].indexOf(k),1)
-        chunk.measurement_metadata[0].splice(chunk.measurement_metadata[0].indexOf(k),1)
+        chunk.data.splice(kIndex,1)
+        chunk.measurement_metadata[0].splice(kIndex,1)
+        chunk.measurement_metadata[2].splice(kIndex,1)
       } else {
         // abandon profile if a requested measurement is all null
-        if(chunk.data[k].every(x => x === null)){
+        if(chunk.data[kIndex].every(x => x === null)){
           return false
         }
       }
