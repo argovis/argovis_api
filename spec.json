@@ -1527,7 +1527,7 @@
                            "items": {
                               "type": "array",
                               "items": {
-                                 "type": "number"
+                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
                               }
                            }
                         }
@@ -1868,7 +1868,7 @@
                            "items": {
                               "type": "array",
                               "items": {
-                                 "type": "number"
+                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
                               }
                            }
                         }
@@ -1943,7 +1943,7 @@
                            "items": {
                               "type": "array",
                               "items": {
-                                 "type": "number"
+                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
                               }
                            }
                         }
@@ -2042,7 +2042,7 @@
                            "items": {
                               "type": "array",
                               "items": {
-                                 "type": "number"
+                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
                               }
                            }
                         }
