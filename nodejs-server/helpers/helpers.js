@@ -492,23 +492,38 @@ module.exports.locate_meta = function(meta_id, meta_list, meta_model){
 module.exports.lookup_key = function(userModel, apikey, resolve, reject){
     // look up an apikey from mongo, and reject if not found or not valid.
 
-    const query = userModel.find({key: apikey})
-    query.exec(function(err, user){
-      if (err){
-          reject({"code": 500, "message": "Server error"});
+    if(process.env.ARGOCORE === 'here'){
+      // look for the key in mongo
+      const query = userModel.find({key: apikey})
+      query.exec(function(err, user){
+        if (err){
+            reject({"code": 500, "message": "Server error"});
+            return;
+        }
+        if(user.length == 0){
+            reject({"code": 404, "message": "Not found: User key not found in database."});
+            return;
+        }
+        if(!user[0].toObject().tokenValid){
+          reject({"code": 403, "message": "API token has been deactivated; please contact argovis@colorado.edu for assistance."})
           return;
-      }
-      if(user.length == 0){
-          reject({"code": 404, "message": "Not found: User key not found in database."});
-          return;
-      }
-      if(!user[0].toObject().tokenValid){
-        reject({"code": 403, "message": "API token has been deactivated; please contact argovis@colorado.edu for assistance."})
-        return;
-      }
-      
-      resolve(user[0].toObject())
-    })
+        }
+        
+        resolve(user[0].toObject())
+      })
+    } else{
+      // phone home to validate this key
+      fetch(process.env.ARGOCORE + '/token?token='+apikey, {headers:{'x-argokey': apikey}})
+              .then(response => response.json())
+              .then(data => {
+                if(data.hasOwnProperty('code') && data.code == 404){
+                  reject({"code": 404, "message": "Not found: User key not found in database."});
+                  return;
+                } else {
+                  resolve({key: apikey, tokenValid: data[0].tokenValid})
+                }
+              })
+    }
 }
 
 module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
