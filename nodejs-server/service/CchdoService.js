@@ -27,7 +27,6 @@ const geojsonArea = require('@mapbox/geojson-area');
 
 exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
-
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){

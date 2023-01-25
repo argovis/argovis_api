@@ -49,7 +49,6 @@ exports.drifterMetaSearch = function(res,id,platform,wmo) {
 
 exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,center,radius,metadata,wmo,platform,compression,mostrecent,data) {
   return new Promise(function(resolve, reject) {
-
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){

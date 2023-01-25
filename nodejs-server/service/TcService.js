@@ -24,7 +24,6 @@ const summaries = require('../models/summary');
 
 exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,name,metadata,mostrecent,compression,data) {
   return new Promise(function(resolve, reject) {
-
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){
@@ -107,10 +106,10 @@ exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,
  **/
 exports.findTCmeta = function(res, id,name) {
   return new Promise(function(resolve, reject) {
-
     let match = {
         '_id': id,
         'name': name
+
     }
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
