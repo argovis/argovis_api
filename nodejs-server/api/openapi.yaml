@@ -2157,7 +2157,9 @@ components:
               items:
                 type: array
                 items:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
         date_updated_argovis:
           type: string
           format: date-time
@@ -2532,7 +2534,9 @@ components:
               items:
                 type: array
                 items:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
       example:
         end_date: 2000-01-23T04:56:07.000+00:00
         typebuoy: typebuoy
@@ -2624,7 +2628,9 @@ components:
               items:
                 type: array
                 items:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
       example:
         data_warning:
         - degenerate_levels
@@ -2758,7 +2764,9 @@ components:
               items:
                 type: array
                 items:
-                  type: number
+                  anyOf:
+                  - type: string
+                  - type: number
         date_updated_argovis:
           type: string
           format: date-time
