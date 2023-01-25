@@ -450,6 +450,29 @@ module.exports.meta_xform = function(res){
   return postprocess
 }
 
+module.exports.token_xform = function(res){
+  // transform stream for token validation
+
+  let nDocs = 0
+  const postprocess = new Transform({
+    objectMode: true,
+    transform(chunk, encoding, next){
+      this.push({tokenValid: chunk.tokenValid > 0})
+      nDocs++
+      next()
+    }
+  });
+  
+  postprocess._flush = function(callback){
+    if(nDocs == 0){
+      this.push({tokenValid: false})
+    }
+    return callback()
+  }
+
+  return postprocess
+}
+
 module.exports.locate_meta = function(meta_id, meta_list, meta_model){
   // <meta_id>: id of meta document of interest
   // <meta_list>: current array of fetched meta docs

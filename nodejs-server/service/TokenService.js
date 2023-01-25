@@ -1,5 +1,6 @@
 'use strict';
-
+const helpers = require('../helpers/helpers')
+const userModel = require('../models/user');
 
 /**
  * validate an API token
@@ -7,15 +8,15 @@
  * token String token to validate
  * returns Object
  **/
-exports.validateToken = function(token) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = { };
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+exports.validateToken = function(res, token) {
+  return new Promise(function(resolve, reject){
+
+    let match = {
+        'key': token
     }
+
+    const query = userModel.aggregate([{$match:match}]);
+    let postprocess = helpers.token_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
-
