@@ -35,21 +35,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /tc", function () {
       it("tc with data filter should return correct data_keys", async function () {
         const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members(['wind'])
+        expect(response.body[0].data_info[0]).to.have.members(['wind'])
       });
     });
 
     describe("GET /tc", function () {
       it("tc with data filter should return correct units", async function () {
         const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal({'wind':"kt"})
-      });
-    });
-
-    describe("GET /tc", function () {
-      it("tc with data filter should return correct units, as a list when compressed", async function () {
-        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind&compression=array").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal(["kt"])
+        expect(response.body[0].data_info[2][0][0]).to.eql("kt")
       });
     });
 
@@ -61,22 +54,25 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /tc", function () {
-      it("tc with data=all filter should return correct data_keys", async function () {
-        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members(["wind","surface_pressure"])
+      it("tc with data filter should return correct data_keys", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind,surface_pressure").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members(["wind","surface_pressure"])
       });
     });
 
     describe("GET /tc", function () {
-      it("tc with data=all filter should return correct units", async function () {
-        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal({"wind":"kt", "surface_pressure":"mb"})
+      it("tc with data filter should return correct units", async function () {
+        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=wind,surface_pressure").set({'x-argokey': 'developer'});
+        iWind = response.body[0].data_info[0].indexOf('wind')   
+        iPressure = response.body[0].data_info[0].indexOf('surface_pressure')        
+        expect(response.body[0].data_info[2][iWind][0]).to.deep.equal("kt")
+        expect(response.body[0].data_info[2][iPressure][0]).to.deep.equal("mb")
       });
     });
 
     describe("GET /tc", function () {
       it("tc profile should be dropped if no requested data is available", async function () {
-        const response = await request.get("/tc?polygon=[[-94,27.5],[-95,27.5],[-95,28.5],[-94,28.5],[-94,27.5]]&data=surface_pressure").set({'x-argokey': 'developer'});
+        const response = await request.get("/tc?id=AL041851_18510816180000&data=surface_pressure").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
@@ -105,6 +101,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /tc/meta?id", function () {
       it("check tc meta schema", async function () {
         const response = await request.get("/tc/meta?id=AL011851").set({'x-argokey': 'developer'});
+        console.log(response.body[0])
         expect(response.body).to.be.jsonSchema(schema.paths['/tc/meta'].get.responses['200'].content['application/json'].schema); 
       });
     }); 
