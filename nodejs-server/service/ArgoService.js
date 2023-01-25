@@ -129,12 +129,9 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "metadata",
-  "geolocation_argoqc" : 5.962133916683182,
-  "data" : {
-    "key" : [ 6.027456183070403, 6.027456183070403 ]
-  },
-  "measurement_metadata" : [ "", "" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "geolocation_argoqc" : 1.4658129805029452,
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "basin" : 0.8008281904610115,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
@@ -148,10 +145,11 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
     "doi" : "doi"
   } ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
   "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
-  "cycle_number" : 1.4658129805029452,
-  "timestamp_argoqc" : 5.637376656633329,
+  "cycle_number" : 6.027456183070403,
+  "timestamp_argoqc" : 5.962133916683182,
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {
@@ -160,12 +158,9 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : "metadata",
-  "geolocation_argoqc" : 5.962133916683182,
-  "data" : {
-    "key" : [ 6.027456183070403, 6.027456183070403 ]
-  },
-  "measurement_metadata" : [ "", "" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "geolocation_argoqc" : 1.4658129805029452,
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "basin" : 0.8008281904610115,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
@@ -179,10 +174,11 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
     "doi" : "doi"
   } ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
   "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
-  "cycle_number" : 1.4658129805029452,
-  "timestamp_argoqc" : 5.637376656633329,
+  "cycle_number" : 6.027456183070403,
+  "timestamp_argoqc" : 5.962133916683182,
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {

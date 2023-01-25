@@ -46,10 +46,10 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,ra
     examples['application/json'] = [ {
   "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
   "cast" : 6.027456183070403,
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
+  "data_info" : [ "", "" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "station" : "station",
-  "data_keys" : [ "ammonium_btl", "ammonium_btl" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "source" : [ {
@@ -63,7 +63,6 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,ra
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : "",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -72,10 +71,10 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,ra
 }, {
   "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
   "cast" : 6.027456183070403,
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
+  "data_info" : [ "", "" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "station" : "station",
-  "data_keys" : [ "ammonium_btl", "ammonium_btl" ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
   "source" : [ {
@@ -89,7 +88,6 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,center,ra
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : "",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
