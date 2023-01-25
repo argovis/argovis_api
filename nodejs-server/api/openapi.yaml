@@ -37,6 +37,8 @@ tags:
   description: Argo float position forcast product
 - name: summary (experimental)
   description: Summary statistics (mostly for internal use)
+- name: token
+  description: token validation
 paths:
   /ar:
     get:
@@ -1843,6 +1845,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: SummaryExperimental
+  /token:
+    get:
+      tags:
+      - token
+      summary: validate an API token
+      operationId: validateToken
+      parameters:
+      - name: token
+        in: query
+        description: token to validate
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Token
 components:
   schemas:
     arShapeSchema:
