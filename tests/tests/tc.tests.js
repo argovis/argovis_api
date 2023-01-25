@@ -101,7 +101,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /tc/meta?id", function () {
       it("check tc meta schema", async function () {
         const response = await request.get("/tc/meta?id=AL011851").set({'x-argokey': 'developer'});
-        console.log(response.body[0])
         expect(response.body).to.be.jsonSchema(schema.paths['/tc/meta'].get.responses['200'].content['application/json'].schema); 
       });
     }); 
