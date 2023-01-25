@@ -231,10 +231,13 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 
   // identify data_keys
   let dk = null
-  if(chunk.hasOwnProperty('measurement_metadata')){
-    dk = chunk.measurement_metadata[0]
+  let dinfo = null
+  if(chunk.hasOwnProperty('data_info')){
+    dk = chunk.data_info[0]
+    dinfo = chunk.data_info
   } else {
-    dk = metadata.measurement_metadata[0]
+    dk = metadata.data_info[0]
+    dinfo = metadata.data_info
   }
 
   // bail out on this document if it contains any ~keys:
@@ -248,18 +251,18 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 
   // filter down to requested data
   if(pp_params.data && !keys.includes('all')){
-    if(!chunk.hasOwnProperty('measurement_metadata')){
-      chunk.measurement_metadata = metadata.measurement_metadata
+    if(!chunk.hasOwnProperty('data_info')){
+      chunk.data_info = metadata.data_info
     }
-    let keyset = JSON.parse(JSON.stringify(chunk.measurement_metadata[0]))
+    let keyset = JSON.parse(JSON.stringify(chunk.data_info[0]))
     for(let i=0; i<keyset.length; i++){
       let k = keyset[i]
-      let kIndex = chunk.measurement_metadata[0].indexOf(k)
+      let kIndex = chunk.data_info[0].indexOf(k)
       if(!keys.includes(k)){
         // drop it if we didn't ask for it
         chunk.data.splice(kIndex,1)
-        chunk.measurement_metadata[0].splice(kIndex,1)
-        chunk.measurement_metadata[2].splice(kIndex,1)
+        chunk.data_info[0].splice(kIndex,1)
+        chunk.data_info[2].splice(kIndex,1)
       } else {
         // abandon profile if a requested measurement is all null
         if(chunk.data[kIndex].every(x => x === null)){
@@ -273,19 +276,20 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // filter by presRange, drop profile if reqested and available pressures are disjoint
-  if(pp_params.presRange && chunk.data['pressure']){
+  let pressure_index = dinfo[0].findIndex(x => x === 'pressure')
+  if(pp_params.presRange && pressure_index!=-1){
     let lowIndex = 0
-    let highIndex = chunk.data['pressure'].length-1
-    if(chunk.data['pressure'][0] > pp_params.presRange[1]){
+    let highIndex = chunk.data[pressure_index].length-1
+    if(chunk.data[pressure_index][0] > pp_params.presRange[1]){
       return false // requested pressure range that is completely shallower than pressures available
     }
-    if(chunk.data['pressure'][highIndex] < pp_params.presRange[0]){
+    if(chunk.data[pressure_index][highIndex] < pp_params.presRange[0]){
       return false // requested pressure range that is completely deeper than pressures available
     }
-    while(lowIndex < highIndex && chunk.data['pressure'][lowIndex] < pp_params.presRange[0]){
+    while(lowIndex < highIndex && chunk.data[pressure_index][lowIndex] < pp_params.presRange[0]){
       lowIndex++
     } // lowIndex now points at the first level index to keep
-    while(highIndex > lowIndex && chunk.data['pressure'][highIndex] > pp_params.presRange[1]){
+    while(highIndex > lowIndex && chunk.data[pressure_index][highIndex] > pp_params.presRange[1]){
       highIndex--
     } // highIndex now points at the last level index to keep
     for(let i=0; i<Object.keys(chunk.data).length; i++){
