@@ -532,7 +532,8 @@ paths:
         schema:
           type: string
           enum:
-          - grid_1_1_0.5_0.5
+          - rg09
+          - kg21
       - name: id
         in: query
         description: Unique ID to search for.
