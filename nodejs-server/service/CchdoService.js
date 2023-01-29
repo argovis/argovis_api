@@ -75,7 +75,7 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve([{_id: null}])
+    let metafilter = Promise.resolve([])
     let metacomplete = false
     if(woceline||cchdo_cruise){
         let match = {

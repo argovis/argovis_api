@@ -205,6 +205,18 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   return model.aggregate(aggPipeline).cursor()
 }
 
+module.exports.combineDataInfo = function(dinfos){
+  // <dinfos>: array of data_info objects, all with same set of columns
+  // returns a single data_info object composed of all elements of input array
+  console.log('xxxx', dinfos)
+  let d = []
+  d[0] = [].concat(...dinfos.map(x=>x[0]))
+  d[1] = dinfos[0][1]
+  d[2] = [].concat(...dinfos.map(x=>x[2]))
+  console.log('1111', d)
+  return d
+}
+
 module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <chunk>: raw data table document
   // <metadata>: metadata doc corresponding to this chunk
@@ -236,8 +248,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     dk = chunk.data_info[0]
     dinfo = chunk.data_info
   } else {
-    dk = metadata.data_info[0]
-    dinfo = metadata.data_info
+    dinfo = module.exports.combineDataInfo(metadata.map(x => x.data_info))
+    dk = dinfo[0]
   }
 
   // bail out on this document if it contains any ~keys:
@@ -252,7 +264,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // filter down to requested data
   if(pp_params.data && !keys.includes('all')){
     if(!chunk.hasOwnProperty('data_info')){
-      chunk.data_info = metadata.data_info
+      chunk.data_info = dinfo
     }
     let keyset = JSON.parse(JSON.stringify(chunk.data_info[0]))
     for(let i=0; i<keyset.length; i++){
@@ -321,7 +333,9 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
           .then(meta => {
             // keep track of new metadata docs so we don't look them up twice
-            if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
+            for(let i=0; i<meta.length; i++){
+              if(!search_result[0].find(x => x._id == meta[i]._id)) search_result[0].push(meta[i])
+            }
             // munge the chunk and push it downstream if it isn't rejected.
             let doc = null
             if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
@@ -374,19 +388,20 @@ module.exports.meta_xform = function(res){
   return postprocess
 }
 
-module.exports.locate_meta = function(meta_id, meta_list, meta_model){
-  // <meta_id>: id of meta document of interest
+module.exports.locate_meta = function(meta_ids, meta_list, meta_model){
+  // <meta_ids>: array of ids of meta documents of interest
   // <meta_list>: current array of fetched meta docs
-  // <meta_model>: collection model tp go looking in
+  // <meta_model>: collection model to go looking in
   // return a promise that resolves to the metadata record sought.
 
-  let my_meta = meta_list.find(x => x._id == meta_id)
-  if(typeof my_meta !== 'undefined'){
-    return new Promise(function(resolve, reject){resolve(my_meta)})
+  let current_meta = meta_list.map(x => x.metadata)
+  current_meta = [].concat(...current_meta)
+  meta_needed = meta_ids.filter(x => !current_meta.includes(x))
+
+  if(meta_needed.length === 0){
+    return new Promise(function(resolve, reject){resolve([])})
   } else {
-    // go looking in mongo
-    let metaquery = meta_model.findOne({ _id: meta_id }).lean();
-    return metaquery.exec();
+    return meta_model.find({"_id": {"$in": meta_needed}}).exec()
   }
 }
 

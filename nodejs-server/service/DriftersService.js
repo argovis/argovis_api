@@ -88,7 +88,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve([{_id: null}])
+    let metafilter = Promise.resolve([])
     let metacomplete = false
     if(wmo||platform){
         let match = {
@@ -116,7 +116,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
                 data.geolocation.coordinates[0], 
                 data.geolocation.coordinates[1], 
                 data.timestamp,
-                metadata.wmo
+                metadata[0].wmo
               ]
           }
 

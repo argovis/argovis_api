@@ -50,9 +50,7 @@ const DrifterMetaSchema = Schema({
   data_type: {type: String, required: true},
   date_updated_argovis: {type: Date, required: true},
   source_info: {type: sourceinfo, required: true},
-  data_keys: {type: [String], required: true},
-  units: {type: [String], required: true},
-  long_name: {type: [String], required: true}
+  data_info: Schema.Types.Mixed,
 });
 
 module.exports = {}

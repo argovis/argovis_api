@@ -157,7 +157,7 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve([{_id: null}])
+    let metafilter = Promise.resolve([])
     let metacomplete = false
     if(platform || platform_type){
         let match = {

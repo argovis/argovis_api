@@ -40,8 +40,7 @@ const tcSchema = Schema({
 const tcMetaSchema = Schema({
   _id: {type: String, required: true},
   data_type: {type: String, required: true},
-  data_keys: {type: [String], required: true},
-  units: {type: [String], required: true},
+  data_info: Schema.Types.Mixed,
   date_updated_argovis: {type: Date, required: true},
   source: {type: sourceinfo, required: true},
   name: {type: String, required: true},
