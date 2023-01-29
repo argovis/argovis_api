@@ -395,7 +395,7 @@
                   "required": "true",
                   "schema": {
                      "type": "string",
-                     "enum": ["grid_1_1_0.5_0.5"]
+                     "enum": ["rg09", "kg21"]
                   }
                },
                {
