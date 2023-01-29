@@ -2197,73 +2197,42 @@ components:
       required:
       - _id
       - basin
-      - data_keys
       - geolocation
       - metadata
       - timestamp
-      - units
       type: object
       properties:
         _id:
           type: string
         metadata:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              kg21_ohc15to300:
-                type: string
-              rg09_temperature:
-                type: string
-              rg09_salinity:
-                type: string
+          type: array
+          items:
+            type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
-        data_keys:
-          $ref: '#/components/schemas/grid_data_keys'
-        units:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              kg21_ohc15to300:
-                type: string
-              rg09_temperature:
-                type: string
-              rg09_salinity:
-                type: string
         basin:
           type: number
         timestamp:
           type: string
           format: date-time
         data:
-          anyOf:
-          - type: array
+          type: array
+          items:
+            type: array
             items:
-              type: array
-              items:
-                type: number
-          - type: object
-            properties:
-              kg21_ohc15to300:
-                type: array
-              rg09_temperature:
-                type: array
-              rg09_salinity:
-                type: array
+              anyOf:
+              - type: string
+              - type: number
       example:
-        metadata: ""
-        data: ""
-        data_keys:
-        - rg09_temperature
-        - rg09_temperature
+        metadata:
+        - metadata
+        - metadata
+        data:
+        - - ""
+          - ""
+        - - ""
+          - ""
         _id: _id
-        units: ""
         basin: 0.80082819046101150206595775671303272247314453125
         geolocation:
           coordinates:
@@ -2274,6 +2243,7 @@ components:
     gridMeta:
       required:
       - _id
+      - data_info
       - data_type
       - date_updated_argovis
       - levels
@@ -2295,7 +2265,24 @@ components:
           type: array
           items:
             type: number
+        data_info:
+          type: array
+          items:
+            anyOf:
+            - type: array
+              items:
+                type: string
+            - type: array
+              items:
+                type: array
+                items:
+                  anyOf:
+                  - type: string
+                  - type: number
       example:
+        data_info:
+        - ""
+        - ""
         data_type: data_type
         _id: _id
         source:
@@ -2315,27 +2302,6 @@ components:
         levels:
         - 0.80082819046101150206595775671303272247314453125
         - 0.80082819046101150206595775671303272247314453125
-    grid_units:
-      anyOf:
-      - type: array
-        items:
-          type: string
-      - type: object
-        properties:
-          kg21_ohc15to300:
-            type: string
-          rg09_temperature:
-            type: string
-          rg09_salinity:
-            type: string
-    grid_data_keys:
-      type: array
-      items:
-        type: string
-        enum:
-        - rg09_temperature
-        - rg09_salinity
-        - kg21_ohc15to300
     geoJSONpoint:
       required:
       - coordinates
