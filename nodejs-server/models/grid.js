@@ -45,5 +45,7 @@ const GridMetaSchema = Schema({
 });
 
 module.exports = {}
-module.exports['grid_1_1_0.5_0.5Meta'] = mongoose.model('grid_1_1_0.5_0.5Meta', GridMetaSchema, 'grid_1_1_0.5_0.5Meta');
-module.exports['grid_1_1_0.5_0.5'] = mongoose.model('grid_1_1_0.5_0.5', GridSchema, 'grid_1_1_0.5_0.5');
+module.exports['rg09Meta'] = mongoose.model('rg09Meta', GridMetaSchema, 'rg09Meta');
+module.exports['rg09'] = mongoose.model('rg09', GridSchema, 'rg09');
+module.exports['kg21Meta'] = mongoose.model('kg21Meta', GridMetaSchema, 'kg21Meta');
+module.exports['kg21'] = mongoose.model('kg21', GridSchema, 'kg21');
