@@ -58,8 +58,7 @@ exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
-        mostrecent: mostrecent,
-        data_adjacent: ['units']
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise

@@ -74,12 +74,12 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
-        mostrecent: mostrecent,
-        data_adjacent: ['units', 'metadata']
+        mostrecent: mostrecent
     }
 
-    // metadata table filter: just get the entire table for simplicity's sake, grid metadata is tiny
-    let metafilter = Grid[gridName + 'Meta'].find({}).lean().exec()
+    // metadata table filter: no-op promise stub, nothing to filter grid data docs on from metadata at the moment
+    let metafilter = Promise.resolve([])
+    let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter))
@@ -97,13 +97,10 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
                 data.timestamp
               ]
           }
-
-          let postprocess = gridHelpers.grid_post_xform(pp_params, search_result, res, stub)
+          let postprocess = helpers.post_xform(Grid[gridName+'Meta'], pp_params, search_result, res, stub)
 
           resolve([search_result[1], postprocess])
-
         })
-
   });
 }
 

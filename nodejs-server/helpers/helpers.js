@@ -208,12 +208,10 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
 module.exports.combineDataInfo = function(dinfos){
   // <dinfos>: array of data_info objects, all with same set of columns
   // returns a single data_info object composed of all elements of input array
-  console.log('xxxx', dinfos)
   let d = []
   d[0] = [].concat(...dinfos.map(x=>x[0]))
   d[1] = dinfos[0][1]
   d[2] = [].concat(...dinfos.map(x=>x[2]))
-  console.log('1111', d)
   return d
 }
 
@@ -326,6 +324,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 module.exports.post_xform = function(metaModel, pp_params, search_result, res, stub){
 
   let nDocs = 0
+
   const postprocess = new Transform({
     objectMode: true,
     transform(chunk, encoding, next){
@@ -393,7 +392,7 @@ module.exports.locate_meta = function(meta_ids, meta_list, meta_model){
   // <meta_list>: current array of fetched meta docs
   // <meta_model>: collection model to go looking in
   // return a promise that resolves to the metadata record sought.
-
+  
   let current_meta = meta_list.map(x => x.metadata)
   current_meta = [].concat(...current_meta)
   meta_needed = meta_ids.filter(x => !current_meta.includes(x))
