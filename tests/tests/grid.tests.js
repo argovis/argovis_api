@@ -120,21 +120,18 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /grids/grid_1_1_0.5_0.5", function () {
       it("presRange is inclusive on boundaries", async function () {
         const response = await request.get("/grids/grid_1_1_0.5_0.5?id=20040115000000_39.5_-64.5&data=rg09_salinity&presRange=0,170").set({'x-argokey': 'developer'});
-        expect(response.body[0].levels[0]).to.eql([2.5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170]);
+        expect(response.body[0].levels).to.eql([2.5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170]);
       });
     });
 
     describe("GET /grids/grid_1_1_0.5_0.5", function () {
       it("grids with data=all and presRange filters should return correct data", async function () {
         const response = await request.get("/grids/grid_1_1_0.5_0.5?id=20040115000000_20.5_-64.5&data=all&presRange=5,100").set({'x-argokey': 'developer'});
-        expect(response.body[0].data.rg09_temperature[0]).to.eql(-0.076)
-      });
-    });
-
-    describe("GET /grids/grid_1_1_0.5_0.5", function () {
-      it("grids with data=all and presRange filters should report levels, post filtering, on the data document", async function () {
-        const response = await request.get("/grids/grid_1_1_0.5_0.5?id=20040115000000_29.5_-64.5&data=all&presRange=5,100").set({'x-argokey': 'developer'});
-        expect(response.body[0].levels).to.deep.equal({'rg09_temperature': [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], 'rg09_salinity': [ 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]})
+        tempIndex = 0
+        while(!response.body[0].metadata[tempIndex].includes('rg09_temperature')){
+          tempIndex++
+        }
+        expect(response.body[0].data[tempIndex][0]).to.eql(-0.076)
       });
     });
 
@@ -163,7 +160,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /grids/grid_1_1_0.5_0.5", function () {
       it("check reported level range with pressure bracket", async function () {
         const response = await request.get("/grids/grid_1_1_0.5_0.5?id=20040115000000_20.5_-64.5&presRange=10,100&data=rg09_temperature").set({'x-argokey': 'developer'});
-        expect(response.body[0]['levels']).to.eql([[10,20,30,40,50,60,70,80,90,100]]);
+        expect(response.body[0]['levels']).to.eql([10,20,30,40,50,60,70,80,90,100]);
       });
     });
 
