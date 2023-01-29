@@ -229,6 +229,13 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   let coerced_pressure = false
   let metadata_only = false
 
+  // make sure metadata is sorted the same as chunk.metadata
+  let m = []
+  for(let i=0; i<chunk.metadata.length; i++){
+    m.push(metadata.filter(x=>x._id==chunk.metadata[i])[0])
+  }
+  metadata = m
+
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
     keys = pp_params.data.filter(e => e.charAt(0)!='~')
