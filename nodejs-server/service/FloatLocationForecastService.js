@@ -16,16 +16,16 @@ exports.findfloatLocationForecast = function(id,forecastOrigin,forecastGeolocati
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "",
-  "data" : "",
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   }
 }, {
-  "metadata" : "",
-  "data" : "",
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
@@ -51,8 +51,8 @@ exports.findfloatLocationForecastMeta = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
+  "data_info" : [ "", "" ],
   "data_type" : "data_type",
-  "data_keys" : [ "90", "90" ],
   "_id" : "_id",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
@@ -65,12 +65,11 @@ exports.findfloatLocationForecastMeta = function(id) {
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : "",
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
   "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
 }, {
+  "data_info" : [ "", "" ],
   "data_type" : "data_type",
-  "data_keys" : [ "90", "90" ],
   "_id" : "_id",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
@@ -83,7 +82,6 @@ exports.findfloatLocationForecastMeta = function(id) {
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : "",
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
   "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
 } ];
