@@ -1355,7 +1355,7 @@
          },
          "floatLocationForecastMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels", "data_keys", "units"],
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels", "data_info"],
             "properties": {
                "_id": {
                   "type": "string"

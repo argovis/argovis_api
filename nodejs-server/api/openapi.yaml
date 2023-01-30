@@ -1918,12 +1918,11 @@ components:
     floatLocationForecastMeta:
       required:
       - _id
-      - data_keys
+      - data_info
       - data_type
       - date_updated_argovis
       - levels
       - source
-      - units
       type: object
       properties:
         _id:
