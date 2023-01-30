@@ -260,7 +260,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     dk = chunk.data_info[0]
     dinfo = chunk.data_info
   } else {
-    console.log(metadata)
     dinfo = module.exports.combineDataInfo(metadata.map(x => x.data_info))
     dk = dinfo[0]
   }

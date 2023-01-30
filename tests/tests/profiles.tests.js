@@ -173,331 +173,346 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     // // argo
 
-    // describe("GET /argo", function () {
-    //   it("searches for argo profiles, dont request data", async function () {
-    //     const response = await request.get("/argo?id=4901283_021").set({'x-argokey': 'developer'});
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("searches for argo profiles, dont request data", async function () {
+        const response = await request.get("/argo?id=2902857_002").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("searches for argo profiles with data=except-data-values", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=except-data-values").set({'x-argokey': 'developer'});
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("searches for argo profiles with data=except-data-values", async function () {
+        const response = await request.get("/argo?id=2902857_002&data=except-data-values").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo except-data-values should still have units and data_keys for BGC profiles", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=except-data-values").set({'x-argokey': 'developer'});
-    //     expect(response.body[0]).to.contain.keys('data_keys', 'units')
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo except-data-values should still have data_info for BGC profiles", async function () {
+        const response = await request.get("/argo?id=2902857_003&data=except-data-values").set({'x-argokey': 'developer'});
+        expect(response.body[0]).to.contain.keys('data_info')
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data filter should return argo-consistent data", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=salinity,doxy").set({'x-argokey': 'developer'});
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data filter should return argo-consistent data", async function () {
+        const response = await request.get("/argo?id=2902857_002&data=bbp700,chla").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("shouldnt return a profile unless it has all the requested data", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=salinity,doxy,chla").set({'x-argokey': 'developer'});
-    //     expect(response.status).to.eql(404);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("shouldnt return a profile unless it has all the requested data", async function () {
+        const response = await request.get("/argo?id=4901283_021&data=salinity,doxy,chla").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data filter should return correct data_keys", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=salinity,doxy").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys).to.have.members(['salinity', 'doxy', 'pressure'])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data filter should return correct data_keys", async function () {
+        const response = await request.get("/argo?id=2902857_003&data=bbp700,chla").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members(['bbp700', 'chla', 'pressure'])
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data filter should return correct units", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=salinity,doxy").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].units).to.deep.equal({'salinity':"psu",'doxy':"micromole/kg",'pressure':"decibar"})
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data filter should return correct units", async function () {
+        const response = await request.get("/argo?id=2902857_003&data=bbp700,chla").set({'x-argokey': 'developer'});
+        units = response.body[0].data_info[1].indexOf('units')
+        bbp700index = response.body[0].data_info[0].indexOf('bbp700')
+        chlaindex = response.body[0].data_info[0].indexOf('chla')
+        expect(response.body[0].data_info[2][bbp700index][units]).to.eql("m-1")
+        expect(response.body[0].data_info[2][chlaindex][units]).to.eql("mg/m3")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data filter should return correct units, as a list when compressed", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=salinity,doxy&compression=array").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].units).to.deep.equal(["psu","micromole/kg","decibar"])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data filter should return correct data_keys_mode", async function () {
+        const response = await request.get("/argo?id=2902857_003&data=bbp700,chla").set({'x-argokey': 'developer'});
+        dkmode = response.body[0].data_info[1].indexOf('data_keys_mode')
+        bbp700index = response.body[0].data_info[0].indexOf('bbp700')
+        chlaindex = response.body[0].data_info[0].indexOf('chla')
+        expect(response.body[0].data_info[2][bbp700index][dkmode]).to.eql("R")
+        expect(response.body[0].data_info[2][chlaindex][dkmode]).to.eql("A")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data filter should return correct data_keys_mode", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=salinity,doxy").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys_mode).to.deep.equal({'salinity':"D",'doxy':"D",'pressure':"D"})
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_068").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.deep.equal([ "pressure", "pressure_argoqc", "temperature", "temperature_argoqc" ])
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data filter should return correct data_keys_mode, as a list when compressed", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=salinity,doxy&compression=array").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys_mode).to.deep.equal(["D","D","D"])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct units on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_068").set({'x-argokey': 'developer'});
+        units = response.body[0].data_info[1].indexOf('units')
+        temperature = response.body[0].data_info[0].indexOf('temperature')
+        pressure = response.body[0].data_info[0].indexOf('pressure')
+        expect(response.body[0].data_info[2][temperature][units]).to.eql("degree_Celsius")
+        expect(response.body[0].data_info[2][pressure][units]).to.eql("decibar")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with no data filter should still return correct data_keys on a core profile", async function () {
-    //     const response = await request.get("/argo?id=13857_018").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys).to.deep.equal([ "pressure", "pressure_argoqc", "temperature", "temperature_argoqc" ])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data=all filter should return correct units on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_068&data=all").set({'x-argokey': 'developer'});
+        units = response.body[0].data_info[1].indexOf('units')
+        temperature = response.body[0].data_info[0].indexOf('temperature')
+        pressure = response.body[0].data_info[0].indexOf('pressure')
+        expect(response.body[0].data_info[2][temperature][units]).to.eql("degree_Celsius")
+        expect(response.body[0].data_info[2][pressure][units]).to.eql("decibar")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with no data filter should still return correct units on a core profile", async function () {
-    //     const response = await request.get("/argo?id=13857_018").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].units).to.deep.equal({"pressure": "decibar", "pressure_argoqc": "null", "temperature":"degree_Celsius", "temperature_argoqc":"null" })
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys_mode on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_068").set({'x-argokey': 'developer'});
+        dkmode = response.body[0].data_info[1].indexOf('data_keys_mode')
+        temperature = response.body[0].data_info[0].indexOf('temperature')
+        pressure = response.body[0].data_info[0].indexOf('pressure')
+        expect(response.body[0].data_info[2][temperature][dkmode]).to.eql("R")
+        expect(response.body[0].data_info[2][pressure][dkmode]).to.eql("R")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data=all filter should return correct units on a core profile", async function () {
-    //     const response = await request.get("/argo?id=13857_018&data=all").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].units).to.deep.equal({"pressure": "decibar", "pressure_argoqc": "null", "temperature":"degree_Celsius", "temperature_argoqc":"null" })
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data=except-data-values filter should still return correct data_keys_mode on a core profile", async function () {
+        const response = await request.get("/argo?id=13857_068&data=except-data-values").set({'x-argokey': 'developer'});
+        dkmode = response.body[0].data_info[1].indexOf('data_keys_mode')
+        temperature = response.body[0].data_info[0].indexOf('temperature')
+        pressure = response.body[0].data_info[0].indexOf('pressure')
+        expect(response.body[0].data_info[2][temperature][dkmode]).to.eql("R")
+        expect(response.body[0].data_info[2][pressure][dkmode]).to.eql("R")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with no data filter should still return correct data_keys_mode on a core profile", async function () {
-    //     const response = await request.get("/argo?id=13857_018").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys_mode).to.deep.equal({"pressure": "R", "pressure_argoqc": "null", "temperature":"R", "temperature_argoqc":"null" })
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys on a bgc profile", async function () {
+        const response = await request.get("/argo?id=2902857_003").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.deep.equal([ "bbp700", "bbp700_argoqc", "cdom", "cdom_argoqc", "chla", "chla_argoqc", "pressure", "pressure_argoqc", "salinity", "salinity_argoqc", "salinity_sfile", "salinity_sfile_argoqc", "temperature", "temperature_argoqc", "temperature_sfile", "temperature_sfile_argoqc" ])
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data=metadataOnly filter should still return correct data_keys_mode on a core profile", async function () {
-    //     const response = await request.get("/argo?id=13857_018&data=except-data-values").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys_mode).to.deep.equal({"pressure": "R", "pressure_argoqc": "null", "temperature":"R", "temperature_argoqc":"null" })
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct units on a bgc profile", async function () {
+        const response = await request.get("/argo?id=2902857_003").set({'x-argokey': 'developer'});
+        units = response.body[0].data_info[1].indexOf('units')
+        bbp700index = response.body[0].data_info[0].indexOf('bbp700')
+        chlaindex = response.body[0].data_info[0].indexOf('chla')
+        expect(response.body[0].data_info[2][bbp700index][units]).to.eql("m-1")
+        expect(response.body[0].data_info[2][chlaindex][units]).to.eql("mg/m3")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with compression=array should return correct data_keys_mode on a core profile", async function () {
-    //     const response = await request.get("/argo?id=13857_018&compression=array").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys_mode).to.deep.equal(["R", "null", "R", "null"])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with no data filter should still return correct data_keys_mode on a bgc profile", async function () {
+        const response = await request.get("/argo?id=2902857_003").set({'x-argokey': 'developer'});
+        dkmode = response.body[0].data_info[1].indexOf('data_keys_mode')
+        bbp700index = response.body[0].data_info[0].indexOf('bbp700')
+        chlaindex = response.body[0].data_info[0].indexOf('chla')
+        expect(response.body[0].data_info[2][bbp700index][dkmode]).to.eql("R")
+        expect(response.body[0].data_info[2][chlaindex][dkmode]).to.eql("A")
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with compression=array should return correct units on a core profile", async function () {
-    //     const response = await request.get("/argo?id=13857_018&compression=array").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].units).to.deep.equal(["decibar", "null", "degree_Celsius", "null"])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data=all filter should return argo-consistent data", async function () {
+        const response = await request.get("/argo?id=2902857_002&data=all").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with no data filter should still return correct data_keys on a bgc profile", async function () {
-    //     const response = await request.get("/argo?id=4901283_021").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys).to.deep.equal([ "doxy", "doxy_argoqc", "pressure", "pressure_argoqc", "salinity", "salinity_argoqc", "salinity_sfile", "salinity_sfile_argoqc", "temperature", "temperature_argoqc", "temperature_sfile", "temperature_sfile_argoqc" ])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data=all filter should return correct data_keys", async function () {
+        const response = await request.get("/argo?id=2902857_003&data=all").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members([ "bbp700", "bbp700_argoqc", "cdom", "cdom_argoqc", "chla", "chla_argoqc", "pressure", "pressure_argoqc", "salinity", "salinity_argoqc", "salinity_sfile", "salinity_sfile_argoqc", "temperature", "temperature_argoqc", "temperature_sfile", "temperature_sfile_argoqc" ])
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with no data filter should still return correct units on a bgc profile", async function () {
-    //     const response = await request.get("/argo?id=4901283_021").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].units).to.deep.equal({ "doxy": "micromole/kg", "doxy_argoqc": "null", "pressure":"decibar", "pressure_argoqc": "null", "salinity":"psu", "salinity_argoqc":"null", "salinity_sfile":"psu", "salinity_sfile_argoqc":"null", "temperature":"degree_Celsius", "temperature_argoqc":"null", "temperature_sfile": "degree_Celsius", "temperature_sfile_argoqc": "null" })
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo with data=all filter should return correct units", async function () {
+        const response = await request.get("/argo?id=13857_068&data=all").set({'x-argokey': 'developer'});
+        pindex = response.body[0].data_info[0].indexOf('pressure')
+        pqcindex = response.body[0].data_info[0].indexOf('pressure_argoqc')
+        tindex = response.body[0].data_info[0].indexOf('temperature')
+        tqcindex = response.body[0].data_info[0].indexOf('temperature_argoqc')
+        uindex = response.body[0].data_info[1].indexOf('units')
+        expect(response.body[0].data_info[2][pindex][uindex]).to.deep.eql("decibar")
+        expect(response.body[0].data_info[2][pqcindex][uindex]).to.deep.eql(null)
+        expect(response.body[0].data_info[2][tindex][uindex]).to.deep.eql("degree_Celsius")
+        expect(response.body[0].data_info[2][tqcindex][uindex]).to.deep.eql(null)
+        //({"pressure": "decibar", "pressure_argoqc": "null", "temperature": "degree_Celsius", "temperature_argoqc": "null"})
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with no data filter should still return correct data_keys_mode on a bgc profile", async function () {
-    //     const response = await request.get("/argo?id=4901283_021").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys_mode).to.deep.equal({ "doxy": "D", "doxy_argoqc": "null", "pressure":"D", "pressure_argoqc": "null", "salinity":"D", "salinity_argoqc":"null", "salinity_sfile":"D", "salinity_sfile_argoqc":"null", "temperature":"D", "temperature_argoqc":"null", "temperature_sfile": "D", "temperature_sfile_argoqc": "null" })
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo levels should get dropped if they dont have requested data", async function () {
+        const response = await request.get("/argo?id=2902857_003&data=bbp700").set({'x-argokey': 'developer'});
+        pindex = response.body[0].data_info[0].indexOf('pressure')
+        expect(response.body[0].data[pindex][0]).to.eql(0)
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data=all filter should return argo-consistent data", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=all").set({'x-argokey': 'developer'});
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo profile should be dropped if no requested data is available", async function () {
+        const response = await request.get("/argo?id=4901283_022&data=doxy").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data=all filter should return correct data_keys", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=all").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data_keys).to.have.members( [ "doxy", "doxy_argoqc", "pressure", "pressure_argoqc", "salinity", "salinity_argoqc", "salinity_sfile", "salinity_sfile_argoqc", "temperature", "temperature_argoqc", "temperature_sfile", "temperature_sfile_argoqc" ])
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo levels should come out sorted by pressure", async function () {
+        const response = await request.get("/argo?id=2902857_001&data=all").set({'x-argokey': 'developer'});
+        pindex = response.body[0].data_info[0].indexOf('pressure')
+        p = response.body[0].data[pindex]
+        pp = JSON.parse(JSON.stringify(p))
+        pp.sort((a,b)=>a-b)
+        expect(p).to.deep.equal(pp)
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo with data=all filter should return correct units", async function () {
-    //     const response = await request.get("/argo?id=13857_018&data=all").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].units).to.deep.equal({"pressure": "decibar", "pressure_argoqc": "null", "temperature": "degree_Celsius", "temperature_argoqc": "null"})
-    //   });
-    // });
+    describe("GET /argo/meta", function () {
+      it("argo metadata", async function () {
+        const response = await request.get("/argo/meta?id=2902857_m0").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/argo/meta'].get.responses['200'].content['application/json'].schema);
+      });
+    });    
 
-    // describe("GET /argo", function () {
-    //   it("argo levels should get dropped if they dont have requested data", async function () {
-    //     const response = await request.get("/argo?id=4901283_021&data=doxy").set({'x-argokey': 'developer'});
-    //     expect(response.body[0].data[0]['pressure']).to.eql(22)
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo data filtered by platform", async function () {
+        const response = await request.get("/argo?startDate=2022-01-07T12:02:21Z&endDate=2022-07-06T12:02:21Z&platform=2902857").set({'x-argokey': 'developer'});
+        expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
+      });
+    }); 
 
-    // describe("GET /argo", function () {
-    //   it("argo profile should be dropped if no requested data is available", async function () {
-    //     const response = await request.get("/argo?id=4901283_022&data=doxy").set({'x-argokey': 'developer'});
-    //     expect(response.status).to.eql(404);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo data filtered by source", async function () {
+        const response = await request.get("/argo?startDate=2022-01-07T12:02:21Z&endDate=2022-07-07T12:02:21Z&source=argo_bgc").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3);
+      });
+    }); 
 
-    // describe("GET /argo", function () {
-    //   it("argo levels should come out sorted by pressure", async function () {
-    //     const response = await request.get("/argo?id=4901283_022&data=all").set({'x-argokey': 'developer'});
-    //     p = response.body[0].data.map(x => x.pressure)
-    //     pp = JSON.parse(JSON.stringify(p))
-    //     pp.sort((a,b)=>a-b)
-    //     expect(p).to.deep.equal(pp)
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("argo data filtered by source negation", async function () {
+        const response = await request.get("/argo?polygon=[[-34,1],[-34,3],[-36,3],[-36,1],[-34,1]]&startDate=2011-11-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    }); 
 
-    // describe("GET /argo/meta", function () {
-    //   it("argo metadata", async function () {
-    //     const response = await request.get("/argo/meta?id=4901283_m0").set({'x-argokey': 'developer'});
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/argo/meta'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // });    
+    describe("GET /argo", function () {
+      it("argo data filtered by platform_type", async function () {
+        const response = await request.get("/argo?startDate=2022-01-07T12:02:21Z&endDate=2022-07-07T12:02:21Z&platform_type=PALACE").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    }); 
 
-    // describe("GET /argo", function () {
-    //   it("argo data filtered by platform", async function () {
-    //     const response = await request.get("/argo?platform=4901283").set({'x-argokey': 'developer'});
-    //     expect(response.body).to.be.jsonSchema(schema.paths['/argo'].get.responses['200'].content['application/json'].schema);
-    //   });
-    // }); 
+    describe("GET /argo", function () {
+      it("argo data filtered by platform_type", async function () {
+        const response = await request.get("/argo?startDate=2022-01-07T12:02:21Z&endDate=2022-07-07T12:02:21Z&platform_type=PROVOR").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(3);
+      });
+    }); 
 
-    // describe("GET /argo", function () {
-    //   it("argo data filtered by source", async function () {
-    //     const response = await request.get("/argo?polygon=[[-34,1],[-34,3],[-36,3],[-36,1],[-34,1]]&startDate=2011-11-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_bgc").set({'x-argokey': 'developer'});
-    //     expect(response.body.length).to.eql(2);
-    //   });
-    // }); 
+    describe("GET /argo/vocabulary", function () {
+      it("get list of argo platforms", async function () {
+        const response = await request.get("/argo/vocabulary?parameter=platform").set({'x-argokey': 'developer'});
+         expect(response.body).to.have.members(['2902857', '13857']) 
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo data filtered by source negation", async function () {
-    //     const response = await request.get("/argo?polygon=[[-34,1],[-34,3],[-36,3],[-36,1],[-34,1]]&startDate=2011-11-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
-    //     expect(response.body.length).to.eql(1);
-    //   });
-    // }); 
+    describe("GET /argo/vocabulary", function () {
+      it("get list of argo metadata groups", async function () {
+        const response = await request.get("/argo/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
+         expect(response.body).to.have.members(["2902857_m0", "13857_m0"]) 
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo data filtered by platform_type", async function () {
-    //     const response = await request.get("/argo?startDate=2011-10-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&platform_type=PALACE").set({'x-argokey': 'developer'});
-    //     expect(response.body.length).to.eql(1);
-    //   });
-    // }); 
+    describe("GET /argo/vocabulary", function () {
+      it("get list of argo platform types", async function () {
+        const response = await request.get("/argo/vocabulary?parameter=platform_type").set({'x-argokey': 'developer'});
+         expect(response.body).to.have.members(['PROVOR', 'PALACE']) 
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("argo data filtered by platform_type", async function () {
-    //     const response = await request.get("/argo?startDate=2011-10-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&platform_type=SOLO_W").set({'x-argokey': 'developer'});
-    //     expect(response.body.length).to.eql(3);
-    //   });
-    // }); 
+    describe("GET /argo", function () {
+      it("filters on source correctly", async function () {
+        const response = await request.get("/argo?startDate=2022-01-07T12:02:21Z&endDate=2022-07-07T12:02:21Z&source=argo_bgc").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(3);
+      });
+    });
 
-    // describe("GET /argo/vocabulary", function () {
-    //   it("get list of argo platforms", async function () {
-    //     const response = await request.get("/argo/vocabulary?parameter=platform").set({'x-argokey': 'developer'});
-    //      expect(response.body).to.have.members(['4901283', '13857']) 
-    //   });
-    // });
-
-    // describe("GET /argo/vocabulary", function () {
-    //   it("get list of argo metadata groups", async function () {
-    //     const response = await request.get("/argo/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
-    //      expect(response.body).to.have.members(["4901283_m1", "4901283_m0", "13857_m0"]) 
-    //   });
-    // });
-
-    // describe("GET /argo/vocabulary", function () {
-    //   it("get list of argo platform types", async function () {
-    //     const response = await request.get("/argo/vocabulary?parameter=platform_type").set({'x-argokey': 'developer'});
-    //      expect(response.body).to.have.members(['SOLO_W', 'PALACE']) 
-    //   });
-    // });
-
-    // describe("GET /argo", function () {
-    //   it("filters on source correctly", async function () {
-    //     const response = await request.get("/argo?startDate=2011-10-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_bgc").set({'x-argokey': 'developer'});
-    //      expect(response.body.length).to.eql(3);
-    //   });
-    // });
-
-    // describe("GET /argo", function () {
-    //   it("minimal compression reponds appropriately", async function () {
-    //     const response = await request.get("/argo?startDate=2011-10-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_bgc&compression=minimal").set({'x-argokey': 'developer'});
-    //      expect(response.body).to.eql([["4901283_023", -34.50668290323591, 2.238459475658293, "2011-11-18T08:41:51.000Z", ['argo_bgc', 'argo_core']],["4901283_022",-35.670215, 2.313375, "2011-11-08T08:44:06.000Z",  ['argo_bgc', 'argo_core']],["4901283_021", -35.430227, 1.315393, "2011-10-29T08:43:51.000Z",  ['argo_bgc', 'argo_core']]]) 
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("minimal compression reponds appropriately", async function () {
+        const response = await request.get("/argo?startDate=2022-07-07T12:00:21Z&endDate=2022-07-07T12:02:21Z&source=argo_bgc&compression=minimal").set({'x-argokey': 'developer'});
+         expect(response.body).to.eql([["2902857_003", 152.28354833333333, 42.39558666666667, "2022-07-07T12:01:21.000Z", ['argo_bgc', 'argo_core']]]) 
+      });
+    });
     
-    // describe("GET /argo", function () {
-    //   it("gets correct time for most recent result", async function () {
-    //     const response = await request.get("/argo?platform=4901283&mostrecent=1").set({'x-argokey': 'developer'});
-    //      expect(response.body[0].timestamp).to.eql('2011-11-18T08:41:51.000Z');
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("gets correct time for most recent result", async function () {
+        const response = await request.get("/argo?platform=2902857&mostrecent=1").set({'x-argokey': 'developer'});
+         expect(response.body[0].timestamp).to.eql('2022-07-07T12:01:21.000Z');
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("only gets one result", async function () {
-    //     const response = await request.get("/argo?platform=4901283&mostrecent=1").set({'x-argokey': 'developer'});
-    //      expect(response.body.length).to.eql(1);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("only gets one result", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=1").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(1);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("gets most recent 2 results", async function () {
-    //     const response = await request.get("/argo?platform=4901283&mostrecent=2").set({'x-argokey': 'developer'});
-    //      expect(response.body.length).to.eql(2);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("gets most recent 2 results", async function () {
+        const response = await request.get("/argo?platform=4901283&mostrecent=2").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(2);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("confirm mostrecent and data queries work together nicely", async function () {
-    //     const response = await request.get("/argo?platform=4901283&data=temperature_sfile&mostrecent=2").set({'x-argokey': 'developer'});
-    //      expect(response.body.length).to.eql(2);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("confirm mostrecent and data queries work together nicely", async function () {
+        const response = await request.get("/argo?platform=4901283&data=temperature_sfile&mostrecent=2").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(2);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("check metadata batch request", async function () {
-    //     const response = await request.get("/argo?metadata=4901283_m1").set({'x-argokey': 'developer'});
-    //      expect(response.body.length).to.eql(2);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("check metadata batch request", async function () {
+        const response = await request.get("/argo?metadata=2902857_m0").set({'x-argokey': 'developer'});
+         expect(response.body.length).to.eql(3);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("shouldnt return a profile with no levels in presRange, even if not returning actual data levels", async function () {
-    //     const response = await request.get("/argo?presRange=2000,10000").set({'x-argokey': 'developer'});
-    //     expect(response.status).to.eql(404);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("shouldnt return a profile with no levels in presRange, even if not returning actual data levels", async function () {
+        const response = await request.get("/argo?presRange=2000,10000").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("shouldnt return a profile with no levels in presRange, even if not returning actual data levels, in minimal mode", async function () {
-    //     const response = await request.get("/argo?presRange=2000,10000&compression=minimal").set({'x-argokey': 'developer'});
-    //     expect(response.status).to.eql(404);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("shouldnt return a profile with no levels in presRange, even if not returning actual data levels, in minimal mode", async function () {
+        const response = await request.get("/argo?presRange=2000,10000&compression=minimal").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
 
-    // describe("GET /argo", function () {
-    //   it("should return profiles in presRange, even if not returning actual data levels", async function () {
-    //     const response = await request.get("/argo?presRange=1000,2000").set({'x-argokey': 'developer'});
-    //     expect(response.body.length).to.eql(3);
-    //   });
-    // });
+    describe("GET /argo", function () {
+      it("should return profiles in presRange, even if not returning actual data levels", async function () {
+        const response = await request.get("/argo?presRange=1000,2000").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
+      });
+    });
 
-    // describe("GET /argo/meta", function () {
-    //   it("should 404 on ID typos", async function () {
-    //     const response = await request.get("/argo/meta?id=xxx").set({'x-argokey': 'developer'});
-    //     expect(response.status).to.eql(404);
-    //     expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
-    //   });
-    // });
+    describe("GET /argo/meta", function () {
+      it("should 404 on ID typos", async function () {
+        const response = await request.get("/argo/meta?id=xxx").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+        expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
+      });
+    });
 
   }
 })
