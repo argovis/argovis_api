@@ -1884,70 +1884,30 @@ components:
         _id:
           type: string
         metadata:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              covariance:
-                type: string
+          type: array
+          items:
+            type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
         geolocation_forecast:
           $ref: '#/components/schemas/geoJSONpoint'
         data:
-          anyOf:
-          - type: array
+          type: array
+          items:
+            type: array
             items:
-              type: array
-              items:
-                type: number
-          - type: object
-            properties:
-              "90":
-                type: array
-              "180":
-                type: array
-              "270":
-                type: array
-              "360":
-                type: array
-              "450":
-                type: array
-              "540":
-                type: array
-              "630":
-                type: array
-              "720":
-                type: array
-              "810":
-                type: array
-              "900":
-                type: array
-              "990":
-                type: array
-              "1080":
-                type: array
-              "1170":
-                type: array
-              "1260":
-                type: array
-              "1350":
-                type: array
-              "1440":
-                type: array
-              "1530":
-                type: array
-              "1620":
-                type: array
-              "1710":
-                type: array
-              "1800":
-                type: array
+              anyOf:
+              - type: string
+              - type: number
       example:
-        metadata: ""
-        data: ""
+        metadata:
+        - metadata
+        - metadata
+        data:
+        - - ""
+          - ""
+        - - ""
+          - ""
         geolocation_forecast: null
         _id: _id
         geolocation:
@@ -1981,83 +1941,25 @@ components:
           type: array
           items:
             type: number
-        data_keys:
+        data_info:
           type: array
           items:
-            type: string
-            enum:
-            - "90"
-            - "180"
-            - "270"
-            - "360"
-            - "450"
-            - "540"
-            - "630"
-            - "720"
-            - "810"
-            - "900"
-            - "990"
-            - "1080"
-            - "1170"
-            - "1260"
-            - "1350"
-            - "1440"
-            - "1530"
-            - "1620"
-            - "1710"
-            - "1800"
-        units:
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: object
-            properties:
-              "90":
+            anyOf:
+            - type: array
+              items:
                 type: string
-              "180":
-                type: string
-              "270":
-                type: string
-              "360":
-                type: string
-              "450":
-                type: string
-              "540":
-                type: string
-              "630":
-                type: string
-              "720":
-                type: string
-              "810":
-                type: string
-              "900":
-                type: string
-              "990":
-                type: string
-              "1080":
-                type: string
-              "1170":
-                type: string
-              "1260":
-                type: string
-              "1350":
-                type: string
-              "1440":
-                type: string
-              "1530":
-                type: string
-              "1620":
-                type: string
-              "1710":
-                type: string
-              "1800":
-                type: string
+            - type: array
+              items:
+                type: array
+                items:
+                  anyOf:
+                  - type: string
+                  - type: number
       example:
+        data_info:
+        - ""
+        - ""
         data_type: data_type
-        data_keys:
-        - "90"
-        - "90"
         _id: _id
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
@@ -2072,7 +1974,6 @@ components:
           - source
           url: url
           doi: doi
-        units: ""
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
         levels:
         - 0.80082819046101150206595775671303272247314453125
