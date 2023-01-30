@@ -229,6 +229,13 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   let coerced_pressure = false
   let metadata_only = false
 
+  // delete junk parameters
+  if(pp_params.junk){
+    for(let i=0; i<pp_params.junk.length; i++){
+      delete chunk[pp_params.junk[i]]
+    }
+  }
+
   // make sure metadata is sorted the same as chunk.metadata
   let m = []
   for(let i=0; i<chunk.metadata.length; i++){
@@ -253,6 +260,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     dk = chunk.data_info[0]
     dinfo = chunk.data_info
   } else {
+    console.log(metadata)
     dinfo = module.exports.combineDataInfo(metadata.map(x => x.data_info))
     dk = dinfo[0]
   }

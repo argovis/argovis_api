@@ -3,7 +3,6 @@ const floatLocationForecast = require('../models/floatLocationForecast');
 const GJV = require('geojson-validation');
 const pointInPolygon = require('@turf/boolean-point-in-polygon').default;
 const helpers = require('../helpers/helpers')
-const gridHelpers = require('../helpers/gridHelpers')
 
 /**
  * Probabilities of floats moving between two points in a range of forecast projections
@@ -58,8 +57,9 @@ exports.findfloatLocationForecast = function(res, id,forecastOrigin,forecastGeol
         junk: ['dist']
     }
 
-    // metadata table filter: just get the entire table for simplicity's sake, there's only one document
-    let metafilter = floatLocationForecast['floatLocationForecastMeta'].find({}).lean().exec()
+    // metadata table filter: no-op promise stub, nothing to filter grid data docs on from metadata at the moment
+    let metafilter = Promise.resolve([])
+    let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, floatLocationForecast['floatLocationForecast'], {}, local_filter))
@@ -79,7 +79,7 @@ exports.findfloatLocationForecast = function(res, id,forecastOrigin,forecastGeol
               ]
           }
 
-          let postprocess = gridHelpers.grid_post_xform(pp_params, search_result, res, stub)
+          let postprocess = helpers.post_xform(floatLocationForecast['floatLocationForecastMeta'], pp_params, search_result, res, stub)
 
           resolve([search_result[1], postprocess])
 
