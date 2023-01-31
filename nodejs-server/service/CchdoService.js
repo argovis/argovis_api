@@ -106,8 +106,8 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
                 data.geolocation.coordinates[1], 
                 data.timestamp,
                 Array.from(sourceset),
-                metadata.woce_lines,
-                metadata.cchdo_cruise_id
+                metadata[0].woce_lines,
+                metadata[0].cchdo_cruise_id
               ]
           }
 
