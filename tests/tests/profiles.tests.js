@@ -343,7 +343,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body[0].data_info[2][pqcindex][uindex]).to.deep.eql(null)
         expect(response.body[0].data_info[2][tindex][uindex]).to.deep.eql("degree_Celsius")
         expect(response.body[0].data_info[2][tqcindex][uindex]).to.deep.eql(null)
-        //({"pressure": "decibar", "pressure_argoqc": "null", "temperature": "degree_Celsius", "temperature_argoqc": "null"})
       });
     });
 
@@ -356,8 +355,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /argo", function () {
+      it("drop whole profile is no levels with non-null requested data", async function () {
+        const response = await request.get("/argo?id=2902857_003&data=bbp700&presRange=1.45,1.55").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
+
+    describe("GET /argo", function () {
       it("argo profile should be dropped if no requested data is available", async function () {
-        const response = await request.get("/argo?id=4901283_022&data=doxy").set({'x-argokey': 'developer'});
+        const response = await request.get("/argo?id=2902857_003&data=doxy").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });

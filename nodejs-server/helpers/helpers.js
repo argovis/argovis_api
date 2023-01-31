@@ -308,7 +308,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   } else if(metadata[0].levels){
     lvlSpectrum = metadata[0].levels // note we take from metadata[0] since we're requiring all grids in the same collection have the same level spectrum
   }
-
   if(pp_params.presRange && lvlSpectrum.length > 0){
     let lowIndex = 0
     let highIndex = lvlSpectrum.length-1
@@ -332,7 +331,40 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     if(metadata[0].levels) {
       chunk.levels = metadata[0].levels.slice(lowIndex, highIndex+1)
     }
-  }  
+  }
+
+  // drop any level for which all requested measurements are null if specific data has been requested
+  if(pp_params.data){
+    let dcopy = JSON.parse(JSON.stringify(chunk.data))
+    if(coerced_pressure){
+      dcopy.splice(chunk.data_info[0].indexOf('pressure'),1)
+    }
+
+    dcopy = module.exports.zip(dcopy)
+
+    dcopy = dcopy.map( (level,index) => {
+      if(level.every(x => x === null)){
+        return index
+      } else{
+        return -1
+      }
+    })
+
+    /// bail out if every level is marked for deletion
+    if(dcopy.every(x => x !== -1)){
+      return false
+    }
+
+    for(let i=0; i<chunk.data.length; i++){
+      chunk.data[i] = chunk.data[i].filter((level, index) => {
+        if(dcopy.includes(index)){
+          return false
+        } else {
+          return true
+        } 
+      })
+    }
+  }
 
   // drop data on metadata only requests
   if(!pp_params.data || metadata_only){
