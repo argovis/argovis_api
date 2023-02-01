@@ -28,9 +28,9 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("GET /cchdo", function () {
-      it("cchdo except-data-values should still have units and data_keys", async function () {
+      it("cchdo except-data-values should still have data_info", async function () {
         const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=except-data-values").set({'x-argokey': 'developer'});
-        expect(response.body[0]).to.contain.keys('data_keys', 'units')
+        expect(response.body[0]).to.contain.keys('data_info')
       });
     });
 
@@ -44,21 +44,18 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /cchdo", function () {
       it("cchdo with data filter should return correct data_keys", async function () {
         const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_keys).to.have.members(['salinity_btl','oxygen_btl','pressure'])
+        expect(response.body[0].data_info[0]).to.have.members(['salinity_btl','oxygen_btl','pressure'])
       });
     });
 
     describe("GET /cchdo", function () {
       it("cchdo with data filter should return correct units", async function () {
         const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal({'salinity_btl':"psu",'oxygen_btl':"micromole/kg",'pressure':"decibar"})
-      });
-    });
-
-    describe("GET /cchdo", function () {
-      it("cchdo with data filter should return correct units, as a list when compressed", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl&compression=array").set({'x-argokey': 'developer'});
-        expect(response.body[0].units).to.deep.equal(["psu","micromole/kg","decibar"])
+        salindex = response.body[0].data_info[0].indexOf('salinity_btl')
+        oxyindex = response.body[0].data_info[0].indexOf('oxygen_btl')
+        uindex = response.body[0].data_info[1].indexOf('units')
+        expect(response.body[0].data_info[2][salindex][uindex]).to.deep.equal("psu")
+        expect(response.body[0].data_info[2][oxyindex][uindex]).to.deep.equal("micromole/kg")
       });
     });
 
@@ -85,14 +82,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-      // describe("GET /cchdo", function () {
-      //   it("cchdo levels should get dropped if they dont have requested data", async function () {
-      //     const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=salinity_btl").set({'x-argokey': 'developer'});
-      //     pindex = response.body[0].data_info[0].indexOf('pressure')
-      //     console.log(response.body[0].data)
-      //     expect(response.body[0].data[pindex][0]).to.eql(3.5)
-      //   });
-      // });
+      describe("GET /cchdo", function () {
+        it("cchdo levels should get dropped if they dont have requested data", async function () {
+          const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=salinity_btl").set({'x-argokey': 'developer'});
+          pindex = response.body[0].data_info[0].indexOf('pressure')
+          console.log(response.body[0].data)
+          expect(response.body[0].data[pindex][0]).to.eql(3.5)
+        });
+      });
 
     describe("GET /cchdo", function () {
       it("cchdo profile should be dropped if no requested data is available", async function () {
@@ -101,18 +98,18 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    // describe("GET /cchdo", function () {
-    //   it("cchdo levels should come out sorted by pressure", async function () {
-    //     const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
-    //     pindex = response.body[0].data_info[0].indexOf('pressure')
-    //     p = response.body[0].data[pindex]
-    //     pp = JSON.parse(JSON.stringify(p))
-    //     pp.sort((a,b)=>a-b)
-    //     console.log(p)
-    //     console.log(pp)
-    //     expect(p).to.deep.equal(pp)
-    //   });
-    // });
+    describe("GET /cchdo", function () {
+      it("cchdo levels should come out sorted by pressure", async function () {
+        const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=all").set({'x-argokey': 'developer'});
+        pindex = response.body[0].data_info[0].indexOf('pressure')
+        p = response.body[0].data[pindex]
+        pp = JSON.parse(JSON.stringify(p))
+        pp.sort((a,b)=>a-b)
+        console.log(p)
+        console.log(pp)
+        expect(p).to.deep.equal(pp)
+      });
+    });
 
     describe("GET /cchdo/meta", function () {
       it("cchdo metadata", async function () {
