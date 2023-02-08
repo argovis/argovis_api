@@ -236,6 +236,11 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
 
+  // if chunk has no data recoreded, abandon
+  if(chunk.data.length == 0){
+    return false
+  }
+
   // make sure metadata is sorted the same as chunk.metadata
   let m = []
   for(let i=0; i<chunk.metadata.length; i++){

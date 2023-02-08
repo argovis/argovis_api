@@ -395,6 +395,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("GET /argo", function () {
+      it("drop profiles with no data in them", async function () {
+        const response = await request.get("/argo?id=1900959_198").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    }); 
+
+    describe("GET /argo", function () {
       it("argo data filtered by platform_type", async function () {
         const response = await request.get("/argo?startDate=2022-01-07T12:02:21Z&endDate=2022-07-07T12:02:21Z&platform_type=PROVOR").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(3);
@@ -404,21 +411,21 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argo/vocabulary", function () {
       it("get list of argo platforms", async function () {
         const response = await request.get("/argo/vocabulary?parameter=platform").set({'x-argokey': 'developer'});
-         expect(response.body).to.have.members(['2902857', '13857']) 
+         expect(response.body).to.have.members(['2902857', '13857', '1900959']) 
       });
     });
 
     describe("GET /argo/vocabulary", function () {
       it("get list of argo metadata groups", async function () {
         const response = await request.get("/argo/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
-         expect(response.body).to.have.members(["2902857_m0", "13857_m0"]) 
+         expect(response.body).to.have.members(["2902857_m0", "13857_m0", '1900959_m0']) 
       });
     });
 
     describe("GET /argo/vocabulary", function () {
       it("get list of argo platform types", async function () {
         const response = await request.get("/argo/vocabulary?parameter=platform_type").set({'x-argokey': 'developer'});
-         expect(response.body).to.have.members(['PROVOR', 'PALACE']) 
+         expect(response.body).to.have.members(['PROVOR', 'PALACE', 'APEX']) 
       });
     });
 
