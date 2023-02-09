@@ -117,7 +117,7 @@
                "argone"
             ],
             "summary": "Probabilities of floats moving between two points in a range of forecast projections",
-            "operationId": "findfloatLocationForecast",
+            "operationId": "findargone",
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
@@ -159,7 +159,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/floatLocationForecast"
+                              "$ref": "#/components/schemas/argone"
                            }
                         }
                      }
@@ -183,7 +183,7 @@
                "argone"
             ],
             "summary": "argone metadata search and filter.",
-            "operationId": "findfloatLocationForecastMeta",
+            "operationId": "findargoneMeta",
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
@@ -197,7 +197,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/floatLocationForecastMeta"
+                              "$ref": "#/components/schemas/argoneMeta"
                            }
                         }
                      }
@@ -1368,7 +1368,7 @@
                }
             }
          },
-         "floatLocationForecast": {
+         "argone": {
             "type": "object",
             "required": ["_id", "metadata", "geolocation", "geolocation_forecast"],
             "properties": {
@@ -1398,7 +1398,7 @@
                }
             }
          },
-         "floatLocationForecastMeta": {
+         "argoneMeta": {
             "type": "object",
             "required": ["_id", "data_type", "date_updated_argovis", "source", "levels", "data_info"],
             "properties": {
