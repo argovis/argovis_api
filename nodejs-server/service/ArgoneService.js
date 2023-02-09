@@ -96,10 +96,10 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
  **/
 exports.findargoneMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    if(id !== 'covariance'){
+    if(id !== 'argone'){
       reject({
         code: 404,
-        message: "No float location metadata matching ID " + id + "; all float location metadata is stored in the single document id=covariance"
+        message: "No float location metadata matching ID " + id + "; all float location metadata is stored in the single document id=argone"
       })
     }
     const query = argone['argoneMeta'].aggregate([{$match:{'_id':id}}]);

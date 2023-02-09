@@ -29,7 +29,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argone", function () {
       it("metadata always == ['covariance'], even with multiple data keys", async function () {
         const response = await request.get("/argone?forecastOrigin=-178,-44&data=all").set({'x-argokey': 'developer'});   
-        expect(response.body[0].metadata).to.eql(['covariance'])
+        expect(response.body[0].metadata).to.eql(['argone'])
       });
     });
 
@@ -72,7 +72,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /argone/meta", function () {
       it("returns covariance metadata result by id", async function () {
-        const response = await request.get("/argone/meta?id=covariance").set({'x-argokey': 'developer'});   
+        const response = await request.get("/argone/meta?id=argone").set({'x-argokey': 'developer'});   
         expect(response.body).to.be.jsonSchema(schema.paths['/argone/meta'].get.responses['200'].content['application/json'].schema);
       });
     });
@@ -81,7 +81,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("argone metadata 404", async function () {
         const response = await request.get("/argone/meta?id=xxx").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
-        expect(response.body).to.eql({code: 404,message: "No float location metadata matching ID xxx; all float location metadata is stored in the single document id=covariance"});
+        expect(response.body).to.eql({code: 404,message: "No float location metadata matching ID xxx; all float location metadata is stored in the single document id=argone"});
       });
     }); 
   }

@@ -43,5 +43,5 @@ const argoneMetaSchema = Schema({
   data_info: [{type:[Schema.Types.Mixed], required: false}]
 });
 
-module.exports['argone'] = mongoose.model('covariance', argoneSchema, 'covariance');
-module.exports['argoneMeta'] = mongoose.model('covarianceMeta', argoneMetaSchema , 'covarianceMeta');
+module.exports['argone'] = mongoose.model('argone', argoneSchema, 'argone');
+module.exports['argoneMeta'] = mongoose.model('argoneMeta', argoneMetaSchema , 'argoneMeta');
