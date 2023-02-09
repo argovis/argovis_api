@@ -33,7 +33,7 @@ tags:
   description: tropical cyclone data
 - name: ar (experimental)
   description: atmospheric river shapes
-- name: floatLocationForecast
+- name: argone
   description: Argo float position forcast product
 - name: summary (experimental)
   description: Summary statistics (mostly for internal use)
@@ -95,10 +95,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: ArExperimental
-  /floatLocationForecast:
+  /argone:
     get:
       tags:
-      - floatLocationForecast
+      - argone
       summary: Probabilities of floats moving between two points in a range of forecast
         projections
       operationId: findfloatLocationForecast
@@ -202,12 +202,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: FloatLocationForecast
-  /floatLocationForecast/meta:
+      x-swagger-router-controller: Argone
+  /argone/meta:
     get:
       tags:
-      - floatLocationForecast
-      summary: floatLocationForecast metadata search and filter.
+      - argone
+      summary: argone metadata search and filter.
       operationId: findfloatLocationForecastMeta
       parameters:
       - name: id
@@ -247,7 +247,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: FloatLocationForecast
+      x-swagger-router-controller: Argone
   /tc:
     get:
       tags:
