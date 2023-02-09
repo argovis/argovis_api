@@ -101,7 +101,7 @@ paths:
       - argone
       summary: Probabilities of floats moving between two points in a range of forecast
         projections
-      operationId: findfloatLocationForecast
+      operationId: findargone
       parameters:
       - name: id
         in: query
@@ -182,7 +182,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/floatLocationForecast'
+                  $ref: '#/components/schemas/argone'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -208,7 +208,7 @@ paths:
       tags:
       - argone
       summary: argone metadata search and filter.
-      operationId: findfloatLocationForecastMeta
+      operationId: findargoneMeta
       parameters:
       - name: id
         in: query
@@ -227,7 +227,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/floatLocationForecastMeta'
+                  $ref: '#/components/schemas/argoneMeta'
                 x-content-type: application/json
         "400":
           description: Bad Request
@@ -1873,7 +1873,7 @@ components:
           - - 6.02745618307040320615897144307382404804229736328125
             - 6.02745618307040320615897144307382404804229736328125
           type: type
-    floatLocationForecast:
+    argone:
       required:
       - _id
       - geolocation
@@ -1915,7 +1915,7 @@ components:
           - 0.80082819046101150206595775671303272247314453125
           - 0.80082819046101150206595775671303272247314453125
           type: type
-    floatLocationForecastMeta:
+    argoneMeta:
       required:
       - _id
       - data_info
