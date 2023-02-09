@@ -13,7 +13,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argone", function () {
       it("returns one covariance grid result", async function () {
         const response = await request.get("/argone?forecastOrigin=-178,-44").set({'x-argokey': 'developer'});   
-        console.log(response.body)
         expect(response.body).to.be.jsonSchema(schema.paths['/argone'].get.responses['200'].content['application/json'].schema);
         expect(response.body.length).to.eql(20)
       });
