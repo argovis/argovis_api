@@ -680,3 +680,15 @@ module.exports.source_filter = function(sourcelist){
   return {$match: sourcematch}
 }
 
+module.exports.find_grid_collection = function(token){
+  // map a token including a grid's prefix ('rg09_temperature', 'rg09_salinity', ...) onto its collection name.
+
+  if (["rg09_temperature", "rg09_salinity"].some(k => token.includes(k))) {
+    return 'rg09'
+  } else if(["kg21_ohc15to300"].some(k => token.includes(k))){
+    return 'kg21'
+  } else {
+    return ''
+  }
+}
+

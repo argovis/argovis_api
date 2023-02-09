@@ -1,7 +1,6 @@
 'use strict';
 const Grid = require('../models/grid');
 const helpers = require('../helpers/helpers')
-const gridHelpers = require('../helpers/gridHelpers')
 const GJV = require('geojson-validation');
 const geojsonArea = require('@mapbox/geojson-area');
 const summaries = require('../models/summary');
@@ -15,7 +14,7 @@ const summaries = require('../models/summary');
 
 exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    let gridCollection = gridHelpers.find_grid_collection(id)
+    let gridCollection = helpers.find_grid_collection(id)
     if(gridCollection === ''){
       reject({
         code: 404,
