@@ -30,7 +30,8 @@ const floatLocationForecastSchema = Schema({
   metadata: {type: [String], required: true},
   geolocation: {type: geolocation, required: true},
   geolocation_forecast: {type: geolocation, required: true},
-  data: [{type: [Number]}]
+  metadata: {type: [String], required: true},
+  data: [{type: [Number], required: false}]
 });
 
 const floatLocationForecastMetaSchema = Schema({
@@ -39,7 +40,7 @@ const floatLocationForecastMetaSchema = Schema({
   date_updated_argovis: {type: Date, required: true},
   source: {type: sourceinfo, required: true},
   levels: {type: [Number], required: true},
-  data_info: Schema.Types.Mixed
+  data_info: [{type:[Schema.Types.Mixed], required: false}]
 });
 
 module.exports['floatLocationForecast'] = mongoose.model('covariance', floatLocationForecastSchema, 'covariance');

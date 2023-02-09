@@ -28,11 +28,11 @@ var sourceinfo = Schema({
 
 const GridSchema = Schema({
   _id: {type: String, required: true},
-  metadata: {type: [String], required: true},
   geolocation: {type: geolocation, required: true},
   basin: {type: Number, required: true},
   timestamp: {type: Date, required: true},
-  data: [{type: [Number]}]
+  metadata: {type: [String], required: true},
+  data: [{type: [Number], required: false}]
 });
 
 const GridMetaSchema = Schema({
@@ -41,7 +41,7 @@ const GridMetaSchema = Schema({
   date_updated_argovis: {type: Date, required: true},
   source: {type: sourceinfo, required: true},
   levels: {type: [Number], required: true},
-  data_info: Schema.Types.Mixed,
+  data_info: [{type:[Schema.Types.Mixed], required: false}]
 });
 
 module.exports = {}
