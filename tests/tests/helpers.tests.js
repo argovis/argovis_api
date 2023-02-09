@@ -109,6 +109,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(gridHelpers.find_grid_collection('rg09_temperature_200401_Total')).to.eql('rg09');
       });
     });
+
+    describe("GET /token", function () {
+      it("check token fetching - valid", async function () {
+        const response = await request.get("/token?token=guest").set({'x-argokey': 'developer'});
+        expect(response.body[0]).to.deep.equal({'tokenValid': true})
+      });
+    });
+
+    describe("GET /token", function () {
+      it("check token fetching - invalid", async function () {
+        const response = await request.get("/token?token=xxx").set({'x-argokey': 'developer'});
+        expect(response.body[0]).to.deep.equal({'tokenValid': false})
+      });
+    });
 }
 
 })

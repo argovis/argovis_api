@@ -63,6 +63,10 @@
       {
          "name": "summary (experimental)",
          "description": "Summary statistics (mostly for internal use)"
+      },
+      {
+         "name": "token",
+         "description": "token validation"
       }
    ],
    "paths": {
@@ -1266,6 +1270,47 @@
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/token": {
+         "get": {
+            "tags": [
+               "token"
+            ],
+            "summary": "validate an API token",
+            "operationId": "validateToken",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "token",
+                  "required": true,
+                  "description": "token to validate",
+                  "schema": {
+                     "type": "string"
+                  }
                }
             ],
             "responses": {
