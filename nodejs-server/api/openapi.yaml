@@ -1892,13 +1892,7 @@ components:
         geolocation_forecast:
           $ref: '#/components/schemas/geoJSONpoint'
         data:
-          type: array
-          items:
-            type: array
-            items:
-              anyOf:
-              - type: string
-              - type: number
+          $ref: '#/components/schemas/data'
       example:
         metadata:
         - metadata
@@ -1941,19 +1935,7 @@ components:
           items:
             type: number
         data_info:
-          type: array
-          items:
-            anyOf:
-            - type: array
-              items:
-                type: string
-            - type: array
-              items:
-                type: array
-                items:
-                  anyOf:
-                  - type: string
-                  - type: number
+          $ref: '#/components/schemas/data_info'
       example:
         data_info:
         - ""
@@ -2002,13 +1984,7 @@ components:
           items:
             type: string
         data:
-          type: array
-          items:
-            type: array
-            items:
-              anyOf:
-              - type: string
-              - type: number
+          $ref: '#/components/schemas/data'
         record_identifier:
           type: string
         class:
@@ -2048,19 +2024,7 @@ components:
         data_type:
           type: string
         data_info:
-          type: array
-          items:
-            anyOf:
-            - type: array
-              items:
-                type: string
-            - type: array
-              items:
-                type: array
-                items:
-                  anyOf:
-                  - type: string
-                  - type: number
+          $ref: '#/components/schemas/data_info'
         date_updated_argovis:
           type: string
           format: date-time
@@ -2117,13 +2081,7 @@ components:
           type: string
           format: date-time
         data:
-          type: array
-          items:
-            type: array
-            items:
-              anyOf:
-              - type: string
-              - type: number
+          $ref: '#/components/schemas/data'
       example:
         metadata:
         - metadata
@@ -2167,19 +2125,7 @@ components:
           items:
             type: number
         data_info:
-          type: array
-          items:
-            anyOf:
-            - type: array
-              items:
-                type: string
-            - type: array
-              items:
-                type: array
-                items:
-                  anyOf:
-                  - type: string
-                  - type: number
+          $ref: '#/components/schemas/data_info'
       example:
         data_info:
         - ""
@@ -2242,6 +2188,28 @@ components:
         - - 6.02745618307040320615897144307382404804229736328125
           - 6.02745618307040320615897144307382404804229736328125
         type: type
+    data:
+      type: array
+      items:
+        type: array
+        items:
+          anyOf:
+          - type: string
+          - type: number
+    data_info:
+      type: array
+      items:
+        anyOf:
+        - type: array
+          items:
+            type: string
+        - type: array
+          items:
+            type: array
+            items:
+              anyOf:
+              - type: string
+              - type: number
     generic_source_info:
       required:
       - source
@@ -2304,13 +2272,7 @@ components:
           items:
             type: string
         data:
-          type: array
-          items:
-            type: array
-            items:
-              anyOf:
-              - type: string
-              - type: number
+          $ref: '#/components/schemas/data'
       example:
         metadata:
         - metadata
@@ -2391,19 +2353,7 @@ components:
         typebuoy:
           type: string
         data_info:
-          type: array
-          items:
-            anyOf:
-            - type: array
-              items:
-                type: string
-            - type: array
-              items:
-                type: array
-                items:
-                  anyOf:
-                  - type: string
-                  - type: number
+          $ref: '#/components/schemas/data_info'
       example:
         end_date: 2000-01-23T04:56:07.000+00:00
         typebuoy: typebuoy
@@ -2477,27 +2427,9 @@ components:
           items:
             type: string
         data:
-          type: array
-          items:
-            type: array
-            items:
-              anyOf:
-              - type: string
-              - type: number
+          $ref: '#/components/schemas/data'
         data_info:
-          type: array
-          items:
-            anyOf:
-            - type: array
-              items:
-                type: string
-            - type: array
-              items:
-                type: array
-                items:
-                  anyOf:
-                  - type: string
-                  - type: number
+          $ref: '#/components/schemas/data_info'
       example:
         data_warning:
         - degenerate_levels
@@ -2613,27 +2545,9 @@ components:
           items:
             type: string
         data:
-          type: array
-          items:
-            type: array
-            items:
-              anyOf:
-              - type: string
-              - type: number
+          $ref: '#/components/schemas/data'
         data_info:
-          type: array
-          items:
-            anyOf:
-            - type: array
-              items:
-                type: string
-            - type: array
-              items:
-                type: array
-                items:
-                  anyOf:
-                  - type: string
-                  - type: number
+          $ref: '#/components/schemas/data_info'
         date_updated_argovis:
           type: string
           format: date-time
