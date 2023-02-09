@@ -57,7 +57,7 @@
          "description": "atmospheric river shapes"
       },
       {
-         "name": "floatLocationForecast",
+         "name": "argone",
          "description": "Argo float position forcast product"
       },
       {
@@ -111,10 +111,10 @@
             }
          }
       },
-      "/floatLocationForecast": {
+      "/argone": {
          "get": {
             "tags": [
-               "floatLocationForecast"
+               "argone"
             ],
             "summary": "Probabilities of floats moving between two points in a range of forecast projections",
             "operationId": "findfloatLocationForecast",
@@ -177,12 +177,12 @@
             }
          }
       },
-      "/floatLocationForecast/meta": {
+      "/argone/meta": {
          "get": {
             "tags": [
-               "floatLocationForecast"
+               "argone"
             ],
-            "summary": "floatLocationForecast metadata search and filter.",
+            "summary": "argone metadata search and filter.",
             "operationId": "findfloatLocationForecastMeta",
             "parameters": [
                {
