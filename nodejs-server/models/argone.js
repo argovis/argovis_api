@@ -25,7 +25,7 @@ var sourceinfo = Schema({
   doi: {type: String, required: false}
 })
 
-const floatLocationForecastSchema = Schema({
+const argoneSchema = Schema({
   _id: {type: String, required: true},
   metadata: {type: [String], required: true},
   geolocation: {type: geolocation, required: true},
@@ -34,7 +34,7 @@ const floatLocationForecastSchema = Schema({
   data: [{type: [Number], required: false}]
 });
 
-const floatLocationForecastMetaSchema = Schema({
+const argoneMetaSchema = Schema({
   _id: {type: String, required: true},
   data_type: {type: String, required: true},
   date_updated_argovis: {type: Date, required: true},
@@ -43,5 +43,5 @@ const floatLocationForecastMetaSchema = Schema({
   data_info: [{type:[Schema.Types.Mixed], required: false}]
 });
 
-module.exports['floatLocationForecast'] = mongoose.model('covariance', floatLocationForecastSchema, 'covariance');
-module.exports['floatLocationForecastMeta'] = mongoose.model('covarianceMeta', floatLocationForecastMetaSchema , 'covarianceMeta');
+module.exports['argone'] = mongoose.model('covariance', argoneSchema, 'covariance');
+module.exports['argoneMeta'] = mongoose.model('covarianceMeta', argoneMetaSchema , 'covarianceMeta');

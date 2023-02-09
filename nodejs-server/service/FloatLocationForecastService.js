@@ -1,5 +1,5 @@
 'use strict';
-const floatLocationForecast = require('../models/floatLocationForecast');
+const argone = require('../models/argone');
 const GJV = require('geojson-validation');
 const pointInPolygon = require('@turf/boolean-point-in-polygon').default;
 const helpers = require('../helpers/helpers')
@@ -15,7 +15,7 @@ const helpers = require('../helpers/helpers')
  * data List Forecast durations to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.findfloatLocationForecast = function(res, id,forecastOrigin,forecastGeolocation,metadata,compression,data) {
+exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadata,compression,data) {
   return new Promise(function(resolve, reject) {
 
     // decide y/n whether to service this request; sanitize inputs
@@ -62,7 +62,7 @@ exports.findfloatLocationForecast = function(res, id,forecastOrigin,forecastGeol
     let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, floatLocationForecast['floatLocationForecast'], {}, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {}, local_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
@@ -79,7 +79,7 @@ exports.findfloatLocationForecast = function(res, id,forecastOrigin,forecastGeol
               ]
           }
 
-          let postprocess = helpers.post_xform(floatLocationForecast['floatLocationForecastMeta'], pp_params, search_result, res, stub)
+          let postprocess = helpers.post_xform(argone['argoneMeta'], pp_params, search_result, res, stub)
 
           resolve([search_result[1], postprocess])
 
@@ -89,12 +89,12 @@ exports.findfloatLocationForecast = function(res, id,forecastOrigin,forecastGeol
 }
 
 /**
- * floatLocationForecast metadata search and filter.
+ * argone metadata search and filter.
  *
  * id String Unique ID to search for. (optional)
  * returns List
  **/
-exports.findfloatLocationForecastMeta = function(res,id) {
+exports.findargoneMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
     if(id !== 'covariance'){
       reject({
@@ -102,7 +102,7 @@ exports.findfloatLocationForecastMeta = function(res,id) {
         message: "No float location metadata matching ID " + id + "; all float location metadata is stored in the single document id=covariance"
       })
     }
-    const query = floatLocationForecast['floatLocationForecastMeta'].aggregate([{$match:{'_id':id}}]);
+    const query = argone['argoneMeta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
     resolve([query.cursor(), postprocess])
   });
