@@ -1388,13 +1388,7 @@
                    "$ref": "#/components/schemas/geoJSONpoint"
                },
                "data": {
-                  "type": "array",
-                  "items": {
-                     "type": "array",
-                     "items": {
-                        "anyOf": [ {"type": "string"}, {"type": "number"}]
-                     }
-                  }
+                  "$ref": "#/components/schemas/data"
                }
             }
          },
@@ -1425,26 +1419,7 @@
                   }
                },
                "data_info": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
-                        },
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "array",
-                              "items": {
-                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
-                              }
-                           }
-                        }
-                     ]
-                  }
+                  "$ref": "#/components/schemas/data_info"
                }
             }
          },
@@ -1472,13 +1447,7 @@
                   }
                },
                "data": {
-                  "type": "array",
-                  "items": {
-                     "type": "array",
-                     "items": {
-                        "anyOf": [ {"type": "string"}, {"type": "number"}]
-                     }
-                  }
+                  "$ref": "#/components/schemas/data"
                },
                "record_identifier": {
                   "type": "string"
@@ -1499,26 +1468,7 @@
                   "type": "string"
                },
                "data_info": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
-                        },
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "array",
-                              "items": {
-                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
-                              }
-                           }
-                        }
-                     ]
-                  }
+                  "$ref": "#/components/schemas/data_info"
                },
                "date_updated_argovis": {
                   "type": "string",
@@ -1562,13 +1512,7 @@
                   "format": "date-time"
                },
                "data": {
-                  "type": "array",
-                  "items": {
-                     "type": "array",
-                     "items": {
-                        "anyOf": [ {"type": "string"}, {"type": "number"}]
-                     }
-                  }
+                  "$ref": "#/components/schemas/data"
                }
             }
          },
@@ -1599,26 +1543,7 @@
                   }
                },
                "data_info": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
-                        },
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "array",
-                              "items": {
-                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
-                              }
-                           }
-                        }
-                     ]
-                  }
+                  "$ref": "#/components/schemas/data_info"
                }
             }
          },
@@ -1656,6 +1581,37 @@
                      }
                   }
                }
+            }
+         },
+         "data": {
+            "type": "array",
+            "items": {
+               "type": "array",
+               "items": {
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
+               }
+            }
+         },
+         "data_info": {
+            "type": "array",
+            "items": {
+               "anyOf": [
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  },
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "array",
+                        "items": {
+                           "anyOf": [ {"type": "string"}, {"type": "number"}]
+                        }
+                     }
+                  }
+               ]
             }
          },
          "generic_source_info": {
@@ -1719,13 +1675,7 @@
                   }
                },
                "data": {
-                  "type": "array",
-                  "items": {
-                     "type": "array",
-                     "items": {
-                        "anyOf": [ {"type": "string"}, {"type": "number"}]
-                     }
-                  }
+                  "$ref": "#/components/schemas/data"
                }
             }
          },
@@ -1792,26 +1742,7 @@
                   "type": "string"
                },
                "data_info": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
-                        },
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "array",
-                              "items": {
-                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
-                              }
-                           }
-                        }
-                     ]
-                  }
+                  "$ref": "#/components/schemas/data_info"
                }
             }
          },
@@ -1858,35 +1789,10 @@
                   }
                },
                "data": {
-                  "type": "array",
-                  "items": {
-                     "type": "array",
-                     "items": {
-                        "anyOf": [ {"type": "string"}, {"type": "number"}]
-                     }
-                  }
+                  "$ref": "#/components/schemas/data"
                },
                "data_info": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
-                        },
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "array",
-                              "items": {
-                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
-                              }
-                           }
-                        }
-                     ]
-                  }
+                  "$ref": "#/components/schemas/data_info"
                }
             }
          },
@@ -1957,35 +1863,10 @@
                   }
                },
                "data": {
-                  "type": "array",
-                  "items": {
-                     "type": "array",
-                     "items": {
-                        "anyOf": [ {"type": "string"}, {"type": "number"}]
-                     }
-                  }
+                  "$ref": "#/components/schemas/data"
                },
                "data_info": {
-                  "type": "array",
-                  "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
-                        },
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "array",
-                              "items": {
-                                 "anyOf": [ {"type": "string"}, {"type": "number"}]
-                              }
-                           }
-                        }
-                     ]
-                  }
+                  "$ref": "#/components/schemas/data_info"
                },
                "date_updated_argovis": {
                   "type": "string",
