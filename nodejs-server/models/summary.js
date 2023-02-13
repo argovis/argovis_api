@@ -8,4 +8,3 @@ var summarySchema = Schema(
   );
 
 module.exports = mongoose.model('summaries', summarySchema, 'summaries');
-
