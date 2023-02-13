@@ -1,0 +1,1340 @@
+openapi: 3.0.3
+info:
+  title: Argovis API
+  description: "REST API for Argo profiles, platforms, selections, BGC data, gridded\
+    \ products, etc."
+  contact:
+    name: Argovis Collaboration
+    url: https://argovisbeta01.colorado.edu
+    email: argovis@colorado.edu
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: "2.0"
+externalDocs:
+  description: Find us on GitHub
+  url: https://github.com/argovis/argovis_api
+servers:
+- url: https://argovis.colorado.edu/api
+- url: /
+security:
+- name: []
+tags:
+- name: drifters
+  description: Data and metadata for drifters.
+- name: summary (experimental)
+  description: Summary statistics (mostly for internal use)
+- name: token
+  description: token validation
+paths:
+  /drifters:
+    get:
+      tags:
+      - drifters
+      summary: "Search, reduce and download drifter data."
+      operationId: drifterSearch
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: metadata
+        in: query
+        description: metadata pointer
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: wmo
+        in: query
+        description: World Meteorological Organization identification number
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 1300915
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "sst,err_sst"
+          items:
+            pattern: "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|except-data-values)$"
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/drifter'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Drifters
+  /drifters/meta:
+    get:
+      tags:
+      - drifters
+      summary: "Search, reduce and download drifter metadata."
+      operationId: drifterMetaSearch
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      - name: wmo
+        in: query
+        description: World Meteorological Organization identification number
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 1300915
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/drifterMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Drifters
+  /drifters/vocabulary:
+    get:
+      tags:
+      - drifters
+      summary: List all possible values for certain drifter query string parameters
+      operationId: drifterVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: /drifters query string parameter to summarize possible values
+          of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - wmo
+          - platform
+          - data_keys
+          - metadata
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Drifters
+  /summary:
+    get:
+      tags:
+      - summary (experimental)
+      summary: Fetch a document from the summary collection by ID.
+      operationId: fetchSummary
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: SummaryExperimental
+  /token:
+    get:
+      tags:
+      - token
+      summary: validate an API token
+      operationId: validateToken
+      parameters:
+      - name: token
+        in: query
+        description: token to validate
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Token
+components:
+  schemas:
+    arShapeSchema:
+      required:
+      - _id
+      - date
+      - date_formatted
+      - geolocation
+      - shapeId
+      type: object
+      properties:
+        _id:
+          type: string
+        date:
+          type: string
+          format: date-time
+        shapeId:
+          type: integer
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpolygon'
+        date_formateed:
+          type: string
+          format: date
+    argone:
+      required:
+      - _id
+      - geolocation
+      - geolocation_forecast
+      - metadata
+      type: object
+      properties:
+        _id:
+          type: string
+        metadata:
+          type: array
+          items:
+            type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        geolocation_forecast:
+          $ref: '#/components/schemas/geoJSONpoint'
+        data:
+          $ref: '#/components/schemas/data'
+    argoneMeta:
+      required:
+      - _id
+      - data_info
+      - data_type
+      - date_updated_argovis
+      - levels
+      - source
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        levels:
+          type: array
+          items:
+            type: number
+        data_info:
+          $ref: '#/components/schemas/data_info'
+    tc:
+      required:
+      - _id
+      - basin
+      - class
+      - geolocation
+      - metadata
+      - record_identifier
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/data'
+        record_identifier:
+          type: string
+        class:
+          type: string
+    tcMeta:
+      required:
+      - _id
+      - data_info
+      - data_type
+      - date_updated_argovis
+      - name
+      - num
+      - source
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        data_info:
+          $ref: '#/components/schemas/data_info'
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        name:
+          type: string
+        num:
+          type: number
+    grid:
+      required:
+      - _id
+      - basin
+      - geolocation
+      - metadata
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        metadata:
+          type: array
+          items:
+            type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/data'
+    gridMeta:
+      required:
+      - _id
+      - data_info
+      - data_type
+      - date_updated_argovis
+      - levels
+      - source
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        levels:
+          type: array
+          items:
+            type: number
+        data_info:
+          $ref: '#/components/schemas/data_info'
+    geoJSONpoint:
+      required:
+      - coordinates
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      example:
+        coordinates:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
+        type: type
+    geoJSONpolygon:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              maxItems: 2
+              minItems: 2
+              type: number
+    data:
+      type: array
+      items:
+        type: array
+        items:
+          anyOf:
+          - type: string
+          - type: number
+    data_info:
+      type: array
+      items:
+        anyOf:
+        - type: array
+          items:
+            type: string
+        - type: array
+          items:
+            type: array
+            items:
+              anyOf:
+              - type: string
+              - type: number
+    generic_source_info:
+      required:
+      - source
+      type: object
+      properties:
+        source:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+        date_updated:
+          type: string
+          format: date-time
+        doi:
+          type: string
+    drifter_source_info:
+      required:
+      - source
+      type: object
+      properties:
+        source:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+      example:
+        source:
+        - source
+        - source
+        url: url
+    drifter:
+      required:
+      - _id
+      - basin
+      - geolocation
+      - metadata
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/data'
+      example:
+        metadata:
+        - metadata
+        - metadata
+        data:
+        - - ""
+          - ""
+        - - ""
+          - ""
+        _id: _id
+        basin: 6.02745618307040320615897144307382404804229736328125
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    drifterMeta:
+      required:
+      - _id
+      - data_info
+      - data_type
+      - date_updated_argovis
+      - deploy_date
+      - deploy_lat
+      - deploy_lon
+      - drogue_lost_date
+      - end_date
+      - end_lat
+      - end_lon
+      - expno
+      - platform
+      - rowsize
+      - source
+      - typebuoy
+      - typedeath
+      - wmo
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/drifter_source_info'
+        platform:
+          type: string
+        rowsize:
+          type: number
+        wmo:
+          type: number
+        expno:
+          type: number
+        deploy_date:
+          type: string
+          format: date-time
+        deploy_lon:
+          type: number
+        deploy_lat:
+          type: number
+        end_date:
+          type: string
+          format: date-time
+        end_lon:
+          type: number
+        end_lat:
+          type: number
+        drogue_lost_date:
+          type: string
+          format: date-time
+        typedeath:
+          type: number
+        typebuoy:
+          type: string
+        data_info:
+          $ref: '#/components/schemas/data_info'
+      example:
+        end_date: 2000-01-23T04:56:07.000+00:00
+        typebuoy: typebuoy
+        end_lat: 7.061401241503109105224211816675961017608642578125
+        deploy_lon: 5.962133916683182377482808078639209270477294921875
+        drogue_lost_date: 2000-01-23T04:56:07.000+00:00
+        rowsize: 0.80082819046101150206595775671303272247314453125
+        source:
+        - source:
+          - source
+          - source
+          url: url
+        - source:
+          - source
+          - source
+          url: url
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        platform: platform
+        typedeath: 9.301444243932575517419536481611430644989013671875
+        deploy_date: 2000-01-23T04:56:07.000+00:00
+        data_info:
+        - ""
+        - ""
+        deploy_lat: 5.63737665663332876420099637471139430999755859375
+        data_type: data_type
+        wmo: 6.02745618307040320615897144307382404804229736328125
+        expno: 1.46581298050294517310021547018550336360931396484375
+        _id: _id
+        end_lon: 2.3021358869347654518833223846741020679473876953125
+    cchdo:
+      required:
+      - _id
+      - basin
+      - cast
+      - data_info
+      - geolocation
+      - metadata
+      - source
+      - station
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        data_warning:
+          type: array
+          items:
+            type: string
+            enum:
+            - degenerate_levels
+            - missing_basin
+            - missing_location
+            - missing_timestamp
+        station:
+          type: string
+        cast:
+          type: number
+        metadata:
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/data'
+        data_info:
+          $ref: '#/components/schemas/data_info'
+    cchdoMeta:
+      required:
+      - _id
+      - cchdo_cruise_id
+      - data_type
+      - date_updated_argovis
+      - expocode
+      - woce_lines
+      type: object
+      properties:
+        _id:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        data_type:
+          type: string
+        country:
+          type: string
+        data_center:
+          type: string
+        instrument:
+          type: string
+        pi_name:
+          type: array
+          items:
+            type: string
+        expocode:
+          type: string
+        cchdo_cruise_id:
+          type: number
+        woce_lines:
+          type: array
+          items:
+            type: string
+    argo:
+      required:
+      - _id
+      - basin
+      - cycle_number
+      - data_info
+      - date_updated_argovis
+      - geolocation
+      - metadata
+      - source
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/data'
+        data_info:
+          $ref: '#/components/schemas/data_info'
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        data_warning:
+          type: array
+          items:
+            type: string
+            enum:
+            - degenerate_levels
+            - missing_basin
+            - missing_location
+            - missing_timestamp
+        cycle_number:
+          type: number
+        geolocation_argoqc:
+          type: number
+        profile_direction:
+          type: string
+        timestamp_argoqc:
+          type: number
+        vertical_sampling_scheme:
+          type: string
+    argoMeta:
+      required:
+      - _id
+      - data_type
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        country:
+          type: string
+        data_center:
+          type: string
+        instrument:
+          type: string
+        pi_name:
+          type: array
+          items:
+            type: string
+        platform:
+          type: string
+        platform_type:
+          type: string
+        fleetmonitoring:
+          type: string
+        oceanops:
+          type: string
+        positioning_system:
+          type: string
+        wmo_inst_type:
+          type: string
+    data_adjacent:
+      anyOf:
+      - type: array
+        items:
+          type: string
+      - type: object
+        additionalProperties:
+          type: string
+    argo_data_keys:
+      type: array
+      items:
+        pattern: "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pressure)|(salinity)|(salinity_sfile)|(temperature)|(temperature_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})((_std)|(_med){1})?(_argoqc)?|all|except-data-values)$"
+        type: string
+    errorResponse:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+  responses:
+    badRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    notFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    serverError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+  parameters:
+    arDate:
+      name: date
+      in: query
+      description: three hour increments starting at 2004-01-01T00:00:00 and ending
+        at 2017-04-02T03:00:00
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    arID:
+      name: _id
+      in: query
+      description: ID of an atmospheric river object
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: 1_262992
+    tcName:
+      name: name
+      in: query
+      description: name of tropical cyclone
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: LANE
+    startDate:
+      name: startDate
+      in: query
+      description: ISO 8601 UTC date-time formatted string indicating the beginning
+        of the time period of interest.
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    endDate:
+      name: endDate
+      in: query
+      description: ISO 8601 UTC date-time formatted string indicating the end of the
+        time period of interest.
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    gridName:
+      name: gridName
+      in: query
+      description: name of the gridded product to query.
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: rgTempTotal
+    presRange:
+      name: presRange
+      in: query
+      description: Pressure range in dbar to filter for; levels outside this range
+        will not be returned.
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    forecastOrigin:
+      name: forecastOrigin
+      in: query
+      description: "Longitude,latitude of forecast origin location."
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    forecastGeolocation:
+      name: forecastGeolocation
+      in: query
+      description: "Longitude,latitude of forecast destination location."
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    profileSource:
+      name: source
+      in: query
+      description: Experimental program source(s) to search for; document must match
+        all sources to be returned. Accepts ~ negation to filter out documents. See
+        /<data route>/vocabulary?parameter=source for list of options.
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "argo_bgc,~argo_core"
+        items:
+          type: string
+    woceline:
+      name: woceline
+      in: query
+      description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
+        for list of options.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: A10
+    cchdo_cruise:
+      name: cchdo_cruise
+      in: query
+      description: CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise
+        for list of options.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 518
+    compression:
+      name: compression
+      in: query
+      description: Data minification strategy to apply.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - minimal
+    genericID:
+      name: id
+      in: query
+      description: Unique ID to search for.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: 4902911_0
+    platformID:
+      name: platform
+      in: query
+      description: Unique platform ID to search for.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: "4902911"
+    platform_type:
+      name: platform_type
+      in: query
+      description: Make/model of platform
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: PALACE
+    polygon:
+      name: polygon
+      in: query
+      description: "array of [lon, lat] vertices describing a polygon bounding the\
+        \ region of interest; final point must match initial point"
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+    multipolygon:
+      name: multipolygon
+      in: query
+      description: array of polygon regions; region of interest is taken as the intersection
+        of all listed polygons.
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+    center:
+      name: center
+      in: query
+      description: center to measure max radius from when defining circular region
+        of interest; must be used in conjunction with query string parameter 'radius'.
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    radius:
+      name: radius
+      in: query
+      description: km from centerpoint when defining circular region of interest;
+        must be used in conjunction with query string parameter 'center'.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 50
+    mostrecent:
+      name: mostrecent
+      in: query
+      description: get back only the n records with the most recent values of timestamp.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+    lat:
+      name: lat
+      in: query
+      description: latitude (degrees) of Argo float location
+      required: true
+      style: form
+      explode: true
+      schema:
+        maximum: 90
+        minimum: -90
+        type: number
+        example: 5.25
+    lon:
+      name: lon
+      in: query
+      description: longitude (degrees) of Argo float location
+      required: true
+      style: form
+      explode: true
+      schema:
+        maximum: 180
+        minimum: -180
+        type: number
+        example: -20.33
+    forcastDays:
+      name: forcastDays
+      in: query
+      description: number of days over which to project Argo float drift
+      required: true
+      style: form
+      explode: true
+      schema:
+        maximum: 1800
+        minimum: 60
+        type: number
+        example: 60
+        enum:
+        - 60
+        - 120
+        - 140
+        - 240
+        - 360
+        - 480
+        - 720
+        - 840
+        - 960
+        - 1080
+        - 1200
+        - 1320
+        - 1440
+        - 1560
+        - 1680
+        - 1800
+    wmo:
+      name: wmo
+      in: query
+      description: World Meteorological Organization identification number
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 1300915
+    metadata:
+      name: metadata
+      in: query
+      description: metadata pointer
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
