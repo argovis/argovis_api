@@ -691,4 +691,3 @@ module.exports.find_grid_collection = function(token){
     return ''
   }
 }
-
