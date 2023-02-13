@@ -205,6 +205,16 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   return model.aggregate(aggPipeline).cursor()
 }
 
+module.exports.combineDataInfo = function(dinfos){
+  // <dinfos>: array of data_info objects, all with same set of columns
+  // returns a single data_info object composed of all elements of input array
+  let d = []
+  d[0] = [].concat(...dinfos.map(x=>x[0]))
+  d[1] = dinfos[0][1]
+  d[2] = [].concat(...dinfos.map(x=>x[2]))
+  return d
+}
+
 module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <chunk>: raw data table document
   // <metadata>: metadata doc corresponding to this chunk
@@ -216,9 +226,27 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data keys that disqualify a document if present
-  let my_meta = null  // metadata document corresponding to chunk
   let coerced_pressure = false
   let metadata_only = false
+
+  // delete junk parameters
+  if(pp_params.junk){
+    for(let i=0; i<pp_params.junk.length; i++){
+      delete chunk[pp_params.junk[i]]
+    }
+  }
+
+  // if chunk has no data recoreded, abandon
+  if(chunk.data.length == 0){
+    return false
+  }
+
+  // make sure metadata is sorted the same as chunk.metadata
+  let m = []
+  for(let i=0; i<chunk.metadata.length; i++){
+    m.push(metadata.filter(x=>x._id==chunk.metadata[i])[0])
+  }
+  metadata = m
 
   // determine which data keys should be kept or tossed, if necessary
   if(pp_params.data){
@@ -230,26 +258,15 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
 
-  // identify data_keys, could be on chunk or metadata
+  // identify data_keys
   let dk = null
-  if(chunk.hasOwnProperty('data_keys')) {
-    dk = chunk.data_keys  
-  }
-  else{
-    dk = metadata.data_keys
-  }
-  // do the same for any other units-like structure in pp_params.data_adjacent
-  let da = {}
-  if(pp_params.data_adjacent){
-    for (let i=0; i<pp_params.data_adjacent.length; i++) {
-      let k = pp_params.data_adjacent[i]
-      if(chunk.hasOwnProperty(k)){
-        da[k] = chunk[k]
-      } 
-      else {
-        da[k] = metadata[k]
-      }
-    }
+  let dinfo = null
+  if(chunk.hasOwnProperty('data_info')){
+    dk = chunk.data_info[0]
+    dinfo = chunk.data_info
+  } else {
+    dinfo = module.exports.combineDataInfo(metadata.map(x => x.data_info))
+    dk = dinfo[0]
   }
 
   // bail out on this document if it contains any ~keys:
@@ -261,122 +278,102 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     coerced_pressure = true
   }
 
-  // turn data adjacent variables into lookup tables by data_key
-  let data_adjacent = {}
-  if(pp_params.data_adjacent){
-    for (const [key, val] of Object.entries(da)) {
-      data_adjacent[key] = {}
-      for(let k=0; k<dk.length; k++){
-        data_adjacent[key][dk[k]] = da[key][k]
-      }     
+  // filter down to requested data
+  if(pp_params.data && !keys.includes('all')){
+    if(!chunk.hasOwnProperty('data_info')){
+      chunk.data_info = dinfo
     }
-  }
-
-  // reinflate data arrays as a dictionary keyed by depth, and only keep requested data
-  let reinflated_levels = {}
-  let reinflated_levels_with_coerced_pressure = {}
-  let metalevels = null
-  if(metadata.hasOwnProperty('levels')){
-    metalevels = metadata.levels // relevant for grids
-  } else if (!dk.includes('pressure')){
-    metalevels = [0] // some sea surface datasets have no levels metadata and no profile-like pressure key, since they're all implicitly single-level pres=0 surface measurements
-  }
-  for(let j=0; j<chunk.data.length; j++){ // loop over levels
-    let reinflate = {}
-    for(k=0; k<chunk.data[j].length; k++){ // loop over data variables
-      if( (keys.includes(dk[k]) || keys.includes('all')) && !isNaN(chunk.data[j][k]) && chunk.data[j][k] !== null){ // ie only keep data that was actually requested, and which actually exists
-        reinflate[dk[k]] = chunk.data[j][k]
-      }
-    }
-    let lvl = metalevels ? metalevels[j] : reinflate.pressure
-    reinflated_levels_with_coerced_pressure[lvl] = reinflate // keep this for pressure filtering below
-    if(keys.includes('all') || keys.some(val => (val!='pressure' || !coerced_pressure) && Object.keys(reinflate).includes(val))){ // ie only keep levels that have at least some explicitly requested keys
-      reinflated_levels[lvl] = reinflate
-    }
-  }
-
-  // filter by presRange, drop profile if no levels left
-  let levels = []
-  if(pp_params.presRange){
-    levels = Object.keys(reinflated_levels_with_coerced_pressure).filter(k => Number(k) >= pp_params.presRange[0] && Number(k) <= pp_params.presRange[1])
-    if(levels.length==0){
-      return false
-    }
-  } else {
-    levels = Object.keys(reinflated_levels)
-  }
-  levels = levels.map(n=>Number(n)).sort((a,b)=>a-b)
-
-  // translate level-keyed dictionary back to a sorted list of per-level dictionaries
-  if(metalevels && pp_params.presRange){
-    /// need to make a levels property on the data document that overrides the levels property on the metadata doc if level filtering has happened, for grid-like objects
-    chunk.levels = levels
-  }
-  chunk.data = levels.map(k=>reinflated_levels[String(k)])
-
-  // if we wanted data and none is left, abandon this document
-  if(keys.length>(coerced_pressure ? 1 : 0) && chunk.data.length==0) return false
-
-  // if we asked for specific data and one of the desired variables isn't found anywhere, abandon this document
-  if(pp_params.data && (pp_params.data.length > 1 || pp_params.data[0]!=='except-data-values')){
-    for(k=0; k<keys.length; k++){
-      if(keys[k] != 'all'){
-        if(!chunk.data.some(level => Object.keys(level).includes(keys[k]))){
+    let keyset = JSON.parse(JSON.stringify(chunk.data_info[0]))
+    for(let i=0; i<keyset.length; i++){
+      let k = keyset[i]
+      let kIndex = chunk.data_info[0].indexOf(k)
+      if(!keys.includes(k)){
+        // drop it if we didn't ask for it
+        chunk.data.splice(kIndex,1)
+        chunk.data_info[0].splice(kIndex,1)
+        chunk.data_info[2].splice(kIndex,1)
+      } else {
+        // abandon profile if a requested measurement is all null
+        if(chunk.data[kIndex].every(x => x === null)){
           return false
         }
       }
+    }
+    if(Object.keys(chunk.data).length === (coerced_pressure ? 1 : 0)){
+      return false // deleted all our data, bail out
+    }
+  }
+
+  // filter by presRange, drop profile if reqested and available pressures are disjoint
+  /// identify level spectrum, could be <data doc>.data.pressure (for point data) or <metadata doc>.levels (for grids)
+  let lvlSpectrum = []
+  let pressure_index = dinfo[0].findIndex(x => x === 'pressure')
+  if(pressure_index !== -1){
+    lvlSpectrum = chunk.data[pressure_index]
+  } else if(metadata[0].levels){
+    lvlSpectrum = metadata[0].levels // note we take from metadata[0] since we're requiring all grids in the same collection have the same level spectrum
+  }
+  if(pp_params.presRange && lvlSpectrum.length > 0){
+    let lowIndex = 0
+    let highIndex = lvlSpectrum.length-1
+    if(lvlSpectrum[0] > pp_params.presRange[1]){
+      return false // requested pressure range that is completely shallower than pressures available
+    }
+    if(lvlSpectrum[highIndex] < pp_params.presRange[0]){
+      return false // requested pressure range that is completely deeper than pressures available
+    }
+    while(lowIndex < highIndex && lvlSpectrum[lowIndex] < pp_params.presRange[0]){
+      lowIndex++
+    } // lowIndex now points at the first level index to keep
+    while(highIndex > lowIndex && lvlSpectrum[highIndex] > pp_params.presRange[1]){
+      highIndex--
+    } // highIndex now points at the last level index to keep
+    for(let i=0; i<Object.keys(chunk.data).length; i++){
+      let k = Object.keys(chunk.data)[i]
+      chunk.data[k] = chunk.data[k].slice(lowIndex, highIndex+1)
+    }
+    /// append levels to the data document if it has been filtered on 
+    if(metadata[0].levels) {
+      chunk.levels = metadata[0].levels.slice(lowIndex, highIndex+1)
+    }
+  }
+
+  // drop any level for which all requested measurements are null if specific data has been requested
+  if(pp_params.data){
+    let dcopy = JSON.parse(JSON.stringify(chunk.data))
+    if(coerced_pressure){
+      dcopy.splice(chunk.data_info[0].indexOf('pressure'),1)
+    }
+
+    dcopy = module.exports.zip(dcopy)
+
+    dcopy = dcopy.map( (level,index) => {
+      if(level.every(x => x === null)){
+        return index
+      } else{
+        return -1
+      }
+    })
+
+    /// bail out if every level is marked for deletion
+    if(dcopy.every(x => x !== -1)){
+      return false
+    }
+
+    for(let i=0; i<chunk.data.length; i++){
+      chunk.data[i] = chunk.data[i].filter((level, index) => {
+        if(dcopy.includes(index)){
+          return false
+        } else {
+          return true
+        } 
+      })
     }
   }
 
   // drop data on metadata only requests
   if(!pp_params.data || metadata_only){
     delete chunk.data
-    delete chunk.levels
-  }
-
-  // manage data_keys, any data_adjacent objects, when pp_params.data is defined or forced by always_import
-  if(keys.includes('all') || (!pp_params.data && pp_params.always_import)){
-    chunk.data_keys = dk
-    if(pp_params.data_adjacent){
-      for (const [key, val] of Object.entries(data_adjacent)){
-        chunk[key] = val
-      }
-    }
-  }
-  else if(keys.length > 0) {
-    chunk.data_keys = keys
-    if(pp_params.data_adjacent){
-      for (const [key, val] of Object.entries(data_adjacent)){
-        chunk[key] = val
-        for(const adj_prop in val){
-          if(!keys.includes(adj_prop)) delete chunk[key][adj_prop] 
-        }
-      }
-    }
-  }
-
-  // deflate data if requested
-  if(pp_params.compression == 'array' && pp_params.data && !metadata_only){
-    chunk.data = chunk.data.map(x => {
-      let lvl = []
-      for(let ii=0; ii<chunk.data_keys.length; ii++){
-        if(x.hasOwnProperty(chunk.data_keys[ii])){
-          lvl.push(x[chunk.data_keys[ii]])
-        } else {
-          lvl.push(null)
-        }
-      }
-      return lvl
-    })
-  }
-  if(pp_params.compression == 'array' && chunk.data_keys){
-    if(pp_params.data_adjacent){
-      for(let i=0; i<pp_params.data_adjacent.length; i++){
-        if(chunk[pp_params.data_adjacent[i]]){
-          chunk[pp_params.data_adjacent[i]] = chunk.data_keys.map(x => chunk[pp_params.data_adjacent[i]][x])
-        }
-      }
-    }
   }
 
   // return a minimal stub if requested
@@ -390,6 +387,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 module.exports.post_xform = function(metaModel, pp_params, search_result, res, stub){
 
   let nDocs = 0
+
   const postprocess = new Transform({
     objectMode: true,
     transform(chunk, encoding, next){
@@ -397,7 +395,9 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
           .then(meta => {
             // keep track of new metadata docs so we don't look them up twice
-            if(!search_result[0].find(x => x._id == chunk['metadata'])) search_result[0].push(meta)
+            for(let i=0; i<meta.length; i++){
+              if(!search_result[0].find(x => x._id == meta[i]._id)) search_result[0].push(meta[i])
+            }
             // munge the chunk and push it downstream if it isn't rejected.
             let doc = null
             if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
@@ -450,6 +450,23 @@ module.exports.meta_xform = function(res){
   return postprocess
 }
 
+module.exports.locate_meta = function(meta_ids, meta_list, meta_model){
+  // <meta_ids>: array of ids of meta documents of interest
+  // <meta_list>: current array of fetched meta docs
+  // <meta_model>: collection model to go looking in
+  // return a promise that resolves to the metadata record sought.
+  
+  let current_meta = meta_list.map(x => x.metadata)
+  current_meta = [].concat(...current_meta)
+  meta_needed = meta_ids.filter(x => !current_meta.includes(x))
+
+  if(meta_needed.length === 0){
+    return new Promise(function(resolve, reject){resolve([])})
+  } else {
+    return meta_model.find({"_id": {"$in": meta_needed}}).exec()
+  }
+}
+
 module.exports.token_xform = function(res){
   // transform stream for token validation
 
@@ -471,22 +488,6 @@ module.exports.token_xform = function(res){
   }
 
   return postprocess
-}
-
-module.exports.locate_meta = function(meta_id, meta_list, meta_model){
-  // <meta_id>: id of meta document of interest
-  // <meta_list>: current array of fetched meta docs
-  // <meta_model>: collection model tp go looking in
-  // return a promise that resolves to the metadata record sought.
-
-  let my_meta = meta_list.find(x => x._id == meta_id)
-  if(typeof my_meta !== 'undefined'){
-    return new Promise(function(resolve, reject){resolve(my_meta)})
-  } else {
-    // go looking in mongo
-    let metaquery = meta_model.findOne({ _id: meta_id }).lean();
-    return metaquery.exec();
-  }
 }
 
 module.exports.lookup_key = function(userModel, apikey, resolve, reject){
@@ -679,3 +680,14 @@ module.exports.source_filter = function(sourcelist){
   return {$match: sourcematch}
 }
 
+module.exports.find_grid_collection = function(token){
+  // map a token including a grid's prefix ('rg09_temperature', 'rg09_salinity', ...) onto its collection name.
+
+  if (["rg09_temperature", "rg09_salinity"].some(k => token.includes(k))) {
+    return 'rg09'
+  } else if(["kg21_ohc15to300"].some(k => token.includes(k))){
+    return 'kg21'
+  } else {
+    return ''
+  }
+}

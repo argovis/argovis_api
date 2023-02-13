@@ -49,7 +49,6 @@ exports.drifterMetaSearch = function(res,id,platform,wmo) {
 
 exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,center,radius,metadata,wmo,platform,compression,mostrecent,data) {
   return new Promise(function(resolve, reject) {
-
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){
@@ -84,12 +83,11 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
-        mostrecent: mostrecent,
-        data_adjacent: ['units']
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve([{_id: null}])
+    let metafilter = Promise.resolve([])
     let metacomplete = false
     if(wmo||platform){
         let match = {
@@ -117,7 +115,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
                 data.geolocation.coordinates[0], 
                 data.geolocation.coordinates[1], 
                 data.timestamp,
-                metadata.wmo
+                metadata[0].wmo
               ]
           }
 

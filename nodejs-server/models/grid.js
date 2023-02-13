@@ -28,13 +28,11 @@ var sourceinfo = Schema({
 
 const GridSchema = Schema({
   _id: {type: String, required: true},
-  metadata: {type: [String], required: true},
   geolocation: {type: geolocation, required: true},
   basin: {type: Number, required: true},
   timestamp: {type: Date, required: true},
-  data: [{type: [Number]}],
-  data_keys: {type: [String], required: true},
-  units: {type: [String], required: true},
+  metadata: {type: [String], required: true},
+  data: [{type: [Number], required: false}]
 });
 
 const GridMetaSchema = Schema({
@@ -42,9 +40,12 @@ const GridMetaSchema = Schema({
   data_type: {type: String, required: true},
   date_updated_argovis: {type: Date, required: true},
   source: {type: sourceinfo, required: true},
-  levels: {type: [Number], required: true}
+  levels: {type: [Number], required: true},
+  data_info: [{type:[Schema.Types.Mixed], required: false}]
 });
 
 module.exports = {}
-module.exports['grid_1_1_0.5_0.5Meta'] = mongoose.model('grid_1_1_0.5_0.5Meta', GridMetaSchema, 'grid_1_1_0.5_0.5Meta');
-module.exports['grid_1_1_0.5_0.5'] = mongoose.model('grid_1_1_0.5_0.5', GridSchema, 'grid_1_1_0.5_0.5');
+module.exports['rg09Meta'] = mongoose.model('rg09Meta', GridMetaSchema, 'rg09Meta');
+module.exports['rg09'] = mongoose.model('rg09', GridSchema, 'rg09');
+module.exports['kg21Meta'] = mongoose.model('kg21Meta', GridMetaSchema, 'kg21Meta');
+module.exports['kg21'] = mongoose.model('kg21', GridSchema, 'kg21');

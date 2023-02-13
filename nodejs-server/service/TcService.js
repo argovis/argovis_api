@@ -24,7 +24,6 @@ const summaries = require('../models/summary');
 
 exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,name,metadata,mostrecent,compression,data) {
   return new Promise(function(resolve, reject) {
-
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){
@@ -59,12 +58,11 @@ exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
-        mostrecent: mostrecent,
-        data_adjacent: ['units']
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve([{_id: null}])
+    let metafilter = Promise.resolve([])
     let metacomplete = false
     if(name){
         metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
@@ -107,10 +105,10 @@ exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,
  **/
 exports.findTCmeta = function(res, id,name) {
   return new Promise(function(resolve, reject) {
-
     let match = {
         '_id': id,
         'name': name
+
     }
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 

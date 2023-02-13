@@ -28,20 +28,19 @@ var sourceinfo = Schema({
 
 const tcSchema = Schema({
   _id: {type: String, required: true},
-  metadata: {type: String, required: true},
   geolocation: {type: geolocation, required: true},
   basin: {type: Number, required: true},
   timestamp: {type: Date, required: true},
-  data: [{type: [Number]}],
   record_identifier: {type: String, required: true},
-  class: {type: String, required: true}
+  class: {type: String, required: true},
+  metadata: {type: [String], required: true},
+  data: [{type: [Number], required: false}]
 });
 
 const tcMetaSchema = Schema({
   _id: {type: String, required: true},
   data_type: {type: String, required: true},
-  data_keys: {type: [String], required: true},
-  units: {type: [String], required: true},
+  data_info: [{type:[Schema.Types.Mixed], required: false}],
   date_updated_argovis: {type: Date, required: true},
   source: {type: sourceinfo, required: true},
   name: {type: String, required: true},

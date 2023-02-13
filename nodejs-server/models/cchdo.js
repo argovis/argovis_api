@@ -28,15 +28,14 @@ var sourceinfo = Schema({
 
 const cchdoSchema = Schema({
   _id: {type: String, required: true},
-  metadata: {type: String, required: true},
+  metadata: {type: [String], required: true},
+  data: [{type: [Number], required: false}],
+  data_info: [{type:[Schema.Types.Mixed], required: false}],
   geolocation: {type: geolocation, required: true},
   basin: {type: Number, required: true},
   timestamp: {type: Date, required: true},
   source: {type: sourceinfo, required: true},
   data_warning: {type: [String], required: false, enum: ["degenerate_levels", "missing_basin", "missing_location", "missing_timestamp"]},
-  data_keys: {type: [String], required: true},
-  units: {type: [String], required: true},
-  data: [{type: [Number]}],
   station: {type: String, required: true},
   cast: {type: Number, required: true}
 });

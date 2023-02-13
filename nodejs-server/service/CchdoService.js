@@ -27,7 +27,6 @@ const geojsonArea = require('@mapbox/geojson-area');
 
 exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
-
     // input sanitization
     let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
     if(params.hasOwnProperty('code')){
@@ -71,12 +70,11 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
-        mostrecent: mostrecent,
-        data_adjacent: ['units']
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve([{_id: null}])
+    let metafilter = Promise.resolve([])
     let metacomplete = false
     if(woceline||cchdo_cruise){
         let match = {
@@ -108,8 +106,8 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
                 data.geolocation.coordinates[1], 
                 data.timestamp,
                 Array.from(sourceset),
-                metadata.woce_lines,
-                metadata.cchdo_cruise_id
+                metadata[0].woce_lines,
+                metadata[0].cchdo_cruise_id
               ]
           }
 

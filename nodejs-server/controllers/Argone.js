@@ -1,11 +1,11 @@
 'use strict';
 
 var utils = require('../utils/writer.js');
-var FloatLocationForecast = require('../service/FloatLocationForecastService');
+var Argone = require('../service/ArgoneService');
 var helpers = require('../helpers/helpers')
 
-module.exports.findfloatLocationForecast = function findfloatLocationForecast (req, res, next, id, forecastOrigin, forecastGeolocation, metadata, compression, data) {
-  FloatLocationForecast.findfloatLocationForecast(res, id, forecastOrigin, forecastGeolocation, metadata, compression, data)
+module.exports.findargone = function findargone (req, res, next, id, forecastOrigin, forecastGeolocation, metadata, compression, data) {
+  Argone.findargone(res, id, forecastOrigin, forecastGeolocation, metadata, compression, data)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
@@ -15,8 +15,8 @@ module.exports.findfloatLocationForecast = function findfloatLocationForecast (r
     });
 };
 
-module.exports.findfloatLocationForecastMeta = function findfloatLocationForecastMeta (req, res, next, id) {
-  FloatLocationForecast.findfloatLocationForecastMeta(res,id)
+module.exports.findargoneMeta = function findargoneMeta (req, res, next, id) {
+  Argone.findargoneMeta(res, id)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);

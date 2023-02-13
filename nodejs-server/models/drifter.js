@@ -26,11 +26,11 @@ var sourceinfo = Schema({
 
 const DrifterSchema = Schema({
   _id: {type: String, required: true},
-  metadata: {type: String, required: true},
   geolocation: {type: geolocation, required: true},
   basin: {type: Number, required: true},
   timestamp: {type: Date, required: true},
-  data: {type: [Number], required: true}
+  metadata: {type: [String], required: true},
+  data: [{type: [Number], required: false}]
 });
 
 const DrifterMetaSchema = Schema({
@@ -50,9 +50,7 @@ const DrifterMetaSchema = Schema({
   data_type: {type: String, required: true},
   date_updated_argovis: {type: Date, required: true},
   source_info: {type: sourceinfo, required: true},
-  data_keys: {type: [String], required: true},
-  units: {type: [String], required: true},
-  long_name: {type: [String], required: true}
+  data_info: [{type:[Schema.Types.Mixed], required: true}]
 });
 
 module.exports = {}
