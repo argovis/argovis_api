@@ -19,7 +19,6 @@ exports.drifterMetaSearch = function(id,platform,wmo) {
   "deploy_lon" : 5.962133916683182,
   "drogue_lost_date" : "2000-01-23T04:56:07.000+00:00",
   "rowsize" : 0.8008281904610115,
-  "units" : "",
   "source" : [ {
     "source" : [ "source", "source" ],
     "url" : "url"
@@ -30,13 +29,12 @@ exports.drifterMetaSearch = function(id,platform,wmo) {
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
   "platform" : "platform",
   "typedeath" : 9.301444243932576,
-  "long_name" : [ "long_name", "long_name" ],
   "deploy_date" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
   "deploy_lat" : 5.637376656633329,
   "data_type" : "data_type",
   "wmo" : 6.027456183070403,
   "expno" : 1.4658129805029452,
-  "data_keys" : [ "ve", "ve" ],
   "_id" : "_id",
   "end_lon" : 2.3021358869347655
 }, {
@@ -46,7 +44,6 @@ exports.drifterMetaSearch = function(id,platform,wmo) {
   "deploy_lon" : 5.962133916683182,
   "drogue_lost_date" : "2000-01-23T04:56:07.000+00:00",
   "rowsize" : 0.8008281904610115,
-  "units" : "",
   "source" : [ {
     "source" : [ "source", "source" ],
     "url" : "url"
@@ -57,13 +54,12 @@ exports.drifterMetaSearch = function(id,platform,wmo) {
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
   "platform" : "platform",
   "typedeath" : 9.301444243932576,
-  "long_name" : [ "long_name", "long_name" ],
   "deploy_date" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
   "deploy_lat" : 5.637376656633329,
   "data_type" : "data_type",
   "wmo" : 6.027456183070403,
   "expno" : 1.4658129805029452,
-  "data_keys" : [ "ve", "ve" ],
   "_id" : "_id",
   "end_lon" : 2.3021358869347655
 } ];
@@ -98,24 +94,20 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "data_keys" : [ "ve", "ve" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : "",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "data_keys" : [ "ve", "ve" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : "",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"

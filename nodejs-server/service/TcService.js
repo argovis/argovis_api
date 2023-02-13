@@ -22,12 +22,10 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "data_keys" : [ "wind", "wind" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : "",
   "record_identifier" : "record_identifier",
   "class" : "class",
   "geolocation" : {
@@ -36,12 +34,10 @@ exports.findTC = function(id,startDate,endDate,polygon,multipolygon,center,radiu
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : "metadata",
-  "data" : [ "", "" ],
-  "data_keys" : [ "wind", "wind" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
   "basin" : 0.8008281904610115,
-  "units" : "",
   "record_identifier" : "record_identifier",
   "class" : "class",
   "geolocation" : {
@@ -70,12 +66,11 @@ exports.findTCmeta = function(id,name) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
+  "data_info" : [ "", "" ],
   "num" : 0.8008281904610115,
   "data_type" : "data_type",
   "name" : "name",
-  "data_keys" : [ "wind", "wind" ],
   "_id" : "_id",
-  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
@@ -89,12 +84,11 @@ exports.findTCmeta = function(id,name) {
   } ],
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
 }, {
+  "data_info" : [ "", "" ],
   "num" : 0.8008281904610115,
   "data_type" : "data_type",
   "name" : "name",
-  "data_keys" : [ "wind", "wind" ],
   "_id" : "_id",
-  "units" : "",
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],

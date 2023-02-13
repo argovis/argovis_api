@@ -57,7 +57,7 @@
          "description": "atmospheric river shapes"
       },
       {
-         "name": "floatLocationForecast",
+         "name": "argone",
          "description": "Argo float position forcast product"
       },
       {
@@ -111,13 +111,13 @@
             }
          }
       },
-      "/floatLocationForecast": {
+      "/argone": {
          "get": {
             "tags": [
-               "floatLocationForecast"
+               "argone"
             ],
             "summary": "Probabilities of floats moving between two points in a range of forecast projections",
-            "operationId": "findfloatLocationForecast",
+            "operationId": "findargone",
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
@@ -159,7 +159,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/floatLocationForecast"
+                              "$ref": "#/components/schemas/argone"
                            }
                         }
                      }
@@ -177,13 +177,13 @@
             }
          }
       },
-      "/floatLocationForecast/meta": {
+      "/argone/meta": {
          "get": {
             "tags": [
-               "floatLocationForecast"
+               "argone"
             ],
-            "summary": "floatLocationForecast metadata search and filter.",
-            "operationId": "findfloatLocationForecastMeta",
+            "summary": "argone metadata search and filter.",
+            "operationId": "findargoneMeta",
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
@@ -197,7 +197,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/floatLocationForecastMeta"
+                              "$ref": "#/components/schemas/argoneMeta"
                            }
                         }
                      }
@@ -399,7 +399,7 @@
                   "required": "true",
                   "schema": {
                      "type": "string",
-                     "enum": ["grid_1_1_0.5_0.5"]
+                     "enum": ["rg09", "kg21"]
                   }
                },
                {
@@ -1368,7 +1368,7 @@
                }
             }
          },
-         "floatLocationForecast": {
+         "argone": {
             "type": "object",
             "required": ["_id", "metadata", "geolocation", "geolocation_forecast"],
             "properties": {
@@ -1376,20 +1376,10 @@
                   "type": "string"
                },
                "metadata": {
-                  "anyOf": [
-                     {
-                        "type": "array",
-                        "items": {
-                           "type": "string"
-                        }
-                     },
-                     {
-                        "type": "object",
-                        "properties": {
-                           "covariance": {"type":"string"}
-                        }
-                     }
-                  ]   
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
                },
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
@@ -1398,48 +1388,13 @@
                    "$ref": "#/components/schemas/geoJSONpoint"
                },
                "data": {
-                  "anyOf": [
-                     {
-                        "type": "array",
-                        "items": {
-                           "type": "array",
-                           "items": {
-                              "type": "number"
-                           }
-                        }
-                     },
-                     {
-                        "type": "object",
-                        "properties": {
-                           "90": {"type":"array", "item":{"type": "number"}},
-                           "180": {"type":"array", "item":{"type": "number"}},
-                           "270": {"type":"array", "item":{"type": "number"}},
-                           "360": {"type":"array", "item":{"type": "number"}},
-                           "450": {"type":"array", "item":{"type": "number"}},
-                           "540": {"type":"array", "item":{"type": "number"}},
-                           "630": {"type":"array", "item":{"type": "number"}},
-                           "720": {"type":"array", "item":{"type": "number"}},
-                           "810": {"type":"array", "item":{"type": "number"}},
-                           "900": {"type":"array", "item":{"type": "number"}},
-                           "990": {"type":"array", "item":{"type": "number"}},
-                           "1080": {"type":"array", "item":{"type": "number"}},
-                           "1170": {"type":"array", "item":{"type": "number"}},
-                           "1260": {"type":"array", "item":{"type": "number"}},
-                           "1350": {"type":"array", "item":{"type": "number"}},
-                           "1440": {"type":"array", "item":{"type": "number"}},
-                           "1530": {"type":"array", "item":{"type": "number"}},
-                           "1620": {"type":"array", "item":{"type": "number"}},
-                           "1710": {"type":"array", "item":{"type": "number"}},
-                           "1800": {"type":"array", "item":{"type": "number"}}
-                        }
-                     }
-                  ]   
+                  "$ref": "#/components/schemas/data"
                }
             }
          },
-         "floatLocationForecastMeta": {
+         "argoneMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels", "data_keys", "units"],
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels", "data_info"],
             "properties": {
                "_id": {
                   "type": "string"
@@ -1463,47 +1418,8 @@
                      "type": "number"
                   }
                },
-               "data_keys": {
-                  "type": "array",
-                  "items": {
-                     "type": "string",
-                     "enum": ["90", "180", "270", "360", "450", "540", "630", "720", "810", "900", "990", "1080", "1170", "1260", "1350", "1440", "1530", "1620", "1710", "1800"]
-                  }
-               },
-               "units": {
-                  "anyOf": [
-                     {
-                        "type": "array",
-                        "items": {
-                           "type": "string"
-                        }
-                     },
-                     {
-                        "type": "object",
-                        "properties": {
-                           "90": {"type": "string"},
-                           "180": {"type": "string"},
-                           "270": {"type": "string"},
-                           "360": {"type": "string"},
-                           "450": {"type": "string"},
-                           "540": {"type": "string"},
-                           "630": {"type": "string"},
-                           "720": {"type": "string"},
-                           "810": {"type": "string"},
-                           "900": {"type": "string"},
-                           "990": {"type": "string"},
-                           "1080": {"type": "string"},
-                           "1170": {"type": "string"},
-                           "1260": {"type": "string"},
-                           "1350": {"type": "string"},
-                           "1440": {"type": "string"},
-                           "1530": {"type": "string"},
-                           "1620": {"type": "string"},
-                           "1710": {"type": "string"},
-                           "1800": {"type": "string"}
-                        }
-                     }
-                  ]   
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
                }
             }
          },
@@ -1512,9 +1428,6 @@
             "required": ["_id", "metadata", "geolocation", "basin", "timestamp", "record_identifier", "class"],
             "properties": {
                "_id": {
-                  "type": "string"
-               },
-               "metadata": {
                   "type": "string"
                },
                "geolocation": {
@@ -1527,31 +1440,14 @@
                   "type": "string",
                   "format": "date-time"
                },
-               "data": {
+               "metadata": {
                   "type": "array",
                   "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "number"
-                           }
-                        },
-                        {
-                           "type": "object",
-                           "properties": {
-                              "wind": {"type":"number"},
-                              "surface_pressure": {"type":"number"}
-                           }
-                        }
-                     ]   
+                     "type": "string"
                   }
                },
-               "units": {
-                  "$ref": "#/components/schemas/tc_units"  
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/tc_data_keys"
+               "data": {
+                  "$ref": "#/components/schemas/data"
                },
                "record_identifier": {
                   "type": "string"
@@ -1563,7 +1459,7 @@
          },
          "tcMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "name", "num"],
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "name", "num", "data_info"],
             "properties":{
                "_id": {
                   "type": "string"
@@ -1571,11 +1467,8 @@
                "data_type": {
                   "type": "string"
                },
-               "data_keys": {
-                  "$ref": "#/components/schemas/tc_data_keys"
-               },
-               "units": {
-                  "$ref": "#/components/schemas/tc_units"
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
                },
                "date_updated_argovis": {
                   "type": "string",
@@ -1595,78 +1488,21 @@
                }
             }
          },
-         "tc_units": {
-            "anyOf": [
-               {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "type": "object",
-                  "properties": {
-                     "wind": {"type":"string"},
-                     "surface_pressure": {"type":"string"}
-                  }
-               }
-            ] 
-         },
-         "tc_data_keys": {
-            "type": "array",
-            "items": {
-               "type": "string",
-               "enum": ["wind", "surface_pressure"]
-            }
-         },
          "grid": {
             "type": "object",
-            "required": ["_id", "metadata", "geolocation", "data_keys", "units", "basin", "timestamp"],
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
             "properties": {
                "_id": {
                   "type": "string"
                },
                "metadata": {
-                  "anyOf": [
-                     {
-                        "type": "array",
-                        "items": {
-                           "type": "string"
-                        }
-                     },
-                     {
-                        "type": "object",
-                        "properties": {
-                           "kg21_ohc15to300": {"type":"string"},
-                           "rg09_temperature": {"type": "string"},
-                           "rg09_salinity": {"type": "string"}
-                        }
-                     }
-                  ]   
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
                },
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/grid_data_keys"
-               },
-               "units": {
-                  "anyOf": [
-                     {
-                        "type": "array",
-                        "items": {
-                           "type": "string"
-                        }
-                     },
-                     {
-                        "type": "object",
-                        "properties": {
-                           "kg21_ohc15to300": {"type":"string"},
-                           "rg09_temperature": {"type": "string"},
-                           "rg09_salinity": {"type": "string"}
-                        }
-                     }
-                  ]   
                },
                "basin": {
                   "type": "number"
@@ -1676,31 +1512,13 @@
                   "format": "date-time"
                },
                "data": {
-                  "anyOf": [
-                     {
-                        "type": "array",
-                        "items": {
-                           "type": "array",
-                           "items": {
-                              "type": "number"
-                           }
-                        }
-                     },
-                     {
-                        "type": "object",
-                        "properties": {
-                           "kg21_ohc15to300": {"type":"array", "item":{"type": "number"}},
-                           "rg09_temperature": {"type":"array", "item":{"type": "number"}},
-                           "rg09_salinity": {"type":"array", "item":{"type": "number"}}
-                        }
-                     }
-                  ]   
+                  "$ref": "#/components/schemas/data"
                }
             }
          },
          "gridMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels"],
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "levels", "data_info"],
             "properties": {
                "_id": {
                   "type": "string"
@@ -1723,32 +1541,10 @@
                   "items": {
                      "type": "number"
                   }
-               }
-            }
-         },
-         "grid_units": {
-            "anyOf": [
-               {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
                },
-               {
-                  "type": "object",
-                  "properties": {
-                     "kg21_ohc15to300": {"type":"string"},
-                     "rg09_temperature": {"type": "string"},
-                     "rg09_salinity": {"type": "string"}
-                  }
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
                }
-            ]  
-         },
-         "grid_data_keys": {
-            "type": "array",
-            "items": {
-               "type": "string",
-               "enum": ["rg09_temperature", "rg09_salinity", "kg21_ohc15to300"]
             }
          },
          "geoJSONpoint": {
@@ -1785,6 +1581,37 @@
                      }
                   }
                }
+            }
+         },
+         "data": {
+            "type": "array",
+            "items": {
+               "type": "array",
+               "items": {
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
+               }
+            }
+         },
+         "data_info": {
+            "type": "array",
+            "items": {
+               "anyOf": [
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  },
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "array",
+                        "items": {
+                           "anyOf": [ {"type": "string"}, {"type": "number"}]
+                        }
+                     }
+                  }
+               ]
             }
          },
          "generic_source_info": {
@@ -1831,9 +1658,6 @@
                "_id": {
                   "type": "string"
                },
-               "metadata": {
-                  "type": "string"
-               },
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
                },
@@ -1844,63 +1668,26 @@
                   "type": "string",
                   "format": "date-time"
                },
-               "data": {
+               "metadata": {
                   "type": "array",
                   "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "number"
-                           }
-                        },
-                        {
-                           "type": "object",
-                           "properties": {
-                              "ve": {"type":"number"},
-                              "vn": {"type":"number"},
-                              "err_lon": {"type":"number"},
-                              "err_lat": {"type":"number"},
-                              "err_ve": {"type":"number"},
-                              "err_vn": {"type":"number"},
-                              "gap": {"type":"number"},
-                              "sst": {"type":"number"},
-                              "sst1": {"type":"number"},
-                              "sst2": {"type":"number"},
-                              "err_sst": {"type":"number"},
-                              "err_sst1": {"type":"number"},
-                              "err_sst2": {"type":"number"},
-                              "flg_sst": {"type":"number"},
-                              "flg_sst1": {"type":"number"},
-                              "flg_sst2": {"type":"number"}
-                           }
-                        }
-                     ]   
+                     "type": "string"
                   }
                },
-               "units": {
-                  "$ref": "#/components/schemas/drifter_units" 
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/drifter_data_keys"
+               "data": {
+                  "$ref": "#/components/schemas/data"
                }
             }
          },
          "drifterMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "data_keys", "units", "date_updated_argovis", "source", "platform", "rowsize", "wmo", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "long_name"],
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "platform", "rowsize", "wmo", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "data_info"],
             "properties": {
                "_id": {
                   "type": "string"
                },
                "data_type": {
                   "type": "string"
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/drifter_data_keys"
-               },
-               "units": {
-                  "$ref": "#/components/schemas/drifter_units"
                },
                "date_updated_argovis": {
                   "type": "string",
@@ -1953,61 +1740,17 @@
                },
                "typebuoy": {
                   "type": "string"
-               },    
-               "long_name": {
-                  "type": "array",
-                  "items":{
-                     "type": "string"
-                  }
-               }
-            }
-         },
-         "drifter_units": {
-            "anyOf": [
-               {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
                },
-               {
-                  "type": "object",
-                  "properties": {
-                     "ve": {"type":"string"},
-                     "vn": {"type":"string"},
-                     "err_lon": {"type":"string"},
-                     "err_lat": {"type":"string"},
-                     "err_ve": {"type":"string"},
-                     "err_vn": {"type":"string"},
-                     "gap": {"type":"string"},
-                     "sst": {"type":"string"},
-                     "sst1": {"type":"string"},
-                     "sst2": {"type":"string"},
-                     "err_sst": {"type":"string"},
-                     "err_sst1": {"type":"string"},
-                     "err_sst2": {"type":"string"},
-                     "flg_sst": {"type":"string"},
-                     "flg_sst1": {"type":"string"},
-                     "flg_sst2": {"type":"string"}
-                  }
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
                }
-            ] 
-         },
-         "drifter_data_keys": {
-            "type": "array",
-            "items":{
-               "type": "string",
-               "enum": ["ve","vn","err_lon","err_lat","err_ve","err_vn","gap","sst","sst1","sst2","err_sst","err_sst1","err_sst2","flg_sst","flg_sst1","flg_sst2"]
             }
          },
          "cchdo": {
             "type": "object",
-            "required": ["_id","metadata","geolocation","basin","timestamp", "data_keys", "units", "source", "station", "cast"],
+            "required": ["_id","metadata","geolocation","basin","timestamp", "data_info", "source", "station", "cast"],
             "properties": {
                "_id": {
-                  "type": "string"
-               },
-               "metadata": {
                   "type": "string"
                },
                "geolocation": {
@@ -2033,411 +1776,23 @@
                      "enum": ["degenerate_levels", "missing_basin", "missing_location", "missing_timestamp"]
                   }
                },
-               "data_keys": {
-                  "$ref": "#/components/schemas/cchdo_data_keys"
-               },
-               "units": {
-                  "$ref": "#/components/schemas/cchdo_units"
-               },
                "station": {
                   "type": "string"
                },
                "cast": {
                   "type": "number"
                },
-               "data": {
+               "metadata": {
                   "type": "array",
                   "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {"anyOf": [ {"type": "string"}, {"type": "number"}]}
-                        },
-                        {
-                           "type": "object",
-                           "properties": {
-                              "ammonium_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ammonium_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "argon_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "argon_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "argon_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bacterial_cell_count_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bacterial_cell_count_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "barium_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "barium_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "barium_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "barium_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bionbr_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bnlid_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bottle_latitude_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bottle_longitude_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bottle_number_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bottle_number_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bottle_salinity_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bottle_salinity_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "bottle_time_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "calcium_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "calcium_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "carbon_tetrachloride_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "carbon_tetrachloride_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "carbon_tetrachloride_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "carbon_tetrachloride_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cdom_nasa_placeholder_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cdom_nasa_placeholder_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cdom_ucsb_placeholder_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cdom_ucsb_placeholder_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cesium_134_bq_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cesium_134_bq_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cesium_137_bq_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cesium_137_bq_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cesium_137_bq_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_113_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_113_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_113_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_113_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_11_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_11_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_11_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_11_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_11_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_12_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_12_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_12_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_12_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cfc_12_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "chlorophyll_a_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "chlorophyll_a_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "chlorophyll_a_ug_kg_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "chlorophyll_a_ug_kg_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "co2_mole_fraction_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "co2_mole_fraction_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_beamcp_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_beamcp_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_beamcp_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_beta700_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_beta700_raw_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_beta700_raw_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_beta700_raw_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_cdom_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_cdom_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_cdom_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_cdom_raw_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_cdom_raw_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_cdom_raw_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_arbitrary_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_raw_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_raw_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_fluor_raw_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_nitrate_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_nitrate_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_number_of_observations_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_raw_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_raw_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_optode_oxygen_raw_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_oxygen_umol_l_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_pressure_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_temperature_unk_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_temperature_unk_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_raw_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_raw_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_transmissometer_raw_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_turbidity_ftu_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_turbidity_ftu_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_turbidity_ntu_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ctd_turbidity_ntu_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cyanobacteria_cell_count_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "cyanobacteria_cell_count_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_n2_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_n2_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_n2_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_nitrite_nitrate_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_nitrite_nitrate_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_no3_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_no3_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d15n_no3_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d18o_nitrate_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d18o_nitrate_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d18o_nitrite_nitrate_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "d18o_nitrite_nitrate_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_carbon_13_dic_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_carbon_13_dic_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_carbon_13_dic_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_carbon_14_dic_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_carbon_14_dic_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_carbon_14_dic_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_nitrogen_15_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_nitrogen_15_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_oxygen_18_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_oxygen_18_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "del_oxygen_18_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "delta_helium_3_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "delta_helium_3_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "delta_helium_3_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity2_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity2_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity_practical_salinity2_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity_practical_salinity2_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity_practical_salinity_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "density_salinity_practical_salinity_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_13_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_13_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_13_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_14_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_14_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_14_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_carbon_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_nitrogen_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "dissolved_organic_nitrogen_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "downcast_oxygen_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "downcast_oxygen_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "downcast_pressure_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "downcast_pressure_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "doxy_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "doxy_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "doxy_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "doxy_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fco2_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fco2_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fco2_in_situ_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fco2_temperature_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fm_depth_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fm_depth_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fm_depth_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fucose_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "fucose_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "geotraces_sample_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "helium_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "helium_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "helium_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_19_hexanoyloxyfucoxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_19_hexanoyloxyfucoxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_19butanoyloxyfucoxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_19butanoyloxyfucoxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_alloxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_alloxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_alpha_beta_carotenes_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_alpha_beta_carotenes_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyll_c1_c2_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyll_c1_c2_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyll_c2_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyll_c2_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyll_c3_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyll_c3_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyllide_a_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_chlorophyllide_a_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_diadinoxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_diadinoxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_diatoxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_diatoxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_divinyl_chlorophyll_a_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_divinyl_chlorophyll_a_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_lutein_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_lutein_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_monovinyl_chlorophyll_a_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_monovinyl_chlorophyll_a_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_monovinyl_chlorophyll_b_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_monovinyl_chlorophyll_b_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_neoxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_neoxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_peridinin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_peridinin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_pheophorbide_a_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_pheophorbide_a_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_pheophytin_a_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_pheophytin_a_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_placeholder_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_prasinoxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_prasinoxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_tot_chl_a_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_tot_chl_a_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_tot_chl_b_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_tot_chl_b_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_tot_chl_c_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_tot_chl_c_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_violaxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_violaxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_zeaxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hplc_zeaxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hpld_antheraxanthin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "hpld_antheraxanthin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "krypton_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "krypton_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "krypton_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "methane_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "methane_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "methane_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "methyl_chloroform_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "methyl_chloroform_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "n2_argon_ratio_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "n2_argon_ratio_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "n2_argon_ratio_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "n2_argon_ratio_unstripped_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "n2_argon_ratio_unstripped_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "n2_argon_ratio_unstripped_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "neon_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "neon_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "neon_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrate_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrate_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrate_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrite_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrite_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrite_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrite_nitrate_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrite_nitrate_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrite_nitrate_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrite_nitrate_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrous_oxide_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "nitrous_oxide_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "odf_pressure_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "oxygen_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "oxygen_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "oxygen_ml_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "oxygen_ml_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "package_depth_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "par_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "par_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "par_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "par_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "par_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "par_raw_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "partial_co2_temperature_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "partial_pressure_of_co2_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "partial_pressure_of_co2_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "particulate_organic_carbon_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "particulate_organic_carbon_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "particulate_organic_nitrogen_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "particulate_organic_nitrogen_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_nbs_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_nbs_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_sws_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_sws_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_temperature_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_total_h_scale_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_total_h_scale_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_unknown_scale_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ph_unknown_scale_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phaeophytin_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phaeophytin_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phaeophytin_ug_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phaeophytin_ug_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phosphate_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phosphate_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phosphate_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phosphate_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phosphate_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phytoplankton_cell_count_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "phytoplankton_cell_count_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "potential_temperature_68_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "potential_temperature_c_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "potential_temperature_c_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "potential_temperature_c_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "potential_temperature_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "potential_temperature_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "pressure": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "pressure_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "pressure_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_226_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_226_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_226_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_228_226_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_228_226_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_228_226_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_228_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_228_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "radium_228_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ref_temperature_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ref_temperature_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ref_temperature_c_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "ref_temperature_c_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "reference_salinity_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "reference_salinity_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_pressure_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_pressure_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_temperature_90_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_temperature_90_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_temperature_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_temperature_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_temperature_c_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "rev_temperature_c_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "salinity_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "salinity_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "salinity_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "salinity_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sample_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sample_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sigma0_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "silicate_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "silicate_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "silicate_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "silicate_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "silicate_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sm_depth_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sm_depth_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sm_depth_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "somma_salinity_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "spar_raw_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "spar_raw_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "stable_isotope_probing_placeholder_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "stable_isotope_probing_placeholder_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sulfur_hexifluoride_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "sulfur_hexifluoride_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "temperature_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "temperature_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "temperature_ctd": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "temperature_ctd_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_alkalinity_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_alkalinity_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_carbon_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_carbon_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_dissolved_nitrogen_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_dissolved_nitrogen_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_dissolved_phosphorus_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_dissolved_phosphorus_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_carbon_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_carbon_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_carbon_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_carbon_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_nitrogen_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_nitrogen_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_nitrogen_l_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "total_organic_nitrogen_l_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "trifluoromethylsulfur_pentafluoride_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "trifluoromethylsulfur_pentafluoride_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "tritium_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "tritium_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "tritium_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "urea_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "urea_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "user_bottle_number_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "user_bottle_number_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "user_sample_number_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "user_station_number_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "xenon_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "xenon_btl_woceqc": {"anyOf": [ {"type": "string"}, {"type": "number"}]},
-                              "xenon_error_btl": {"anyOf": [ {"type": "string"}, {"type": "number"}]}
-                           }
-                        }
-                     ]   
+                     "type": "string"
                   }
+               },
+               "data": {
+                  "$ref": "#/components/schemas/data"
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
                }
             }
          },
@@ -2484,414 +1839,11 @@
                }
             }
          },
-         "cchdo_units": {
-            "anyOf": [
-               {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               {
-                  "type": "object",
-                  "properties": {
-                     "ammonium_btl": {"type": "string"},
-                     "ammonium_btl_woceqc": {"type": "string"},
-                     "argon_btl": {"type": "string"},
-                     "argon_btl_woceqc": {"type": "string"},
-                     "argon_error_btl": {"type": "string"},
-                     "bacterial_cell_count_btl": {"type": "string"},
-                     "bacterial_cell_count_btl_woceqc": {"type": "string"},
-                     "barium_btl": {"type": "string"},
-                     "barium_btl_woceqc": {"type": "string"},
-                     "barium_l_btl": {"type": "string"},
-                     "barium_l_btl_woceqc": {"type": "string"},
-                     "bionbr_btl": {"type": "string"},
-                     "bnlid_btl": {"type": "string"},
-                     "bottle_latitude_btl": {"type": "string"},
-                     "bottle_longitude_btl": {"type": "string"},
-                     "bottle_number_btl": {"type": "string"},
-                     "bottle_number_btl_woceqc": {"type": "string"},
-                     "bottle_salinity_btl": {"type": "string"},
-                     "bottle_salinity_btl_woceqc": {"type": "string"},
-                     "bottle_time_btl": {"type": "string"},
-                     "calcium_btl": {"type": "string"},
-                     "calcium_btl_woceqc": {"type": "string"},
-                     "carbon_tetrachloride_btl": {"type": "string"},
-                     "carbon_tetrachloride_btl_woceqc": {"type": "string"},
-                     "carbon_tetrachloride_l_btl": {"type": "string"},
-                     "carbon_tetrachloride_l_btl_woceqc": {"type": "string"},
-                     "cdom_nasa_placeholder_btl": {"type": "string"},
-                     "cdom_nasa_placeholder_btl_woceqc": {"type": "string"},
-                     "cdom_ucsb_placeholder_btl": {"type": "string"},
-                     "cdom_ucsb_placeholder_btl_woceqc": {"type": "string"},
-                     "cesium_134_bq_btl": {"type": "string"},
-                     "cesium_134_bq_btl_woceqc": {"type": "string"},
-                     "cesium_137_bq_btl": {"type": "string"},
-                     "cesium_137_bq_btl_woceqc": {"type": "string"},
-                     "cesium_137_bq_error_btl": {"type": "string"},
-                     "cfc_113_btl": {"type": "string"},
-                     "cfc_113_btl_woceqc": {"type": "string"},
-                     "cfc_113_l_btl": {"type": "string"},
-                     "cfc_113_l_btl_woceqc": {"type": "string"},
-                     "cfc_11_btl": {"type": "string"},
-                     "cfc_11_btl_woceqc": {"type": "string"},
-                     "cfc_11_error_btl": {"type": "string"},
-                     "cfc_11_l_btl": {"type": "string"},
-                     "cfc_11_l_btl_woceqc": {"type": "string"},
-                     "cfc_12_btl": {"type": "string"},
-                     "cfc_12_btl_woceqc": {"type": "string"},
-                     "cfc_12_error_btl": {"type": "string"},
-                     "cfc_12_l_btl": {"type": "string"},
-                     "cfc_12_l_btl_woceqc": {"type": "string"},
-                     "chlorophyll_a_btl": {"type": "string"},
-                     "chlorophyll_a_btl_woceqc": {"type": "string"},
-                     "chlorophyll_a_ug_kg_btl": {"type": "string"},
-                     "chlorophyll_a_ug_kg_btl_woceqc": {"type": "string"},
-                     "co2_mole_fraction_btl": {"type": "string"},
-                     "co2_mole_fraction_btl_woceqc": {"type": "string"},
-                     "ctd_beamcp_btl": {"type": "string"},
-                     "ctd_beamcp_ctd": {"type": "string"},
-                     "ctd_beamcp_ctd_woceqc": {"type": "string"},
-                     "ctd_beta700_raw_btl": {"type": "string"},
-                     "ctd_beta700_raw_btl_woceqc": {"type": "string"},
-                     "ctd_beta700_raw_ctd": {"type": "string"},
-                     "ctd_beta700_raw_ctd_woceqc": {"type": "string"},
-                     "ctd_cdom_ctd": {"type": "string"},
-                     "ctd_cdom_ctd_woceqc": {"type": "string"},
-                     "ctd_cdom_raw_btl": {"type": "string"},
-                     "ctd_cdom_raw_btl_woceqc": {"type": "string"},
-                     "ctd_cdom_raw_ctd": {"type": "string"},
-                     "ctd_cdom_raw_ctd_woceqc": {"type": "string"},
-                     "ctd_fluor_arbitrary_ctd": {"type": "string"},
-                     "ctd_fluor_btl": {"type": "string"},
-                     "ctd_fluor_btl_woceqc": {"type": "string"},
-                     "ctd_fluor_ctd": {"type": "string"},
-                     "ctd_fluor_ctd_woceqc": {"type": "string"},
-                     "ctd_fluor_raw_btl": {"type": "string"},
-                     "ctd_fluor_raw_btl_woceqc": {"type": "string"},
-                     "ctd_fluor_raw_ctd": {"type": "string"},
-                     "ctd_fluor_raw_ctd_woceqc": {"type": "string"},
-                     "ctd_nitrate_ctd": {"type": "string"},
-                     "ctd_nitrate_ctd_woceqc": {"type": "string"},
-                     "ctd_number_of_observations_ctd": {"type": "string"},
-                     "ctd_optode_oxygen_btl": {"type": "string"},
-                     "ctd_optode_oxygen_btl_woceqc": {"type": "string"},
-                     "ctd_optode_oxygen_ctd": {"type": "string"},
-                     "ctd_optode_oxygen_ctd_woceqc": {"type": "string"},
-                     "ctd_optode_oxygen_raw_btl": {"type": "string"},
-                     "ctd_optode_oxygen_raw_btl_woceqc": {"type": "string"},
-                     "ctd_optode_oxygen_raw_ctd": {"type": "string"},
-                     "ctd_optode_oxygen_raw_ctd_woceqc": {"type": "string"},
-                     "ctd_oxygen_umol_l_ctd": {"type": "string"},
-                     "ctd_pressure_raw_btl": {"type": "string"},
-                     "ctd_temperature_unk_ctd": {"type": "string"},
-                     "ctd_temperature_unk_ctd_woceqc": {"type": "string"},
-                     "ctd_transmissometer_btl": {"type": "string"},
-                     "ctd_transmissometer_btl_woceqc": {"type": "string"},
-                     "ctd_transmissometer_ctd": {"type": "string"},
-                     "ctd_transmissometer_ctd_woceqc": {"type": "string"},
-                     "ctd_transmissometer_raw_btl": {"type": "string"},
-                     "ctd_transmissometer_raw_btl_woceqc": {"type": "string"},
-                     "ctd_transmissometer_raw_ctd": {"type": "string"},
-                     "ctd_transmissometer_raw_ctd_woceqc": {"type": "string"},
-                     "ctd_turbidity_ftu_ctd": {"type": "string"},
-                     "ctd_turbidity_ftu_ctd_woceqc": {"type": "string"},
-                     "ctd_turbidity_ntu_ctd": {"type": "string"},
-                     "ctd_turbidity_ntu_ctd_woceqc": {"type": "string"},
-                     "cyanobacteria_cell_count_btl": {"type": "string"},
-                     "cyanobacteria_cell_count_btl_woceqc": {"type": "string"},
-                     "d15n_n2_btl": {"type": "string"},
-                     "d15n_n2_btl_woceqc": {"type": "string"},
-                     "d15n_n2_error_btl": {"type": "string"},
-                     "d15n_nitrite_nitrate_btl": {"type": "string"},
-                     "d15n_nitrite_nitrate_btl_woceqc": {"type": "string"},
-                     "d15n_no3_btl": {"type": "string"},
-                     "d15n_no3_btl_woceqc": {"type": "string"},
-                     "d15n_no3_error_btl": {"type": "string"},
-                     "d18o_nitrate_btl": {"type": "string"},
-                     "d18o_nitrate_btl_woceqc": {"type": "string"},
-                     "d18o_nitrite_nitrate_btl": {"type": "string"},
-                     "d18o_nitrite_nitrate_btl_woceqc": {"type": "string"},
-                     "del_carbon_13_dic_btl": {"type": "string"},
-                     "del_carbon_13_dic_btl_woceqc": {"type": "string"},
-                     "del_carbon_13_dic_error_btl": {"type": "string"},
-                     "del_carbon_14_dic_btl": {"type": "string"},
-                     "del_carbon_14_dic_btl_woceqc": {"type": "string"},
-                     "del_carbon_14_dic_error_btl": {"type": "string"},
-                     "del_nitrogen_15_btl": {"type": "string"},
-                     "del_nitrogen_15_btl_woceqc": {"type": "string"},
-                     "del_oxygen_18_btl": {"type": "string"},
-                     "del_oxygen_18_btl_woceqc": {"type": "string"},
-                     "del_oxygen_18_error_btl": {"type": "string"},
-                     "delta_helium_3_btl": {"type": "string"},
-                     "delta_helium_3_btl_woceqc": {"type": "string"},
-                     "delta_helium_3_error_btl": {"type": "string"},
-                     "density_salinity2_btl": {"type": "string"},
-                     "density_salinity2_btl_woceqc": {"type": "string"},
-                     "density_salinity_btl": {"type": "string"},
-                     "density_salinity_btl_woceqc": {"type": "string"},
-                     "density_salinity_practical_salinity2_btl": {"type": "string"},
-                     "density_salinity_practical_salinity2_btl_woceqc": {"type": "string"},
-                     "density_salinity_practical_salinity_btl": {"type": "string"},
-                     "density_salinity_practical_salinity_btl_woceqc": {"type": "string"},
-                     "dissolved_organic_carbon_13_btl": {"type": "string"},
-                     "dissolved_organic_carbon_13_btl_woceqc": {"type": "string"},
-                     "dissolved_organic_carbon_13_error_btl": {"type": "string"},
-                     "dissolved_organic_carbon_14_btl": {"type": "string"},
-                     "dissolved_organic_carbon_14_btl_woceqc": {"type": "string"},
-                     "dissolved_organic_carbon_14_error_btl": {"type": "string"},
-                     "dissolved_organic_carbon_btl": {"type": "string"},
-                     "dissolved_organic_carbon_btl_woceqc": {"type": "string"},
-                     "dissolved_organic_nitrogen_btl": {"type": "string"},
-                     "dissolved_organic_nitrogen_btl_woceqc": {"type": "string"},
-                     "downcast_oxygen_btl": {"type": "string"},
-                     "downcast_oxygen_btl_woceqc": {"type": "string"},
-                     "downcast_pressure_btl": {"type": "string"},
-                     "downcast_pressure_btl_woceqc": {"type": "string"},
-                     "doxy_btl": {"type": "string"},
-                     "doxy_btl_woceqc": {"type": "string"},
-                     "doxy_ctd": {"type": "string"},
-                     "doxy_ctd_woceqc": {"type": "string"},
-                     "fco2_btl": {"type": "string"},
-                     "fco2_btl_woceqc": {"type": "string"},
-                     "fco2_in_situ_btl": {"type": "string"},
-                     "fco2_temperature_btl": {"type": "string"},
-                     "fm_depth_btl": {"type": "string"},
-                     "fm_depth_ctd": {"type": "string"},
-                     "fm_depth_ctd_woceqc": {"type": "string"},
-                     "fucose_btl": {"type": "string"},
-                     "fucose_btl_woceqc": {"type": "string"},
-                     "geotraces_sample_btl": {"type": "string"},
-                     "helium_btl": {"type": "string"},
-                     "helium_btl_woceqc": {"type": "string"},
-                     "helium_error_btl": {"type": "string"},
-                     "hplc_19_hexanoyloxyfucoxanthin_btl": {"type": "string"},
-                     "hplc_19_hexanoyloxyfucoxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_19butanoyloxyfucoxanthin_btl": {"type": "string"},
-                     "hplc_19butanoyloxyfucoxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_alloxanthin_btl": {"type": "string"},
-                     "hplc_alloxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_alpha_beta_carotenes_btl": {"type": "string"},
-                     "hplc_alpha_beta_carotenes_btl_woceqc": {"type": "string"},
-                     "hplc_chlorophyll_c1_c2_btl": {"type": "string"},
-                     "hplc_chlorophyll_c1_c2_btl_woceqc": {"type": "string"},
-                     "hplc_chlorophyll_c2_btl": {"type": "string"},
-                     "hplc_chlorophyll_c2_btl_woceqc": {"type": "string"},
-                     "hplc_chlorophyll_c3_btl": {"type": "string"},
-                     "hplc_chlorophyll_c3_btl_woceqc": {"type": "string"},
-                     "hplc_chlorophyllide_a_btl": {"type": "string"},
-                     "hplc_chlorophyllide_a_btl_woceqc": {"type": "string"},
-                     "hplc_diadinoxanthin_btl": {"type": "string"},
-                     "hplc_diadinoxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_diatoxanthin_btl": {"type": "string"},
-                     "hplc_diatoxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_divinyl_chlorophyll_a_btl": {"type": "string"},
-                     "hplc_divinyl_chlorophyll_a_btl_woceqc": {"type": "string"},
-                     "hplc_lutein_btl": {"type": "string"},
-                     "hplc_lutein_btl_woceqc": {"type": "string"},
-                     "hplc_monovinyl_chlorophyll_a_btl": {"type": "string"},
-                     "hplc_monovinyl_chlorophyll_a_btl_woceqc": {"type": "string"},
-                     "hplc_monovinyl_chlorophyll_b_btl": {"type": "string"},
-                     "hplc_monovinyl_chlorophyll_b_btl_woceqc": {"type": "string"},
-                     "hplc_neoxanthin_btl": {"type": "string"},
-                     "hplc_neoxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_peridinin_btl": {"type": "string"},
-                     "hplc_peridinin_btl_woceqc": {"type": "string"},
-                     "hplc_pheophorbide_a_btl": {"type": "string"},
-                     "hplc_pheophorbide_a_btl_woceqc": {"type": "string"},
-                     "hplc_pheophytin_a_btl": {"type": "string"},
-                     "hplc_pheophytin_a_btl_woceqc": {"type": "string"},
-                     "hplc_placeholder_btl_woceqc": {"type": "string"},
-                     "hplc_prasinoxanthin_btl": {"type": "string"},
-                     "hplc_prasinoxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_tot_chl_a_btl": {"type": "string"},
-                     "hplc_tot_chl_a_btl_woceqc": {"type": "string"},
-                     "hplc_tot_chl_b_btl": {"type": "string"},
-                     "hplc_tot_chl_b_btl_woceqc": {"type": "string"},
-                     "hplc_tot_chl_c_btl": {"type": "string"},
-                     "hplc_tot_chl_c_btl_woceqc": {"type": "string"},
-                     "hplc_violaxanthin_btl": {"type": "string"},
-                     "hplc_violaxanthin_btl_woceqc": {"type": "string"},
-                     "hplc_zeaxanthin_btl": {"type": "string"},
-                     "hplc_zeaxanthin_btl_woceqc": {"type": "string"},
-                     "hpld_antheraxanthin_btl": {"type": "string"},
-                     "hpld_antheraxanthin_btl_woceqc": {"type": "string"},
-                     "krypton_btl": {"type": "string"},
-                     "krypton_btl_woceqc": {"type": "string"},
-                     "krypton_error_btl": {"type": "string"},
-                     "methane_btl": {"type": "string"},
-                     "methane_l_btl": {"type": "string"},
-                     "methane_l_btl_woceqc": {"type": "string"},
-                     "methyl_chloroform_btl": {"type": "string"},
-                     "methyl_chloroform_btl_woceqc": {"type": "string"},
-                     "n2_argon_ratio_btl": {"type": "string"},
-                     "n2_argon_ratio_btl_woceqc": {"type": "string"},
-                     "n2_argon_ratio_error_btl": {"type": "string"},
-                     "n2_argon_ratio_unstripped_btl": {"type": "string"},
-                     "n2_argon_ratio_unstripped_btl_woceqc": {"type": "string"},
-                     "n2_argon_ratio_unstripped_error_btl": {"type": "string"},
-                     "neon_btl": {"type": "string"},
-                     "neon_btl_woceqc": {"type": "string"},
-                     "neon_error_btl": {"type": "string"},
-                     "nitrate_btl": {"type": "string"},
-                     "nitrate_btl_woceqc": {"type": "string"},
-                     "nitrate_error_btl": {"type": "string"},
-                     "nitrite_btl": {"type": "string"},
-                     "nitrite_btl_woceqc": {"type": "string"},
-                     "nitrite_error_btl": {"type": "string"},
-                     "nitrite_nitrate_btl": {"type": "string"},
-                     "nitrite_nitrate_btl_woceqc": {"type": "string"},
-                     "nitrite_nitrate_l_btl": {"type": "string"},
-                     "nitrite_nitrate_l_btl_woceqc": {"type": "string"},
-                     "nitrous_oxide_btl": {"type": "string"},
-                     "nitrous_oxide_btl_woceqc": {"type": "string"},
-                     "odf_pressure_btl": {"type": "string"},
-                     "oxygen_btl": {"type": "string"},
-                     "oxygen_btl_woceqc": {"type": "string"},
-                     "oxygen_ml_l_btl": {"type": "string"},
-                     "oxygen_ml_l_btl_woceqc": {"type": "string"},
-                     "package_depth_btl": {"type": "string"},
-                     "par_btl": {"type": "string"},
-                     "par_btl_woceqc": {"type": "string"},
-                     "par_ctd": {"type": "string"},
-                     "par_ctd_woceqc": {"type": "string"},
-                     "par_raw_btl": {"type": "string"},
-                     "par_raw_btl_woceqc": {"type": "string"},
-                     "partial_co2_temperature_btl": {"type": "string"},
-                     "partial_pressure_of_co2_btl": {"type": "string"},
-                     "partial_pressure_of_co2_btl_woceqc": {"type": "string"},
-                     "particulate_organic_carbon_btl": {"type": "string"},
-                     "particulate_organic_carbon_btl_woceqc": {"type": "string"},
-                     "particulate_organic_nitrogen_btl": {"type": "string"},
-                     "particulate_organic_nitrogen_btl_woceqc": {"type": "string"},
-                     "ph_nbs_btl": {"type": "string"},
-                     "ph_nbs_btl_woceqc": {"type": "string"},
-                     "ph_sws_btl": {"type": "string"},
-                     "ph_sws_btl_woceqc": {"type": "string"},
-                     "ph_temperature_btl": {"type": "string"},
-                     "ph_total_h_scale_btl": {"type": "string"},
-                     "ph_total_h_scale_btl_woceqc": {"type": "string"},
-                     "ph_unknown_scale_btl": {"type": "string"},
-                     "ph_unknown_scale_btl_woceqc": {"type": "string"},
-                     "phaeophytin_btl": {"type": "string"},
-                     "phaeophytin_btl_woceqc": {"type": "string"},
-                     "phaeophytin_ug_l_btl": {"type": "string"},
-                     "phaeophytin_ug_l_btl_woceqc": {"type": "string"},
-                     "phosphate_btl": {"type": "string"},
-                     "phosphate_btl_woceqc": {"type": "string"},
-                     "phosphate_error_btl": {"type": "string"},
-                     "phosphate_l_btl": {"type": "string"},
-                     "phosphate_l_btl_woceqc": {"type": "string"},
-                     "phytoplankton_cell_count_btl": {"type": "string"},
-                     "phytoplankton_cell_count_btl_woceqc": {"type": "string"},
-                     "potential_temperature_68_btl": {"type": "string"},
-                     "potential_temperature_c_btl": {"type": "string"},
-                     "potential_temperature_c_btl_woceqc": {"type": "string"},
-                     "potential_temperature_c_ctd": {"type": "string"},
-                     "potential_temperature_ctd": {"type": "string"},
-                     "potential_temperature_ctd_woceqc": {"type": "string"},
-                     "pressure": {"type": "string"},
-                     "pressure_btl_woceqc": {"type": "string"},
-                     "pressure_ctd_woceqc": {"type": "string"},
-                     "radium_226_btl": {"type": "string"},
-                     "radium_226_btl_woceqc": {"type": "string"},
-                     "radium_226_error_btl": {"type": "string"},
-                     "radium_228_226_btl": {"type": "string"},
-                     "radium_228_226_btl_woceqc": {"type": "string"},
-                     "radium_228_226_error_btl": {"type": "string"},
-                     "radium_228_btl": {"type": "string"},
-                     "radium_228_btl_woceqc": {"type": "string"},
-                     "radium_228_error_btl": {"type": "string"},
-                     "ref_temperature_btl": {"type": "string"},
-                     "ref_temperature_btl_woceqc": {"type": "string"},
-                     "ref_temperature_c_btl": {"type": "string"},
-                     "ref_temperature_c_btl_woceqc": {"type": "string"},
-                     "reference_salinity_btl": {"type": "string"},
-                     "reference_salinity_btl_woceqc": {"type": "string"},
-                     "rev_pressure_btl": {"type": "string"},
-                     "rev_pressure_btl_woceqc": {"type": "string"},
-                     "rev_temperature_90_btl": {"type": "string"},
-                     "rev_temperature_90_btl_woceqc": {"type": "string"},
-                     "rev_temperature_btl": {"type": "string"},
-                     "rev_temperature_btl_woceqc": {"type": "string"},
-                     "rev_temperature_c_btl": {"type": "string"},
-                     "rev_temperature_c_btl_woceqc": {"type": "string"},
-                     "salinity_btl": {"type": "string"},
-                     "salinity_btl_woceqc": {"type": "string"},
-                     "salinity_ctd": {"type": "string"},
-                     "salinity_ctd_woceqc": {"type": "string"},
-                     "sample_btl": {"type": "string"},
-                     "sample_ctd": {"type": "string"},
-                     "sigma0_btl": {"type": "string"},
-                     "silicate_btl": {"type": "string"},
-                     "silicate_btl_woceqc": {"type": "string"},
-                     "silicate_error_btl": {"type": "string"},
-                     "silicate_l_btl": {"type": "string"},
-                     "silicate_l_btl_woceqc": {"type": "string"},
-                     "sm_depth_btl": {"type": "string"},
-                     "sm_depth_ctd": {"type": "string"},
-                     "sm_depth_ctd_woceqc": {"type": "string"},
-                     "somma_salinity_btl": {"type": "string"},
-                     "spar_raw_btl": {"type": "string"},
-                     "spar_raw_btl_woceqc": {"type": "string"},
-                     "stable_isotope_probing_placeholder_btl": {"type": "string"},
-                     "stable_isotope_probing_placeholder_btl_woceqc": {"type": "string"},
-                     "sulfur_hexifluoride_btl": {"type": "string"},
-                     "sulfur_hexifluoride_btl_woceqc": {"type": "string"},
-                     "temperature_btl": {"type": "string"},
-                     "temperature_btl_woceqc": {"type": "string"},
-                     "temperature_ctd": {"type": "string"},
-                     "temperature_ctd_woceqc": {"type": "string"},
-                     "total_alkalinity_btl": {"type": "string"},
-                     "total_alkalinity_btl_woceqc": {"type": "string"},
-                     "total_carbon_btl": {"type": "string"},
-                     "total_carbon_btl_woceqc": {"type": "string"},
-                     "total_dissolved_nitrogen_btl": {"type": "string"},
-                     "total_dissolved_nitrogen_btl_woceqc": {"type": "string"},
-                     "total_dissolved_phosphorus_btl": {"type": "string"},
-                     "total_dissolved_phosphorus_btl_woceqc": {"type": "string"},
-                     "total_organic_carbon_btl": {"type": "string"},
-                     "total_organic_carbon_btl_woceqc": {"type": "string"},
-                     "total_organic_carbon_l_btl": {"type": "string"},
-                     "total_organic_carbon_l_btl_woceqc": {"type": "string"},
-                     "total_organic_nitrogen_btl": {"type": "string"},
-                     "total_organic_nitrogen_btl_woceqc": {"type": "string"},
-                     "total_organic_nitrogen_l_btl": {"type": "string"},
-                     "total_organic_nitrogen_l_btl_woceqc": {"type": "string"},
-                     "trifluoromethylsulfur_pentafluoride_btl": {"type": "string"},
-                     "trifluoromethylsulfur_pentafluoride_btl_woceqc": {"type": "string"},
-                     "tritium_btl": {"type": "string"},
-                     "tritium_btl_woceqc": {"type": "string"},
-                     "tritium_error_btl": {"type": "string"},
-                     "urea_btl": {"type": "string"},
-                     "urea_btl_woceqc": {"type": "string"},
-                     "user_bottle_number_btl": {"type": "string"},
-                     "user_bottle_number_btl_woceqc": {"type": "string"},
-                     "user_sample_number_btl": {"type": "string"},
-                     "user_station_number_btl": {"type": "string"},
-                     "xenon_btl": {"type": "string"},
-                     "xenon_btl_woceqc": {"type": "string"},
-                     "xenon_error_btl": {"type": "string"}
-                  }
-               }
-            ] 
-         },
-         "cchdo_data_keys": {
-            "type": "array",
-            "items": {
-               "type": "string",
-               "enum": ["ammonium_btl","ammonium_btl_woceqc","argon_btl","argon_btl_woceqc","argon_error_btl","bacterial_cell_count_btl","bacterial_cell_count_btl_woceqc","barium_btl","barium_btl_woceqc","barium_l_btl","barium_l_btl_woceqc","bionbr_btl","bnlid_btl","bottle_latitude_btl","bottle_longitude_btl","bottle_number_btl","bottle_number_btl_woceqc","bottle_salinity_btl","bottle_salinity_btl_woceqc","bottle_time_btl","calcium_btl","calcium_btl_woceqc","carbon_tetrachloride_btl","carbon_tetrachloride_btl_woceqc","carbon_tetrachloride_l_btl","carbon_tetrachloride_l_btl_woceqc","cdom_nasa_placeholder_btl","cdom_nasa_placeholder_btl_woceqc","cdom_ucsb_placeholder_btl","cdom_ucsb_placeholder_btl_woceqc","cesium_134_bq_btl","cesium_134_bq_btl_woceqc","cesium_137_bq_btl","cesium_137_bq_btl_woceqc","cesium_137_bq_error_btl","cfc_113_btl","cfc_113_btl_woceqc","cfc_113_l_btl","cfc_113_l_btl_woceqc","cfc_11_btl","cfc_11_btl_woceqc","cfc_11_error_btl","cfc_11_l_btl","cfc_11_l_btl_woceqc","cfc_12_btl","cfc_12_btl_woceqc","cfc_12_error_btl","cfc_12_l_btl","cfc_12_l_btl_woceqc","chlorophyll_a_btl","chlorophyll_a_btl_woceqc","chlorophyll_a_ug_kg_btl","chlorophyll_a_ug_kg_btl_woceqc","co2_mole_fraction_btl","co2_mole_fraction_btl_woceqc","ctd_beamcp_btl","ctd_beamcp_ctd","ctd_beamcp_ctd_woceqc","ctd_beta700_raw_btl","ctd_beta700_raw_btl_woceqc","ctd_beta700_raw_ctd","ctd_beta700_raw_ctd_woceqc","ctd_cdom_ctd","ctd_cdom_ctd_woceqc","ctd_cdom_raw_btl","ctd_cdom_raw_btl_woceqc","ctd_cdom_raw_ctd","ctd_cdom_raw_ctd_woceqc","ctd_fluor_arbitrary_ctd","ctd_fluor_btl","ctd_fluor_btl_woceqc","ctd_fluor_ctd","ctd_fluor_ctd_woceqc","ctd_fluor_raw_btl","ctd_fluor_raw_btl_woceqc","ctd_fluor_raw_ctd","ctd_fluor_raw_ctd_woceqc","ctd_nitrate_ctd","ctd_nitrate_ctd_woceqc","ctd_number_of_observations_ctd","ctd_optode_oxygen_btl","ctd_optode_oxygen_btl_woceqc","ctd_optode_oxygen_ctd","ctd_optode_oxygen_ctd_woceqc","ctd_optode_oxygen_raw_btl","ctd_optode_oxygen_raw_btl_woceqc","ctd_optode_oxygen_raw_ctd","ctd_optode_oxygen_raw_ctd_woceqc","ctd_oxygen_umol_l_ctd","ctd_pressure_raw_btl","ctd_temperature_unk_ctd","ctd_temperature_unk_ctd_woceqc","ctd_transmissometer_btl","ctd_transmissometer_btl_woceqc","ctd_transmissometer_ctd","ctd_transmissometer_ctd_woceqc","ctd_transmissometer_raw_btl","ctd_transmissometer_raw_btl_woceqc","ctd_transmissometer_raw_ctd","ctd_transmissometer_raw_ctd_woceqc","ctd_turbidity_ftu_ctd","ctd_turbidity_ftu_ctd_woceqc","ctd_turbidity_ntu_ctd","ctd_turbidity_ntu_ctd_woceqc","cyanobacteria_cell_count_btl","cyanobacteria_cell_count_btl_woceqc","d15n_n2_btl","d15n_n2_btl_woceqc","d15n_n2_error_btl","d15n_nitrite_nitrate_btl","d15n_nitrite_nitrate_btl_woceqc","d15n_no3_btl","d15n_no3_btl_woceqc","d15n_no3_error_btl","d18o_nitrate_btl","d18o_nitrate_btl_woceqc","d18o_nitrite_nitrate_btl","d18o_nitrite_nitrate_btl_woceqc","del_carbon_13_dic_btl","del_carbon_13_dic_btl_woceqc","del_carbon_13_dic_error_btl","del_carbon_14_dic_btl","del_carbon_14_dic_btl_woceqc","del_carbon_14_dic_error_btl","del_nitrogen_15_btl","del_nitrogen_15_btl_woceqc","del_oxygen_18_btl","del_oxygen_18_btl_woceqc","del_oxygen_18_error_btl","delta_helium_3_btl","delta_helium_3_btl_woceqc","delta_helium_3_error_btl","density_salinity2_btl","density_salinity2_btl_woceqc","density_salinity_btl","density_salinity_btl_woceqc","density_salinity_practical_salinity2_btl","density_salinity_practical_salinity2_btl_woceqc","density_salinity_practical_salinity_btl","density_salinity_practical_salinity_btl_woceqc","dissolved_organic_carbon_13_btl","dissolved_organic_carbon_13_btl_woceqc","dissolved_organic_carbon_13_error_btl","dissolved_organic_carbon_14_btl","dissolved_organic_carbon_14_btl_woceqc","dissolved_organic_carbon_14_error_btl","dissolved_organic_carbon_btl","dissolved_organic_carbon_btl_woceqc","dissolved_organic_nitrogen_btl","dissolved_organic_nitrogen_btl_woceqc","downcast_oxygen_btl","downcast_oxygen_btl_woceqc","downcast_pressure_btl","downcast_pressure_btl_woceqc","doxy_btl","doxy_btl_woceqc","doxy_ctd","doxy_ctd_woceqc","fco2_btl","fco2_btl_woceqc","fco2_in_situ_btl","fco2_temperature_btl","fm_depth_btl","fm_depth_ctd","fm_depth_ctd_woceqc","fucose_btl","fucose_btl_woceqc","geotraces_sample_btl","helium_btl","helium_btl_woceqc","helium_error_btl","hplc_19_hexanoyloxyfucoxanthin_btl","hplc_19_hexanoyloxyfucoxanthin_btl_woceqc","hplc_19butanoyloxyfucoxanthin_btl","hplc_19butanoyloxyfucoxanthin_btl_woceqc","hplc_alloxanthin_btl","hplc_alloxanthin_btl_woceqc","hplc_alpha_beta_carotenes_btl","hplc_alpha_beta_carotenes_btl_woceqc","hplc_chlorophyll_c1_c2_btl","hplc_chlorophyll_c1_c2_btl_woceqc","hplc_chlorophyll_c2_btl","hplc_chlorophyll_c2_btl_woceqc","hplc_chlorophyll_c3_btl","hplc_chlorophyll_c3_btl_woceqc","hplc_chlorophyllide_a_btl","hplc_chlorophyllide_a_btl_woceqc","hplc_diadinoxanthin_btl","hplc_diadinoxanthin_btl_woceqc","hplc_diatoxanthin_btl","hplc_diatoxanthin_btl_woceqc","hplc_divinyl_chlorophyll_a_btl","hplc_divinyl_chlorophyll_a_btl_woceqc","hplc_lutein_btl","hplc_lutein_btl_woceqc","hplc_monovinyl_chlorophyll_a_btl","hplc_monovinyl_chlorophyll_a_btl_woceqc","hplc_monovinyl_chlorophyll_b_btl","hplc_monovinyl_chlorophyll_b_btl_woceqc","hplc_neoxanthin_btl","hplc_neoxanthin_btl_woceqc","hplc_peridinin_btl","hplc_peridinin_btl_woceqc","hplc_pheophorbide_a_btl","hplc_pheophorbide_a_btl_woceqc","hplc_pheophytin_a_btl","hplc_pheophytin_a_btl_woceqc","hplc_placeholder_btl_woceqc","hplc_prasinoxanthin_btl","hplc_prasinoxanthin_btl_woceqc","hplc_tot_chl_a_btl","hplc_tot_chl_a_btl_woceqc","hplc_tot_chl_b_btl","hplc_tot_chl_b_btl_woceqc","hplc_tot_chl_c_btl","hplc_tot_chl_c_btl_woceqc","hplc_violaxanthin_btl","hplc_violaxanthin_btl_woceqc","hplc_zeaxanthin_btl","hplc_zeaxanthin_btl_woceqc","hpld_antheraxanthin_btl","hpld_antheraxanthin_btl_woceqc","krypton_btl","krypton_btl_woceqc","krypton_error_btl","methane_btl","methane_l_btl","methane_l_btl_woceqc","methyl_chloroform_btl","methyl_chloroform_btl_woceqc","n2_argon_ratio_btl","n2_argon_ratio_btl_woceqc","n2_argon_ratio_error_btl","n2_argon_ratio_unstripped_btl","n2_argon_ratio_unstripped_btl_woceqc","n2_argon_ratio_unstripped_error_btl","neon_btl","neon_btl_woceqc","neon_error_btl","nitrate_btl","nitrate_btl_woceqc","nitrate_error_btl","nitrite_btl","nitrite_btl_woceqc","nitrite_error_btl","nitrite_nitrate_btl","nitrite_nitrate_btl_woceqc","nitrite_nitrate_l_btl","nitrite_nitrate_l_btl_woceqc","nitrous_oxide_btl","nitrous_oxide_btl_woceqc","odf_pressure_btl","oxygen_btl","oxygen_btl_woceqc","oxygen_ml_l_btl","oxygen_ml_l_btl_woceqc","package_depth_btl","par_btl","par_btl_woceqc","par_ctd","par_ctd_woceqc","par_raw_btl","par_raw_btl_woceqc","partial_co2_temperature_btl","partial_pressure_of_co2_btl","partial_pressure_of_co2_btl_woceqc","particulate_organic_carbon_btl","particulate_organic_carbon_btl_woceqc","particulate_organic_nitrogen_btl","particulate_organic_nitrogen_btl_woceqc","ph_nbs_btl","ph_nbs_btl_woceqc","ph_sws_btl","ph_sws_btl_woceqc","ph_temperature_btl","ph_total_h_scale_btl","ph_total_h_scale_btl_woceqc","ph_unknown_scale_btl","ph_unknown_scale_btl_woceqc","phaeophytin_btl","phaeophytin_btl_woceqc","phaeophytin_ug_l_btl","phaeophytin_ug_l_btl_woceqc","phosphate_btl","phosphate_btl_woceqc","phosphate_error_btl","phosphate_l_btl","phosphate_l_btl_woceqc","phytoplankton_cell_count_btl","phytoplankton_cell_count_btl_woceqc","potential_temperature_68_btl","potential_temperature_c_btl","potential_temperature_c_btl_woceqc","potential_temperature_c_ctd","potential_temperature_ctd","potential_temperature_ctd_woceqc","pressure","pressure_btl_woceqc","pressure_ctd_woceqc","radium_226_btl","radium_226_btl_woceqc","radium_226_error_btl","radium_228_226_btl","radium_228_226_btl_woceqc","radium_228_226_error_btl","radium_228_btl","radium_228_btl_woceqc","radium_228_error_btl","ref_temperature_btl","ref_temperature_btl_woceqc","ref_temperature_c_btl","ref_temperature_c_btl_woceqc","reference_salinity_btl","reference_salinity_btl_woceqc","rev_pressure_btl","rev_pressure_btl_woceqc","rev_temperature_90_btl","rev_temperature_90_btl_woceqc","rev_temperature_btl","rev_temperature_btl_woceqc","rev_temperature_c_btl","rev_temperature_c_btl_woceqc","salinity_btl","salinity_btl_woceqc","salinity_ctd","salinity_ctd_woceqc","sample_btl","sample_ctd","sigma0_btl","silicate_btl","silicate_btl_woceqc","silicate_error_btl","silicate_l_btl","silicate_l_btl_woceqc","sm_depth_btl","sm_depth_ctd","sm_depth_ctd_woceqc","somma_salinity_btl","spar_raw_btl","spar_raw_btl_woceqc","stable_isotope_probing_placeholder_btl","stable_isotope_probing_placeholder_btl_woceqc","sulfur_hexifluoride_btl","sulfur_hexifluoride_btl_woceqc","temperature_btl","temperature_btl_woceqc","temperature_ctd","temperature_ctd_woceqc","total_alkalinity_btl","total_alkalinity_btl_woceqc","total_carbon_btl","total_carbon_btl_woceqc","total_dissolved_nitrogen_btl","total_dissolved_nitrogen_btl_woceqc","total_dissolved_phosphorus_btl","total_dissolved_phosphorus_btl_woceqc","total_organic_carbon_btl","total_organic_carbon_btl_woceqc","total_organic_carbon_l_btl","total_organic_carbon_l_btl_woceqc","total_organic_nitrogen_btl","total_organic_nitrogen_btl_woceqc","total_organic_nitrogen_l_btl","total_organic_nitrogen_l_btl_woceqc","trifluoromethylsulfur_pentafluoride_btl","trifluoromethylsulfur_pentafluoride_btl_woceqc","tritium_btl","tritium_btl_woceqc","tritium_error_btl","urea_btl","urea_btl_woceqc","user_bottle_number_btl","user_bottle_number_btl_woceqc","user_sample_number_btl","user_station_number_btl","xenon_btl","xenon_btl_woceqc","xenon_error_btl"]
-            }
-         },
          "argo": {
             "type": "object",
-            "required": ["_id","metadata","geolocation","basin","timestamp", "date_updated_argovis", "source", "cycle_number"],
+            "required": ["_id","metadata","geolocation","basin","timestamp", "date_updated_argovis", "source", "cycle_number", "data_info"],
             "properties": {
                "_id": {
-                  "type": "string"
-               },
-               "metadata": {
                   "type": "string"
                },
                "geolocation": {
@@ -2904,25 +1856,17 @@
                   "type": "string",
                   "format": "date-time"
                },
-               "data": {
+               "metadata": {
                   "type": "array",
                   "items": {
-                     "anyOf": [
-                        {
-                           "type": "array",
-                           "items": {
-                              "type": "number"
-                           }
-                        },
-                        {
-                           "type": "object",
-                           "additionalProperties": {
-                              "type": "number"
-                           }
-                           
-                        }
-                     ]   
+                     "type": "string"
                   }
+               },
+               "data": {
+                  "$ref": "#/components/schemas/data"
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
                },
                "date_updated_argovis": {
                   "type": "string",
@@ -2941,17 +1885,8 @@
                      "enum": ["degenerate_levels", "missing_basin", "missing_location", "missing_timestamp"]
                   }
                },
-               "data_keys": {
-                  "$ref": "#/components/schemas/argo_data_keys"
-               },
-               "units": {
-                  "$ref": "#/components/schemas/data_adjacent"
-               },
                "cycle_number": {
                   "type": "number"
-               },
-               "data_keys_mode": {
-                  "$ref": "#/components/schemas/data_adjacent"
                },
                "geolocation_argoqc": {
                   "type": "number"
@@ -2976,12 +1911,6 @@
                },
                "data_type": {
                   "type": "string"
-               },
-               "data_keys": {
-                  "$ref": "#/components/schemas/argo_data_keys"
-               },
-               "units": {
-                   "$ref": "#/components/schemas/data_adjacent"
                },
                "country": {
                   "type": "string"
@@ -3212,7 +2141,7 @@
             "description": "Data minification strategy to apply.",
             "schema": {
                "type": "string",
-               "enum": ["array","minimal"]
+               "enum": ["minimal"]
             }
          },
          "genericID": {

@@ -12,7 +12,7 @@
  * data List Forecast durations to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.findfloatLocationForecast = function(id,forecastOrigin,forecastGeolocation,metadata,compression,data) {
+exports.findargone = function(id,forecastOrigin,forecastGeolocation,metadata,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -42,12 +42,12 @@ exports.findfloatLocationForecast = function(id,forecastOrigin,forecastGeolocati
 
 
 /**
- * floatLocationForecast metadata search and filter.
+ * argone metadata search and filter.
  *
  * id String Unique ID to search for. (optional)
  * returns List
  **/
-exports.findfloatLocationForecastMeta = function(id) {
+exports.findargoneMeta = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

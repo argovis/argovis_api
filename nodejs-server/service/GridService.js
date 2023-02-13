@@ -22,11 +22,9 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "",
-  "data" : "",
-  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
-  "units" : "",
   "basin" : 0.8008281904610115,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
@@ -34,11 +32,9 @@ exports.findgrid = function(gridName,id,startDate,endDate,polygon,multipolygon,c
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : "",
-  "data" : "",
-  "data_keys" : [ "rg09_temperature", "rg09_temperature" ],
+  "metadata" : [ "metadata", "metadata" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
-  "units" : "",
   "basin" : 0.8008281904610115,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
@@ -65,6 +61,7 @@ exports.findgridMeta = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
+  "data_info" : [ "", "" ],
   "data_type" : "data_type",
   "_id" : "_id",
   "source" : [ {
@@ -81,6 +78,7 @@ exports.findgridMeta = function(id) {
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
   "levels" : [ 0.8008281904610115, 0.8008281904610115 ]
 }, {
+  "data_info" : [ "", "" ],
   "data_type" : "data_type",
   "_id" : "_id",
   "source" : [ {

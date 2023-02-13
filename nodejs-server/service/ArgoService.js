@@ -129,9 +129,9 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "metadata" : "metadata",
+  "metadata" : [ "metadata", "metadata" ],
   "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ "", "" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "basin" : 0.8008281904610115,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
@@ -144,13 +144,12 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : "",
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
   "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 6.027456183070403,
   "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {
@@ -159,9 +158,9 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "metadata" : "metadata",
+  "metadata" : [ "metadata", "metadata" ],
   "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ "", "" ],
+  "data" : [ [ "", "" ], [ "", "" ] ],
   "basin" : 0.8008281904610115,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
@@ -174,13 +173,12 @@ exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,center,rad
     "url" : "url",
     "doi" : "doi"
   } ],
-  "units" : "",
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
   "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
   "vertical_sampling_scheme" : "vertical_sampling_scheme",
   "cycle_number" : 6.027456183070403,
   "timestamp_argoqc" : 5.962133916683182,
-  "data_keys" : [ "data_keys", "data_keys" ],
   "_id" : "_id",
   "profile_direction" : "profile_direction",
   "geolocation" : {
@@ -211,33 +209,29 @@ exports.findArgometa = function(id,platform) {
     examples['application/json'] = [ {
   "country" : "country",
   "positioning_system" : "positioning_system",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "units" : "",
-  "platform" : "platform",
   "platform_type" : "platform_type",
+  "pi_name" : [ "pi_name", "pi_name" ],
   "wmo_inst_type" : "wmo_inst_type",
   "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_center" : "data_center",
+  "instrument" : "instrument",
   "_id" : "_id",
   "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring"
+  "fleetmonitoring" : "fleetmonitoring",
+  "platform" : "platform"
 }, {
   "country" : "country",
   "positioning_system" : "positioning_system",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "units" : "",
-  "platform" : "platform",
   "platform_type" : "platform_type",
+  "pi_name" : [ "pi_name", "pi_name" ],
   "wmo_inst_type" : "wmo_inst_type",
   "data_type" : "data_type",
-  "data_keys" : [ "data_keys", "data_keys" ],
+  "data_center" : "data_center",
+  "instrument" : "instrument",
   "_id" : "_id",
   "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring"
+  "fleetmonitoring" : "fleetmonitoring",
+  "platform" : "platform"
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
