@@ -12,6 +12,11 @@ script:
   - docker container run -d --network travis --name redis redis:7.0.2
   - docker image build -t argovis/api:test .
   - docker image build -f Dockerfile-test -t testrunner:dev .
-  - docker container run -d --network travis --name api argovis/api:test
-  - docker container run --network travis testrunner:dev
+  - docker container run -d --network travis --name api --env ARGONODE=core argovis/api:test
+  - docker container run --network travis testrunner:dev npm run test-core
+  - docker container run --network travis testrunner:dev npm run test-helpers
+  - docker container rm -f api
+  - docker container run -d --network travis --name api --env ARGONODE=miami argovis/api:test
+  - docker container run --network travis testrunner:dev npm run test-miami
+  - docker container run --network travis testrunner:dev npm run test-helpers
   - docker container logs api

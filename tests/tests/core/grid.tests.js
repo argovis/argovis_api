@@ -2,7 +2,7 @@ const request = require("supertest")("http://api:8080");
 const expect = require("chai").expect;
 const chai = require('chai');
 chai.use(require('chai-json-schema'));
-const rawspec = require('/tests/spec.json');
+const rawspec = require('/tests/core-spec.json');
 const $RefParser = require("@apidevtools/json-schema-ref-parser");
 
 $RefParser.dereference(rawspec, (err, schema) => {
