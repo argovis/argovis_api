@@ -15,7 +15,7 @@ externalDocs:
   description: Find us on GitHub
   url: https://github.com/argovis/argovis_api
 servers:
-- url: https://argovis.colorado.edu/api
+- url: https://argovis-api.colorado.edu
 - url: /
 security:
 - name: []
