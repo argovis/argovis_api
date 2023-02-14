@@ -6,7 +6,7 @@
       "contact": {
          "name": "Argovis Collaboration",
          "email": "argovis@colorado.edu",
-         "url": "https://argovisbeta01.colorado.edu"
+         "url": "https://argovis.colorado.edu"
       },
       "license": {
          "name": "MIT",
@@ -20,7 +20,7 @@
    },
    "servers": [
       {
-         "url": "https://argovisbeta01.colorado.edu/api"
+         "url": "https://argovis.colorado.edu/api"
       },
       {
          "url": "/"
@@ -39,10 +39,6 @@
       {
          "name": "cchdo",
          "description": "CCHDO profile data."
-      },
-      {
-         "name": "drifters",
-         "description": "Data and metadata for drifters."
       },
       {
          "name": "grid",
@@ -1084,182 +1080,6 @@
             }
          }
       },
-      "/drifters": {
-         "get": {
-            "tags": [
-               "drifters"
-            ],
-            "summary": "Search, reduce and download drifter data.",
-            "operationId": "drifterSearch",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/genericID"
-               },
-               {
-                  "$ref": "#/components/parameters/startDate"
-               },
-               {
-                  "$ref": "#/components/parameters/endDate"
-               },
-               {
-                  "$ref": "#/components/parameters/polygon"
-               },
-               {
-                  "$ref": "#/components/parameters/multipolygon"
-               },
-               {
-                  "$ref": "#/components/parameters/center"
-               },
-               {
-                  "$ref": "#/components/parameters/radius"
-               },
-               {
-                  "$ref": "#/components/parameters/metadata"
-               },
-               {
-                  "$ref": "#/components/parameters/wmo"
-               },
-               {
-                  "$ref": "#/components/parameters/platformID"
-               },
-               {
-                  "$ref": "#/components/parameters/compression"
-               },
-               {
-                  "$ref": "#/components/parameters/mostrecent"
-               },
-               {
-                  "name": "data",
-                  "in": "query",
-                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
-                  "style": "form",
-                  "explode": false,
-                  "allowReserved": true,
-                  "schema": {
-                     "type": "array",
-                     "items": {
-                        "type": "string",
-                        "pattern": "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|except-data-values)$"
-                     },
-                     "example": "sst,err_sst"
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/drifter"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/drifters/meta": {
-         "get": {
-            "tags": [
-               "drifters"
-            ],
-            "summary": "Search, reduce and download drifter metadata.",
-            "operationId": "drifterMetaSearch",
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/genericID"
-               },
-               {
-                  "$ref": "#/components/parameters/platformID"
-               },
-               {
-                  "$ref": "#/components/parameters/wmo"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/drifterMeta"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/drifters/vocabulary": {
-         "get": {
-            "tags": [
-               "drifters"
-            ],
-            "summary": "List all possible values for certain drifter query string parameters",
-            "operationId": "drifterVocab",
-            "parameters": [
-               {
-                  "in": "query",
-                  "name": "parameter",
-                  "required": true,
-                  "description": "/drifters query string parameter to summarize possible values of.",
-                  "schema": {
-                     "type": "string",
-                     "enum": ["wmo", "platform", "data_keys", "metadata"]
-                  }
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "type": "string"
-                           }
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
       "/summary": {
          "get": {
             "tags": [
@@ -1633,116 +1453,6 @@
                },
                "doi": {
                   "type": "string"
-               }
-            }
-         },
-         "drifter_source_info": {
-            "type": "object",
-            "required": ["source"],
-            "properties": {
-               "source": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               "url": {
-                  "type": "string"
-               }
-            }
-         },
-         "drifter": {
-            "type": "object",
-            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
-            "properties": {
-               "_id": {
-                  "type": "string"
-               },
-               "geolocation": {
-                   "$ref": "#/components/schemas/geoJSONpoint"
-               },
-               "basin": {
-                  "type": "number"
-               },
-               "timestamp": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "metadata": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
-               },
-               "data": {
-                  "$ref": "#/components/schemas/data"
-               }
-            }
-         },
-         "drifterMeta": {
-            "type": "object",
-            "required": ["_id", "data_type", "date_updated_argovis", "source", "platform", "rowsize", "wmo", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "data_info"],
-            "properties": {
-               "_id": {
-                  "type": "string"
-               },
-               "data_type": {
-                  "type": "string"
-               },
-               "date_updated_argovis": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "source": {
-                  "type": "array",
-                  "items": {
-                     "$ref": "#/components/schemas/drifter_source_info"
-                  }
-               },
-               "platform": {
-                  "type": "string"
-               },
-               "rowsize": {
-                  "type": "number"
-               },
-               "wmo": {
-                  "type": "number"
-               },
-               "expno": {
-                  "type": "number"
-               },
-               "deploy_date": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "deploy_lon": {
-                  "type": "number"
-               },
-               "deploy_lat": {
-                  "type": "number"
-               },
-               "end_date": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "end_lon": {
-                  "type": "number"
-               },
-               "end_lat": {
-                  "type": "number"
-               },
-               "drogue_lost_date": {
-                  "type": "string",
-                  "format": "date-time"
-               },
-               "typedeath": {
-                  "type": "number"
-               },
-               "typebuoy": {
-                  "type": "string"
-               },
-               "data_info": {
-                  "$ref": "#/components/schemas/data_info"
                }
             }
          },

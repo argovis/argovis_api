@@ -3,7 +3,7 @@ const expect = require("chai").expect;
 const chai = require('chai');
 chai.use(require('chai-json-schema'));
 chai.use(require('chai-almost')(0.00000001));
-const rawspec = require('/tests/spec.json');
+const rawspec = require('/tests/core-spec.json');
 const $RefParser = require("@apidevtools/json-schema-ref-parser");
 const helpers = require('/tests/tests/helpers')
 

@@ -15,7 +15,7 @@ var options = {
     },
 };
 
-var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
+var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.'+process.env.ARGONODE+'.yaml'), options);
 var app = expressAppConfig.getApp();
 
 // custom middleware injection ///////////

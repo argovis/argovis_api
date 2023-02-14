@@ -1,0 +1,690 @@
+{
+   "openapi": "3.0.3",
+   "info": {
+      "title": "Argovis API",
+      "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
+      "contact": {
+         "name": "Argovis Collaboration",
+         "email": "argovis@colorado.edu",
+         "url": "https://argovis.colorado.edu"
+      },
+      "license": {
+         "name": "MIT",
+         "url": "https://opensource.org/licenses/MIT"
+      },
+      "version": "2.0"
+   },
+   "externalDocs": {
+      "description": "Find us on GitHub",
+      "url": "https://github.com/argovis/argovis_api"
+   },
+   "servers": [
+      {
+         "url": "http://54.90.68.158:8080/"
+      },
+      {
+         "url": "/"
+      }
+   ],
+   "security": [
+      {
+         "name": []
+      }
+   ],
+   "tags": [
+      {
+         "name": "drifters",
+         "description": "Data and metadata for drifters."
+      },
+      {
+         "name": "summary (experimental)",
+         "description": "Summary statistics (mostly for internal use)"
+      },
+      {
+         "name": "token",
+         "description": "token validation"
+      }
+   ],
+   "paths": {
+      "/drifters": {
+         "get": {
+            "tags": [
+               "drifters"
+            ],
+            "summary": "Search, reduce and download drifter data.",
+            "operationId": "drifterSearch",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/metadata"
+               },
+               {
+                  "$ref": "#/components/parameters/wmo"
+               },
+               {
+                  "$ref": "#/components/parameters/platformID"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "$ref": "#/components/parameters/mostrecent"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|except-data-values)$"
+                     },
+                     "example": "sst,err_sst"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/drifter"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/drifters/meta": {
+         "get": {
+            "tags": [
+               "drifters"
+            ],
+            "summary": "Search, reduce and download drifter metadata.",
+            "operationId": "drifterMetaSearch",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/platformID"
+               },
+               {
+                  "$ref": "#/components/parameters/wmo"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/drifterMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/drifters/vocabulary": {
+         "get": {
+            "tags": [
+               "drifters"
+            ],
+            "summary": "List all possible values for certain drifter query string parameters",
+            "operationId": "drifterVocab",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "parameter",
+                  "required": true,
+                  "description": "/drifters query string parameter to summarize possible values of.",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["wmo", "platform", "data_keys", "metadata"]
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/summary": {
+         "get": {
+            "tags": [
+               "summary (experimental)"
+            ],
+            "summary": "Fetch a document from the summary collection by ID.",
+            "operationId": "fetchSummary",   
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/token": {
+         "get": {
+            "tags": [
+               "token"
+            ],
+            "summary": "validate an API token",
+            "operationId": "validateToken",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "token",
+                  "required": true,
+                  "description": "token to validate",
+                  "schema": {
+                     "type": "string"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      }
+   },
+   "components": {
+      "schemas": {
+         "geoJSONpoint": {
+            "type": "object",
+            "required": ["type", "coordinates"],
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
+                  }
+               }
+            }
+         },
+         "geoJSONpolygon": {
+            "type": "object",
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "array",
+                     "items": {
+                        "type": "number",
+                        "minItems": 2,
+                        "maxItems": 2
+                     }
+                  }
+               }
+            }
+         },
+         "data": {
+            "type": "array",
+            "items": {
+               "type": "array",
+               "items": {
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
+               }
+            }
+         },
+         "data_info": {
+            "type": "array",
+            "items": {
+               "anyOf": [
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  },
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "array",
+                        "items": {
+                           "anyOf": [ {"type": "string"}, {"type": "number"}]
+                        }
+                     }
+                  }
+               ]
+            }
+         },
+         "generic_source_info": {
+            "type": "object",
+            "required": ["source"],
+            "properties": {
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "url": {
+                  "type": "string"
+               },
+               "date_updated": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "doi": {
+                  "type": "string"
+               }
+            }
+         },
+         "drifter_source_info": {
+            "type": "object",
+            "required": ["source"],
+            "properties": {
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "url": {
+                  "type": "string"
+               }
+            }
+         },
+         "drifter": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "basin": {
+                  "type": "number"
+               },
+               "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "metadata": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "data": {
+                  "$ref": "#/components/schemas/data"
+               }
+            }
+         },
+         "drifterMeta": {
+            "type": "object",
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "platform", "rowsize", "wmo", "expno", "deploy_date", "deploy_lon", "deploy_lat", "end_date", "end_lon", "end_lat", "drogue_lost_date", "typedeath", "typebuoy", "data_info"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/drifter_source_info"
+                  }
+               },
+               "platform": {
+                  "type": "string"
+               },
+               "rowsize": {
+                  "type": "number"
+               },
+               "wmo": {
+                  "type": "number"
+               },
+               "expno": {
+                  "type": "number"
+               },
+               "deploy_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "deploy_lon": {
+                  "type": "number"
+               },
+               "deploy_lat": {
+                  "type": "number"
+               },
+               "end_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "end_lon": {
+                  "type": "number"
+               },
+               "end_lat": {
+                  "type": "number"
+               },
+               "drogue_lost_date": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "typedeath": {
+                  "type": "number"
+               },
+               "typebuoy": {
+                  "type": "string"
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
+               }
+            }
+         },
+         "data_adjacent": {
+            "anyOf": [
+               {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               {
+                  "type": "object",
+                  "additionalProperties": {
+                     "type": "string"
+                  }       
+               }
+            ]  
+         },
+         "errorResponse": {
+            "type": "object",
+            "required": [
+               "code",
+               "message"
+            ],
+            "properties": {
+               "code": {
+                  "type": "integer"
+               },
+               "message": {
+                  "type": "string"
+               }
+            }
+         }
+      },
+      "parameters": {
+         "startDate": {
+            "in": "query",
+            "name": "startDate",
+            "description": "ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "endDate": {
+            "in": "query",
+            "name": "endDate",
+            "description": "ISO 8601 UTC date-time formatted string indicating the end of the time period of interest.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "compression": {
+            "in": "query",
+            "name": "compression",
+            "description": "Data minification strategy to apply.",
+            "schema": {
+               "type": "string",
+               "enum": ["minimal"]
+            }
+         },
+         "genericID": {
+            "in": "query",
+            "name": "id",
+            "description": "Unique ID to search for.",
+            "schema": {
+               "type": "string",
+               "example": "4902911_0"
+            }
+         },
+         "platformID": {
+            "in": "query",
+            "name": "platform",
+            "description": "Unique platform ID to search for.",
+            "schema": {
+               "type": "string",
+               "example": "4902911"
+            }
+         },
+         "polygon": {
+            "in": "query",
+            "name": "polygon",
+            "description": "array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+            }
+         },
+         "multipolygon": {
+            "in": "query",
+            "name": "multipolygon",
+            "description": "array of polygon regions; region of interest is taken as the intersection of all listed polygons.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+            }
+         },
+         "center": {
+            "in": "query",
+            "name": "center",
+            "description": "center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'.",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
+         "radius": {
+            "in": "query",
+            "name": "radius",
+            "description": "km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'.",
+            "schema": {
+               "type": "number",
+               "example": 50
+            }
+         },
+         "mostrecent": {
+            "in": "query",
+            "name": "mostrecent",
+            "description": "get back only the n records with the most recent values of timestamp.",
+            "schema": {
+               "type": "number"
+            }
+         },
+         "wmo": {
+            "in": "query",
+            "name": "wmo",
+            "description": "World Meteorological Organization identification number",
+            "schema": {
+               "type": "number",
+               "example": 1300915
+            }
+         },
+         "metadata": {
+            "in": "query",
+            "name": "metadata",
+            "description": "metadata pointer",
+            "schema":{
+               "type": "string"
+            }
+         }
+      },
+      "responses": {
+         "badRequest": {
+            "description": "Bad Request",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "notFound": {
+            "description": "Not Found",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "serverError": {
+            "description": "Server Error",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         }
+      }
+   }
+}

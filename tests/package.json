@@ -3,7 +3,9 @@
   "version": "0.1",
   "description": "External API endpoint tests for argovis_api",
   "scripts": {
-    "test": "npx mocha --timeout 15000 tests/*.tests.js"
+    "test-core": "npx mocha --timeout 15000 tests/core/*.tests.js",
+    "test-miami": "npx mocha --timeout 15000 tests/miami/*.tests.js",
+    "test-helpers": "npx mocha --timeout 15000 tests/helpers.tests.js"
   },
   "license": "Unlicense",
   "private": true,
