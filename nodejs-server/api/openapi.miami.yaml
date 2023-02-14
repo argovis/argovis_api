@@ -15,7 +15,7 @@ externalDocs:
   description: Find us on GitHub
   url: https://github.com/argovis/argovis_api
 servers:
-- url: http://54.90.68.158:8080/
+- url: http://54.90.68.158:8081/
 - url: /
 security:
 - name: []
