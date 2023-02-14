@@ -97,7 +97,7 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
   "metadata" : [ "metadata", "metadata" ],
   "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
-  "basin" : 0.8008281904610115,
+  "basin" : 6.027456183070403,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -107,7 +107,7 @@ exports.drifterSearch = function(id,startDate,endDate,polygon,multipolygon,cente
   "metadata" : [ "metadata", "metadata" ],
   "data" : [ [ "", "" ], [ "", "" ] ],
   "_id" : "_id",
-  "basin" : 0.8008281904610115,
+  "basin" : 6.027456183070403,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"

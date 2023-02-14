@@ -1,15 +1,16 @@
 ## Build Cycle
 
-Argovis's API is automatically templated from the OpenAPI specification in `spec.yaml`. _This specification is the single source of truth for the definition of this API!_ By adhering to this specification, we are able to leverage the OpenAPI ecosystem of tools for automatically generating docs, server side stubs and client code. To support this, we use the following build workflow.
+Argovis's API is automatically templated from the OpenAPI specification in several specification files:
 
-1. After modifying `spec.yaml` to describe how you want to update the API, build the server stubs with:
+ - `core-spec.json`: API spec for Argovis core at University of Colorado. Serves all data products except the ones enumerated below for our partner deployments.
+ - `miami-spec.json`: spec for the Global Drifter Program deployment, hosted by University of Miami.
+
+_These specifications are the single source of truth for the definition of this API!_ By adhering to this specification, we are able to leverage the OpenAPI ecosystem of tools for automatically generating docs, server side stubs and client code. To support this, we use the following build workflow.
+
+1. After modifying the specification documents to describe how you want to update the API, build the server stubs with:
 
 ```
-docker container run --rm -v ${PWD}:/local \
-    swaggerapi/swagger-codegen-cli-v3 generate \
-    -i /local/spec.json \
-    -l nodejs-server \
-    -o /local/nodejs-server
+bash build.sh
 ```
 
 2. Commit these changes to the `templates` branch.
