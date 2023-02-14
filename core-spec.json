@@ -20,7 +20,7 @@
    },
    "servers": [
       {
-         "url": "https://argovis.colorado.edu/api"
+         "url": "https://argovis-api.colorado.edu"
       },
       {
          "url": "/"
