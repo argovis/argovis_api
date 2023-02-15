@@ -162,7 +162,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    // // argo
+    // argo
 
     describe("GET /argo", function () {
       it("searches for argo profiles, dont request data", async function () {
@@ -194,7 +194,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /argo", function () {
       it("shouldnt return a profile unless it has all the requested data", async function () {
-        const response = await request.get("/argo?id=4901283_021&data=salinity,doxy,chla").set({'x-argokey': 'developer'});
+        const response = await request.get("/argo?id=2902857_003&data=temperature,doxy,chla").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });

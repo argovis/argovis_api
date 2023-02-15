@@ -284,6 +284,10 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       chunk.data_info = dinfo
     }
     let keyset = JSON.parse(JSON.stringify(chunk.data_info[0]))
+    // abandon profile if a requested data key is missing
+    if(!keys.every(val => keyset.includes(val))){
+      return false
+    }
     for(let i=0; i<keyset.length; i++){
       let k = keyset[i]
       let kIndex = chunk.data_info[0].indexOf(k)
