@@ -506,7 +506,7 @@ module.exports.lookup_key = function(userModel, apikey, resolve, reject){
             return;
         }
         if(user.length == 0){
-            reject({"code": 404, "message": "Not found: User key not found in database."});
+            reject({"code": 401, "message": "Invalid user key."});
             return;
         }
         if(!user[0].toObject().tokenValid){
