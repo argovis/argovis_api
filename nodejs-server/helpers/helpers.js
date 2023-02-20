@@ -521,8 +521,8 @@ module.exports.lookup_key = function(userModel, apikey, resolve, reject){
       fetch(process.env.ARGOCORE + '/token?token='+apikey, {headers:{'x-argokey': apikey}})
               .then(response => response.json())
               .then(data => {
-                if(data.hasOwnProperty('code') && data.code == 404){
-                  reject({"code": 404, "message": "Not found: User key not found in database."});
+                if(data.hasOwnProperty('code') && data.code == 401){
+                  reject({"code": 401, "message": "Invalid user key."});
                   return;
                 } else {
                   resolve({key: apikey, tokenValid: data[0].tokenValid})
