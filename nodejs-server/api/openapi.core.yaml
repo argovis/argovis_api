@@ -35,6 +35,8 @@ tags:
   description: Argo float position forcast product
 - name: summary (experimental)
   description: Summary statistics (mostly for internal use)
+- name: Argo trajectories (experimental)
+  description: Trajectories of argo floats
 - name: token
   description: token validation
 paths:
@@ -1506,6 +1508,270 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Argo
+  /argotrajectories:
+    get:
+      tags:
+      - Argo trajectories (experimental)
+      summary: Argo trajectory search and filter.
+      operationId: findArgoTrajectory
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: metadata
+        in: query
+        description: metadata pointer
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: data
+        in: query
+        description: Keys of data to include. Return only documents that have all
+          data requested. Accepts ~ negation to filter out documents including the
+          specified data. Omission of this parameter will result in metadata only
+          responses.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          $ref: '#/components/schemas/argotrajectory_data_keys'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/argotrajectory'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: ArgoTrajectoriesExperimental
+  /argotrajectories/meta:
+    get:
+      tags:
+      - Argo trajectories (experimental)
+      summary: Argo trajectory metadata search and filter.
+      operationId: findArgotrajectorymeta
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/argotrajectoryMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: ArgoTrajectoriesExperimental
+  /argotrajectories/vocabulary:
+    get:
+      tags:
+      - Argo trajectories (experimental)
+      summary: List all possible values for certain Argo trajectory query string parameters
+      operationId: argotrajectoryVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: Argo trajectory query string parameter to summarize possible
+          values of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - platform
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: ArgoTrajectoriesExperimental
   /summary:
     get:
       tags:
@@ -2266,6 +2532,152 @@ components:
         oceanops: oceanops
         fleetmonitoring: fleetmonitoring
         platform: platform
+    argotrajectory:
+      required:
+      - _id
+      - cycle_number
+      - geolocation
+      - geolocation_ascending
+      - geolocation_ascending_transmitted
+      - geolocation_descending
+      - geolocation_descending_transmitted
+      - geolocation_midpoint_transmitted
+      - metadata
+      - timestamp
+      - timestamp_ascending
+      - timestamp_ascending_transmitted
+      - timestamp_descending
+      - timestamp_descending_transmitted
+      - timestamp_midpoint_transmitted
+      type: object
+      properties:
+        _id:
+          type: string
+        cycle_number:
+          type: number
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        timestamp:
+          type: string
+          format: date-time
+        geolocation_descending:
+          $ref: '#/components/schemas/geoJSONpoint'
+        timestamp_descending:
+          type: string
+          format: date-time
+        geolocation_ascending:
+          $ref: '#/components/schemas/geoJSONpoint'
+        timestamp_ascending:
+          type: string
+          format: date-time
+        geolocation_descending_transmitted:
+          $ref: '#/components/schemas/geoJSONpoint'
+        timestamp_descending_transmitted:
+          type: string
+          format: date-time
+        geolocation_ascending_transmitted:
+          $ref: '#/components/schemas/geoJSONpoint'
+        timestamp_ascending_transmitted:
+          type: string
+          format: date-time
+        geolocation_midpoint_transmitted:
+          $ref: '#/components/schemas/geoJSONpoint'
+        timestamp_midpoint_transmitted:
+          type: string
+          format: date-time
+        metadata:
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/data'
+      example:
+        metadata:
+        - metadata
+        - metadata
+        geolocation_midpoint_transmitted: null
+        data:
+        - - ""
+          - ""
+        - - ""
+          - ""
+        geolocation_ascending_transmitted: null
+        geolocation_descending_transmitted: null
+        timestamp_ascending: 2000-01-23T04:56:07.000+00:00
+        timestamp_descending: 2000-01-23T04:56:07.000+00:00
+        timestamp_midpoint_transmitted: 2000-01-23T04:56:07.000+00:00
+        timestamp_descending_transmitted: 2000-01-23T04:56:07.000+00:00
+        cycle_number: 0.80082819046101150206595775671303272247314453125
+        geolocation_descending: null
+        timestamp_ascending_transmitted: 2000-01-23T04:56:07.000+00:00
+        _id: _id
+        geolocation_ascending: null
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    argotrajectoryMeta:
+      required:
+      - _id
+      - data_type
+      type: object
+      properties:
+        _id:
+          type: string
+        platform:
+          type: string
+        data_type:
+          type: string
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        date_updated_argovis:
+          type: string
+          format: date-time
+        positioning_system_flag:
+          type: number
+        sensor_type_flag:
+          type: number
+        mission_flag:
+          type: number
+        extrapolation_flag:
+          type: number
+        positioning_system:
+          type: string
+        platform_type:
+          type: string
+        data_info:
+          $ref: '#/components/schemas/data_info'
+      example:
+        positioning_system: positioning_system
+        data_info:
+        - ""
+        - ""
+        sensor_type_flag: 6.02745618307040320615897144307382404804229736328125
+        mission_flag: 1.46581298050294517310021547018550336360931396484375
+        platform_type: platform_type
+        data_type: data_type
+        _id: _id
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        positioning_system_flag: 0.80082819046101150206595775671303272247314453125
+        extrapolation_flag: 5.962133916683182377482808078639209270477294921875
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        platform: platform
     data_adjacent:
       anyOf:
       - type: array
@@ -2278,6 +2690,11 @@ components:
       type: array
       items:
         pattern: "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pressure)|(salinity)|(salinity_sfile)|(temperature)|(temperature_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})((_std)|(_med){1})?(_argoqc)?|all|except-data-values)$"
+        type: string
+    argotrajectory_data_keys:
+      type: array
+      items:
+        pattern: "^((~)?((velocity_zonal)|(velocity_meridional)|(velocity_zonal_transmitted)|(velocity_meridional_transmitted)|(speed)|(speed_transmitted)|(drift_pres)|(drift_temp)|(number_surface_fixes){1})|all|except-data-values)$"
         type: string
     errorResponse:
       required:
