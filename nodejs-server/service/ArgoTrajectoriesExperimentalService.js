@@ -1,5 +1,6 @@
 'use strict';
-
+const helpers = require('../helpers/helpers')
+const trajectories = require('../models/trajectories');
 
 /**
  * List all possible values for certain Argo trajectory query string parameters
@@ -9,12 +10,15 @@
  **/
 exports.argotrajectoryVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+
+    if(parameter == 'platform'){
+      trajectories['argotrajectoriesMeta'].find().distinct('platform', function (err, vocab) {
+        if (err){
+          reject({"code": 500, "message": "Server error"});
+          return;
+        }
+        resolve(vocab)
+      })
     }
   });
 }
@@ -37,45 +41,76 @@ exports.argotrajectoryVocab = function(parameter) {
  * data argotrajectory_data_keys Keys of data to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.findArgoTrajectory = function(id,startDate,endDate,polygon,multipolygon,center,radius,metadata,platform,compression,mostrecent,data) {
+exports.findArgoTrajectory = function(res,id,startDate,endDate,polygon,multipolygon,center,radius,metadata,platform,compression,mostrecent,data) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "metadata" : [ "metadata", "metadata" ],
-  "data" : [ [ "", "" ], [ "", "" ] ],
-  "timestamp_ascending" : "2000-01-23T04:56:07.000+00:00",
-  "timestamp_descending" : "2000-01-23T04:56:07.000+00:00",
-  "timestamp_midpoint_transmitted" : "2000-01-23T04:56:07.000+00:00",
-  "timestamp_descending_transmitted" : "2000-01-23T04:56:07.000+00:00",
-  "cycle_number" : 0.8008281904610115,
-  "timestamp_ascending_transmitted" : "2000-01-23T04:56:07.000+00:00",
-  "_id" : "_id",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "metadata" : [ "metadata", "metadata" ],
-  "data" : [ [ "", "" ], [ "", "" ] ],
-  "timestamp_ascending" : "2000-01-23T04:56:07.000+00:00",
-  "timestamp_descending" : "2000-01-23T04:56:07.000+00:00",
-  "timestamp_midpoint_transmitted" : "2000-01-23T04:56:07.000+00:00",
-  "timestamp_descending_transmitted" : "2000-01-23T04:56:07.000+00:00",
-  "cycle_number" : 0.8008281904610115,
-  "timestamp_ascending_transmitted" : "2000-01-23T04:56:07.000+00:00",
-  "_id" : "_id",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    // input sanitization
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
     }
+
+    // decide y/n whether to service this request
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    if(bailout){
+      reject(bailout)
+      return
+    }
+
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = {$match:{}}
+    if(id){
+        local_filter['$match']['_id'] = id
+    }
+    if(metadata){
+      local_filter['$match']['metadata'] = metadata
+    }
+    if(Object.keys(local_filter['$match']).length > 0){
+      local_filter = [local_filter]
+    } else {
+      local_filter = []
+    }
+
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
+        presRange: null,
+        mostrecent: mostrecent
+    }
+
+    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+    let metafilter = Promise.resolve([])
+    let metacomplete = false
+    if(platform){
+        metafilter = trajectories['argotrajectoriesMeta'].aggregate([{$match: {'platform': platform}}]).exec()
+        metacomplete = true
+    }
+
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, trajectories['argotrajectories'], params, local_filter))
+
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
+
+          let stub = function(data, metadata){
+              // given a data and corresponding metadata document,
+              // return the record that should be returned when the compression=minimal API flag is set
+              // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+              return [
+                data['_id'], 
+                data.geolocation.coordinates[0], 
+                data.geolocation.coordinates[1], 
+                data.timestamp
+              ]
+          }
+
+          let postprocess = helpers.post_xform(trajectories['argotrajectoriesMeta'], pp_params, search_result, res, stub)
+
+          resolve([search_result[1], postprocess])
+
+        })
   });
 }
 
@@ -87,61 +122,18 @@ exports.findArgoTrajectory = function(id,startDate,endDate,polygon,multipolygon,
  * platform String Unique platform ID to search for. (optional)
  * returns List
  **/
-exports.findArgotrajectorymeta = function(id,platform) {
+exports.findArgotrajectorymeta = function(res,id,platform) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "positioning_system" : "positioning_system",
-  "data_info" : [ "", "" ],
-  "sensor_type_flag" : 6.027456183070403,
-  "mission_flag" : 1.4658129805029452,
-  "platform_type" : "platform_type",
-  "data_type" : "data_type",
-  "_id" : "_id",
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "positioning_system_flag" : 0.8008281904610115,
-  "extrapolation_flag" : 5.962133916683182,
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "platform" : "platform"
-}, {
-  "positioning_system" : "positioning_system",
-  "data_info" : [ "", "" ],
-  "sensor_type_flag" : 6.027456183070403,
-  "mission_flag" : 1.4658129805029452,
-  "platform_type" : "platform_type",
-  "data_type" : "data_type",
-  "_id" : "_id",
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "positioning_system_flag" : 0.8008281904610115,
-  "extrapolation_flag" : 5.962133916683182,
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "platform" : "platform"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    let match = {
+        '_id': id,
+        'platform': platform
+
     }
+    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+
+    const query = trajectories['argotrajectoriesMeta'].aggregate([{$match:match}]);
+    let postprocess = helpers.meta_xform(res)
+    resolve([query.cursor(), postprocess])
   });
 }
 
