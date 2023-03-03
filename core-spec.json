@@ -61,6 +61,10 @@
          "description": "Summary statistics (mostly for internal use)"
       },
       {
+         "name": "Argo trajectories (experimental)",
+         "description": "Trajectories of argo floats"
+      },
+      {
          "name": "token",
          "description": "token validation"
       }
@@ -1080,6 +1084,171 @@
             }
          }
       },
+      "/argotrajectories": {
+         "get": {
+            "tags": [
+               "Argo trajectories (experimental)"
+            ],
+            "summary": "Argo trajectory search and filter.",
+            "operationId": "findArgoTrajectory",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/metadata"
+               },
+               {
+                  "$ref": "#/components/parameters/platformID"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "$ref": "#/components/parameters/mostrecent"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "$ref": "#/components/schemas/argotrajectory_data_keys"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/argotrajectory"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/argotrajectories/meta": {
+         "get": {
+            "tags": [
+               "Argo trajectories (experimental)"
+            ],
+            "summary": "Argo trajectory metadata search and filter.",
+            "operationId": "findArgotrajectorymeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/platformID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/argotrajectoryMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/argotrajectories/vocabulary": {
+         "get": {
+            "tags": [
+               "Argo trajectories (experimental)"
+            ],
+            "summary": "List all possible values for certain Argo trajectory query string parameters",
+            "operationId": "argotrajectoryVocab",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "parameter",
+                  "required": true,
+                  "description": "Argo trajectory query string parameter to summarize possible values of.",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["platform"]
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/summary": {
          "get": {
             "tags": [
@@ -1657,6 +1826,115 @@
                }
             }
          },
+         "argotrajectory": {
+            "type": "object",
+            "required": ["_id", "cycle_number", "geolocation", "timestamp", "metadata", "geolocation_descending", "timestamp_descending", "geolocation_descending_transmitted", "timestamp_descending_transmitted", "geolocation_ascending", "timestamp_ascending", "geolocation_ascending_transmitted", "timestamp_ascending_transmitted", "geolocation_midpoint_transmitted", "timestamp_midpoint_transmitted"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "cycle_number": {
+                  "type": "number"
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "geolocation_descending": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "timestamp_descending": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "geolocation_ascending": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "timestamp_ascending": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "geolocation_descending_transmitted": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "timestamp_descending_transmitted": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "geolocation_ascending_transmitted": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "timestamp_ascending_transmitted": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "geolocation_midpoint_transmitted": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "timestamp_midpoint_transmitted": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "metadata": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "data": {
+                  "$ref": "#/components/schemas/data"
+               }
+            }
+         },
+         "argotrajectoryMeta": {
+            "type": "object",
+            "required": ["_id", "data_type"],
+            "properties":{
+               "_id": {
+                  "type": "string"
+               },
+               "platform": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "positioning_system_flag": {
+                  "type": "number"
+               },
+               "sensor_type_flag": {
+                  "type": "number"
+               },
+               "mission_flag": {
+                  "type": "number"
+               },
+               "extrapolation_flag": {
+                  "type": "number"
+               },
+               "positioning_system": {
+                  "type": "string"
+               },
+               "platform_type": {
+                  "type": "string"
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
+               }
+            }
+         },
          "data_adjacent": {
             "anyOf": [
                {
@@ -1678,6 +1956,13 @@
             "items": {
                "type": "string",
                "pattern": "^((~)?((bbp470)|(bbp532)|(bbp700)|(bbp700_2)|(bisulfide)|(cdom)|(chla)|(cndc)|(cndx)|(cp660)|(down_irradiance380)|(down_irradiance412)|(down_irradiance442)|(down_irradiance443)|(down_irradiance490)|(down_irradiance555)|(down_irradiance670)|(downwelling_par)|(doxy)|(doxy2)|(doxy3)|(molar_doxy)|(nitrate)|(ph_in_situ_total)|(pressure)|(salinity)|(salinity_sfile)|(temperature)|(temperature_sfile)|(turbidity)|(up_radiance412)|(up_radiance443)|(up_radiance490)|(up_radiance555){1})((_std)|(_med){1})?(_argoqc)?|all|except-data-values)$"
+            }
+         },
+         "argotrajectory_data_keys": {
+            "type": "array",
+            "items": {
+               "type": "string",
+               "pattern": "^((~)?((velocity_zonal)|(velocity_meridional)|(velocity_zonal_transmitted)|(velocity_meridional_transmitted)|(speed)|(speed_transmitted)|(drift_pres)|(drift_temp)|(number_surface_fixes){1})|all|except-data-values)$"
             }
          },
          "errorResponse": {
