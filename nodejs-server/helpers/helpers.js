@@ -540,12 +540,24 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
 
   let earliest_records = {
     'argo': new Date("1997-07-28T20:26:20.002Z"),
-    'cchdo': new Date("1977-10-07T00:00:00Z"),
+    'cchdo': new Date("1972-07-24T09:11:00Z"),
     'drifters': new Date("1987-10-02T13:00:00Z"),
-    'kg21_ohc15to300': new Date("2005-01-15T00:00:00Z"),
-    'rg09_temperature': new Date("2004-01-15T00:00:00Z"),
-    'rg09_salinity': new Date("2004-01-15T00:00:00Z"),
-    'tc': new Date("1851-06-25T00:00:00Z")
+    'kg21': new Date("2005-01-15T00:00:00Z"),
+    'rg09': new Date("2004-01-15T00:00:00Z"),
+    'tc': new Date("1851-06-25T00:00:00Z"),
+    "trajectories": new Date("2001-01-04T22:46:33Z"),
+    "argone": new Date("1997-07-28T20:26:20.002Z") // artificial, set to apply same constraint as argo
+  }
+
+  let final_records = {
+    'argo': new Date(),
+    'cchdo': new Date("2021-08-13T23:27:00Z"),
+    'drifters': new Date("2020-06-30T23:00:00Z"),
+    'kg21': new Date("2020-12-15T00:00:00Z"),
+    'rg09': new Date("2022-05-15T00:00:00Z"),
+    'tc': new Date("2020-12-25T12:00:00Z"),
+    'trajectories': new Date("2021-01-01T01:13:26Z"),
+    'argone': new Date()
   }
 
   /// determine path steps
@@ -555,7 +567,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
-  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids']
+  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'argone', 'trajectories']
 
   if(standard_routes.includes(path[0])){
     //// metadata routes
@@ -563,7 +575,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       return 0.2
     }
     //// core data routes
-    if(path.length==1 || (path[0]=='grids' && path.length==2 && path[1]!='vocabulary' && path[1]!='meta')){
+    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21'))){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1
@@ -582,7 +594,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
           return params
         }
         params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
-        params.endDate = params.endDate ? params.endDate : new Date()
+        params.endDate = params.endDate ? params.endDate : final_records[path[path.length-1]]
 
         ///// decline requests that are too geographically enormous
         let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, params.center, params.radius)
