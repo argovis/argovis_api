@@ -343,7 +343,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // drop any level for which all requested measurements are null if specific data has been requested
-  if(pp_params.data){
+  if(pp_params.data && pp_params.data != 'all'){
     let dcopy = JSON.parse(JSON.stringify(chunk.data))
     if(coerced_pressure){
       dcopy.splice(chunk.data_info[0].indexOf('pressure'),1)
