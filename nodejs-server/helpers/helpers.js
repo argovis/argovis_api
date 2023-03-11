@@ -467,7 +467,7 @@ module.exports.locate_meta = function(meta_ids, meta_list, meta_model){
   if(meta_needed.length === 0){
     return new Promise(function(resolve, reject){resolve([])})
   } else {
-    return meta_model.find({"_id": {"$in": meta_needed}}).exec()
+    return meta_model.find({"_id": {"$in": meta_needed}}).lean().exec()
   }
 }
 
