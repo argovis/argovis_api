@@ -380,7 +380,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     delete chunk.data
   }
 
-  // return a minimal stub and return if requested
+  // return a minimal stub if requested
   if(pp_params.compression == 'minimal'){
     return stub(chunk, metadata)
   }
