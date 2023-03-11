@@ -152,7 +152,8 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
         mostrecent: mostrecent,
-        always_import: true // add data_keys and everything in data_adjacent to data docs, no matter what
+        always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
+        suppress_meta: compression=='minimal' // don't need to look up metadata if making a minimal request
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
