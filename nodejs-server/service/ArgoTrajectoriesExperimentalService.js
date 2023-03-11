@@ -77,8 +77,7 @@ exports.findArgoTrajectory = function(res,id,startDate,endDate,polygon,multipoly
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
-        mostrecent: mostrecent,
-        suppress_meta: compression=='minimal' // don't need to look up metadata if making a minimal request
+        mostrecent: mostrecent
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
