@@ -4,7 +4,7 @@
   "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
   "main": "index.js",
   "scripts": {
-  "start": "node index.js"
+  "start": "node --prof index.js"
   },
   "keywords": [
     "swagger"

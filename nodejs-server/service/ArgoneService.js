@@ -54,7 +54,8 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
     let pp_params = {
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
-        junk: ['dist']
+        junk: ['dist'],
+        suppress_meta: compression=='minimal' // don't need to look up metadata if making a minimal request
     }
 
     // metadata table filter: no-op promise stub, nothing to filter grid data docs on from metadata at the moment

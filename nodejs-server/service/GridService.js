@@ -73,7 +73,8 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
-        mostrecent: mostrecent
+        mostrecent: mostrecent,
+        suppress_meta: compression=='minimal' // don't need to look up metadata if making a minimal request
     }
 
     // metadata table filter: no-op promise stub, nothing to filter grid data docs on from metadata at the moment

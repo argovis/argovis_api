@@ -223,6 +223,11 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
 
+  // return a minimal stub and return immediately if requested
+  if(pp_params.compression == 'minimal'){
+    return stub(chunk, metadata)
+  }
+
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data keys that disqualify a document if present
@@ -380,11 +385,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     delete chunk.data
   }
 
-  // return a minimal stub if requested
-  if(pp_params.compression == 'minimal'){
-    return stub(chunk, metadata)
-  }
-
   return chunk
 }
 
@@ -392,30 +392,47 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
 
   let nDocs = 0
 
-  const postprocess = new Transform({
+  const postprocess = pp_params.suppress_meta ? new Transform({
+    objectMode: true,
+    transform(chunk, encoding, next){
+      // munge the chunk and push it downstream if it isn't rejected.
+      let doc = null
+      if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          /// ie dont even bother with post if we've exceeded our mostrecent cap
+          doc = module.exports.postprocess_stream(chunk, null, pp_params, stub)
+      }
+      if(doc){
+        if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          this.push(doc)
+        }
+        nDocs++
+      }
+      next()
+    }
+  }) : new Transform({
     objectMode: true,
     transform(chunk, encoding, next){
       // wait on a promise to get this chunk's metadata back
       module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
-          .then(meta => {
-            // keep track of new metadata docs so we don't look them up twice
-            for(let i=0; i<meta.length; i++){
-              if(!search_result[0].find(x => x._id == meta[i]._id)) search_result[0].push(meta[i])
-            }
-            // munge the chunk and push it downstream if it isn't rejected.
-            let doc = null
+        .then(meta => {
+          // keep track of new metadata docs so we don't look them up twice
+          for(let i=0; i<meta.length; i++){
+            if(!search_result[0].find(x => x._id == meta[i]._id)) search_result[0].push(meta[i])
+          }
+          // munge the chunk and push it downstream if it isn't rejected.
+          let doc = null
+          if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+              /// ie dont even bother with post if we've exceeded our mostrecent cap
+              doc = module.exports.postprocess_stream(chunk, meta, pp_params, stub)
+          }
+          if(doc){
             if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
-                /// ie dont even bother with post if we've exceeded our mostrecent cap
-                doc = module.exports.postprocess_stream(chunk, meta, pp_params, stub)
+              this.push(doc)
             }
-            if(doc){
-              if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
-                this.push(doc)
-              }
-              nDocs++
-            }
-            next()
-          })
+            nDocs++
+          }
+          next()
+        })
     }
   });
   
