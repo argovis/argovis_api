@@ -223,11 +223,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
 
-  // return a minimal stub and return immediately if requested
-  if(pp_params.compression == 'minimal'){
-    return stub(chunk, metadata)
-  }
-
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
   let notkeys = []    // data keys that disqualify a document if present
@@ -385,6 +380,11 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     delete chunk.data
   }
 
+  // return a minimal stub and return if requested
+  if(pp_params.compression == 'minimal'){
+    return stub(chunk, metadata)
+  }
+
   return chunk
 }
 
@@ -399,7 +399,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       let doc = null
       if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
           /// ie dont even bother with post if we've exceeded our mostrecent cap
-          doc = module.exports.postprocess_stream(chunk, null, pp_params, stub)
+          doc = module.exports.postprocess_stream(chunk, [], pp_params, stub)
       }
       if(doc){
         if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
