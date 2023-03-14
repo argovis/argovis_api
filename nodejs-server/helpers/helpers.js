@@ -150,10 +150,11 @@ module.exports.request_sanitation = function(polygon, center, radius, multipolyg
   return false
 }
 
-module.exports.datatable_stream = function(model, params, local_filter, foreign_docs){
+module.exports.datatable_stream = function(model, params, local_filter, projection, foreign_docs){
   // given <model>, a mongoose model pointing to a data collection,
   // <params> the return object from parameter_sanitization,
   // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
+  // <projection> a list of data document keys to project down to at the end of the search
   // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
   // return a cursor over that which matches the above
 
@@ -202,6 +203,16 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
   aggPipeline.push({$sort: {'timestamp':-1}})
 
+  if(projection){
+    // drop documents with no data before they come out of the DB, and project out only the listed data document keys
+    aggPipeline.push({$match: {'data.0':{$exists:true}}})
+    project = {}
+    for(let i=0;i<projection.length;i++){
+      project[projection[i]] = 1
+    }
+    aggPipeline.push({$project: project})
+  }
+
   return model.aggregate(aggPipeline).cursor()
 }
 
@@ -222,6 +233,11 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <stub>: function accepting one data document and its corresponding metadata document, returns appropriate representation for the compression=minimal flag.
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
+
+  // immediately return a minimal stub if requested and data has been projected off
+  if(pp_params.compression == 'minimal' && !chunk.hasOwnProperty('data')){
+    return stub(chunk, metadata)
+  }
 
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
