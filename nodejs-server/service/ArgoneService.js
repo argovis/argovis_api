@@ -54,7 +54,14 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
     let pp_params = {
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
-        junk: ['dist']
+        junk: ['dist'],
+        suppress_meta: compression=='minimal' // don't need to look up argo metadata if making a minimal request
+    }
+
+    // can we afford to project data documents down to a subset in aggregation?
+    let projection = null
+    if(compression=='minimal' && data==null){
+      projection = ['_id', 'metadata', 'geolocation', 'geolocation_forecast']
     }
 
     // metadata table filter: no-op promise stub, nothing to filter grid data docs on from metadata at the moment
@@ -62,7 +69,7 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
     let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {}, local_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {}, local_filter, projection))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

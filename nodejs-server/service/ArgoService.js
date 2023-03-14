@@ -153,9 +153,15 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
         presRange: presRange,
         mostrecent: mostrecent,
         always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
-        suppress_meta: compression=='minimal' // don't need to look up metadata if making a minimal request
+        suppress_meta: compression=='minimal' // don't need to look up argo metadata if making a minimal request
     }
-    pp_params.skip_data_filter = compression=='minimal' && pp_params.data==null
+
+    // can we afford to project data documents down to a subset in aggregation?
+    let projection = null
+    if(compression=='minimal' && data==null && presRange==null){
+      projection = ['_id', 'metadata', 'geolocation', 'timestamp', 'source']
+    }
+
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     let metafilter = Promise.resolve([])
@@ -172,7 +178,7 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, ['_id', 'metadata', 'geolocation', 'timestamp', 'source']))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

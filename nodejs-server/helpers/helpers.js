@@ -204,7 +204,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   aggPipeline.push({$sort: {'timestamp':-1}})
 
   if(projection){
-    // drop documents with no data before the come out of the DB, and project out only the listed data document keys
+    // drop documents with no data before they come out of the DB, and project out only the listed data document keys
     aggPipeline.push({$match: {'data.0':{$exists:true}}})
     project = {}
     for(let i=0;i<projection.length;i++){
@@ -234,8 +234,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
 
-  // return a minimal stub if requested
-  if(pp_params.skip_data_filter){
+  // immediately return a minimal stub if requested and data has been projected off
+  if(pp_params.compression == 'minimal' && !chunk.hasOwnProperty('data')){
     return stub(chunk, metadata)
   }
 
