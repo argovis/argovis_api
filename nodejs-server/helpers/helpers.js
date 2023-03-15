@@ -353,7 +353,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       chunk.data[k] = chunk.data[k].slice(lowIndex, highIndex+1)
     }
     /// append levels to the data document if it has been filtered on 
-    if(metadata[0].levels) {
+    if(metadata[0] && metadata[0].levels) {
       chunk.levels = metadata[0].levels.slice(lowIndex, highIndex+1)
     }
   }
@@ -373,10 +373,10 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
       } else{
         return -1
       }
-    })
+    }).filter(x => x!==-1)
 
     /// bail out if every level is marked for deletion
-    if(dcopy.every(x => x !== -1)){
+    if(dcopy.length==chunk.data[0].length){
       return false
     }
 
