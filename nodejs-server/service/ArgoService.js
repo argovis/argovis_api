@@ -180,30 +180,63 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection))
 
-    Promise.all([metafilter, datafilter])
-        .then(search_result => {
+    // Promise.all([metafilter, datafilter])
+    //     .then(search_result => {
 
-          let stub = function(data, metadata){
-              // given a data and corresponding metadata document,
-              // return the record that should be returned when the compression=minimal API flag is set
-              // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+    //       let stub = function(data, metadata){
+    //           // given a data and corresponding metadata document,
+    //           // return the record that should be returned when the compression=minimal API flag is set
+    //           // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
               
-              let sourceset = new Set(data.source.map(x => x.source).flat())
+    //           let sourceset = new Set(data.source.map(x => x.source).flat())
 
-              return [
-                data['_id'], 
-                data.geolocation.coordinates[0], 
-                data.geolocation.coordinates[1], 
-                data.timestamp,
-                Array.from(sourceset)
-              ]
-          }
+    //           return [
+    //             data['_id'], 
+    //             data.geolocation.coordinates[0], 
+    //             data.geolocation.coordinates[1], 
+    //             data.timestamp,
+    //             Array.from(sourceset)
+    //           ]
+    //       }
 
-          let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res, stub)
+    //       let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res, stub)
 
-          resolve([search_result[1], postprocess])
+    //       resolve([search_result[1], postprocess])
 
-        })
+    //     })
+
+    let xx = []
+    Promise.all([metafilter, datafilter])
+        .then(async search_result => {
+
+          await search_result[1].eachAsync(
+            async item => {
+              let stub = function(data, metadata){
+                  // given a data and corresponding metadata document,
+                  // return the record that should be returned when the compression=minimal API flag is set
+                  // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+                  
+                  let sourceset = new Set(data.source.map(x => x.source).flat())
+
+                  return [
+                    data['_id'], 
+                    data.geolocation.coordinates[0], 
+                    data.geolocation.coordinates[1], 
+                    data.timestamp,
+                    Array.from(sourceset)
+                  ]
+              }
+
+              // let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result[0], res, stub)
+              // resolve([Promise.resolve(item), postprocess])
+              xx.push(helpers.postprocess_stream(item, [], pp_params, stub))
+              return item._id
+            },
+            {
+              parallel: 4 
+            }
+          )
+        }).then(() => {resolve(xx)})
   });
 }
 
