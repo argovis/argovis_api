@@ -3,6 +3,8 @@ const argo = require('../models/argo');
 const summaries = require('../models/summary');
 const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
+const { pipeline } = require('node:stream/promises');
+const JSONStream = require('JSONStream')
 
 /**
  * Summarizes some float-level statistics for Argo BGC floats.
@@ -205,38 +207,46 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
 
     //     })
 
-    let xx = []
     Promise.all([metafilter, datafilter])
-        .then(async search_result => {
+        .then(search_result => {
 
-          await search_result[1].eachAsync(
-            async item => {
-              let stub = function(data, metadata){
-                  // given a data and corresponding metadata document,
-                  // return the record that should be returned when the compression=minimal API flag is set
-                  // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
-                  
-                  let sourceset = new Set(data.source.map(x => x.source).flat())
+          let stub = function(data, metadata){
+              // given a data and corresponding metadata document,
+              // return the record that should be returned when the compression=minimal API flag is set
+              // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+              
+              let sourceset = new Set(data.source.map(x => x.source).flat())
 
-                  return [
-                    data['_id'], 
-                    data.geolocation.coordinates[0], 
-                    data.geolocation.coordinates[1], 
-                    data.timestamp,
-                    Array.from(sourceset)
-                  ]
+              return [
+                data['_id'], 
+                data.geolocation.coordinates[0], 
+                data.geolocation.coordinates[1], 
+                data.timestamp,
+                Array.from(sourceset)
+              ]
+          }
+
+          async function run() {
+            await pipeline(
+              search_result[1],
+              async function* (source, { signal }) {
+                source.setEncoding('utf8');  // Work with strings rather than `Buffer`s.
+                for await (const chunk of source) {
+                  yield await stub(chunk, { signal });
+                }
+              },
+              JSONStream.stringify(),
+              res.type('json'),
+              (err) => {
+                if(err){
+                  console.log(err.message)
+                }
               }
+            )
+          }
 
-              // let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result[0], res, stub)
-              // resolve([Promise.resolve(item), postprocess])
-              xx.push(helpers.postprocess_stream(item, [], pp_params, stub))
-              return item._id
-            },
-            {
-              parallel: 4 
-            }
-          )
-        }).then(() => {resolve(xx)})
+          run().catch(console.error);            
+        })
   });
 }
 
