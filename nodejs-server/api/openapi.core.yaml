@@ -488,7 +488,7 @@ paths:
           type: string
           enum:
           - name
-          - data_keys
+          - data
           - metadata
       responses:
         "200":
@@ -1076,7 +1076,7 @@ paths:
           - woceline
           - cchdo_cruise
           - source
-          - data_keys
+          - data
           - metadata
       responses:
         "200":
