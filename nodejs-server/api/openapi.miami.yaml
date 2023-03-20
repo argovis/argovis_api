@@ -285,7 +285,7 @@ paths:
           enum:
           - wmo
           - platform
-          - data_keys
+          - data
           - metadata
       responses:
         "200":
