@@ -1380,7 +1380,7 @@ paths:
           enum:
           - platform
           - source
-          - data_keys
+          - data
           - metadata
           - platform_type
       responses:
