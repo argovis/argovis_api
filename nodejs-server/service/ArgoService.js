@@ -55,7 +55,7 @@ exports.argoVocab = function(parameter) {
       resolve(['argo_core', 'argo_bgc', 'argo_deep'])
       return
     }
-    if(parameter == 'data_keys'){
+    if(parameter == 'data'){
       const query = summaries.find({"_id":"argo_data_keys"}).lean()
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
     }

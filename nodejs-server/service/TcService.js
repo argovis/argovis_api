@@ -133,9 +133,9 @@ exports.findTCmeta = function(res, id,name) {
  **/
 exports.tcVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    if(parameter == 'data_keys'){
-      const query = summaries.find({"_id":"tc_data_keys"}).lean()
-      query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+    if(parameter == 'data'){
+      resolve(["surface_pressure", "wind"])
+      return
     }
 
     if(parameter == 'metadata'){
