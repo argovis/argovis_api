@@ -72,6 +72,7 @@ module.exports.findArgo = function findArgo (req, res, next, id, startDate, endD
       utils.writeJson(res, response, response.code);
     })
     .catch(function (response) {
+      console.log(response)
       utils.writeJson(res, response);
     });
 };

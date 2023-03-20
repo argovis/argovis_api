@@ -1,5 +1,6 @@
 const geojsonArea = require('@mapbox/geojson-area');
-const Transform = require('stream').Transform
+// const Transform = require('stream').Transform
+const pipe = require('pipeline-pipe');
 const { pipeline } = require('stream');
 const JSONStream = require('JSONStream')
 
@@ -233,7 +234,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <stub>: function accepting one data document and its corresponding metadata document, returns appropriate representation for the compression=minimal flag.
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
-
+  console.log(chunk, metadata, pp_params)
   // immediately return a minimal stub if requested and data has been projected off
   if(pp_params.compression == 'minimal' && !chunk.hasOwnProperty('data')){
     return stub(chunk, metadata)
@@ -408,9 +409,28 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
 
   let nDocs = 0
 
-  const postprocess = pp_params.suppress_meta ? new Transform({
-    objectMode: true,
-    transform(chunk, encoding, next){
+  // simple working example
+  // let postprocess = !pp_params.suppress_meta ? 
+  //   pipe(async chunk => {
+  //     // munge the chunk and push it downstream if it isn't rejected.
+  //     // let doc = null
+  //     // if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+  //     //     /// ie dont even bother with post if we've exceeded our mostrecent cap
+  //     //     doc = module.exports.postprocess_stream(chunk, [], pp_params, stub)
+  //     // }
+  //     // if(doc){
+  //     //   if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+  //     //     return(doc)
+  //     //   }
+  //     //   nDocs++
+  //     // }
+  //     return(module.exports.postprocess_stream(chunk, [], pp_params, stub))
+  //   }, 8) :
+  //   pipe(async chunk => {return(stub(chunk))})
+
+  // marginally less trivial mostly working example
+  let postprocess = pp_params.suppress_meta ? 
+    pipe(async chunk => {
       // munge the chunk and push it downstream if it isn't rejected.
       let doc = null
       if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
@@ -419,46 +439,85 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       }
       if(doc){
         if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
-          this.push(doc)
+          return(doc)
         }
         nDocs++
       }
-      next()
-    }
-  }) : new Transform({
-    objectMode: true,
-    transform(chunk, encoding, next){
+      return null
+    }, 8) :
+    pipe(async chunk => {
       // wait on a promise to get this chunk's metadata back
-      module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
-        .then(meta => {
-          // keep track of new metadata docs so we don't look them up twice
-          for(let i=0; i<meta.length; i++){
-            if(!search_result[0].find(x => x._id == meta[i]._id)) search_result[0].push(meta[i])
-          }
-          // munge the chunk and push it downstream if it isn't rejected.
-          let doc = null
-          if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
-              /// ie dont even bother with post if we've exceeded our mostrecent cap
-              doc = module.exports.postprocess_stream(chunk, meta, pp_params, stub)
-          }
-          if(doc){
-            if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
-              this.push(doc)
-            }
-            nDocs++
-          }
-          next()
-        })
-    }
-  });
+      meta = await module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
+      // keep track of new metadata docs so we don't look them up twice
+      for(let i=0; i<meta.length; i++){
+        if(!search_result[0].find(x => x._id == meta[i]._id)) search_result[0].push(meta[i])
+      }
+      // munge the chunk and push it downstream if it isn't rejected.
+      let doc = null
+      if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          /// ie dont even bother with post if we've exceeded our mostrecent cap
+          doc = module.exports.postprocess_stream(chunk, meta, pp_params, stub)
+      }
+      if(doc){
+        if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          return(doc)
+        }
+        nDocs++
+      }
+      return null
+    }, 8)  
+
+  // const postprocess = pp_params.suppress_meta ? new Transform({
+  //   objectMode: true,
+  //   transform(chunk, encoding, next){
+  //     // munge the chunk and push it downstream if it isn't rejected.
+  //     let doc = null
+  //     if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+  //         /// ie dont even bother with post if we've exceeded our mostrecent cap
+  //         doc = module.exports.postprocess_stream(chunk, [], pp_params, stub)
+  //     }
+  //     if(doc){
+  //       if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+  //         this.push(doc)
+  //       }
+  //       nDocs++
+  //     }
+  //     next()
+  //   }
+  // }) : new Transform({
+  //   objectMode: true,
+  //   transform(chunk, encoding, next){
+  //     // wait on a promise to get this chunk's metadata back
+  //     module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
+  //       .then(meta => {
+  //         // keep track of new metadata docs so we don't look them up twice
+  //         for(let i=0; i<meta.length; i++){
+  //           if(!search_result[0].find(x => x._id == meta[i]._id)) search_result[0].push(meta[i])
+  //         }
+  //         // munge the chunk and push it downstream if it isn't rejected.
+  //         let doc = null
+  //         if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+  //             /// ie dont even bother with post if we've exceeded our mostrecent cap
+  //             doc = module.exports.postprocess_stream(chunk, meta, pp_params, stub)
+  //         }
+  //         if(doc){
+  //           if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+  //             this.push(doc)
+  //           }
+  //           nDocs++
+  //         }
+  //         next()
+  //       })
+  //   }
+  // });
   
-  postprocess._flush = function(callback){
-    if(nDocs == 0){
-      res.status(404)
-      this.push({"code":404, "message": "No documents found matching search."})
-    }
-    return callback()
-  }
+  // postprocess._flush = function(callback){
+  //   if(nDocs == 0){
+  //     res.status(404)
+  //     this.push({"code":404, "message": "No documents found matching search."})
+  //   }
+  //   return callback()
+  // }
 
   return postprocess
 }
@@ -705,7 +764,7 @@ module.exports.data_pipeline = function(res, pipefittings){
     res.type('json'),
     (err) => {
       if(err){
-        console.log(err.message)
+        console.log(err)
       }
     }
   )
