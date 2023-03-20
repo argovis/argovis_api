@@ -121,7 +121,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /tc/vocabulary", function () {
       it("check tc data_keys vocab", async function () {
-        const response = await request.get("/tc/vocabulary?parameter=data_keys").set({'x-argokey': 'developer'});
+        const response = await request.get("/tc/vocabulary?parameter=data").set({'x-argokey': 'developer'});
         expect(response.body).to.have.members(["surface_pressure", "wind"]) 
       });
     });

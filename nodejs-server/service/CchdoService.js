@@ -156,7 +156,7 @@ exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
  **/
 exports.cchdoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    if(parameter == 'data_keys'){
+    if(parameter == 'data'){
       // data_keys is a summary lookup
       const query = summaries.find({"_id":"cchdo_data_keys"}).lean()
       query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
