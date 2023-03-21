@@ -3,7 +3,6 @@ const argo = require('../models/argo');
 const summaries = require('../models/summary');
 const helpers = require('../helpers/helpers')
 const geojsonArea = require('@mapbox/geojson-area');
-const { pipeline } = require('node:stream/promises');
 const JSONStream = require('JSONStream')
 
 /**
@@ -206,47 +205,6 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
           resolve([search_result[1], postprocess])
 
         })
-
-    // Promise.all([metafilter, datafilter])
-    //     .then(search_result => {
-
-    //       let stub = function(data, metadata){
-    //           // given a data and corresponding metadata document,
-    //           // return the record that should be returned when the compression=minimal API flag is set
-    //           // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
-              
-    //           let sourceset = new Set(data.source.map(x => x.source).flat())
-
-    //           return [
-    //             data['_id'], 
-    //             data.geolocation.coordinates[0], 
-    //             data.geolocation.coordinates[1], 
-    //             data.timestamp,
-    //             Array.from(sourceset)
-    //           ]
-    //       }
-
-    //       async function run() {
-    //         await pipeline(
-    //           search_result[1],
-    //           async function* (source, { signal }) {
-    //             source.setEncoding('utf8');  // Work with strings rather than `Buffer`s.
-    //             for await (const chunk of source) {
-    //               yield await stub(chunk, { signal });
-    //             }
-    //           },
-    //           JSONStream.stringify(),
-    //           res.type('json'),
-    //           (err) => {
-    //             if(err){
-    //               console.log(err.message)
-    //             }
-    //           }
-    //         )
-    //       }
-
-    //       run().catch(console.error);            
-    //     })
   });
 }
 

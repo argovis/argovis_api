@@ -58,15 +58,6 @@ module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
 
 module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange) {
   Profiles.findArgo(res, id, startDate, endDate, polygon, multipolygon, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange)
-    // .then(function (response) {
-    //   utils.writeJson(res, response, 200);
-    // },
-    // function (response) {
-    //   utils.writeJson(res, response, response.code);
-    // })
-    // .catch(function (response) {
-    //   utils.writeJson(res, response);
-    // });
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
