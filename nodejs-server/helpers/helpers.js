@@ -422,7 +422,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
         }
       }
       return null
-    }, 8) :
+    }, 16) :
     pipe(async chunk => {
       // wait on a promise to get this chunk's metadata back
       meta = await module.exports.locate_meta(chunk['metadata'], search_result[0], metaModel)
@@ -444,7 +444,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
         }
       }
       return null
-    }, 8)  
+    }, 16)  
 
   return postprocess
 }
@@ -480,23 +480,11 @@ module.exports.locate_meta = function(meta_ids, meta_list, meta_model){
 module.exports.token_xform = function(res){
   // transform stream for token validation
 
-  let nDocs = 0
-  const postprocess = new Transform({
-    objectMode: true,
-    transform(chunk, encoding, next){
-      this.push({tokenValid: chunk.tokenValid > 0})
-      nDocs++
-      next()
-    }
-  });
-  
-  postprocess._flush = function(callback){
-    if(nDocs == 0){
-      this.push({tokenValid: false})
-    }
-    return callback()
-  }
-
+  let postprocess = pipe(async chunk => {
+    res.status(200)
+    return({tokenValid: chunk.tokenValid > 0})
+  })
+ 
   return postprocess
 }
 

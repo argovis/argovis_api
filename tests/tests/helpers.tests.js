@@ -119,7 +119,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /token", function () {
       it("check token fetching - invalid", async function () {
         const response = await request.get("/token?token=xxx").set({'x-argokey': 'developer'});
-        expect(response.body[0]).to.deep.equal({'tokenValid': false})
+        expect(response.status).to.eql(404);
       });
     });
 }
