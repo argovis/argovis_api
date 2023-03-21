@@ -95,7 +95,7 @@ exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,
           }
 
           let postprocess = helpers.post_xform(tc['tcMeta'], pp_params, search_result, res, stub)
-
+          res.status(404) // 404 by default
           resolve([search_result[1], postprocess])
 
         })
@@ -121,6 +121,7 @@ exports.findTCmeta = function(res, id,name) {
 
     const query = tc['tcMeta'].aggregate([{$match:match}]);
     let postprocess = helpers.meta_xform(res)
+    res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
   });
 }

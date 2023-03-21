@@ -406,8 +406,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 
 module.exports.post_xform = function(metaModel, pp_params, search_result, res, stub){
 
-  let nDocs = 0
-
   let postprocess = pp_params.suppress_meta ? 
     pipe(async chunk => {
       // munge the chunk and push it downstream if it isn't rejected.
@@ -418,9 +416,9 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       }
       if(doc){
         if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          res.status(200)
           return(doc)
         }
-        nDocs++
       }
       return null
     }, 8) :
@@ -439,9 +437,9 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       }
       if(doc){
         if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
+          res.status(200)
           return(doc)
         }
-        nDocs++
       }
       return null
     }, 8)  
@@ -452,24 +450,11 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
 module.exports.meta_xform = function(res){
   // transform stream that only looks for 404s
 
-  let nDocs = 0
-  const postprocess = new Transform({
-    objectMode: true,
-    transform(chunk, encoding, next){
-      this.push(chunk)
-      nDocs++
-      next()
-    }
-  });
-  
-  postprocess._flush = function(callback){
-    if(nDocs == 0){
-      res.status(404)
-      this.push({"code":404, "message": "No documents found matching search."})
-    }
-    return callback()
-  }
-
+  let postprocess = pipe(async chunk => {
+    res.status(200)
+    return(chunk)
+  })
+    
   return postprocess
 }
 

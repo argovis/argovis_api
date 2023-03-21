@@ -118,7 +118,7 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
           }
 
           let postprocess = helpers.post_xform(cchdo['cchdoMeta'], pp_params, search_result, res, stub)
-          
+          res.status(404) // 404 by default
           resolve([search_result[1], postprocess])
           
         })
@@ -144,6 +144,7 @@ exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
 
     const query = cchdo['cchdoMeta'].aggregate([{$match:match}]);
     let postprocess = helpers.meta_xform(res)
+    res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
   });
 }

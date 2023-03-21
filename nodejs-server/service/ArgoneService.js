@@ -88,6 +88,7 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
 
           let postprocess = helpers.post_xform(argone['argoneMeta'], pp_params, search_result, res, stub)
 
+          res.status(404) // 404 by default
           resolve([search_result[1], postprocess])
 
         })
@@ -111,6 +112,7 @@ exports.findargoneMeta = function(res,id) {
     }
     const query = argone['argoneMeta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
+    res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
   });
 }

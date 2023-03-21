@@ -198,9 +198,9 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
                 Array.from(sourceset)
               ]
           }
-
           let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res, stub)
 
+          res.status(404) // 404 by default
           resolve([search_result[1], postprocess])
 
         })
@@ -224,6 +224,7 @@ exports.findArgometa = function(res, id,platform) {
 
     const query = argo['argoMeta'].aggregate([{$match:match}]);
     let postprocess = helpers.meta_xform(res)
+    res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
   });
 }
