@@ -405,7 +405,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 }
 
 module.exports.post_xform = function(metaModel, pp_params, search_result, res, stub){
-
+  let nDocs = 0
   let postprocess = pp_params.suppress_meta ? 
     pipe(async chunk => {
       // munge the chunk and push it downstream if it isn't rejected.
@@ -417,6 +417,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       if(doc){
         if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
           res.status(200)
+          nDocs++
           return(doc)
         }
       }
@@ -438,6 +439,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
       if(doc){
         if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
           res.status(200)
+          nDocs++
           return(doc)
         }
       }
