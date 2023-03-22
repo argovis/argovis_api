@@ -539,8 +539,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
     'kg21': new Date("2005-01-15T00:00:00Z"),
     'rg09': new Date("2004-01-15T00:00:00Z"),
     'tc': new Date("1851-06-25T00:00:00Z"),
-    "trajectories": new Date("2001-01-04T22:46:33Z"),
-    "argone": new Date("1997-07-28T20:26:20.002Z") // artificial, set to apply same constraint as argo
+    "trajectories": new Date("2001-01-04T22:46:33Z")
   }
 
   let final_records = {
@@ -550,8 +549,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
     'kg21': new Date("2020-12-15T00:00:00Z"),
     'rg09': new Date("2022-05-15T00:00:00Z"),
     'tc': new Date("2020-12-25T12:00:00Z"),
-    'trajectories': new Date("2021-01-01T01:13:26Z"),
-    'argone': new Date()
+    'trajectories': new Date("2021-01-01T01:13:26Z")
   }
 
   /// determine path steps
@@ -561,7 +559,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
-  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'argone', 'trajectories']
+  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories']
 
   if(standard_routes.includes(path[0])){
     //// metadata routes
