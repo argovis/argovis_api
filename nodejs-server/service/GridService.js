@@ -23,6 +23,7 @@ exports.findgridMeta = function(res,id) {
     }
     const query = Grid[gridCollection + 'Meta'].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
+    res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
   });
 }
@@ -103,7 +104,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
               ]
           }
           let postprocess = helpers.post_xform(Grid[gridName+'Meta'], pp_params, search_result, res, stub)
-
+          res.status(404) // 404 by default
           resolve([search_result[1], postprocess])
         })
   });

@@ -23,6 +23,7 @@ exports.drifterMetaSearch = function(res,id,platform,wmo) {
 
     const query = Drifter['drifterMeta'].aggregate([{$match:match}]);
     let postprocess = helpers.meta_xform(res)
+    res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
   });
 }
@@ -126,7 +127,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,c
           }
 
           let postprocess = helpers.post_xform(Drifter['drifterMeta'], pp_params, search_result, res, stub)
-
+          res.status(404) // 404 by default
           resolve([search_result[1], postprocess])
 
         })

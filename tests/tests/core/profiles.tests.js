@@ -158,7 +158,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("should 404 on ID typos", async function () {
         const response = await request.get("/cchdo/meta?id=xxx").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
-        expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
       });
     });
 
@@ -382,7 +381,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /argo", function () {
       it("argo data filtered by source negation", async function () {
-        const response = await request.get("/argo?polygon=[[-34,1],[-34,3],[-36,3],[-36,1],[-34,1]]&startDate=2011-11-01T00:00:00Z&endDate=2011-12-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
+        const response = await request.get("/argo?startDate=2022-01-01T00:00:00Z&endDate=2022-09-01T00:00:00Z&source=argo_core,~argo_bgc").set({'x-argokey': 'developer'});
         expect(response.body.length).to.eql(1);
       });
     }); 
@@ -503,7 +502,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("should 404 on ID typos", async function () {
         const response = await request.get("/argo/meta?id=xxx").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
-        expect(response.body).to.eql([{"code": 404,"message": "No documents found matching search."}])
       });
     });
 

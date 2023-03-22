@@ -17,6 +17,7 @@ exports.validateToken = function(res, token) {
 
     const query = userModel.aggregate([{$match:match}]);
     let postprocess = helpers.token_xform(res)
+    res.status(404)
     resolve([query.cursor(), postprocess])
   });
 }
