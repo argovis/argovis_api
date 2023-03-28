@@ -2,7 +2,7 @@
    "openapi": "3.0.3",
    "info": {
       "title": "Argovis API",
-      "description": "REST API for Argo profiles, platforms, selections, BGC data, gridded products, etc.",
+      "description": "REST API for Global Drifter Program data",
       "contact": {
          "name": "Argovis Collaboration",
          "email": "argovis@colorado.edu",
@@ -20,10 +20,10 @@
    },
    "servers": [
       {
-         "url": "http://54.90.68.158:8081/"
+         "url": "http://100.26.32.238:8080/"
       },
       {
-         "url": "/"
+         "url": "/dapi"
       }
    ],
    "security": [
