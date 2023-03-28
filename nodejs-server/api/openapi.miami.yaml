@@ -1,8 +1,7 @@
 openapi: 3.0.3
 info:
   title: Argovis API
-  description: "REST API for Argo profiles, platforms, selections, BGC data, gridded\
-    \ products, etc."
+  description: REST API for Global Drifter Program data
   contact:
     name: Argovis Collaboration
     url: https://argovis.colorado.edu
@@ -15,8 +14,8 @@ externalDocs:
   description: Find us on GitHub
   url: https://github.com/argovis/argovis_api
 servers:
-- url: http://54.90.68.158:8081/
-- url: /
+- url: http://100.26.32.238:8080/
+- url: /dapi
 security:
 - name: []
 tags:
@@ -285,7 +284,7 @@ paths:
           enum:
           - wmo
           - platform
-          - data_keys
+          - data
           - metadata
       responses:
         "200":
