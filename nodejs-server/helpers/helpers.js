@@ -241,6 +241,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 
   // declare some variables at scope
   let keys = []       // data keys to keep when filtering down data
+  let qclist = {}     // kv with keys matching keys array above, values listing allowed QC flags for that variable
   let notkeys = []    // data keys that disqualify a document if present
   let coerced_pressure = false
   let metadata_only = false
@@ -264,14 +265,30 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
   metadata = m
 
-  // determine which data keys should be kept or tossed, if necessary
+  // determine which data keys should be kept or tossed, if necessary, and parse qc filtering requests
   if(pp_params.data){
-    keys = pp_params.data.filter(e => e.charAt(0)!='~')
-    notkeys = pp_params.data.filter(e => e.charAt(0)=='~').map(k => k.substring(1))
+    let current_key = ''
+    for(let i=0; i<pp_params.data.length; i++){
+      if(pp_params.data[i].charAt[0]!='~'){
+        /// keys and qc allowed list
+        if(!parseInt(pp_params.data[i]) || (parseInt(pp_params.data[i])>90)) { // numbers in the data string are lists of allowed qc flags - excpet for argone, which uses forecast days as data keys starting at 90
+          current_key = pp_params.data[i]
+          keys.push(pp_params.data[i])
+        } else {
+          if(qclist.hasOwnProperty(current_key)){
+            qclist[current_key].push(parseInt(pp_params.data[i]))
+          } else {
+            qclist[current_key] = [parseInt(pp_params.data[i])]
+          }
+        }
+      } else{
+        notkeys.push(pp_params.data[i].substring(1))
+      }
+    }
     if(keys.includes('except-data-values')){
       metadata_only = true
       keys.splice(keys.indexOf('except-data-values'))
-    }
+    } 
   }
 
   // identify data_keys
@@ -295,24 +312,36 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // filter down to requested data
-  if(pp_params.data && !keys.includes('all')){
+  if(pp_params.data){
     if(!chunk.hasOwnProperty('data_info')){
       chunk.data_info = dinfo
     }
     let keyset = JSON.parse(JSON.stringify(chunk.data_info[0]))
     // abandon profile if a requested data key is missing
-    if(!keys.every(val => keyset.includes(val))){
+    if(!keys.includes('all') && !keys.every(val => keyset.includes(val))){
       return false
     }
     for(let i=0; i<keyset.length; i++){
       let k = keyset[i]
       let kIndex = chunk.data_info[0].indexOf(k)
-      if(!keys.includes(k)){
+      if(!keys.includes('all') && !keys.includes(k)){
         // drop it if we didn't ask for it
         chunk.data.splice(kIndex,1)
         chunk.data_info[0].splice(kIndex,1)
         chunk.data_info[2].splice(kIndex,1)
       } else {
+        // suppress levels that don't have a suitable qc flag
+        if( (qclist.hasOwnProperty(k) || qclist.hasOwnProperty('all')) && keyset.includes(k+'_argoqc')){
+          let qcIndex = chunk.data_info[0].indexOf(k+'_argoqc')
+          let allowedQC = qclist.hasOwnProperty('all') ? qclist['all'] : qclist[k]
+          chunk.data[kIndex] = chunk.data[kIndex].map((x, ix) => {
+            if(allowedQC.includes(chunk.data[qcIndex][ix])){
+              return x
+            } else {
+              return null
+            }
+          })
+        }
         // abandon profile if a requested measurement is all null
         if(chunk.data[kIndex].every(x => x === null)){
           return false
