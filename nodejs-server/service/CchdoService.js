@@ -70,7 +70,8 @@ exports.findCCHDO = function(res, id,startDate,endDate,polygon,multipolygon,cent
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
-        mostrecent: mostrecent
+        mostrecent: mostrecent,
+        qcsuffix: '_woceqc'
     }
 
     // can we afford to project data documents down to a subset in aggregation?

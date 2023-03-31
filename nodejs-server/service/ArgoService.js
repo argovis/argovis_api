@@ -153,7 +153,8 @@ exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,cente
         presRange: presRange,
         mostrecent: mostrecent,
         always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
-        suppress_meta: compression=='minimal' // don't need to look up argo metadata if making a minimal request
+        suppress_meta: compression=='minimal', // don't need to look up argo metadata if making a minimal request
+        qcsuffix: '_argoqc'
     }
 
     // can we afford to project data documents down to a subset in aggregation?
