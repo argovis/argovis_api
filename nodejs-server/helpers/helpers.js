@@ -271,7 +271,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     for(let i=0; i<pp_params.data.length; i++){
       if(pp_params.data[i].charAt[0]!='~'){
         /// keys and qc allowed list
-        if(!parseInt(pp_params.data[i]) || (parseInt(pp_params.data[i])>90)) { // numbers in the data string are lists of allowed qc flags - excpet for argone, which uses forecast days as data keys starting at 90
+        if((!parseInt(pp_params.data[i]) && parseInt(pp_params.data[i])!==0) || (parseInt(pp_params.data[i])>=90)) { // numbers in the data string are lists of allowed qc flags - excpet for argone, which uses forecast days as data keys starting at 90
           current_key = pp_params.data[i]
           keys.push(pp_params.data[i])
         } else {
@@ -288,7 +288,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     if(keys.includes('except-data-values')){
       metadata_only = true
       keys.splice(keys.indexOf('except-data-values'))
-    } 
+    }
   }
 
   // identify data_keys
@@ -321,6 +321,29 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     if(!keys.includes('all') && !keys.every(val => keyset.includes(val))){
       return false
     }
+    // first pass: qc filtration
+    for(let i=0; i<keyset.length; i++){
+      let k = keyset[i]
+      let kIndex = chunk.data_info[0].indexOf(k)
+      // suppress levels that don't have a suitable qc flag
+      if( (qclist.hasOwnProperty(k) || qclist.hasOwnProperty('all')) && pp_params.hasOwnProperty('qcsuffix') && keyset.includes(k+pp_params.qcsuffix)){
+        let qcIndex = chunk.data_info[0].indexOf(k+pp_params.qcsuffix)
+        let allowedQC = qclist.hasOwnProperty('all') ? qclist['all'] : qclist[k]
+        chunk.data[kIndex] = chunk.data[kIndex].map((x, ix) => {
+          console.log(9999, qcIndex, ix, chunk.data_info)
+          if(allowedQC.includes(chunk.data[qcIndex][ix])){
+            return x
+          } else {
+            return null
+          }
+        })
+      }
+      // abandon profile if a requested measurement is all null
+      if(!keys.includes('all') && chunk.data[kIndex].every(x => x === null)){
+        return false
+      }
+    }
+    // second pass: drop things we didn't ask for
     for(let i=0; i<keyset.length; i++){
       let k = keyset[i]
       let kIndex = chunk.data_info[0].indexOf(k)
@@ -329,24 +352,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
         chunk.data.splice(kIndex,1)
         chunk.data_info[0].splice(kIndex,1)
         chunk.data_info[2].splice(kIndex,1)
-      } else {
-        // suppress levels that don't have a suitable qc flag
-        if( (qclist.hasOwnProperty(k) || qclist.hasOwnProperty('all')) && keyset.includes(k+'_argoqc')){
-          let qcIndex = chunk.data_info[0].indexOf(k+'_argoqc')
-          let allowedQC = qclist.hasOwnProperty('all') ? qclist['all'] : qclist[k]
-          chunk.data[kIndex] = chunk.data[kIndex].map((x, ix) => {
-            if(allowedQC.includes(chunk.data[qcIndex][ix])){
-              return x
-            } else {
-              return null
-            }
-          })
-        }
-        // abandon profile if a requested measurement is all null
-        if(chunk.data[kIndex].every(x => x === null)){
-          return false
-        }
-      }
+      } 
     }
     if(Object.keys(chunk.data).length === (coerced_pressure ? 1 : 0)){
       return false // deleted all our data, bail out

@@ -161,6 +161,29 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /cchdo", function () {
+      it("should reduce on qc filtering correctly", async function () {
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=bottle_salinity_btl,2").set({'x-argokey': 'developer'});
+        index = response.body[0].data_info[0].indexOf('bottle_salinity_btl')
+        expect(response.body[0].data[index]).to.eql([34.0305,34.1203,34.157,34.1575,34.5576,34.6604,34.7048,34.7068]);
+      });
+    });
+
+    describe("GET /cchdo", function () {
+      it("should handle qc filtering on all correctly", async function () {
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all,2").set({'x-argokey': 'developer'});
+        index = response.body[0].data_info[0].indexOf('bottle_salinity_btl')
+        expect(response.body[0].data[index].filter(x => x !== null)).to.eql([34.0305,34.1203,34.157,34.1575,34.5576,34.6604,34.7048,34.7068]);
+      });
+    });
+
+    describe("GET /cchdo", function () {
+      it("drop on no acceptable qc", async function () {
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=bottle_salinity_btl,9").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
+
     // argo
 
     describe("GET /argo", function () {
@@ -509,6 +532,29 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("edgecase 20230315", async function () {
         const response = await request.get("/argo?id=2902857_001&presRange=80,100&compression=minimal").set({'x-argokey': 'developer'});
         expect(response.body).to.eql([['2902857_001',152.12710166666668,42.39075666666667,'2022-07-05T12:01:51.999Z',[ 'argo_bgc', 'argo_core' ]]]);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("check QC requirements correctly suppress bad values", async function () {
+        const response = await request.get("/argo?id=2902857_001&data=bbp700,pressure").set({'x-argokey': 'developer'});
+        expect(response.body[0].data[0][6]).to.eql(0.004465);
+        const responseqc = await request.get("/argo?id=2902857_001&data=bbp700,1,pressure").set({'x-argokey': 'developer'});
+        expect(responseqc.body[0].data[0][6]).to.eql(null);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("profile should drop if no acceptable qc", async function () {
+        const response = await request.get("/argo?id=13857_068&data=temperature,2").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("data=all should cope with qc filters", async function () {
+        const response = await request.get("/argo?id=2902857_002&data=all,0,1").set({'x-argokey': 'developer'});
+        expect(response.body[0].data[4][0]).to.eql(null);
       });
     });
   }

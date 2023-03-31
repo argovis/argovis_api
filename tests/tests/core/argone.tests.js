@@ -42,9 +42,9 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /argone", function () {
       it("select correct data with data filter", async function () {
-        const response = await request.get("/argone?id=-178_-44_-178.0_-44.0&data=180").set({'x-argokey': 'developer'});   
-        expect(response.body[0].data).to.eql([[0.05377610363734324]])
-        expect(response.body[0].data_info[0]).to.eql(['180'])
+        const response = await request.get("/argone?id=-178_-44_-178.0_-44.0&data=90").set({'x-argokey': 'developer'});   
+        expect(response.body[0].data).to.eql([[0.11538461538461539]])
+        expect(response.body[0].data_info[0]).to.eql(['90'])
       });
     });
 
