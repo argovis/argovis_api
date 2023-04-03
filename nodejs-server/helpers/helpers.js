@@ -330,7 +330,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
         let qcIndex = chunk.data_info[0].indexOf(k+pp_params.qcsuffix)
         let allowedQC = qclist.hasOwnProperty('all') ? qclist['all'] : qclist[k]
         chunk.data[kIndex] = chunk.data[kIndex].map((x, ix) => {
-          console.log(9999, qcIndex, ix, chunk.data_info)
           if(allowedQC.includes(chunk.data[qcIndex][ix])){
             return x
           } else {
@@ -339,7 +338,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
         })
       }
       // abandon profile if a requested measurement is all null
-      if(!keys.includes('all') && chunk.data[kIndex].every(x => x === null)){
+      if(!keys.includes('all') && keys.includes(k) && chunk.data[kIndex].every(x => x === null)){
         return false
       }
     }
