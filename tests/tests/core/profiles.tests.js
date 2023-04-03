@@ -440,7 +440,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argo/vocabulary", function () {
       it("get list of argo metadata groups", async function () {
         const response = await request.get("/argo/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
-         expect(response.body).to.have.members(["2902857_m0", "13857_m0", '1900959_m0']) 
+         expect(response.body).to.have.members(["2902857_m0", "13857_m0", '1900959_m0', '4901283_m0']) 
       });
     });
 
@@ -517,7 +517,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argo", function () {
       it("should return profiles in presRange, even if not returning actual data levels", async function () {
         const response = await request.get("/argo?presRange=1000,2000").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(1);
+        expect(response.body.length).to.eql(2);
       });
     });
 
@@ -555,6 +555,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       it("data=all should cope with qc filters", async function () {
         const response = await request.get("/argo?id=2902857_002&data=all,0,1").set({'x-argokey': 'developer'});
         expect(response.body[0].data[4][0]).to.eql(null);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("edgecase 230403 - all nulls in one data variable shouldnt confound searching for another", async function () {
+        const response = await request.get("/argo?id=4901283_003&data=temperature").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1);
       });
     });
   }
