@@ -33,10 +33,10 @@ const CcmpSchema = Schema({
   data: [{type: [Number], required: false}]
 });
 
-const DrifterMetaSchema = Schema({
+const CcmpMetaSchema = Schema({
   _id: {type: String, required: true},
   data_type: {type: String, required: true},
-  data_info: [{type:[Schema.Types.Mixed], required: true}]
+  data_info: [{type:[Schema.Types.Mixed], required: true}],
   date_updated_argovis: {type: Date, required: true},  
   source: {type: sourceinfo, required: true}
   

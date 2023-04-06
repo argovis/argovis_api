@@ -88,7 +88,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter, projection))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter, projection, false))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

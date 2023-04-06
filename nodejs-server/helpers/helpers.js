@@ -150,11 +150,12 @@ module.exports.request_sanitation = function(polygon, center, radius, multipolyg
   return false
 }
 
-module.exports.datatable_stream = function(model, params, local_filter, projection, foreign_docs){
+module.exports.datatable_stream = function(model, params, local_filter, projection, istimeseries, foreign_docs){
   // given <model>, a mongoose model pointing to a data collection,
   // <params> the return object from parameter_sanitization,
   // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
   // <projection> a list of data document keys to project down to at the end of the search
+  // <istimeseries>, bool indicating if time searches should be done per the timeseries schema
   // and <foreign_docs>, an array of documents matching a query on the metadata collection which should constrain which data collection docs we return,
   // return a cursor over that which matches the above
 
@@ -171,13 +172,17 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   /// spacetime match construction
   if(params.startDate || params.endDate || params.polygon || params.multipolygon){
     spacetimeMatch[0] = {$match: {}}
-    if (params.startDate && params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lt: params.endDate}
-    } else if (params.startDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
-    } else if (params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$lt: params.endDate}
+
+    if(!istimeseries) {
+      if (params.startDate && params.endDate){
+        spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lt: params.endDate}
+      } else if (params.startDate){
+        spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
+      } else if (params.endDate){
+        spacetimeMatch[0]['$match']['timestamp'] = {$lt: params.endDate}
+      }
     }
+
     if(params.polygon) {
       spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
     }
@@ -190,6 +195,18 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       for(let i=1; i<params.multipolygon.length; i++){
         spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
       }
+    }
+
+    if(istimeseries && (params.startDate || params.endDate)){
+      bottomIndex = 0
+      topIndex = 9999999999
+      if(params.startDate){
+        bottomIndex = {$function: {body: function(ts, min){return ts.findIndex(x => x>=min)}, args: ["$timeseries", params.startDate], lang: "js" }}
+      }
+      if(params.endDate){
+        topIndex = {$function: {body: function(ts, bottomidx, max){return ts.length - ts.reverse().findIndex(x => x<max) - bottomidx }, args: ["$timeseries",  bottomIndex, params.endDate], lang: "js" }}
+      }
+      spacetimeMatch.push({$project: {data: {$map: { input: "$data", as: "x", in: {$slice : ["$$x", bottomIndex, topIndex]}}}, metadata:1, geolocation:1, basin:1, timeseries:1}})
     }
   }
 
@@ -499,7 +516,7 @@ module.exports.locate_meta = function(meta_ids, meta_list, meta_model){
   // <meta_list>: current array of fetched meta docs
   // <meta_model>: collection model to go looking in
   // return a promise that resolves to the metadata record sought.
-  
+  console.log(9999, meta_ids)
   let current_meta = meta_list.map(x => x.metadata)
   current_meta = [].concat(...current_meta)
   meta_needed = meta_ids.filter(x => !current_meta.includes(x))
