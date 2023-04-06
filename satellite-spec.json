@@ -1,0 +1,595 @@
+{
+   "openapi": "3.0.3",
+   "info": {
+      "title": "Argovis API",
+      "description": "REST API for satellite-based data products",
+      "contact": {
+         "name": "Argovis Collaboration",
+         "email": "argovis@colorado.edu",
+         "url": "https://argovis.colorado.edu"
+      },
+      "license": {
+         "name": "MIT",
+         "url": "https://opensource.org/licenses/MIT"
+      },
+      "version": "2.0"
+   },
+   "externalDocs": {
+      "description": "Find us on GitHub",
+      "url": "https://github.com/argovis/argovis_api"
+   },
+   "servers": [
+      {
+         "url": "https://tbd.colorado.edu"
+      },
+      {
+         "url": "/"
+      }
+   ],
+   "security": [
+      {
+         "name": []
+      }
+   ],
+   "tags": [
+      {
+         "name": "ccmp",
+         "description": "CCMP wind data"
+      },
+      {
+         "name": "summary (experimental)",
+         "description": "Summary statistics (mostly for internal use)"
+      },
+      {
+         "name": "token",
+         "description": "token validation"
+      }
+   ],
+   "paths": {
+      "/ccmp": {
+         "get": {
+            "tags": [
+               "ccmp"
+            ],
+            "summary": "Search, reduce and download ccmp data.",
+            "operationId": "ccmpSearch",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/metadata"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "$ref": "#/components/parameters/mostrecent"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((uwnd)|(vwnd)|(ws)|(nobs){1})|all|except-data-values)$"
+                     },
+                     "example": "uwnd,~ws"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/ccmp"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/ccmp/meta": {
+         "get": {
+            "tags": [
+               "ccmp"
+            ],
+            "summary": "Search, reduce and download ccmp metadata.",
+            "operationId": "ccmpMetaSearch",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/ccmpMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/ccmp/vocabulary": {
+         "get": {
+            "tags": [
+               "ccmp"
+            ],
+            "summary": "List all possible values for certain ccmp query string parameters",
+            "operationId": "ccmpVocab",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "parameter",
+                  "required": true,
+                  "description": "/ccmp query string parameter to summarize possible values of.",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["data"]
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/summary": {
+         "get": {
+            "tags": [
+               "summary (experimental)"
+            ],
+            "summary": "Fetch a document from the summary collection by ID.",
+            "operationId": "fetchSummary",   
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/token": {
+         "get": {
+            "tags": [
+               "token"
+            ],
+            "summary": "validate an API token",
+            "operationId": "validateToken",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "token",
+                  "required": true,
+                  "description": "token to validate",
+                  "schema": {
+                     "type": "string"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      }
+   },
+   "components": {
+      "schemas": {
+         "geoJSONpoint": {
+            "type": "object",
+            "required": ["type", "coordinates"],
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
+                  }
+               }
+            }
+         },
+         "geoJSONpolygon": {
+            "type": "object",
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "array",
+                     "items": {
+                        "type": "number",
+                        "minItems": 2,
+                        "maxItems": 2
+                     }
+                  }
+               }
+            }
+         },
+         "data": {
+            "type": "array",
+            "items": {
+               "type": "array",
+               "items": {
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
+               }
+            }
+         },
+         "data_info": {
+            "type": "array",
+            "items": {
+               "anyOf": [
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  },
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "array",
+                        "items": {
+                           "anyOf": [ {"type": "string"}, {"type": "number"}]
+                        }
+                     }
+                  }
+               ]
+            }
+         },
+         "generic_source_info": {
+            "type": "object",
+            "required": ["source"],
+            "properties": {
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "url": {
+                  "type": "string"
+               },
+               "date_updated": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "doi": {
+                  "type": "string"
+               }
+            }
+         },
+         "ccmp": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "basin", "timestamp"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "basin": {
+                  "type": "number"
+               },
+               "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "metadata": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "data": {
+                  "$ref": "#/components/schemas/data"
+               },
+               "timeseries": {
+                  "type": "array",
+                  "items": {
+                     "type": "string",
+                     "format": "date-time",
+                     "example": "2010-01-01T00:00:00Z"
+                  }
+               }
+            }
+         },
+         "ccmpMeta": {
+            "type": "object",
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "data_info"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
+               }
+            }
+         },
+         "errorResponse": {
+            "type": "object",
+            "required": [
+               "code",
+               "message"
+            ],
+            "properties": {
+               "code": {
+                  "type": "integer"
+               },
+               "message": {
+                  "type": "string"
+               }
+            }
+         }
+      },
+      "parameters": {
+         "startDate": {
+            "in": "query",
+            "name": "startDate",
+            "description": "ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "endDate": {
+            "in": "query",
+            "name": "endDate",
+            "description": "ISO 8601 UTC date-time formatted string indicating the end of the time period of interest.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "compression": {
+            "in": "query",
+            "name": "compression",
+            "description": "Data minification strategy to apply.",
+            "schema": {
+               "type": "string",
+               "enum": ["minimal"]
+            }
+         },
+         "genericID": {
+            "in": "query",
+            "name": "id",
+            "description": "Unique ID to search for.",
+            "schema": {
+               "type": "string",
+               "example": "4902911_0"
+            }
+         },
+         "polygon": {
+            "in": "query",
+            "name": "polygon",
+            "description": "array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+            }
+         },
+         "multipolygon": {
+            "in": "query",
+            "name": "multipolygon",
+            "description": "array of polygon regions; region of interest is taken as the intersection of all listed polygons.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+            }
+         },
+         "center": {
+            "in": "query",
+            "name": "center",
+            "description": "center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'.",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
+         "radius": {
+            "in": "query",
+            "name": "radius",
+            "description": "km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'.",
+            "schema": {
+               "type": "number",
+               "example": 50
+            }
+         },
+         "mostrecent": {
+            "in": "query",
+            "name": "mostrecent",
+            "description": "get back only the n records with the most recent values of timestamp.",
+            "schema": {
+               "type": "number"
+            }
+         },
+         "metadata": {
+            "in": "query",
+            "name": "metadata",
+            "description": "metadata pointer",
+            "schema":{
+               "type": "string"
+            }
+         }
+      },
+      "responses": {
+         "badRequest": {
+            "description": "Bad Request",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "notFound": {
+            "description": "Not Found",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "serverError": {
+            "description": "Server Error",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         }
+      }
+   }
+}
