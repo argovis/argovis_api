@@ -49,7 +49,7 @@ const DrifterMetaSchema = Schema({
   typebuoy: {type: String, required: true},
   data_type: {type: String, required: true},
   date_updated_argovis: {type: Date, required: true},
-  source_info: {type: sourceinfo, required: true},
+  source: {type: sourceinfo, required: true},
   data_info: [{type:[Schema.Types.Mixed], required: true}]
 });
 
