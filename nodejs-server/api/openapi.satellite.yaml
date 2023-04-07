@@ -1,0 +1,679 @@
+openapi: 3.0.3
+info:
+  title: Argovis API
+  description: REST API for satellite-based data products
+  contact:
+    name: Argovis Collaboration
+    url: https://argovis.colorado.edu
+    email: argovis@colorado.edu
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: "2.0"
+externalDocs:
+  description: Find us on GitHub
+  url: https://github.com/argovis/argovis_api
+servers:
+- url: https://tbd.colorado.edu
+- url: /
+security:
+- name: []
+tags:
+- name: ccmp
+  description: CCMP wind data
+- name: summary (experimental)
+  description: Summary statistics (mostly for internal use)
+- name: token
+  description: token validation
+paths:
+  /ccmp:
+    get:
+      tags:
+      - ccmp
+      summary: "Search, reduce and download ccmp data."
+      operationId: ccmpSearch
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: metadata
+        in: query
+        description: metadata pointer
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "uwnd,~ws"
+          items:
+            pattern: "^((~)?((uwnd)|(vwnd)|(ws)|(nobs){1})|all|except-data-values)$"
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ccmp'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Ccmp
+  /ccmp/meta:
+    get:
+      tags:
+      - ccmp
+      summary: "Search, reduce and download ccmp metadata."
+      operationId: ccmpMetaSearch
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ccmpMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Ccmp
+  /ccmp/vocabulary:
+    get:
+      tags:
+      - ccmp
+      summary: List all possible values for certain ccmp query string parameters
+      operationId: ccmpVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: /ccmp query string parameter to summarize possible values of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - data
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Ccmp
+  /summary:
+    get:
+      tags:
+      - summary (experimental)
+      summary: Fetch a document from the summary collection by ID.
+      operationId: fetchSummary
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: SummaryExperimental
+  /token:
+    get:
+      tags:
+      - token
+      summary: validate an API token
+      operationId: validateToken
+      parameters:
+      - name: token
+        in: query
+        description: token to validate
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Token
+components:
+  schemas:
+    geoJSONpoint:
+      required:
+      - coordinates
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      example:
+        coordinates:
+        - 0.80082819046101150206595775671303272247314453125
+        - 0.80082819046101150206595775671303272247314453125
+        type: type
+    geoJSONpolygon:
+      type: object
+      properties:
+        type:
+          type: string
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              maxItems: 2
+              minItems: 2
+              type: number
+    data:
+      type: array
+      items:
+        type: array
+        items:
+          anyOf:
+          - type: string
+          - type: number
+    data_info:
+      type: array
+      items:
+        anyOf:
+        - type: array
+          items:
+            type: string
+        - type: array
+          items:
+            type: array
+            items:
+              anyOf:
+              - type: string
+              - type: number
+    generic_source_info:
+      required:
+      - source
+      type: object
+      properties:
+        source:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+        date_updated:
+          type: string
+          format: date-time
+        doi:
+          type: string
+      example:
+        date_updated: 2000-01-23T04:56:07.000+00:00
+        source:
+        - source
+        - source
+        url: url
+        doi: doi
+    ccmp:
+      required:
+      - _id
+      - basin
+      - geolocation
+      - metadata
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/data'
+        timeseries:
+          type: array
+          items:
+            type: string
+            format: date-time
+            example: 2010-01-01T00:00:00Z
+      example:
+        metadata:
+        - metadata
+        - metadata
+        data:
+        - - ""
+          - ""
+        - - ""
+          - ""
+        timeseries:
+        - 2010-01-01T00:00:00Z
+        - 2010-01-01T00:00:00Z
+        _id: _id
+        basin: 6.02745618307040320615897144307382404804229736328125
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    ccmpMeta:
+      required:
+      - _id
+      - data_info
+      - data_type
+      - date_updated_argovis
+      - source
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        data_info:
+          $ref: '#/components/schemas/data_info'
+      example:
+        data_info:
+        - ""
+        - ""
+        data_type: data_type
+        _id: _id
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    errorResponse:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+  responses:
+    badRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    notFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    serverError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+  parameters:
+    startDate:
+      name: startDate
+      in: query
+      description: ISO 8601 UTC date-time formatted string indicating the beginning
+        of the time period of interest.
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    endDate:
+      name: endDate
+      in: query
+      description: ISO 8601 UTC date-time formatted string indicating the end of the
+        time period of interest.
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        format: date-time
+        example: 2010-01-01T00:00:00Z
+    compression:
+      name: compression
+      in: query
+      description: Data minification strategy to apply.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - minimal
+    genericID:
+      name: id
+      in: query
+      description: Unique ID to search for.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: 4902911_0
+    polygon:
+      name: polygon
+      in: query
+      description: "array of [lon, lat] vertices describing a polygon bounding the\
+        \ region of interest; final point must match initial point"
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+    multipolygon:
+      name: multipolygon
+      in: query
+      description: array of polygon regions; region of interest is taken as the intersection
+        of all listed polygons.
+      required: false
+      style: form
+      explode: true
+      allowReserved: true
+      schema:
+        type: string
+        example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+    center:
+      name: center
+      in: query
+      description: center to measure max radius from when defining circular region
+        of interest; must be used in conjunction with query string parameter 'radius'.
+      required: false
+      style: form
+      explode: false
+      allowReserved: true
+      schema:
+        type: array
+        example: "10,20.1"
+        items:
+          maxItems: 2
+          minItems: 2
+          type: number
+    radius:
+      name: radius
+      in: query
+      description: km from centerpoint when defining circular region of interest;
+        must be used in conjunction with query string parameter 'center'.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+        example: 50
+    mostrecent:
+      name: mostrecent
+      in: query
+      description: get back only the n records with the most recent values of timestamp.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: number
+    metadata:
+      name: metadata
+      in: query
+      description: metadata pointer
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
