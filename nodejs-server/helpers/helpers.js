@@ -206,7 +206,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       if(params.endDate){
         topIndex = {$function: {body: function(ts, bottomidx, max){return ts.length - ts.reverse().findIndex(x => x<max) - bottomidx }, args: ["$timeseries",  bottomIndex, params.endDate], lang: "js" }}
       }
-      spacetimeMatch.push({$project: {data: {$map: { input: "$data", as: "x", in: {$slice : ["$$x", bottomIndex, topIndex]}}}, metadata:1, geolocation:1, basin:1, timeseries:1}})
+      spacetimeMatch.push({$project: {data: {$map: { input: "$data", as: "x", in: {$slice : ["$$x", bottomIndex, topIndex]}}}, metadata:1, geolocation:1, basin:1, timeseries: {$slice : ["$timeseries", bottomIndex, topIndex]}}})
     }
   }
 
@@ -230,7 +230,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     aggPipeline.push({$project: project})
   }
 
-  return model.aggregate(aggPipeline).cursor()
+  return model.aggregate(aggPipeline).option({serializeFunctions: true}).cursor()
 }
 
 module.exports.combineDataInfo = function(dinfos){
@@ -516,7 +516,6 @@ module.exports.locate_meta = function(meta_ids, meta_list, meta_model){
   // <meta_list>: current array of fetched meta docs
   // <meta_model>: collection model to go looking in
   // return a promise that resolves to the metadata record sought.
-  console.log(9999, meta_ids)
   let current_meta = meta_list.map(x => x.metadata)
   current_meta = [].concat(...current_meta)
   meta_needed = meta_ids.filter(x => !current_meta.includes(x))
