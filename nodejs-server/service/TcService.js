@@ -12,6 +12,7 @@ const summaries = require('../models/summary');
  * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
+ * winding String Enforce ccw winding for polygon and multipolygon (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * name String name of tropical cyclone (optional)
@@ -21,11 +22,10 @@ const summaries = require('../models/summary');
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-
-exports.findTC = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,name,metadata,mostrecent,compression,data) {
+exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,name,metadata,mostrecent,compression,data) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)

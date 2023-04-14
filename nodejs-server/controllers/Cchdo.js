@@ -4,8 +4,8 @@ var utils = require('../utils/writer.js');
 var Profiles = require('../service/CchdoService');
 var helpers = require('../helpers/helpers')
 
-module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange) {
-  Profiles.findCCHDO(res, id, startDate, endDate, polygon, multipolygon, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange)
+module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange) {
+  Profiles.findCCHDO(res, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);

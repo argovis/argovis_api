@@ -57,7 +57,7 @@ module.exports.zip = function(arrays){
     });
 }
 
-module.exports.polygon_sanitation = function(poly){
+module.exports.polygon_sanitation = function(poly,enforceWinding){
   // given a string <poly> that describes a polygon as [[lon0,lat0],[lon1,lat1],...,[lonN,latN],[lon0,lat0]],
   // make sure its formatted sensibly, and return it as a geojson polygon.
   const GJV = require('geojson-validation')
@@ -78,6 +78,13 @@ module.exports.polygon_sanitation = function(poly){
     "coordinates": [p]
   }
 
+  if(enforceWinding){
+    p["crs"] =  {
+                  type: "name",
+                  properties: { name: "urn:x-mongodb:crs:strictwinding:EPSG:4326" }
+                }
+  }
+
   if(!GJV.valid(p)){
     return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
   }
@@ -85,7 +92,7 @@ module.exports.polygon_sanitation = function(poly){
   return p
 }
 
-module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,center,radius){
+module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius){
   // sanity check and transform generic temporospatial query string parameters in preparation for search.
 
   params = {}
@@ -103,7 +110,7 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
   }
 
   if(polygon){
-    polygon = module.exports.polygon_sanitation(polygon)
+    polygon = module.exports.polygon_sanitation(polygon, winding)
     if(polygon.hasOwnProperty('code')){
       // error, return and bail out
       return polygon
@@ -117,7 +124,7 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
     } catch (e) {
       return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
     }
-    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x))})
+    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x),winding)})
     if(multipolygon.some(p => p.hasOwnProperty('code'))){
       multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
       return multipolygon[0]
@@ -615,7 +622,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       ///// assume a temporospatial query absent the above (and if _nothing_ is provided, assumes and rejects an all-space-and-time request)
       else{
         ///// parameter cleaning and coercing
-        let params = module.exports.parameter_sanitization(null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('center'),qString.get('radius'))
+        let params = module.exports.parameter_sanitization(null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
         if(params.hasOwnProperty('code')){
           return params
         }

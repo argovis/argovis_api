@@ -93,6 +93,7 @@ exports.argoVocab = function(parameter) {
  * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
+ * winding String Enforce ccw winding for polygon and multipolygon (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * metadata String metadata pointer (optional)
@@ -105,11 +106,10 @@ exports.argoVocab = function(parameter) {
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * returns List
  **/
-
-exports.findArgo = function(res, id,startDate,endDate,polygon,multipolygon,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
+exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,center,radius)
+    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
