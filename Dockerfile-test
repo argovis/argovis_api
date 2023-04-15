@@ -4,5 +4,6 @@ COPY tests/package.json .
 RUN npm install
 COPY tests .
 COPY nodejs-server/helpers/helpers.js tests/helpers.js
+COPY nodejs-server/helpers/area.js tests/area.js
 COPY core-spec.json .
 COPY miami-spec.json .

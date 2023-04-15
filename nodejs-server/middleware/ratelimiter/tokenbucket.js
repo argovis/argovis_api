@@ -10,7 +10,6 @@ const hgetAsync = util.promisify(client.hget).bind(client);
 const hgetallAsync = util.promisify(client.hgetall).bind(client);
 const hsetAsync = util.promisify(client.hset).bind(client);
 const userModel = require('../../models/user');
-const geojsonArea = require('@mapbox/geojson-area');
 
 module.exports = {}
 

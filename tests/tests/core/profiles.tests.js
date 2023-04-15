@@ -564,5 +564,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.length).to.eql(1);
       });
     });
+
+    describe("GET /argo", function () {
+      it("winding flag should allow selecting complementary geometry with ccw winding.", async function () {
+        const response = await request.get("/argo?polygon=[[155,40],[160,40],[160,45],[155,45],[155,40]]").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+        const response2 = await request.get("/argo?polygon=[[155,40],[155,45],[160,45],[160,40],[155,40]]&winding=true").set({'x-argokey': 'developer'});
+        expect(response2.body.length).to.eql(5);
+      });
+    });
   }
 })
+

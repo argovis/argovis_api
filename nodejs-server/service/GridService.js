@@ -2,7 +2,6 @@
 const Grid = require('../models/grid');
 const helpers = require('../helpers/helpers')
 const GJV = require('geojson-validation');
-const geojsonArea = require('@mapbox/geojson-area');
 const summaries = require('../models/summary');
 
 /**

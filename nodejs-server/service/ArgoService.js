@@ -2,7 +2,6 @@
 const argo = require('../models/argo');
 const summaries = require('../models/summary');
 const helpers = require('../helpers/helpers')
-const geojsonArea = require('@mapbox/geojson-area');
 
 /**
  * Summarizes some float-level statistics for Argo BGC floats.

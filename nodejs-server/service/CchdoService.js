@@ -2,7 +2,6 @@
 const cchdo = require('../models/cchdo');
 const summaries = require('../models/summary');
 const helpers = require('../helpers/helpers')
-const geojsonArea = require('@mapbox/geojson-area');
 
 /**
  * GO-SHIP search and filter.

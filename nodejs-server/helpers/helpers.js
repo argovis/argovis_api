@@ -1,4 +1,4 @@
-const geojsonArea = require('@mapbox/geojson-area');
+const area = require('./area')
 const pipe = require('pipeline-pipe');
 const { pipeline } = require('stream');
 const JSONStream = require('JSONStream')
@@ -132,6 +132,8 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
     params.multipolygon = multipolygon
   }
 
+  params.winding = winding
+
   if(center){
     params.center = center
   }
@@ -189,7 +191,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
     }
     if(params.multipolygon){
-      params.multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      params.multipolygon.sort((a,b)=>{area.geometry(a, params.winding) - area.geometry(b, params.winding)}) // smallest first to minimize size of unindexed geo search
       spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
     }
     // zoom in on subsequent polygon regions; will be unindexed.
@@ -630,13 +632,13 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
         params.endDate = params.endDate ? params.endDate : final_records[path[path.length-1]]
 
         ///// decline requests that are too geographically enormous
-        let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, params.center, params.radius)
+        let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, qString.get('winding'), params.center, params.radius)
         if(checksize.hasOwnProperty('code')){
           return checksize
         }
 
         ///// cost out request
-        let geospan = module.exports.geoarea(params.polygon,params.multipolygon,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
+        let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
         let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
         if(geospan*dayspan > maxbulk){
           return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
@@ -660,7 +662,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   return c
 }
 
-module.exports.maxgeo = function(polygon, multipolygon, center, radius){
+module.exports.maxgeo = function(polygon, multipolygon, winding, center, radius){
     // geo size limits - mongo doesn't like huge geoWithins
     let maxgeosearch = 250000000000000 // a little less than half the globe
     if(radius) {
@@ -669,12 +671,12 @@ module.exports.maxgeo = function(polygon, multipolygon, center, radius){
       }
     }
     if(polygon) {
-      if(geojsonArea.geometry(polygon) > maxgeosearch){
+      if(area.geometry(polygon, winding) > maxgeosearch){
         return {"code": 400, "message": "Polygon region is too big; please ask for less than half the globe at a time, or query the entire globe by leaving off the polygon query parameter."}
       }
     }
     if(multipolygon){
-      if(multipolygon.some(p => geojsonArea.geometry(p) > maxgeosearch)){
+      if(multipolygon.some(p => area.geometry(p, winding) > maxgeosearch)){
         return {"code": 400, "message": "At least one multipolygon region is too big; please ask for less than half the globe at a time in each."}
       }
     }
@@ -682,16 +684,16 @@ module.exports.maxgeo = function(polygon, multipolygon, center, radius){
     return 0
 }
 
-module.exports.geoarea = function(polygon, multipolygon, radius){
+module.exports.geoarea = function(polygon, multipolygon, winding, radius){
   // return the area in sq km of the defined region
 
   let geospan = 360000000 // 360M sq km, all the oceans
   if(polygon){
-      geospan = geojsonArea.geometry(polygon) / 1000000
+      geospan = area.geometry(polygon, winding) / 1000000
   } else if(radius){
       geospan = 3.14159*radius*radius // recall radius is reported in km
   } else if(multipolygon){
-    let areas = multipolygon.map(x => geojsonArea.geometry(x) / 1000000)
+    let areas = multipolygon.map(x => area.geometry(x, winding) / 1000000)
     geospan = Math.min(areas)
   }
 
