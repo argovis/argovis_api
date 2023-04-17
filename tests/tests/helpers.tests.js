@@ -47,27 +47,6 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
-    describe("maxgeo", function () {
-      it("block a request for a polygon covering an entire hemisphere", async function () {
-        const max = helpers.maxgeo({type: "Polygon", coordinates: [[[0,90],[0,-90],[179.9,-90],[179.9,90],[0,90]]]}, null, null, null)
-        expect(max.code).to.eql(400);
-      });
-    }); 
-
-    describe("maxgeo", function () {
-      it("block a request for a multipolygon covering an entire hemisphere", async function () {
-        const max = helpers.maxgeo(null, [{type: "Polygon", coordinates: [[[0,1],[0,-1],[1,-1],[1,1],[0,1]]]},{type: "Polygon", coordinates: [[[0,90],[0,-90],[179.9,-90],[179.9,90],[0,90]]]}], null, null)
-        expect(max.code).to.eql(400);
-      });
-    }); 
-
-    describe("maxgeo", function () {
-      it("block a request for a huge proximity search", async function () {
-        const max = helpers.maxgeo(null, null, null, null, 10001)
-        expect(max.code).to.eql(400);
-      });
-    });
-
     describe("cost functions", function () {
       it("cost of entire globe for a day with data for a standard API route", async function () {
         expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z&data=doxy', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice);

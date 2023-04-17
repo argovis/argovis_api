@@ -631,12 +631,6 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
         params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
         params.endDate = params.endDate ? params.endDate : final_records[path[path.length-1]]
 
-        ///// decline requests that are too geographically enormous
-        let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, qString.get('winding'), params.center, params.radius)
-        if(checksize.hasOwnProperty('code')){
-          return checksize
-        }
-
         ///// cost out request
         let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
         let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
@@ -660,28 +654,6 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   /// all other routes unconstrained for now
 
   return c
-}
-
-module.exports.maxgeo = function(polygon, multipolygon, winding, center, radius){
-    // geo size limits - mongo doesn't like huge geoWithins
-    let maxgeosearch = 250000000000000 // a little less than half the globe
-    if(radius) {
-      if(radius > 10000){
-        return {"code": 400, "message": "Please limit proximity searches to at most 10000 km in radius"};
-      }
-    }
-    if(polygon) {
-      if(area.geometry(polygon, winding) > maxgeosearch){
-        return {"code": 400, "message": "Polygon region is too big; please ask for less than half the globe at a time, or query the entire globe by leaving off the polygon query parameter."}
-      }
-    }
-    if(multipolygon){
-      if(multipolygon.some(p => area.geometry(p, winding) > maxgeosearch)){
-        return {"code": 400, "message": "At least one multipolygon region is too big; please ask for less than half the globe at a time in each."}
-      }
-    }
-
-    return 0
 }
 
 module.exports.geoarea = function(polygon, multipolygon, winding, radius){
