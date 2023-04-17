@@ -1,4 +1,4 @@
-const geojsonArea = require('@mapbox/geojson-area');
+const area = require('./area')
 const pipe = require('pipeline-pipe');
 const { pipeline } = require('stream');
 const JSONStream = require('JSONStream')
@@ -57,7 +57,7 @@ module.exports.zip = function(arrays){
     });
 }
 
-module.exports.polygon_sanitation = function(poly){
+module.exports.polygon_sanitation = function(poly,enforceWinding){
   // given a string <poly> that describes a polygon as [[lon0,lat0],[lon1,lat1],...,[lonN,latN],[lon0,lat0]],
   // make sure its formatted sensibly, and return it as a geojson polygon.
   const GJV = require('geojson-validation')
@@ -78,6 +78,13 @@ module.exports.polygon_sanitation = function(poly){
     "coordinates": [p]
   }
 
+  if(enforceWinding){
+    p["crs"] =  {
+                  type: "name",
+                  properties: { name: "urn:x-mongodb:crs:strictwinding:EPSG:4326" }
+                }
+  }
+
   if(!GJV.valid(p)){
     return {"code": 400, "message": "Polygon region wasn't proper geoJSON; format should be [[lon,lat],[lon,lat],...]"};
   }
@@ -85,7 +92,7 @@ module.exports.polygon_sanitation = function(poly){
   return p
 }
 
-module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,center,radius){
+module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius){
   // sanity check and transform generic temporospatial query string parameters in preparation for search.
 
   params = {}
@@ -103,7 +110,7 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
   }
 
   if(polygon){
-    polygon = module.exports.polygon_sanitation(polygon)
+    polygon = module.exports.polygon_sanitation(polygon, winding)
     if(polygon.hasOwnProperty('code')){
       // error, return and bail out
       return polygon
@@ -117,13 +124,15 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
     } catch (e) {
       return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
     }
-    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x))})
+    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x),winding)})
     if(multipolygon.some(p => p.hasOwnProperty('code'))){
       multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
       return multipolygon[0]
     } 
     params.multipolygon = multipolygon
   }
+
+  params.winding = winding
 
   if(center){
     params.center = center
@@ -182,7 +191,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
     }
     if(params.multipolygon){
-      params.multipolygon.sort((a,b)=>{geojsonArea.geometry(a) - geojsonArea.geometry(b)}) // smallest first to minimize size of unindexed geo search
+      params.multipolygon.sort((a,b)=>{area.geometry(a, params.winding) - area.geometry(b, params.winding)}) // smallest first to minimize size of unindexed geo search
       spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
     }
     // zoom in on subsequent polygon regions; will be unindexed.
@@ -615,21 +624,15 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       ///// assume a temporospatial query absent the above (and if _nothing_ is provided, assumes and rejects an all-space-and-time request)
       else{
         ///// parameter cleaning and coercing
-        let params = module.exports.parameter_sanitization(null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('center'),qString.get('radius'))
+        let params = module.exports.parameter_sanitization(null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
         if(params.hasOwnProperty('code')){
           return params
         }
         params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
         params.endDate = params.endDate ? params.endDate : final_records[path[path.length-1]]
 
-        ///// decline requests that are too geographically enormous
-        let checksize = module.exports.maxgeo(params.polygon, params.multipolygon, params.center, params.radius)
-        if(checksize.hasOwnProperty('code')){
-          return checksize
-        }
-
         ///// cost out request
-        let geospan = module.exports.geoarea(params.polygon,params.multipolygon,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
+        let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
         let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
         if(geospan*dayspan > maxbulk){
           return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
@@ -653,38 +656,16 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   return c
 }
 
-module.exports.maxgeo = function(polygon, multipolygon, center, radius){
-    // geo size limits - mongo doesn't like huge geoWithins
-    let maxgeosearch = 250000000000000 // a little less than half the globe
-    if(radius) {
-      if(radius > 10000){
-        return {"code": 400, "message": "Please limit proximity searches to at most 10000 km in radius"};
-      }
-    }
-    if(polygon) {
-      if(geojsonArea.geometry(polygon) > maxgeosearch){
-        return {"code": 400, "message": "Polygon region is too big; please ask for less than half the globe at a time, or query the entire globe by leaving off the polygon query parameter."}
-      }
-    }
-    if(multipolygon){
-      if(multipolygon.some(p => geojsonArea.geometry(p) > maxgeosearch)){
-        return {"code": 400, "message": "At least one multipolygon region is too big; please ask for less than half the globe at a time in each."}
-      }
-    }
-
-    return 0
-}
-
-module.exports.geoarea = function(polygon, multipolygon, radius){
+module.exports.geoarea = function(polygon, multipolygon, winding, radius){
   // return the area in sq km of the defined region
 
   let geospan = 360000000 // 360M sq km, all the oceans
   if(polygon){
-      geospan = geojsonArea.geometry(polygon) / 1000000
+      geospan = area.geometry(polygon, winding) / 1000000
   } else if(radius){
       geospan = 3.14159*radius*radius // recall radius is reported in km
   } else if(multipolygon){
-    let areas = multipolygon.map(x => geojsonArea.geometry(x) / 1000000)
+    let areas = multipolygon.map(x => area.geometry(x, winding) / 1000000)
     geospan = Math.min(areas)
   }
 
