@@ -39,7 +39,43 @@ tags:
   description: Trajectories of argo floats
 - name: token
   description: token validation
+- name: ping
+  description: ping for liveness
 paths:
+  /ping:
+    get:
+      tags:
+      - ping
+      summary: Dummy endpoint for liveness checks
+      operationId: ping
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: OK
+                x-content-type: text/plain
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Ping
   /ar:
     get:
       tags:
