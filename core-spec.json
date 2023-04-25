@@ -67,9 +67,43 @@
       {
          "name": "token",
          "description": "token validation"
+      },
+      {
+         "name": "ping",
+         "description": "ping for liveness"
       }
    ],
    "paths": {
+      "/ping": {
+         "get": {
+            "tags": [
+               "ping"
+            ],
+            "summary": "Dummy endpoint for liveness checks",
+            "operationId": "ping",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "string"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/ar": {
          "get": {
             "tags": [
