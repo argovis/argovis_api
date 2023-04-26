@@ -619,6 +619,9 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       //// query parameters that specify a larger but still circumscribed number of records
       else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') || qString.get('metadata') ){
         c = 10
+        if(url.includes('compression=minimal')) {
+          c = 1
+        }
       }
 
       ///// assume a temporospatial query absent the above (and if _nothing_ is provided, assumes and rejects an all-space-and-time request)
@@ -652,7 +655,6 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   }
 
   /// all other routes unconstrained for now
-
   return c
 }
 
