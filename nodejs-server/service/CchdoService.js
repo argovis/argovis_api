@@ -94,7 +94,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter, projection))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter, projection, null))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

@@ -159,7 +159,7 @@ module.exports.request_sanitation = function(polygon, center, radius, multipolyg
   return false
 }
 
-module.exports.datatable_stream = function(model, params, local_filter, projection, foreign_docs){
+module.exports.datatable_stream = function(model, params, local_filter, projection, data_filter, foreign_docs){
   // given <model>, a mongoose model pointing to a data collection,
   // <params> the return object from parameter_sanitization,
   // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
@@ -211,6 +211,57 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   // set up aggregation and return promise to evaluate:
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
   aggPipeline.push({$sort: {'timestamp':-1}})
+
+  if(data_filter){
+    // optionally filter off data before pulling documents out of mongo; currently only supports data documents that include data_info
+    aggPipeline.push(
+      {
+        $addFields: {
+          data: {
+            $function: {
+                body: `function(data_info, data, selections){
+                  data_filtered = []
+                  for(i=0; i<selections[1].length; i++){
+                    sel_index = data_info[0].indexOf(selections[1][i])
+                    if(sel_index !== -1){
+                      return []
+                    }
+                  }
+                  for(i=0; i<selections[0].length; i++){
+                    sel_index = data_info[0].indexOf(selections[0][i])
+                    if(sel_index == -1){
+                      return []
+                    }
+                    data_filtered.push(data[sel_index])
+                  }
+                  return data_filtered
+                }`,
+                args: ["$data_info", "$data", data_filter ],
+                lang: 'js'
+            }
+          },
+          data_info: {
+            $function: {
+              body: `function(data_info, selections){
+                data_info_filtered = [[],data_info[1], []]
+                  for(i=0; i<selections[0].length; i++){
+                    sel_index = data_info[0].indexOf(selections[0][i])
+                    if(sel_index == -1){
+                      continue
+                    }
+                    data_info_filtered[0].push(data_info[0][sel_index])
+                    data_info_filtered[2].push(data_info[2][sel_index])
+                }
+                return data_info_filtered
+              }`,
+              args: ["$data_info", data_filter ],
+              lang: "js"
+            }
+          }
+        }
+      }
+    )
+  }
 
   if(projection){
     // drop documents with no data before they come out of the DB, and project out only the listed data document keys
@@ -715,4 +766,30 @@ module.exports.find_grid_collection = function(token){
   } else {
     return ''
   }
+}
+
+module.exports.parse_data = function(d){
+  // given the data string from a query, 
+  // split it up into data and data negations
+
+  if(d == null || d.filter(x => (!['all', 'except-data-values'].includes(x) && isNaN(x)) ).length == 0 ){
+    // no data filtering to do if there's no data query to begin with, or its all flags
+    return null
+  }
+
+  all_flags = ['all', 'except-data-values']
+  data_keys = []
+  negation_keys = []
+  flags = []
+
+  for(i=0; i<d.length; i++){
+    if(all_flags.includes(d[i])){
+      flags.push(d[i])
+    } else if(d[i][0] === '~'){
+      negation_keys.push(d[i])
+    } else if(isNaN(d[i])) {
+      data_keys.push(d[i])
+    }
+  }
+  return [data_keys, negation_keys]
 }
