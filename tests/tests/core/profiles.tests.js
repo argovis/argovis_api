@@ -573,6 +573,27 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response2.body.length).to.eql(5);
       });
     });
+
+    describe("GET /argo", function () {
+      it("explicitly asking for Argo qc information", async function () {
+        const response = await request.get("/argo?id=4901283_003&data=temperature,temperature_argoqc").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members(['temperature', 'pressure', 'temperature_argoqc']) 
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("explicitly asking for absent cchdo qc information", async function () {
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=doxy_ctd,temperature_ctd,temperature_ctd_woceqc").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members(['doxy_ctd', 'pressure', 'temperature_ctd', 'temperature_ctd_woceqc']) 
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("explicitly asking for absent cchdo qc information", async function () {
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=potential_temperature_c_btl,potential_temperature_c_btl_woceqc").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(404);
+      });
+    });
   }
 })
 

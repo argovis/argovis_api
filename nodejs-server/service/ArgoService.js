@@ -152,7 +152,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
         presRange: presRange,
         mostrecent: mostrecent,
         always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
-        suppress_meta: compression=='minimal', // don't need to look up argo metadata if making a minimal request
+        suppress_meta: compression=='minimal' || (!platform && !platform_type), // don't need to look up argo metadata if making a minimal request or not filtering on metadata docs
         qcsuffix: '_argoqc'
     }
 
@@ -170,9 +170,8 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
         data_filter[0].push('pressure')
       }
 
-      // bring qc flags along
-      let qc = data_filter[0].map(x => x+'_argoqc')
-      data_filter[0] = data_filter[0].concat(qc) 
+      // qc suffix so we can bring the qc flags along if available
+      data_filter.push('argoqc')
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise

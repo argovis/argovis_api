@@ -224,15 +224,26 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
                   for(i=0; i<selections[1].length; i++){
                     sel_index = data_info[0].indexOf(selections[1][i])
                     if(sel_index !== -1){
+                      // data negation, return empty data array to be dropped downstream
                       return []
                     }
                   }
                   for(i=0; i<selections[0].length; i++){
                     sel_index = data_info[0].indexOf(selections[0][i])
-                    if(sel_index == -1){
+                    if(sel_index == -1 || sel_index >= data.length){
+                      // didnt find required data, bail
                       return []
                     }
                     data_filtered.push(data[sel_index])
+
+                    // bring qc data along for the ride, if available, even if not explicitly requested
+                    qc_name = selections[0][i] + '_' + selections[2]
+                    if(!selections[0].includes(qc_name)){
+                      qc_index = data_info[0].indexOf(qc_name)
+                      if(qc_index > -1 && qc_index < data.length){
+                        data_filtered.push(data[qc_index])
+                      }
+                    }
                   }
                   return data_filtered
                 }`,
@@ -251,6 +262,13 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
                     }
                     data_info_filtered[0].push(data_info[0][sel_index])
                     data_info_filtered[2].push(data_info[2][sel_index])
+
+                    qc_name = selections[0][i] + '_' + selections[2]
+                    qc_index = data_info[0].indexOf(qc_name)
+                    if(!selections[0].includes(qc_name) && qc_index > -1 && qc_index < data_info[0].length){
+                      data_info_filtered[0].push(data_info[0][qc_index])
+                      data_info_filtered[2].push(data_info[2][qc_index])
+                    }
                 }
                 return data_info_filtered
               }`,
