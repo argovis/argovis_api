@@ -92,7 +92,7 @@ module.exports.polygon_sanitation = function(poly,enforceWinding){
   return p
 }
 
-module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius){
+module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,polygon,multipolygon,winding,center,radius){
   // sanity check and transform generic temporospatial query string parameters in preparation for search.
 
   params = {}
@@ -103,10 +103,14 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
 
   if(startDate){
     params.startDate = new Date(startDate);
+  } else {
+    params.startDate = module.exports.earliest_records(dataset)
   }
 
   if(endDate){
     params.endDate = new Date(endDate);
+  } else {
+    params.endDate = module.exports.final_records(dataset)
   }
 
   if(polygon){
@@ -159,7 +163,7 @@ module.exports.request_sanitation = function(polygon, center, radius, multipolyg
   return false
 }
 
-module.exports.datatable_stream = function(model, params, local_filter, projection, foreign_docs){
+module.exports.datatable_stream = function(model, params, local_filter, projection, data_filter, foreign_docs){
   // given <model>, a mongoose model pointing to a data collection,
   // <params> the return object from parameter_sanitization,
   // <local_filter> a custom set of aggregation pipeline steps to be applied to the data collection reffed by <model>,
@@ -211,6 +215,75 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   // set up aggregation and return promise to evaluate:
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
   aggPipeline.push({$sort: {'timestamp':-1}})
+
+  if(data_filter){
+    // optionally filter off data before pulling documents out of mongo; currently only supports data documents that include data_info
+    aggPipeline.push(
+      {
+        $addFields: {
+          data: {
+            $function: {
+                body: `function(data_info, data, selections){
+                  data_filtered = []
+                  for(i=0; i<selections[1].length; i++){
+                    sel_index = data_info[0].indexOf(selections[1][i])
+                    if(sel_index !== -1){
+                      // data negation, return empty data array to be dropped downstream
+                      return []
+                    }
+                  }
+                  for(i=0; i<selections[0].length; i++){
+                    sel_index = data_info[0].indexOf(selections[0][i])
+                    if(sel_index == -1 || sel_index >= data.length){
+                      // didnt find required data, bail
+                      return []
+                    }
+                    data_filtered.push(data[sel_index])
+
+                    // bring qc data along for the ride, if available, even if not explicitly requested
+                    qc_name = selections[0][i] + '_' + selections[2]
+                    if(!selections[0].includes(qc_name)){
+                      qc_index = data_info[0].indexOf(qc_name)
+                      if(qc_index > -1 && qc_index < data.length){
+                        data_filtered.push(data[qc_index])
+                      }
+                    }
+                  }
+                  return data_filtered
+                }`,
+                args: ["$data_info", "$data", data_filter ],
+                lang: 'js'
+            }
+          },
+          data_info: {
+            $function: {
+              body: `function(data_info, selections){
+                data_info_filtered = [[],data_info[1], []]
+                  for(i=0; i<selections[0].length; i++){
+                    sel_index = data_info[0].indexOf(selections[0][i])
+                    if(sel_index == -1){
+                      continue
+                    }
+                    data_info_filtered[0].push(data_info[0][sel_index])
+                    data_info_filtered[2].push(data_info[2][sel_index])
+
+                    qc_name = selections[0][i] + '_' + selections[2]
+                    qc_index = data_info[0].indexOf(qc_name)
+                    if(!selections[0].includes(qc_name) && qc_index > -1 && qc_index < data_info[0].length){
+                      data_info_filtered[0].push(data_info[0][qc_index])
+                      data_info_filtered[2].push(data_info[2][qc_index])
+                    }
+                }
+                return data_info_filtered
+              }`,
+              args: ["$data_info", data_filter ],
+              lang: "js"
+            }
+          }
+        }
+      }
+    )
+  }
 
   if(projection){
     // drop documents with no data before they come out of the DB, and project out only the listed data document keys
@@ -568,14 +641,10 @@ module.exports.lookup_key = function(userModel, apikey, resolve, reject){
     }
 }
 
-module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
-  // return the tokenbucket price for this URL.
-  // c == defualt cost
-  // cellprice == token cost of 1 sq deg day
-  // metaDiscount == scaledown factor to discount except-data-values request by relative to data requests
-  // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
+module.exports.earliest_records = function(dataset){
+  // return a date representing the earliest record for the named dataset
 
-  let earliest_records = {
+  let dates = {
     'argo': new Date("1997-07-28T20:26:20.002Z"),
     'cchdo': new Date("1972-07-24T09:11:00Z"),
     'drifters': new Date("1987-10-02T13:00:00Z"),
@@ -585,7 +654,14 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
     "trajectories": new Date("2001-01-04T22:46:33Z")
   }
 
-  let final_records = {
+  return dates[dataset]
+
+}
+
+module.exports.final_records = function(dataset){
+  // return a date representing the last record for the named dataset
+
+  let dates = {
     'argo': new Date(),
     'cchdo': new Date("2021-08-13T23:27:00Z"),
     'drifters': new Date("2020-06-30T23:00:00Z"),
@@ -594,6 +670,17 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
     'tc': new Date("2020-12-25T12:00:00Z"),
     'trajectories': new Date("2021-01-01T01:13:26Z")
   }
+
+  return dates[dataset]
+
+}
+
+module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
+  // return the tokenbucket price for this URL.
+  // c == defualt cost
+  // cellprice == token cost of 1 sq deg day
+  // metaDiscount == scaledown factor to discount except-data-values request by relative to data requests
+  // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
 
   /// determine path steps
   let path = url.split('?')[0].split('/').slice(1)
@@ -627,12 +714,10 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       ///// assume a temporospatial query absent the above (and if _nothing_ is provided, assumes and rejects an all-space-and-time request)
       else{
         ///// parameter cleaning and coercing
-        let params = module.exports.parameter_sanitization(null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
+        let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
         if(params.hasOwnProperty('code')){
           return params
         }
-        params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
-        params.endDate = params.endDate ? params.endDate : final_records[path[path.length-1]]
 
         ///// cost out request
         let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
@@ -715,4 +800,30 @@ module.exports.find_grid_collection = function(token){
   } else {
     return ''
   }
+}
+
+module.exports.parse_data = function(d){
+  // given the data string from a query, 
+  // split it up into data and data negations
+
+  if(d == null || d.filter(x => (!['all', 'except-data-values'].includes(x) && isNaN(x)) ).length == 0 ){
+    // no data filtering to do if there's no data query to begin with, or its all flags
+    return null
+  }
+
+  all_flags = ['all', 'except-data-values']
+  data_keys = []
+  negation_keys = []
+  flags = []
+
+  for(i=0; i<d.length; i++){
+    if(all_flags.includes(d[i])){
+      flags.push(d[i])
+    } else if(d[i][0] === '~'){
+      negation_keys.push(d[i])
+    } else if(isNaN(d[i])) {
+      data_keys.push(d[i])
+    }
+  }
+  return [data_keys, negation_keys]
 }

@@ -27,7 +27,7 @@ const helpers = require('../helpers/helpers')
 exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('cchdo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -70,13 +70,26 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
         mostrecent: mostrecent,
-        qcsuffix: '_woceqc'
+        qcsuffix: '_woceqc',
+        suppress_meta: compression != 'minimal' // cchdo used metadata in stubs, but no where else in post
     }
 
     // can we afford to project data documents down to a subset in aggregation?
     let projection = null
     if(compression=='minimal' && data==null && presRange==null){
       projection = ['_id', 'metadata', 'geolocation', 'timestamp', 'source']
+    }
+
+    // push data selection into mongo?
+    let data_filter = helpers.parse_data(data)
+    if(data_filter){
+      if(!data_filter[0].includes('pressure')){
+        // always pull pressure out of mongo
+        data_filter[0].push('pressure')
+      }
+
+      // qc suffix so we can bring the qc flags along if available
+      data_filter.push('woceqc')
     }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
@@ -94,7 +107,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter, projection))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter, projection, data_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

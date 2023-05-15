@@ -108,7 +108,7 @@ exports.argoVocab = function(parameter) {
 exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('argo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -152,7 +152,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
         presRange: presRange,
         mostrecent: mostrecent,
         always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
-        suppress_meta: compression=='minimal', // don't need to look up argo metadata if making a minimal request
+        suppress_meta: true, // argo doesn't use metadata in stubs, and data_info lives on the data doc, so no need for metadata in post.
         qcsuffix: '_argoqc'
     }
 
@@ -162,6 +162,17 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
       projection = ['_id', 'metadata', 'geolocation', 'timestamp', 'source']
     }
 
+    // push data selection into mongo?
+    let data_filter = helpers.parse_data(data)
+    if(data_filter){
+      if(!data_filter[0].includes('pressure')){
+        // always pull pressure out of mongo
+        data_filter[0].push('pressure')
+      }
+
+      // qc suffix so we can bring the qc flags along if available
+      data_filter.push('argoqc')
+    }
 
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     let metafilter = Promise.resolve([])
@@ -178,7 +189,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

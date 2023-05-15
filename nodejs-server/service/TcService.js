@@ -25,7 +25,7 @@ const summaries = require('../models/summary');
 exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,name,metadata,mostrecent,compression,data) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('tc',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -77,7 +77,7 @@ exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, tc['tc'], params, local_filter, projection))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, tc['tc'], params, local_filter, projection, null))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

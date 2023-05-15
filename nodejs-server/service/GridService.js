@@ -49,7 +49,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
   return new Promise(function(resolve, reject) {
     // generic helper for all grid search and filter routes
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization(gridName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -88,7 +88,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter, projection))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter, projection, null))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {

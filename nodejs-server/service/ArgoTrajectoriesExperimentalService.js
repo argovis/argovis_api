@@ -45,7 +45,7 @@ exports.argotrajectoryVocab = function(parameter) {
 exports.findArgoTrajectory = function(res, id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,compression,mostrecent,data) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('trajectories',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -96,7 +96,7 @@ exports.findArgoTrajectory = function(res, id,startDate,endDate,polygon,multipol
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, trajectories['argotrajectories'], params, local_filter, projection))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, trajectories['argotrajectories'], params, local_filter, projection, null))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
