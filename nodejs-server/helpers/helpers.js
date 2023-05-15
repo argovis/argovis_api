@@ -92,7 +92,7 @@ module.exports.polygon_sanitation = function(poly,enforceWinding){
   return p
 }
 
-module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius){
+module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,polygon,multipolygon,winding,center,radius){
   // sanity check and transform generic temporospatial query string parameters in preparation for search.
 
   params = {}
@@ -103,10 +103,14 @@ module.exports.parameter_sanitization = function(id,startDate,endDate,polygon,mu
 
   if(startDate){
     params.startDate = new Date(startDate);
+  } else {
+    params.startDate = module.exports.earliest_records(dataset)
   }
 
   if(endDate){
     params.endDate = new Date(endDate);
+  } else {
+    params.endDate = module.exports.final_records(dataset)
   }
 
   if(polygon){
@@ -637,14 +641,10 @@ module.exports.lookup_key = function(userModel, apikey, resolve, reject){
     }
 }
 
-module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
-  // return the tokenbucket price for this URL.
-  // c == defualt cost
-  // cellprice == token cost of 1 sq deg day
-  // metaDiscount == scaledown factor to discount except-data-values request by relative to data requests
-  // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
+module.exports.earliest_records = function(dataset){
+  // return a date representing the earliest record for the named dataset
 
-  let earliest_records = {
+  let dates = {
     'argo': new Date("1997-07-28T20:26:20.002Z"),
     'cchdo': new Date("1972-07-24T09:11:00Z"),
     'drifters': new Date("1987-10-02T13:00:00Z"),
@@ -654,7 +654,14 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
     "trajectories": new Date("2001-01-04T22:46:33Z")
   }
 
-  let final_records = {
+  return dates[dataset]
+
+}
+
+module.exports.final_records = function(dataset){
+  // return a date representing the last record for the named dataset
+
+  let dates = {
     'argo': new Date(),
     'cchdo': new Date("2021-08-13T23:27:00Z"),
     'drifters': new Date("2020-06-30T23:00:00Z"),
@@ -663,6 +670,17 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
     'tc': new Date("2020-12-25T12:00:00Z"),
     'trajectories': new Date("2021-01-01T01:13:26Z")
   }
+
+  return dates[dataset]
+
+}
+
+module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
+  // return the tokenbucket price for this URL.
+  // c == defualt cost
+  // cellprice == token cost of 1 sq deg day
+  // metaDiscount == scaledown factor to discount except-data-values request by relative to data requests
+  // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
 
   /// determine path steps
   let path = url.split('?')[0].split('/').slice(1)
@@ -696,12 +714,10 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       ///// assume a temporospatial query absent the above (and if _nothing_ is provided, assumes and rejects an all-space-and-time request)
       else{
         ///// parameter cleaning and coercing
-        let params = module.exports.parameter_sanitization(null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
+        let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
         if(params.hasOwnProperty('code')){
           return params
         }
-        params.startDate = params.startDate ? params.startDate : earliest_records[path[path.length-1]]
-        params.endDate = params.endDate ? params.endDate : final_records[path[path.length-1]]
 
         ///// cost out request
         let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq

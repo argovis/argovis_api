@@ -27,7 +27,7 @@ const helpers = require('../helpers/helpers')
 exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('cchdo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -70,7 +70,8 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
         mostrecent: mostrecent,
-        qcsuffix: '_woceqc'
+        qcsuffix: '_woceqc',
+        suppress_meta: compression != 'minimal' // cchdo used metadata in stubs, but no where else in post
     }
 
     // can we afford to project data documents down to a subset in aggregation?

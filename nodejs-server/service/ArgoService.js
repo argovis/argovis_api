@@ -108,7 +108,7 @@ exports.argoVocab = function(parameter) {
 exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization(id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('argo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -152,7 +152,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
         presRange: presRange,
         mostrecent: mostrecent,
         always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
-        suppress_meta: compression=='minimal' || (!platform && !platform_type), // don't need to look up argo metadata if making a minimal request or not filtering on metadata docs
+        suppress_meta: true, // argo doesn't use metadata in stubs, and data_info lives on the data doc, so no need for metadata in post.
         qcsuffix: '_argoqc'
     }
 
