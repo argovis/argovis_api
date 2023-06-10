@@ -65,6 +65,10 @@
          "description": "Trajectories of argo floats"
       },
       {
+         "name": "NOAA SST Optimum Interpolation V2 (timeseries)",
+         "description": "https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.html"
+      },
+      {
          "name": "token",
          "description": "token validation"
       },
@@ -1299,6 +1303,119 @@
             }
          }
       },
+      "/noaasst": {
+         "get": {
+            "tags": [
+               "NOAA SST Optimum Interpolation V2 (timeseries)"
+            ],
+            "summary": "NOAA SST search and filter.",
+            "operationId": "findNOAASST",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/winding"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/mostrecent"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((sst){1})|all|except-data-values)$"
+                     },
+                     "example": "sst"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/noaasst"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/noaasst/meta": {
+         "get": {
+            "tags": [
+               "NOAA SST Optimum Interpolation V2 (timeseries)"
+            ],
+            "summary": "NOAA SST metadata search and filter.",
+            "operationId": "findNOAASSTmeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/noaasstMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
       "/summary": {
          "get": {
             "tags": [
@@ -1675,6 +1792,14 @@
                }
             }
          },
+         "timeseries": {
+            "type": "array",
+            "items": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"    
+            }
+         },
          "cchdo": {
             "type": "object",
             "required": ["_id","metadata","geolocation","basin","timestamp", "data_info", "source", "station", "cast"],
@@ -2013,6 +2138,58 @@
             "items": {
                "type": "string",
                "pattern": "^((~)?((velocity_zonal)|(velocity_meridional)|(velocity_zonal_transmitted)|(velocity_meridional_transmitted)|(speed)|(speed_transmitted)|(drift_pres)|(drift_temp)|(number_surface_fixes){1})|all|except-data-values)$"
+            }
+         },
+         "noaasst": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "basin"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "metadata": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "basin": {
+                  "type": "number"
+               },
+               "data": {
+                  "$ref": "#/components/schemas/data"
+               }
+            }
+         },
+         "noaasstMeta": {
+            "type": "object",
+            "required": ["_id", "data_type", "date_updated_argovis", "source", "name", "num", "data_info"],
+            "properties":{
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "timeseries": {
+                  "$ref": "#/components/schemas/timeseries"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
+               }
             }
          },
          "errorResponse": {
