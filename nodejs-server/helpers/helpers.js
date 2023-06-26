@@ -643,6 +643,7 @@ module.exports.lookup_key = function(userModel, apikey, resolve, reject){
 
 module.exports.earliest_records = function(dataset){
   // return a date representing the earliest record for the named dataset
+  // omit timeseries datasets, not indexed on timestamp
 
   let dates = {
     'argo': new Date("1997-07-28T20:26:20.002Z"),
@@ -660,6 +661,7 @@ module.exports.earliest_records = function(dataset){
 
 module.exports.final_records = function(dataset){
   // return a date representing the last record for the named dataset
+  // omit timeseries datasets, not indexed on timestamp
 
   let dates = {
     'argo': new Date(),
