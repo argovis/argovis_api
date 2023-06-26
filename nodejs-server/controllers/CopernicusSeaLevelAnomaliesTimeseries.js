@@ -5,11 +5,11 @@ var CopernicusSeaLevelAnomaliesTimeseries = require('../service/CopernicusSeaLev
 const apihits = require('../models/apihits');
 var helpers = require('../helpers/helpers')
 
-module.exports.findCopernicusSLA = function findCopernicusSLA (req, res, next, id, polygon, multipolygon, winding, center, radius, mostrecent, compression, data) {
+module.exports.findCopernicusSLA = function findCopernicusSLA (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, mostrecent, compression, data) {
 
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
 
-  CopernicusSeaLevelAnomaliesTimeseries.findCopernicusSLA(res, id, polygon, multipolygon, winding, center, radius, mostrecent, compression, data)
+  CopernicusSeaLevelAnomaliesTimeseries.findCopernicusSLA(res, id, startDate, endDate, polygon, multipolygon, winding, center, radius, mostrecent, compression, data)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
