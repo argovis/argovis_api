@@ -474,6 +474,40 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
 
+  // filter by date range, drop profile if reqested and available dates are disjoint
+  /// identify level spectrum, could be <data doc>.data.pressure (for point data) or <metadata doc>.levels (for grids)
+  let lvlSpectrum = []
+  let pressure_index = dinfo[0].findIndex(x => x === 'pressure')
+  if(pressure_index !== -1){
+    lvlSpectrum = chunk.data[pressure_index]
+  } else if(metadata[0].levels){
+    lvlSpectrum = metadata[0].levels // note we take from metadata[0] since we're requiring all grids in the same collection have the same level spectrum
+  }
+  if(pp_params.presRange && lvlSpectrum.length > 0){
+    let lowIndex = 0
+    let highIndex = lvlSpectrum.length-1
+    if(lvlSpectrum[0] > pp_params.presRange[1]){
+      return false // requested pressure range that is completely shallower than pressures available
+    }
+    if(lvlSpectrum[highIndex] < pp_params.presRange[0]){
+      return false // requested pressure range that is completely deeper than pressures available
+    }
+    while(lowIndex < highIndex && lvlSpectrum[lowIndex] < pp_params.presRange[0]){
+      lowIndex++
+    } // lowIndex now points at the first level index to keep
+    while(highIndex > lowIndex && lvlSpectrum[highIndex] > pp_params.presRange[1]){
+      highIndex--
+    } // highIndex now points at the last level index to keep
+    for(let i=0; i<Object.keys(chunk.data).length; i++){
+      let k = Object.keys(chunk.data)[i]
+      chunk.data[k] = chunk.data[k].slice(lowIndex, highIndex+1)
+    }
+    /// append levels to the data document if it has been filtered on 
+    if(metadata[0] && metadata[0].levels) {
+      chunk.levels = metadata[0].levels.slice(lowIndex, highIndex+1)
+    }
+  }
+
   // drop any level for which all requested measurements are null if specific data has been requested
   if(pp_params.data && pp_params.data != 'all'){
     let dcopy = JSON.parse(JSON.stringify(chunk.data))
@@ -692,6 +726,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
 
   /// handle standardized routes
   let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories']
+  let timeseries_routes = ['noaasst', 'copernicussla']
 
   if(standard_routes.includes(path[0])){
     //// metadata routes
@@ -737,8 +772,34 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
           c /= metaDiscount
         }
       }
-    }
+    } 
     //// */meta and */vocabulary routes unconstrained for now  
+  } else if(timeseries_routes.includes(path[0])){
+    //// timeseries routes
+    if(qString.get('id') || url.includes('compression=minimal')){
+      c = 1
+    } else {
+      ///// parameter cleaning and coercing
+      let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
+      if(params.hasOwnProperty('code')){
+        return params
+      }
+
+      ///// cost out request
+      let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
+      if(geospan > 250){ // a 15x15 region for the full timeseries is ~100 MB
+        return {"code": 413, "message": "The spatial extent of your request is very large and likely to crash our API. Please request a smaller region."}
+      }
+      c = geospan/100
+      if(isNaN(c)){
+        c = 1 // protect against NaNs messing up user's token alotment
+      }
+
+      ///// metadata discount
+      if(!url.includes('data') || url.includes('except-data-values') || url.includes('compression=minimal')){
+        c /= metaDiscount
+      }
+    }
   }
 
   /// all other routes unconstrained for now

@@ -44,8 +44,6 @@ exports.findNOAASST = function(res, id,polygon,multipolygon,winding,center,radiu
       local_filter = []
     }
 
-    console.log(9999, id, local_filter)
-
     // postprocessing parameters
     let pp_params = {
         compression: compression,
