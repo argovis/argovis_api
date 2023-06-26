@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var CopernicusSeaLevelAnomaliesTimeseries = require('../service/CopernicusSeaLevelAnomaliesTimeseriesService');
 
-module.exports.findCopernicusSLA = function findCopernicusSLA (req, res, next, id, polygon, multipolygon, winding, center, radius, mostrecent, compression, data) {
-  CopernicusSeaLevelAnomaliesTimeseries.findCopernicusSLA(id, polygon, multipolygon, winding, center, radius, mostrecent, compression, data)
+module.exports.findCopernicusSLA = function findCopernicusSLA (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, mostrecent, compression, data) {
+  CopernicusSeaLevelAnomaliesTimeseries.findCopernicusSLA(id, startDate, endDate, polygon, multipolygon, winding, center, radius, mostrecent, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })

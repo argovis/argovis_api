@@ -1878,6 +1878,30 @@ paths:
         schema:
           type: string
           example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
       - name: polygon
         in: query
         description: "array of [lon, lat] vertices describing a polygon bounding the\
@@ -2059,6 +2083,30 @@ paths:
         schema:
           type: string
           example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
       - name: polygon
         in: query
         description: "array of [lon, lat] vertices describing a polygon bounding the\

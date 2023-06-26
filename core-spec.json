@@ -1319,6 +1319,12 @@
                   "$ref": "#/components/parameters/genericID"
                },
                {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
                   "$ref": "#/components/parameters/polygon"
                },
                {
@@ -1430,6 +1436,12 @@
             "parameters": [
                {
                   "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
                },
                {
                   "$ref": "#/components/parameters/polygon"
