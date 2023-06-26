@@ -69,6 +69,10 @@
          "description": "https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.html"
       },
       {
+         "name": "Copernicus sea level anomalies (timeseries)",
+         "description": "https://cds.climate.copernicus.eu/cdsapp#!/dataset/satellite-sea-level-global"
+      },
+      {
          "name": "token",
          "description": "token validation"
       },
@@ -1360,7 +1364,7 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/noaasst"
+                              "$ref": "#/components/schemas/genericTimeseries"
                            }
                         }
                      }
@@ -1398,7 +1402,120 @@
                         "schema": {
                            "type": "array",
                            "items": {
-                              "$ref": "#/components/schemas/noaasstMeta"
+                              "$ref": "#/components/schemas/genericTimeseriesMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/copernicussla": {
+         "get": {
+            "tags": [
+               "Copernicus sea level anomalies (timeseries)"
+            ],
+            "summary": "Copernicus SLA search and filter.",
+            "operationId": "findCopernicusSLA",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/winding"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/mostrecent"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string",
+                        "pattern": "^((~)?((sla){1})|all|except-data-values)$"
+                     },
+                     "example": "sla"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/genericTimeseries"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/copernicussla/meta": {
+         "get": {
+            "tags": [
+               "Copernicus sea level anomalies (timeseries)"
+            ],
+            "summary": "Copernicus SLA metadata search and filter.",
+            "operationId": "findCopernicusSLAmeta",
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/genericTimeseriesMeta"
                            }
                         }
                      }
@@ -2140,7 +2257,7 @@
                "pattern": "^((~)?((velocity_zonal)|(velocity_meridional)|(velocity_zonal_transmitted)|(velocity_meridional_transmitted)|(speed)|(speed_transmitted)|(drift_pres)|(drift_temp)|(number_surface_fixes){1})|all|except-data-values)$"
             }
          },
-         "noaasst": {
+         "genericTimeseries": {
             "type": "object",
             "required": ["_id", "metadata", "geolocation", "basin"],
             "properties": {
@@ -2164,9 +2281,9 @@
                }
             }
          },
-         "noaasstMeta": {
+         "genericTimeseriesMeta": {
             "type": "object",
-            "required": ["_id", "data_type", "date_updated_argovis", "source", "name", "num", "data_info"],
+            "required": ["_id", "data_type", "data_info", "date_updated_argovis", "timeseries", "source"],
             "properties":{
                "_id": {
                   "type": "string"
