@@ -21,7 +21,7 @@ const helpers = require('../helpers/helpers')
 exports.findNOAASST = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,mostrecent,compression,data) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization('noaasst',id,null,null,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('noaasst',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -29,7 +29,7 @@ exports.findNOAASST = function(res,id,startDate,endDate,polygon,multipolygon,win
     }
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, true) 
     if(bailout){
       reject(bailout)
       return
@@ -51,6 +51,7 @@ exports.findNOAASST = function(res,id,startDate,endDate,polygon,multipolygon,win
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
+        dateRange: [params.startDate, params.endDate],
         mostrecent: mostrecent,
         suppress_meta: compression=='minimal' // don't need to look up tc metadata if making a minimal request
     }

@@ -95,7 +95,7 @@ module.exports.polygon_sanitation = function(poly,enforceWinding){
 module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,polygon,multipolygon,winding,center,radius){
   // sanity check and transform generic temporospatial query string parameters in preparation for search.
 
-  params = {}
+  params = {"dataset": dataset}
 
   if(id){
     params.id = String(id)
@@ -149,8 +149,12 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
   return params
 }
 
-module.exports.request_sanitation = function(polygon, center, radius, multipolygon, data){
+module.exports.request_sanitation = function(polygon, center, radius, multipolygon, require_region){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
+
+  if(require_region && !polygon && !multipolygon && !(center || radius)){
+    return {"code": 400, "message": "This route requires a geographic region, either a polygon, multipolygon, or center and radius."} 
+  }
 
   // basic sanity checks
   if( (center && polygon) || (multipolygon && polygon) || (multipolygon && center)){
@@ -174,6 +178,8 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   let spacetimeMatch = []
   let proxMatch = []
   let foreignMatch = []
+  console.log(2000, params.dataset)
+  let isTimeseries = ['noaasst', 'copernicussla'].includes(params.dataset)
 
   // construct match stages as required
   /// prox match construction
@@ -184,12 +190,15 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   /// spacetime match construction
   if(params.startDate || params.endDate || params.polygon || params.multipolygon){
     spacetimeMatch[0] = {$match: {}}
-    if (params.startDate && params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lt: params.endDate}
-    } else if (params.startDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
-    } else if (params.endDate){
-      spacetimeMatch[0]['$match']['timestamp'] = {$lt: params.endDate}
+    if(!isTimeseries) {
+      // time filtering at this stage only appropriate for point data
+      if (params.startDate && params.endDate){
+        spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate, $lt: params.endDate}
+      } else if (params.startDate){
+        spacetimeMatch[0]['$match']['timestamp'] = {$gte: params.startDate}
+      } else if (params.endDate){
+        spacetimeMatch[0]['$match']['timestamp'] = {$lt: params.endDate}
+      }
     }
     if(params.polygon) {
       spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
@@ -216,8 +225,8 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
   aggPipeline.push({$sort: {'timestamp':-1}})
 
+  // optionally filter off data before pulling documents out of mongo; currently only supports data documents that include data_info
   if(data_filter){
-    // optionally filter off data before pulling documents out of mongo; currently only supports data documents that include data_info
     aggPipeline.push(
       {
         $addFields: {
@@ -283,6 +292,51 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
         }
       }
     )
+  }
+
+  // filter down to requested time range in mongo for timeseries data
+  if(isTimeseries){
+
+    let lowIndex = 0
+    let highIndex = params.timeseries.length-1
+    if(params.timeseries[0] > params.endDate){
+      return false // requested date range that is completely before dates available
+    }
+    if(params.timeseries[highIndex] < params.startDate){
+      return false // requested date range that is completely after dates available
+    }
+    while(lowIndex < highIndex && params.timeseries[lowIndex] < params.startDate){
+      lowIndex++
+    } // lowIndex now points at the first date index to keep
+    while(highIndex > lowIndex && params.timeseries[highIndex] > params.endDate){
+      highIndex--
+    } // highIndex now points at the last date index to keep
+    console.log(1000, lowIndex, highIndex)
+    aggPipeline.push({
+      $addFields: {
+        data: {
+          $function: {
+            body: `function(data, lowIndex, highIndex){
+                    for(let i=0; i<data.length; i++){
+                      data[i] = data[i].slice(lowIndex, highIndex+1)
+                    }
+                    return data
+                  }`,
+            args: ["$data", lowIndex, highIndex ],
+            lang: 'js'
+          }
+        },
+        timeseries: {
+          $function: {
+            body: `function(timeseries, lowIndex, highIndex){
+                    return timeseries.slice(lowIndex,highIndex+1)
+                  }`,
+            args: [params.timeseries, lowIndex, highIndex],
+            lang: 'js'
+          }
+        }
+      }
+    })
   }
 
   if(projection){
@@ -441,40 +495,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   }
 
   // filter by presRange, drop profile if reqested and available pressures are disjoint
-  /// identify level spectrum, could be <data doc>.data.pressure (for point data) or <metadata doc>.levels (for grids)
-  let lvlSpectrum = []
-  let pressure_index = dinfo[0].findIndex(x => x === 'pressure')
-  if(pressure_index !== -1){
-    lvlSpectrum = chunk.data[pressure_index]
-  } else if(metadata[0].levels){
-    lvlSpectrum = metadata[0].levels // note we take from metadata[0] since we're requiring all grids in the same collection have the same level spectrum
-  }
-  if(pp_params.presRange && lvlSpectrum.length > 0){
-    let lowIndex = 0
-    let highIndex = lvlSpectrum.length-1
-    if(lvlSpectrum[0] > pp_params.presRange[1]){
-      return false // requested pressure range that is completely shallower than pressures available
-    }
-    if(lvlSpectrum[highIndex] < pp_params.presRange[0]){
-      return false // requested pressure range that is completely deeper than pressures available
-    }
-    while(lowIndex < highIndex && lvlSpectrum[lowIndex] < pp_params.presRange[0]){
-      lowIndex++
-    } // lowIndex now points at the first level index to keep
-    while(highIndex > lowIndex && lvlSpectrum[highIndex] > pp_params.presRange[1]){
-      highIndex--
-    } // highIndex now points at the last level index to keep
-    for(let i=0; i<Object.keys(chunk.data).length; i++){
-      let k = Object.keys(chunk.data)[i]
-      chunk.data[k] = chunk.data[k].slice(lowIndex, highIndex+1)
-    }
-    /// append levels to the data document if it has been filtered on 
-    if(metadata[0] && metadata[0].levels) {
-      chunk.levels = metadata[0].levels.slice(lowIndex, highIndex+1)
-    }
-  }
-
-  // filter by date range, drop profile if reqested and available dates are disjoint
   /// identify level spectrum, could be <data doc>.data.pressure (for point data) or <metadata doc>.levels (for grids)
   let lvlSpectrum = []
   let pressure_index = dinfo[0].findIndex(x => x === 'pressure')
@@ -677,7 +697,6 @@ module.exports.lookup_key = function(userModel, apikey, resolve, reject){
 
 module.exports.earliest_records = function(dataset){
   // return a date representing the earliest record for the named dataset
-  // omit timeseries datasets, not indexed on timestamp
 
   let dates = {
     'argo': new Date("1997-07-28T20:26:20.002Z"),
@@ -686,7 +705,9 @@ module.exports.earliest_records = function(dataset){
     'kg21': new Date("2005-01-15T00:00:00Z"),
     'rg09': new Date("2004-01-15T00:00:00Z"),
     'tc': new Date("1851-06-25T00:00:00Z"),
-    "trajectories": new Date("2001-01-04T22:46:33Z")
+    "trajectories": new Date("2001-01-04T22:46:33Z"),
+    'noaasst': new Date("1989-12-31T00:00:00.000Z"),
+    'copernicussla': new Date("1993-01-10T00:00:00Z")
   }
 
   return dates[dataset]
@@ -695,7 +716,6 @@ module.exports.earliest_records = function(dataset){
 
 module.exports.final_records = function(dataset){
   // return a date representing the last record for the named dataset
-  // omit timeseries datasets, not indexed on timestamp
 
   let dates = {
     'argo': new Date(),
@@ -704,7 +724,9 @@ module.exports.final_records = function(dataset){
     'kg21': new Date("2020-12-15T00:00:00Z"),
     'rg09': new Date("2022-05-15T00:00:00Z"),
     'tc': new Date("2020-12-25T12:00:00Z"),
-    'trajectories': new Date("2021-01-01T01:13:26Z")
+    'trajectories': new Date("2021-01-01T01:13:26Z"),
+    'noaasst': new Date("2023-01-29T00:00:00.000Z"),
+    'copernicussla': new Date("2022-07-31T00:00:00.000Z")
   }
 
   return dates[dataset]
@@ -725,8 +747,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
-  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories']
-  let timeseries_routes = ['noaasst', 'copernicussla']
+  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories', 'noaasst', 'copernicussla']
 
   if(standard_routes.includes(path[0])){
     //// metadata routes
@@ -774,33 +795,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       }
     } 
     //// */meta and */vocabulary routes unconstrained for now  
-  } else if(timeseries_routes.includes(path[0])){
-    //// timeseries routes
-    if(qString.get('id') || url.includes('compression=minimal')){
-      c = 1
-    } else {
-      ///// parameter cleaning and coercing
-      let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
-      if(params.hasOwnProperty('code')){
-        return params
-      }
-
-      ///// cost out request
-      let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
-      if(geospan > 250){ // a 15x15 region for the full timeseries is ~100 MB
-        return {"code": 413, "message": "The spatial extent of your request is very large and likely to crash our API. Please request a smaller region."}
-      }
-      c = geospan/100
-      if(isNaN(c)){
-        c = 1 // protect against NaNs messing up user's token alotment
-      }
-
-      ///// metadata discount
-      if(!url.includes('data') || url.includes('except-data-values') || url.includes('compression=minimal')){
-        c /= metaDiscount
-      }
-    }
-  }
+  } 
 
   /// all other routes unconstrained for now
   return c
