@@ -1475,7 +1475,7 @@
                      "type": "array",
                      "items": {
                         "type": "string",
-                        "pattern": "^((~)?((sla){1})|all|except-data-values)$"
+                        "pattern": "^((~)?((sla)|(adt){1})|all|except-data-values)$"
                      },
                      "example": "sla"
                   }
