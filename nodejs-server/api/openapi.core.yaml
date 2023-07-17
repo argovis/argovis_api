@@ -2196,7 +2196,7 @@ paths:
           type: array
           example: sla
           items:
-            pattern: "^((~)?((sla){1})|all|except-data-values)$"
+            pattern: "^((~)?((sla)|(adt){1})|all|except-data-values)$"
             type: string
       responses:
         "200":
