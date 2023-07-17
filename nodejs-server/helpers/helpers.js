@@ -178,7 +178,6 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   let spacetimeMatch = []
   let proxMatch = []
   let foreignMatch = []
-  console.log(2000, params.dataset)
   let isTimeseries = ['noaasst', 'copernicussla'].includes(params.dataset)
 
   // construct match stages as required
@@ -308,10 +307,10 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     while(lowIndex < highIndex && params.timeseries[lowIndex] < params.startDate){
       lowIndex++
     } // lowIndex now points at the first date index to keep
-    while(highIndex > lowIndex && params.timeseries[highIndex] > params.endDate){
+    while(highIndex > lowIndex && params.timeseries[highIndex] >= params.endDate){
       highIndex--
     } // highIndex now points at the last date index to keep
-    console.log(1000, lowIndex, highIndex)
+
     aggPipeline.push({
       $addFields: {
         data: {
