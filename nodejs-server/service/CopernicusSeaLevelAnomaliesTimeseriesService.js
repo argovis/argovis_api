@@ -2,7 +2,7 @@
 
 
 /**
- * NOAA SST search and filter.
+ * Copernicus SLA search and filter.
  *
  * id String Unique ID to search for. (optional)
  * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
@@ -17,7 +17,7 @@
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * returns List
  **/
-exports.findNOAASST = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius,mostrecent,compression,data) {
+exports.findCopernicusSLA = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius,mostrecent,compression,data) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -49,12 +49,12 @@ exports.findNOAASST = function(id,startDate,endDate,polygon,multipolygon,winding
 
 
 /**
- * NOAA SST metadata search and filter.
+ * Copernicus SLA metadata search and filter.
  *
  * id String Unique ID to search for. (optional)
  * returns List
  **/
-exports.findNOAASSTmeta = function(id) {
+exports.findCopernicusSLAmeta = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var NOAASSTOptimumInterpolationV2Timeseries = require('../service/NOAASSTOptimumInterpolationV2TimeseriesService');
 
-module.exports.findNOAASST = function findNOAASST (req, res, next, id, polygon, multipolygon, winding, center, radius, mostrecent, compression, data) {
-  NOAASSTOptimumInterpolationV2Timeseries.findNOAASST(id, polygon, multipolygon, winding, center, radius, mostrecent, compression, data)
+module.exports.findNOAASST = function findNOAASST (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, mostrecent, compression, data) {
+  NOAASSTOptimumInterpolationV2Timeseries.findNOAASST(id, startDate, endDate, polygon, multipolygon, winding, center, radius, mostrecent, compression, data)
     .then(function (response) {
       utils.writeJson(res, response);
     })
