@@ -2067,6 +2067,52 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: NOAASSTOptimumInterpolationV2Timeseries
+  /noaasst/vocabulary:
+    get:
+      tags:
+      - NOAA SST Optimum Interpolation V2 (timeseries)
+      summary: List all possible values for certain NOAA sst query string parameters
+      operationId: noaasstVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: query string parameter to summarize possible values of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - data
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: NOAASSTOptimumInterpolationV2Timeseries
   /copernicussla:
     get:
       tags:
@@ -2252,6 +2298,52 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/genericTimeseriesMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: CopernicusSeaLevelAnomaliesTimeseries
+  /copernicussla/vocabulary:
+    get:
+      tags:
+      - Copernicus sea level anomalies (timeseries)
+      summary: List all possible values for certain Copernicus sla query string parameters
+      operationId: copernicusslaVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: query string parameter to summarize possible values of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - data
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
                 x-content-type: application/json
         "400":
           description: Bad Request

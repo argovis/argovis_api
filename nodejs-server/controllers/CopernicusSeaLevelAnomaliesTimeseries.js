@@ -5,6 +5,16 @@ var CopernicusSeaLevelAnomaliesTimeseries = require('../service/CopernicusSeaLev
 const apihits = require('../models/apihits');
 var helpers = require('../helpers/helpers')
 
+module.exports.copernicusslaVocab = function copernicusslaVocab (req, res, next, parameter) {
+  CopernicusSeaLevelAnomaliesTimeseries.copernicusslaVocab(parameter)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.findCopernicusSLA = function findCopernicusSLA (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, mostrecent, compression, data) {
 
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
