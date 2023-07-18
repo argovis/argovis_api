@@ -25,6 +25,25 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /noaasst", function () {
+      it("allow noaa sst id request; shouldn't have timeseries appended", async function () {
+        const response = await request.get("/noaasst?id=-46.5_35.5&data=all").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(200);
+        expect(response.body).to.be.jsonSchema(schema.paths['/noaasst'].get.responses['200'].content['application/json'].schema); 
+        expect(response.body[0]).not.to.have.property('timeseries')  
+        expect(response.body[0].data[0].length).to.eql(1727)   
+      });
+    });
+
+    describe("GET /copernicussla", function () {
+      it("allow copernicus sla id request; shouldn't have timeseries appended", async function () {
+        const response = await request.get("/copernicussla?id=-46.875_35.625&data=all").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(200);
+        expect(response.body).to.be.jsonSchema(schema.paths['/copernicussla'].get.responses['200'].content['application/json'].schema);
+        expect(response.body[0]).not.to.have.property('timeseries')
+        expect(response.body[0].data[0].length).to.eql(1543) 
+      });
+    });
 
   }
 })
