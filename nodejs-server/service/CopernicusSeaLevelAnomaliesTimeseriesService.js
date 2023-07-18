@@ -3,6 +3,25 @@ const copernicussla = require('../models/copernicussla');
 const helpers = require('../helpers/helpers')
 
 /**
+ * List all possible values for certain Copernicus sla query string parameters
+ *
+ * parameter String query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.copernicusslaVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Copernicus SLA search and filter.
  *
  * id String Unique ID to search for. (optional)
