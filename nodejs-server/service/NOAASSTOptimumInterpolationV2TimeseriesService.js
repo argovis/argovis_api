@@ -92,7 +92,6 @@ exports.findNOAASST = function(res,id,startDate,endDate,polygon,multipolygon,win
   });
 }
 
-
 /**
  * NOAA SST metadata search and filter.
  *
@@ -122,12 +121,9 @@ exports.findNOAASSTmeta = function(res, id) {
  **/
 exports.noaasstVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    if(parameter == 'data'){
+      resolve(["sst"])
+      return
     }
   });
 }
