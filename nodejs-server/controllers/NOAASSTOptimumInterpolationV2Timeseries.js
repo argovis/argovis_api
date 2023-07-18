@@ -22,3 +22,13 @@ module.exports.findNOAASSTmeta = function findNOAASSTmeta (req, res, next, id) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.noaasstVocab = function noaasstVocab (req, res, next, parameter) {
+  NOAASSTOptimumInterpolationV2Timeseries.noaasstVocab(parameter)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};

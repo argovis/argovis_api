@@ -100,3 +100,22 @@ exports.findNOAASSTmeta = function(id) {
   });
 }
 
+
+/**
+ * List all possible values for certain NOAA sst query string parameters
+ *
+ * parameter String query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.noaasstVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
