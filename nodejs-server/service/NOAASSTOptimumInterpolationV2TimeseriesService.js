@@ -32,7 +32,7 @@ exports.findNOAASST = function(res,id,startDate,endDate,polygon,multipolygon,win
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, true) 
-    if(bailout){
+    if(bailout && !id){
       reject(bailout)
       return
     }

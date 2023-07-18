@@ -311,31 +311,34 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       highIndex--
     } // highIndex now points at the last date index to keep
 
-    aggPipeline.push({
-      $addFields: {
-        data: {
-          $function: {
-            body: `function(data, lowIndex, highIndex){
-                    for(let i=0; i<data.length; i++){
-                      data[i] = data[i].slice(lowIndex, highIndex+1)
-                    }
-                    return data
-                  }`,
-            args: ["$data", lowIndex, highIndex ],
-            lang: 'js'
-          }
-        },
-        timeseries: {
-          $function: {
-            body: `function(timeseries, lowIndex, highIndex){
-                    return timeseries.slice(lowIndex,highIndex+1)
-                  }`,
-            args: [params.timeseries, lowIndex, highIndex],
-            lang: 'js'
+    if (lowIndex > 0 || highIndex < params.timeseries.length-2){
+      // not keeping everything, munge in mongo:
+      aggPipeline.push({
+        $addFields: {
+          data: {
+            $function: {
+              body: `function(data, lowIndex, highIndex){
+                      for(let i=0; i<data.length; i++){
+                        data[i] = data[i].slice(lowIndex, highIndex+1)
+                      }
+                      return data
+                    }`,
+              args: ["$data", lowIndex, highIndex ],
+              lang: 'js'
+            }
+          },
+          timeseries: {
+            $function: {
+              body: `function(timeseries, lowIndex, highIndex){
+                      return timeseries.slice(lowIndex,highIndex+1)
+                    }`,
+              args: [params.timeseries, lowIndex, highIndex],
+              lang: 'js'
+            }
           }
         }
-      }
-    })
+      })
+    }
   }
 
   if(projection){

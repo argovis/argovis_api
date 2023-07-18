@@ -49,7 +49,7 @@ exports.findCopernicusSLA = function(res,id,startDate,endDate,polygon,multipolyg
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, true) 
-    if(bailout){
+    if(bailout && !id){
       reject(bailout)
       return
     }
