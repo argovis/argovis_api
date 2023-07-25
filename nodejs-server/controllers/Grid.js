@@ -32,11 +32,11 @@ module.exports.findgridMeta = function findgridMeta (req, res, next, id) {
     });
 };
 
-module.exports.gridVocab = function gridVocab (req, res, next, parameter) {
-
+module.exports.gridVocab = function gridVocab (req, res, next, gridName) {
+  
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
   
-  Grid.gridVocab(parameter)
+  Grid.gridVocab(gridName)
     .then(function (response) {
       utils.writeJson(res, response);
     },

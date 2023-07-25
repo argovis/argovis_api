@@ -111,16 +111,14 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
 }
 
 /**
- * List all grid names currently available
+ * List data and lattice for the requested grid.
  *
- * parameter String Grid path or query string parameter to summarize possible values of.
+ * gridName String 
  * returns List
  **/
-exports.gridVocab = function(parameter) {
+exports.gridVocab = function(gridName) {
   return new Promise(function(resolve, reject) {
-    if(parameter == 'gridName'){
-      const query = summaries.find({"_id":"gridSummaries"}).lean()
-      query.exec(helpers.queryCallback.bind(null,x=>[x[0]['summary']], resolve, reject))
-    }
+      const query = summaries.find({"_id":gridName+"summary"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x, resolve, reject))
   });
 }
