@@ -799,24 +799,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
-  /grids/vocabulary:
+  /grids/{gridName}/vocabulary:
     get:
       tags:
       - grid
-      summary: List all grid names currently available
+      summary: List data and lattice for the requested grid.
       operationId: gridVocab
       parameters:
-      - name: parameter
-        in: query
-        description: Grid path or query string parameter to summarize possible values
-          of.
+      - name: gridName
+        in: path
         required: true
-        style: form
-        explode: true
+        style: simple
+        explode: false
         schema:
           type: string
           enum:
-          - gridName
+          - rg09
+          - kg21
       responses:
         "200":
           description: OK
