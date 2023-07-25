@@ -575,7 +575,7 @@
                   "required": "true",
                   "schema": {
                      "type": "string",
-                     "enum": ["rg09", "kg21"]
+                     "enum": ["rg09", "kg21", "glodap"]
                   }
                }
             ],

@@ -816,6 +816,7 @@ paths:
           enum:
           - rg09
           - kg21
+          - glodap
       responses:
         "200":
           description: OK
