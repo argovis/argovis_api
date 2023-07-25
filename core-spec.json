@@ -568,6 +568,17 @@
             ],
             "summary": "List data and lattice for the requested grid.",
             "operationId": "gridVocab",
+            "parameters": [
+               {
+                  "name": "gridName",
+                  "in": "path",
+                  "required": "true",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["rg09", "kg21"]
+                  }
+               }
+            ],
             "responses": {
                "200": {
                   "description": "OK",

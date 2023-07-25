@@ -108,9 +108,10 @@ exports.findgridMeta = function(id) {
 /**
  * List data and lattice for the requested grid.
  *
+ * gridName String 
  * returns List
  **/
-exports.gridVocab = function() {
+exports.gridVocab = function(gridName) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ "", "" ];
