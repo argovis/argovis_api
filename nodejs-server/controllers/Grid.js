@@ -23,8 +23,8 @@ module.exports.findgridMeta = function findgridMeta (req, res, next, id) {
     });
 };
 
-module.exports.gridVocab = function gridVocab (req, res, next, parameter) {
-  Grid.gridVocab(parameter)
+module.exports.gridVocab = function gridVocab (req, res, next) {
+  Grid.gridVocab()
     .then(function (response) {
       utils.writeJson(res, response);
     })

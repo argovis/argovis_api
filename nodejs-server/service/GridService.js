@@ -106,12 +106,11 @@ exports.findgridMeta = function(id) {
 
 
 /**
- * List all grid names currently available
+ * List data and lattice for the requested grid.
  *
- * parameter String Grid path or query string parameter to summarize possible values of.
  * returns List
  **/
-exports.gridVocab = function(parameter) {
+exports.gridVocab = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ "", "" ];
