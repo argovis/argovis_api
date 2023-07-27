@@ -709,7 +709,8 @@ module.exports.earliest_records = function(dataset){
     'tc': new Date("1851-06-25T00:00:00Z"),
     "trajectories": new Date("2001-01-04T22:46:33Z"),
     'noaasst': new Date("1989-12-31T00:00:00.000Z"),
-    'copernicussla': new Date("1993-01-10T00:00:00Z")
+    'copernicussla': new Date("1993-01-10T00:00:00Z"),
+    'glodap': new Date('1-01-01T00:00:00Z')
   }
 
   return dates[dataset]
@@ -728,7 +729,8 @@ module.exports.final_records = function(dataset){
     'tc': new Date("2020-12-25T12:00:00Z"),
     'trajectories': new Date("2021-01-01T01:13:26Z"),
     'noaasst': new Date("2023-01-29T00:00:00.000Z"),
-    'copernicussla': new Date("2022-07-31T00:00:00.000Z")
+    'copernicussla': new Date("2022-07-31T00:00:00.000Z"),
+    'glodap': new Date('1-01-02T00:00:00Z')
   }
 
   return dates[dataset]
@@ -757,7 +759,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       return 0.2
     }
     //// core data routes
-    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21'))){
+    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap'))){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1
@@ -857,6 +859,8 @@ module.exports.find_grid_collection = function(token){
     return 'rg09'
   } else if(["kg21_ohc15to300"].some(k => token.includes(k))){
     return 'kg21'
+  } else if (["glodap"].some(k => token.includes(k))){
+    return 'glodap'
   } else {
     return ''
   }
