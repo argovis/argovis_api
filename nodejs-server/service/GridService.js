@@ -49,6 +49,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
   return new Promise(function(resolve, reject) {
     // generic helper for all grid search and filter routes
     // input sanitization
+
     let params = helpers.parameter_sanitization(gridName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
@@ -92,6 +93,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
+
           let stub = function(data, metadata){
               // given a data and corresponding metadata document,
               // return the record that should be returned when the compression=minimal API flag is set
