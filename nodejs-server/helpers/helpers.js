@@ -710,7 +710,7 @@ module.exports.earliest_records = function(dataset){
     "trajectories": new Date("2001-01-04T22:46:33Z"),
     'noaasst': new Date("1989-12-31T00:00:00.000Z"),
     'copernicussla': new Date("1993-01-10T00:00:00Z"),
-    'glodap': new Date('1-01-01T00:00:00Z')
+    'glodap': new Date('0001-01-01T00:00:00Z')
   }
 
   return dates[dataset]
@@ -722,7 +722,7 @@ module.exports.final_records = function(dataset){
 
   let dates = {
     'argo': new Date(),
-    'cchdo': new Date("2021-08-13T23:27:00Z"),
+    'cchdo': new Date("2023-03-09T17:48:00Z"),
     'drifters': new Date("2020-06-30T23:00:00Z"),
     'kg21': new Date("2020-12-15T00:00:00Z"),
     'rg09': new Date("2022-05-15T00:00:00Z"),
@@ -730,7 +730,7 @@ module.exports.final_records = function(dataset){
     'trajectories': new Date("2021-01-01T01:13:26Z"),
     'noaasst': new Date("2023-01-29T00:00:00.000Z"),
     'copernicussla': new Date("2022-07-31T00:00:00.000Z"),
-    'glodap': new Date('1-01-02T00:00:00Z')
+    'glodap': new Date('0001-01-02T00:00:00Z')
   }
 
   return dates[dataset]
