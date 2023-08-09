@@ -25,8 +25,7 @@ tags:
 - name: cchdo
   description: CCHDO profile data.
 - name: grid
-  description: "Gridded products derived from Argo floats, simulation, or satalite\
-    \ product"
+  description: Gridded products derived from Argo floats and simulations.
 - name: tc
   description: tropical cyclone data
 - name: ar (experimental)
@@ -37,10 +36,8 @@ tags:
   description: Summary statistics (mostly for internal use)
 - name: Argo trajectories (experimental)
   description: Trajectories of argo floats
-- name: NOAA SST Optimum Interpolation V2 (timeseries)
-  description: https://psl.noaa.gov/data/gridded/data.noaa.oisst.v2.html
-- name: Copernicus sea level anomalies (timeseries)
-  description: https://cds.climate.copernicus.eu/cdsapp#!/dataset/satellite-sea-level-global
+- name: timeseries
+  description: timeseries-formatted grids derived from satellite data.
 - name: token
   description: token validation
 - name: ping
@@ -846,6 +843,268 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
+  /timeseries/{gridName}:
+    get:
+      tags:
+      - timeseries
+      summary: Search and filter for timeseries named in path
+      operationId: findtimeseries
+      parameters:
+      - name: timeseriesName
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          enum:
+          - noaasst
+          - copernicussla
+          - ccmpwind
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: winding
+        in: query
+        description: Enforce ccw winding for polygon and multipolygon
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "uwnd,vwnd"
+          items:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/genericTimeseries'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Timeseries
+  /timeseries/meta:
+    get:
+      tags:
+      - timeseries
+      summary: Metadata for timeseries by ID
+      operationId: findtimeseriesMeta
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/genericTimeseriesMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Timeseries
+  /timeseries/{timeseriesName}/vocabulary:
+    get:
+      tags:
+      - timeseries
+      summary: List data and lattice for the requested timeseries.
+      operationId: timeseriesVocab
+      parameters:
+      - name: timeseriesName
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          enum:
+          - noaasst
+          - copernicussla
+          - ccmpwind
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Timeseries
   /cchdo:
     get:
       tags:
@@ -1863,508 +2122,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: ArgoTrajectoriesExperimental
-  /noaasst:
-    get:
-      tags:
-      - NOAA SST Optimum Interpolation V2 (timeseries)
-      summary: NOAA SST search and filter.
-      operationId: findNOAASST
-      parameters:
-      - name: id
-        in: query
-        description: Unique ID to search for.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: 4902911_0
-      - name: startDate
-        in: query
-        description: ISO 8601 UTC date-time formatted string indicating the beginning
-          of the time period of interest.
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      - name: endDate
-        in: query
-        description: ISO 8601 UTC date-time formatted string indicating the end of
-          the time period of interest.
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      - name: polygon
-        in: query
-        description: "array of [lon, lat] vertices describing a polygon bounding the\
-          \ region of interest; final point must match initial point"
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
-      - name: multipolygon
-        in: query
-        description: array of polygon regions; region of interest is taken as the
-          intersection of all listed polygons.
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
-      - name: winding
-        in: query
-        description: Enforce ccw winding for polygon and multipolygon
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          enum:
-          - "true"
-      - name: center
-        in: query
-        description: center to measure max radius from when defining circular region
-          of interest; must be used in conjunction with query string parameter 'radius'.
-        required: false
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "10,20.1"
-          items:
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: radius
-        in: query
-        description: km from centerpoint when defining circular region of interest;
-          must be used in conjunction with query string parameter 'center'.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 50
-      - name: mostrecent
-        in: query
-        description: get back only the n records with the most recent values of timestamp.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: number
-      - name: compression
-        in: query
-        description: Data minification strategy to apply.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          enum:
-          - minimal
-      - name: data
-        in: query
-        description: "Keys of data to include. Return only documents that have all\
-          \ data requested, within the pressure range if specified. Accepts ~ negation\
-          \ to filter out documents including the specified data. Omission of this\
-          \ parameter will result in metadata only responses."
-        required: false
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: sst
-          items:
-            pattern: "^((~)?((sst){1})|all|except-data-values)$"
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/genericTimeseries'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: NOAASSTOptimumInterpolationV2Timeseries
-  /noaasst/meta:
-    get:
-      tags:
-      - NOAA SST Optimum Interpolation V2 (timeseries)
-      summary: NOAA SST metadata search and filter.
-      operationId: findNOAASSTmeta
-      parameters:
-      - name: id
-        in: query
-        description: Unique ID to search for.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: 4902911_0
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/genericTimeseriesMeta'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: NOAASSTOptimumInterpolationV2Timeseries
-  /noaasst/vocabulary:
-    get:
-      tags:
-      - NOAA SST Optimum Interpolation V2 (timeseries)
-      summary: List all possible values for certain NOAA sst query string parameters
-      operationId: noaasstVocab
-      parameters:
-      - name: parameter
-        in: query
-        description: query string parameter to summarize possible values of.
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          enum:
-          - data
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: NOAASSTOptimumInterpolationV2Timeseries
-  /copernicussla:
-    get:
-      tags:
-      - Copernicus sea level anomalies (timeseries)
-      summary: Copernicus SLA search and filter.
-      operationId: findCopernicusSLA
-      parameters:
-      - name: id
-        in: query
-        description: Unique ID to search for.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: 4902911_0
-      - name: startDate
-        in: query
-        description: ISO 8601 UTC date-time formatted string indicating the beginning
-          of the time period of interest.
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      - name: endDate
-        in: query
-        description: ISO 8601 UTC date-time formatted string indicating the end of
-          the time period of interest.
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      - name: polygon
-        in: query
-        description: "array of [lon, lat] vertices describing a polygon bounding the\
-          \ region of interest; final point must match initial point"
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
-      - name: multipolygon
-        in: query
-        description: array of polygon regions; region of interest is taken as the
-          intersection of all listed polygons.
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
-      - name: winding
-        in: query
-        description: Enforce ccw winding for polygon and multipolygon
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          enum:
-          - "true"
-      - name: center
-        in: query
-        description: center to measure max radius from when defining circular region
-          of interest; must be used in conjunction with query string parameter 'radius'.
-        required: false
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: "10,20.1"
-          items:
-            maxItems: 2
-            minItems: 2
-            type: number
-      - name: radius
-        in: query
-        description: km from centerpoint when defining circular region of interest;
-          must be used in conjunction with query string parameter 'center'.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: number
-          example: 50
-      - name: mostrecent
-        in: query
-        description: get back only the n records with the most recent values of timestamp.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: number
-      - name: compression
-        in: query
-        description: Data minification strategy to apply.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          enum:
-          - minimal
-      - name: data
-        in: query
-        description: "Keys of data to include. Return only documents that have all\
-          \ data requested, within the pressure range if specified. Accepts ~ negation\
-          \ to filter out documents including the specified data. Omission of this\
-          \ parameter will result in metadata only responses."
-        required: false
-        style: form
-        explode: false
-        allowReserved: true
-        schema:
-          type: array
-          example: sla
-          items:
-            pattern: "^((~)?((sla)|(adt){1})|all|except-data-values)$"
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/genericTimeseries'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: CopernicusSeaLevelAnomaliesTimeseries
-  /copernicussla/meta:
-    get:
-      tags:
-      - Copernicus sea level anomalies (timeseries)
-      summary: Copernicus SLA metadata search and filter.
-      operationId: findCopernicusSLAmeta
-      parameters:
-      - name: id
-        in: query
-        description: Unique ID to search for.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: 4902911_0
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/genericTimeseriesMeta'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: CopernicusSeaLevelAnomaliesTimeseries
-  /copernicussla/vocabulary:
-    get:
-      tags:
-      - Copernicus sea level anomalies (timeseries)
-      summary: List all possible values for certain Copernicus sla query string parameters
-      operationId: copernicusslaVocab
-      parameters:
-      - name: parameter
-        in: query
-        description: query string parameter to summarize possible values of.
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          enum:
-          - data
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: CopernicusSeaLevelAnomaliesTimeseries
   /summary:
     get:
       tags:
