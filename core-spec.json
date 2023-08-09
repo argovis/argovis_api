@@ -601,7 +601,7 @@
             }
          }
       },
-      "/timeseries/{gridName}": {
+      "/timeseries/{timeseriesName}": {
          "get": {
             "tags": [
                "timeseries"
