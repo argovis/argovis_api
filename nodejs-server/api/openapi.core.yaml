@@ -843,7 +843,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Grid
-  /timeseries/{gridName}:
+  /timeseries/{timeseriesName}:
     get:
       tags:
       - timeseries
