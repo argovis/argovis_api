@@ -5,7 +5,7 @@ var utils = require('../utils/writer.js');
 var Timeseries = require('../service/TimeseriesService');
 var helpers = require('../helpers/helpers')
 
-module.exports.findtimeseries = function findtimeseries (req, res, next, timeseriesName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data) {
+module.exports.findtimeseries = function findtimeseries (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data, timeseriesName) {
   
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
 
