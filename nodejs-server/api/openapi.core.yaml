@@ -860,7 +860,6 @@ paths:
           enum:
           - noaasst
           - copernicussla
-          - ccmpwind
       - name: id
         in: query
         description: Unique ID to search for.
@@ -1075,7 +1074,6 @@ paths:
           enum:
           - noaasst
           - copernicussla
-          - ccmpwind
       responses:
         "200":
           description: OK
