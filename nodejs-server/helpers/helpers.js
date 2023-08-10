@@ -178,7 +178,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   let spacetimeMatch = []
   let proxMatch = []
   let foreignMatch = []
-  let isTimeseries = ['noaasst', 'copernicussla'].includes(params.dataset)
+  let isTimeseries = ['noaasst', 'copernicussla', 'ccmpwind'].includes(params.dataset)
 
   // construct match stages as required
   /// prox match construction
@@ -709,7 +709,8 @@ module.exports.earliest_records = function(dataset){
     'tc': new Date("1851-06-25T00:00:00Z"),
     "trajectories": new Date("2001-01-04T22:46:33Z"),
     'noaasst': new Date("1989-12-31T00:00:00.000Z"),
-    'copernicussla': new Date("1993-01-10T00:00:00Z"),
+    'copernicussla': new Date("1993-01-03T00:00:00Z"),
+    'ccmpwind': new Date("1993-01-03T00:00:00Z"),
     'glodap': new Date('0001-01-01T00:00:00Z')
   }
 
@@ -730,6 +731,7 @@ module.exports.final_records = function(dataset){
     'trajectories': new Date("2021-01-01T01:13:26Z"),
     'noaasst': new Date("2023-01-29T00:00:00.000Z"),
     'copernicussla': new Date("2022-07-31T00:00:00.000Z"),
+    'ccmpwind': new Date("1993-12-26T00:00:00Z"),
     'glodap': new Date('0001-01-02T00:00:00Z')
   }
 
@@ -751,7 +753,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
-  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories', 'noaasst', 'copernicussla']
+  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories', 'timeseries']
 
   if(standard_routes.includes(path[0])){
     //// metadata routes
@@ -759,7 +761,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       return 0.2
     }
     //// core data routes
-    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap'))){
+    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap')) || (path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) ){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1

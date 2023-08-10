@@ -24,7 +24,7 @@ var sourceinfo = Schema({
   url: {type: String, required: false},
 })
 
-const copernicusslaSchema = Schema({
+const tsSchema = Schema({
   _id: {type: String, required: true},
   metadata: {type: [String], required: true},
   geolocation: {type: geolocation, required: true},
@@ -32,7 +32,7 @@ const copernicusslaSchema = Schema({
   data: [{type: [Number], required: false}]
 });
 
-const copernicusslaMetaSchema = Schema({
+const tsMetaSchema = Schema({
   _id: {type: String, required: true},
   data_type: {type: String, required: true},
   data_info: [{type:[Schema.Types.Mixed], required: false}],
@@ -42,5 +42,8 @@ const copernicusslaMetaSchema = Schema({
 });
 
 module.exports = {}
-module.exports.copernicusslaMeta = mongoose.model('copernicusSLAMeta', copernicusslaMetaSchema, 'copernicusSLAMeta');
-module.exports.copernicussla = mongoose.model('copernicusSLA', copernicusslaSchema, 'copernicusSLA');
+module.exports['timeseriesMeta'] = mongoose.model('timeseriesMeta', tsMetaSchema, 'timeseriesMeta');
+module.exports['noaasst'] = mongoose.model('noaaOIsst', tsSchema, 'noaaOIsst');
+module.exports['copernicussla'] = mongoose.model('copernicusSLA', tsSchema, 'copernicusSLA');
+module.exports['ccmpwind'] = mongoose.model('ccmpwind', tsSchema, 'ccmpwind');
+
