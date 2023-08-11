@@ -615,7 +615,7 @@
                   "required": "true",
                   "schema": {
                      "type": "string",
-                     "enum": ["noaasst", "copernicussla"]
+                     "enum": ["noaasst", "copernicussla", "ccmpwind"]
                   }
                },
                {
@@ -742,7 +742,7 @@
                   "required": "true",
                   "schema": {
                      "type": "string",
-                     "enum": ["noaasst", "copernicussla"]
+                     "enum": ["noaasst", "copernicussla", "ccmpwind"]
                   }
                }
             ],
