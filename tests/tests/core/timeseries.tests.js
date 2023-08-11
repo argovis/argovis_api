@@ -21,7 +21,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /timeseries/copernicussla", function () {
       it("make sure sla time slicing matches expectations", async function () {
         const response = await request.get("/timeseries/copernicussla?center=-46.875,35.625&radius=1&startDate=1993-01-30T00:00:00Z&endDate=1993-02-14T00:00:00Z&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].data).to.eql([[-0.15601428571428572,-0.066],[0.2496428571428571,0.3396428571428572]])        
+        expect(response.body[0].data).to.eql([[-0.12129999999999999, -0.02747142857142857],[0.2843428571428572, 0.37815714285714286]])        
+      });
+    });
+
+    describe("GET /timeseries/ccmpwind", function () {
+      it("make sure ccmp time slicing matches expectations", async function () {
+        const response = await request.get("/timeseries/ccmpwind?center=0.125,0.125&radius=1&startDate=1993-01-30T00:00:00Z&endDate=1993-02-14T00:00:00Z&data=uwnd").set({'x-argokey': 'developer'});
+        expect(response.body[0].data).to.eql([[0.9349232997213092, -0.9582493336472128]])        
       });
     });
 
@@ -41,7 +48,17 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.status).to.eql(200);
         expect(response.body).to.be.jsonSchema(schema.paths['/timeseries/{timeseriesName}'].get.responses['200'].content['application/json'].schema);
         expect(response.body[0]).not.to.have.property('timeseries')
-        expect(response.body[0].data[0].length).to.eql(1544) 
+        expect(response.body[0].data[0].length).to.eql(1543) 
+      });
+    });
+
+    describe("GET /timeseries/ccmpwind", function () {
+      it("allow ccmp wind id request; shouldn't have timeseries appended", async function () {
+        const response = await request.get("/timeseries/ccmpwind?id=0.125_0.125&data=all").set({'x-argokey': 'developer'});
+        expect(response.status).to.eql(200);
+        expect(response.body).to.be.jsonSchema(schema.paths['/timeseries/{timeseriesName}'].get.responses['200'].content['application/json'].schema);
+        expect(response.body[0]).not.to.have.property('timeseries')
+        expect(response.body[0].data[0].length).to.eql(52) 
       });
     });
 
