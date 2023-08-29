@@ -62,6 +62,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /timeseries/copernicussla", function () {
+      it("make sure mostrecent behaves as expected", async function () {
+        const response = await request.get("/timeseries/copernicussla?id=-46.875_35.625&data=sla&startDate=1993-02-21T00:00:00Z&endDate=1993-03-28T00:00:00Z&mostrecent=3").set({'x-argokey': 'developer'});
+        expect(response.body[0].data).to.eql([[0.19362857142857143, 0.15418571428571431, 0.08815714285714285]]) 
+      });
+    });
+
   }
 })
 
