@@ -39,6 +39,7 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
       'ccmpwind': ["1993-01-03T00:00:00Z", "1993-01-10T00:00:00Z","1993-01-17T00:00:00Z","1993-01-24T00:00:00Z","1993-01-31T00:00:00Z","1993-02-07T00:00:00Z","1993-02-14T00:00:00Z","1993-02-21T00:00:00Z","1993-02-28T00:00:00Z","1993-03-07T00:00:00Z","1993-03-14T00:00:00Z","1993-03-21T00:00:00Z","1993-03-28T00:00:00Z","1993-04-04T00:00:00Z","1993-04-11T00:00:00Z","1993-04-18T00:00:00Z","1993-04-25T00:00:00Z","1993-05-02T00:00:00Z","1993-05-09T00:00:00Z","1993-05-16T00:00:00Z","1993-05-23T00:00:00Z","1993-05-30T00:00:00Z","1993-06-06T00:00:00Z","1993-06-13T00:00:00Z","1993-06-20T00:00:00Z","1993-06-27T00:00:00Z","1993-07-04T00:00:00Z","1993-07-11T00:00:00Z","1993-07-18T00:00:00Z","1993-07-25T00:00:00Z","1993-08-01T00:00:00Z","1993-08-08T00:00:00Z","1993-08-15T00:00:00Z","1993-08-22T00:00:00Z","1993-08-29T00:00:00Z","1993-09-05T00:00:00Z","1993-09-12T00:00:00Z","1993-09-19T00:00:00Z","1993-09-26T00:00:00Z","1993-10-03T00:00:00Z","1993-10-10T00:00:00Z","1993-10-17T00:00:00Z","1993-10-24T00:00:00Z","1993-10-31T00:00:00Z","1993-11-07T00:00:00Z","1993-11-14T00:00:00Z","1993-11-21T00:00:00Z","1993-11-28T00:00:00Z","1993-12-05T00:00:00Z","1993-12-12T00:00:00Z","1993-12-19T00:00:00Z","1993-12-26T00:00:00Z"]
     }[timeseriesName]
     params.timeseries = params.timeseries.map(x => new Date(x))
+    params.mostrecent = mostrecent
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
@@ -64,7 +65,7 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
         dateRange: [params.startDate, params.endDate],
-        mostrecent: mostrecent,
+        //mostrecent: mostrecent, // mostrecent filtering done in mongo during stream for timeseries
         suppress_meta: compression=='minimal'
     }
 

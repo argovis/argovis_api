@@ -310,29 +310,36 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     while(highIndex > lowIndex && params.timeseries[highIndex] >= params.endDate){
       highIndex--
     } // highIndex now points at the last date index to keep
-
-    if (lowIndex > 0 || highIndex < params.timeseries.length-2){
+    if (lowIndex > 0 || highIndex < params.timeseries.length-2 || params.mostrecent){
       // not keeping everything, munge in mongo:
       aggPipeline.push({
         $addFields: {
           data: {
             $function: {
-              body: `function(data, lowIndex, highIndex){
+              body: `function(data, lowIndex, highIndex, mostrecent){
+                      bottom = lowIndex
+                      if(mostrecent && highIndex+1 - mostrecent > lowIndex){
+                        bottom = highIndex+1 - mostrecent
+                      }
                       for(let i=0; i<data.length; i++){
-                        data[i] = data[i].slice(lowIndex, highIndex+1)
+                        data[i] = data[i].slice(bottom, highIndex+1)
                       }
                       return data
                     }`,
-              args: ["$data", lowIndex, highIndex ],
+              args: ["$data", lowIndex, highIndex, params.mostrecent],
               lang: 'js'
             }
           },
           timeseries: {
             $function: {
-              body: `function(timeseries, lowIndex, highIndex){
-                      return timeseries.slice(lowIndex,highIndex+1)
+              body: `function(timeseries, lowIndex, highIndex, mostrecent){
+                      bottom = lowIndex
+                      if(mostrecent && highIndex+1 - mostrecent > lowIndex){
+                        bottom = highIndex+1 - mostrecent
+                      }
+                      return timeseries.slice(bottom,highIndex+1)
                     }`,
-              args: [params.timeseries, lowIndex, highIndex],
+              args: [params.timeseries, lowIndex, highIndex, params.mostrecent],
               lang: 'js'
             }
           }
