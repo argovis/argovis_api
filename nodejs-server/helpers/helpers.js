@@ -726,20 +726,21 @@ module.exports.earliest_records = function(dataset){
 }
 
 module.exports.final_records = function(dataset){
-  // return a date representing the last record for the named dataset
+  // return a date representing the last record for the named dataset, plus 1s
+  // (used to coerce in an endDate when none provided, in which case we want to be inclusive of the last date as opposed to our usual exclusive, hence the +1s)
 
   let dates = {
     'argo': new Date(),
-    'cchdo': new Date("2023-03-09T17:48:00Z"),
-    'drifters': new Date("2020-06-30T23:00:00Z"),
-    'kg21': new Date("2020-12-15T00:00:00Z"),
-    'rg09': new Date("2022-05-15T00:00:00Z"),
-    'tc': new Date("2020-12-25T12:00:00Z"),
-    'trajectories': new Date("2021-01-01T01:13:26Z"),
-    'noaasst': new Date("2023-01-29T00:00:00.000Z"),
-    'copernicussla': new Date("2022-07-31T00:00:00.000Z"),
-    'ccmpwind': new Date("1993-12-26T00:00:00Z"),
-    'glodap': new Date('0001-01-02T00:00:00Z')
+    'cchdo': new Date("2023-03-09T17:48:01Z"),
+    'drifters': new Date("2020-06-30T23:00:01Z"),
+    'kg21': new Date("2020-12-15T00:00:01Z"),
+    'rg09': new Date("2022-05-15T00:00:01Z"),
+    'tc': new Date("2020-12-25T12:00:01Z"),
+    'trajectories': new Date("2021-01-01T01:13:27Z"),
+    'noaasst': new Date("2023-01-29T00:00:01Z"),
+    'copernicussla': new Date("2022-07-31T00:00:01Z"),
+    'ccmpwind': new Date("1993-12-26T00:00:01Z"),
+    'glodap': new Date('0001-01-01T00:00:01Z')
   }
 
   return dates[dataset]
