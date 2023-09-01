@@ -7,7 +7,7 @@ var helpers = require('../helpers/helpers')
 
 module.exports.findtimeseries = function findtimeseries (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data, timeseriesName) {
   
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, product: timeseriesName})
 
   Timeseries.findtimeseries(res, timeseriesName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
@@ -35,7 +35,7 @@ module.exports.findtimeseriesMeta = function findtimeseriesMeta (req, res, next,
 
 module.exports.timeseriesVocab = function timeseriesVocab (req, res, next, timeseriesName) {
   
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, product: timeseriesName})
 
   Timeseries.timeseriesVocab(timeseriesName)
     .then(function (response) {

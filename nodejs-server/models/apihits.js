@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const apihits = Schema({
 	metadata: {type: String, required: true},
-	query: {type:Schema.Types.Mixed, required: false}
+	query: {type:Schema.Types.Mixed, required: false},
+	product: {type: String, required: false},
 }, { timestamps: {createdAt: 'timestamp'} })
 
 module.exports = {}
