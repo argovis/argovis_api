@@ -1859,13 +1859,25 @@
          },
          "cchdo": {
             "type": "object",
-            "required": ["_id","metadata","geolocation","basin","timestamp", "data_info", "source", "station", "cast"],
+            "required": ["_id","metadata","geolocation","data","basin","timestamp", "data_info", "source", "station", "cast"],
             "properties": {
                "_id": {
                   "type": "string"
                },
+               "metadata": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
                "geolocation": {
                    "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "btm_depth": {
+                  "type": "number"
+               },
+               "file_hash": {
+                  "type": "string"
                },
                "basin": {
                   "type": "number"
@@ -1892,12 +1904,6 @@
                },
                "cast": {
                   "type": "number"
-               },
-               "metadata": {
-                  "type": "array",
-                  "items": {
-                     "type": "string"
-                  }
                },
                "data": {
                   "$ref": "#/components/schemas/data"
@@ -1939,6 +1945,9 @@
                "expocode": {
                   "type": "string"
                },
+               "file_expocode": {
+                  "type": "string"
+               },
                "cchdo_cruise_id": {
                   "type": "number"
                },
@@ -1947,6 +1956,9 @@
                   "items": {
                      "type": "string"
                   }
+               },
+               "positioning_system": {
+                  "type": "string"
                }
             }
          },

@@ -2613,6 +2613,7 @@ components:
       - _id
       - basin
       - cast
+      - data
       - data_info
       - geolocation
       - metadata
@@ -2623,8 +2624,16 @@ components:
       properties:
         _id:
           type: string
+        metadata:
+          type: array
+          items:
+            type: string
         geolocation:
           $ref: '#/components/schemas/geoJSONpoint'
+        btm_depth:
+          type: number
+        file_hash:
+          type: string
         basin:
           type: number
         timestamp:
@@ -2647,22 +2656,11 @@ components:
           type: string
         cast:
           type: number
-        metadata:
-          type: array
-          items:
-            type: string
         data:
           $ref: '#/components/schemas/data'
         data_info:
           $ref: '#/components/schemas/data_info'
       example:
-        data_warning:
-        - degenerate_levels
-        - degenerate_levels
-        cast: 6.02745618307040320615897144307382404804229736328125
-        data_info:
-        - ""
-        - ""
         metadata:
         - metadata
         - metadata
@@ -2671,9 +2669,7 @@ components:
           - ""
         - - ""
           - ""
-        station: station
-        _id: _id
-        basin: 0.80082819046101150206595775671303272247314453125
+        basin: 6.02745618307040320615897144307382404804229736328125
         source:
         - date_updated: 2000-01-23T04:56:07.000+00:00
           source:
@@ -2687,6 +2683,17 @@ components:
           - source
           url: url
           doi: doi
+        btm_depth: 0.80082819046101150206595775671303272247314453125
+        data_warning:
+        - degenerate_levels
+        - degenerate_levels
+        cast: 1.46581298050294517310021547018550336360931396484375
+        data_info:
+        - ""
+        - ""
+        file_hash: file_hash
+        station: station
+        _id: _id
         geolocation:
           coordinates:
           - 0.80082819046101150206595775671303272247314453125
@@ -2722,14 +2729,19 @@ components:
             type: string
         expocode:
           type: string
+        file_expocode:
+          type: string
         cchdo_cruise_id:
           type: number
         woce_lines:
           type: array
           items:
             type: string
+        positioning_system:
+          type: string
       example:
         country: country
+        positioning_system: positioning_system
         expocode: expocode
         woce_lines:
         - woce_lines
@@ -2737,6 +2749,7 @@ components:
         pi_name:
         - pi_name
         - pi_name
+        file_expocode: file_expocode
         cchdo_cruise_id: 0.80082819046101150206595775671303272247314453125
         data_type: data_type
         data_center: data_center

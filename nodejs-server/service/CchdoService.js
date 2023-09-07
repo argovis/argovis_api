@@ -45,14 +45,9 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,winding,c
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "cast" : 6.027456183070403,
-  "data_info" : [ "", "" ],
   "metadata" : [ "metadata", "metadata" ],
   "data" : [ [ "", "" ], [ "", "" ] ],
-  "station" : "station",
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
+  "basin" : 6.027456183070403,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
@@ -64,20 +59,22 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,winding,c
     "url" : "url",
     "doi" : "doi"
   } ],
+  "btm_depth" : 0.8008281904610115,
+  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
+  "cast" : 1.4658129805029452,
+  "data_info" : [ "", "" ],
+  "file_hash" : "file_hash",
+  "station" : "station",
+  "_id" : "_id",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
   },
   "timestamp" : "2000-01-23T04:56:07.000+00:00"
 }, {
-  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
-  "cast" : 6.027456183070403,
-  "data_info" : [ "", "" ],
   "metadata" : [ "metadata", "metadata" ],
   "data" : [ [ "", "" ], [ "", "" ] ],
-  "station" : "station",
-  "_id" : "_id",
-  "basin" : 0.8008281904610115,
+  "basin" : 6.027456183070403,
   "source" : [ {
     "date_updated" : "2000-01-23T04:56:07.000+00:00",
     "source" : [ "source", "source" ],
@@ -89,6 +86,13 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,multipolygon,winding,c
     "url" : "url",
     "doi" : "doi"
   } ],
+  "btm_depth" : 0.8008281904610115,
+  "data_warning" : [ "degenerate_levels", "degenerate_levels" ],
+  "cast" : 1.4658129805029452,
+  "data_info" : [ "", "" ],
+  "file_hash" : "file_hash",
+  "station" : "station",
+  "_id" : "_id",
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -117,9 +121,11 @@ exports.findCCHDOmeta = function(id,woceline,cchdo_cruise) {
     var examples = {};
     examples['application/json'] = [ {
   "country" : "country",
+  "positioning_system" : "positioning_system",
   "expocode" : "expocode",
   "woce_lines" : [ "woce_lines", "woce_lines" ],
   "pi_name" : [ "pi_name", "pi_name" ],
+  "file_expocode" : "file_expocode",
   "cchdo_cruise_id" : 0.8008281904610115,
   "data_type" : "data_type",
   "data_center" : "data_center",
@@ -128,9 +134,11 @@ exports.findCCHDOmeta = function(id,woceline,cchdo_cruise) {
   "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
 }, {
   "country" : "country",
+  "positioning_system" : "positioning_system",
   "expocode" : "expocode",
   "woce_lines" : [ "woce_lines", "woce_lines" ],
   "pi_name" : [ "pi_name", "pi_name" ],
+  "file_expocode" : "file_expocode",
   "cchdo_cruise_id" : 0.8008281904610115,
   "data_type" : "data_type",
   "data_center" : "data_center",
