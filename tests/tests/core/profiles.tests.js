@@ -36,23 +36,23 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /cchdo", function () {
       it("cchdo with data filter should return cchdo-consistent data", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
+        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity,doxy").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/cchdo'].get.responses['200'].content['application/json'].schema);
       });
     });
 
     describe("GET /cchdo", function () {
       it("cchdo with data filter should return correct data_keys", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_info[0]).to.have.members(['salinity_btl','oxygen_btl','pressure'])
+        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity,doxy").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members(['salinity','doxy','pressure'])
       });
     });
 
     describe("GET /cchdo", function () {
       it("cchdo with data filter should return correct units", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity_btl,oxygen_btl").set({'x-argokey': 'developer'});
-        salindex = response.body[0].data_info[0].indexOf('salinity_btl')
-        oxyindex = response.body[0].data_info[0].indexOf('oxygen_btl')
+        const response = await request.get("/cchdo?polygon=[[-57,-42],[-58,-42],[-58,-43],[-57,-43],[-57,-42]]&data=salinity,doxy").set({'x-argokey': 'developer'});
+        salindex = response.body[0].data_info[0].indexOf('salinity')
+        oxyindex = response.body[0].data_info[0].indexOf('doxy')
         uindex = response.body[0].data_info[1].indexOf('units')
         expect(response.body[0].data_info[2][salindex][uindex]).to.deep.equal("psu")
         expect(response.body[0].data_info[2][oxyindex][uindex]).to.deep.equal("micromole/kg")
@@ -68,31 +68,31 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /cchdo", function () {
       it("cchdo with data=all filter should return correct data_keys", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_info[0]).to.have.members([ "salinity_ctd", "bottle_salinity_btl_woceqc", "sample_ctd", "bottle_number_btl", "doxy_ctd", "pressure_ctd_woceqc", "oxygen_btl_woceqc", "salinity_btl", "salinity_ctd_woceqc", "doxy_ctd_woceqc", "ctd_pressure_raw_btl", "salinity_btl_woceqc", "temperature_ctd", "temperature_ctd_woceqc", "temperature_btl", "bottle_salinity_btl", "pressure", "temperature_btl_woceqc", "oxygen_btl", "sample_btl", "potential_temperature_c_btl", "bottle_number_btl_woceqc" ])
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&data=all").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members(["doxy","doxy_woceqc","salinity","salinity_woceqc","temperature","temperature_woceqc","pressure","pressure_woceqc","sample"])
       });
     });
 
     describe("GET /cchdo", function () {
       it("cchdo with data=all filter should return correct units", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all").set({'x-argokey': 'developer'});
-        pindex = response.body[0].data_info[0].indexOf('ctd_pressure_raw_btl')
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&data=all").set({'x-argokey': 'developer'});
+        pindex = response.body[0].data_info[0].indexOf('doxy')
         uindex = response.body[0].data_info[1].indexOf('units')
-        expect(response.body[0].data_info[2][pindex][uindex]).to.eql('decibar')
+        expect(response.body[0].data_info[2][pindex][uindex]).to.eql('micromole/kg')
       });
     });
 
       describe("GET /cchdo", function () {
         it("cchdo levels should get dropped if they dont have requested data", async function () {
-          const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_020_cast_001&data=potential_temperature_c_btl").set({'x-argokey': 'developer'});
+          const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_019_cast_001_type_ctd&data=salinity").set({'x-argokey': 'developer'});
           pindex = response.body[0].data_info[0].indexOf('pressure')
-          expect(response.body[0].data[pindex][0]).to.eql(2.3)
+          expect(response.body[0].data[pindex][0]).to.eql(3)
         });
       });
 
     describe("GET /cchdo", function () {
       it("cchdo profile should be dropped if no requested data is available", async function () {
-        const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=ctd_fluor_raw_btl").set({'x-argokey': 'developer'});
+        const response = await request.get("/cchdo?polygon=[[-57,-42],[-57.8,-42],[-57.8,-43],[-57,-43],[-57,-42]]&data=sulfur_hexifluoride").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
@@ -129,28 +129,28 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /cchdo/vocabulary", function () {
       it("make sure cchdo identifies metadata groups correctly", async function () {
         const response = await request.get("/cchdo/vocabulary?parameter=metadata").set({'x-argokey': 'developer'});
-        expect(response.body).to.have.members(['972_m0'])
+        expect(response.body).to.have.members(['972_m0', '972_m1'])
       });
     }); 
 
     describe("GET /cchdo", function () {
       it("check that a source filter on cchdo works as expected", async function () {
         const response = await request.get("/cchdo?source=cchdo_woce&startDate=1996-04-01T00:00:00Z&endDate=1996-05-01T00:00:00Z").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(5)
+        expect(response.body.length).to.eql(8)
       });
     }); 
 
     describe("GET /cchdo", function () {
       it("check metadata group request", async function () {
         const response = await request.get("/cchdo?metadata=972_m0").set({'x-argokey': 'developer'});
-        expect(response.body.length).to.eql(5)
+        expect(response.body.length).to.eql(3)
       });
     }); 
 
     describe("GET /cchdo", function () {
       it("should return appropriate minimal representation of this measurement", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&compression=minimal").set({'x-argokey': 'developer'});
-        expect(response.body).to.eql([['expo_08PD0196_1_sta_016_cast_001', -57.6833, -42.8133, "1996-04-01T10:24:00.000Z", [ "cchdo_woce" ], [ "AR08" ], 972]]);  
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&compression=minimal").set({'x-argokey': 'developer'});
+        expect(response.body).to.eql([['expo_08PD0196_1_sta_016_cast_001_type_ctd', -57.6833, -42.8133, "1996-04-01T10:24:00.000Z", [ "cchdo_woce" ], [ "AR08" ], 972]]);  
       });
     }); 
 
@@ -163,23 +163,23 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /cchdo", function () {
       it("should reduce on qc filtering correctly", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=bottle_salinity_btl,2").set({'x-argokey': 'developer'});
-        index = response.body[0].data_info[0].indexOf('bottle_salinity_btl')
-        expect(response.body[0].data[index]).to.eql([34.0305,34.1203,34.157,34.1575,34.5576,34.6604,34.7048,34.7068]);
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_019_cast_001_type_btl&data=bottle_salinity,4").set({'x-argokey': 'developer'});
+        index = response.body[0].data_info[0].indexOf('bottle_salinity')
+        expect(response.body[0].data[index]).to.eql([33.9992,33.9248]);
       });
     });
 
     describe("GET /cchdo", function () {
       it("should handle qc filtering on all correctly", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=all,2").set({'x-argokey': 'developer'});
-        index = response.body[0].data_info[0].indexOf('bottle_salinity_btl')
-        expect(response.body[0].data[index].filter(x => x !== null)).to.eql([34.0305,34.1203,34.157,34.1575,34.5576,34.6604,34.7048,34.7068]);
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_019_cast_001_type_btl&data=all,4").set({'x-argokey': 'developer'});
+        index = response.body[0].data_info[0].indexOf('bottle_salinity')
+        expect(response.body[0].data[index].filter(x => x !== null)).to.eql([33.9992,33.9248]);
       });
     });
 
     describe("GET /cchdo", function () {
       it("drop on no acceptable qc", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=bottle_salinity_btl,9").set({'x-argokey': 'developer'});
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&data=salinity,9").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
@@ -581,16 +581,16 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
-    describe("GET /argo", function () {
-      it("explicitly asking for absent cchdo qc information", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=doxy_ctd,temperature_ctd,temperature_ctd_woceqc").set({'x-argokey': 'developer'});
-        expect(response.body[0].data_info[0]).to.have.members(['doxy_ctd', 'pressure', 'temperature_ctd', 'temperature_ctd_woceqc']) 
+    describe("GET /cchdo", function () {
+      it("explicitly asking for cchdo qc information", async function () {
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&data=doxy,temperature,temperature_woceqc").set({'x-argokey': 'developer'});
+        expect(response.body[0].data_info[0]).to.have.members(['doxy', 'pressure', 'temperature', 'temperature_woceqc']) 
       });
     });
 
-    describe("GET /argo", function () {
+    describe("GET /cchdo", function () {
       it("explicitly asking for absent cchdo qc information", async function () {
-        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001&data=potential_temperature_c_btl,potential_temperature_c_btl_woceqc").set({'x-argokey': 'developer'});
+        const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_018_cast_001_type_btl&data=pressure,pressure_woceqc").set({'x-argokey': 'developer'});
         expect(response.status).to.eql(404);
       });
     });
