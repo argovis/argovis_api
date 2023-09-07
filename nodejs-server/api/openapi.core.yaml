@@ -2613,7 +2613,6 @@ components:
       - _id
       - basin
       - cast
-      - data
       - data_info
       - geolocation
       - metadata
