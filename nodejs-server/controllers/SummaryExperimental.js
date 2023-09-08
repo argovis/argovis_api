@@ -6,7 +6,7 @@ var SummaryExperimental = require('../service/SummaryExperimentalService');
 
 module.exports.fetchSummary = function fetchSummary (req, res, next, id) {
 
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
   
   SummaryExperimental.fetchSummary(id)
     .then(function (response) {

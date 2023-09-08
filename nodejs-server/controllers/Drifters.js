@@ -6,7 +6,7 @@ var helpers = require('../helpers/helpers')
 
 module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, id, platform, wmo) {
 
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
 
   Drifters.drifterMetaSearch(res,id,platform, wmo)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
@@ -20,7 +20,7 @@ module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, i
 
 module.exports.drifterSearch = function drifterSearch (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data) {
 
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
 
   Drifters.drifterSearch(res,id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
@@ -34,7 +34,7 @@ module.exports.drifterSearch = function drifterSearch (req, res, next, id, start
 
 module.exports.drifterVocab = function drifterVocab (req, res, next, parameter) {
 
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
   
   Drifters.drifterVocab(parameter)
     .then(function (response) {

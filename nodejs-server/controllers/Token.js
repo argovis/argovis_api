@@ -6,7 +6,7 @@ var helpers = require('../helpers/helpers')
 
 module.exports.validateToken = function validateToken (req, res, next, token) {
 
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
   
   Token.validateToken(res, token)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
