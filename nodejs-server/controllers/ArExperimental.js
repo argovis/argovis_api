@@ -5,7 +5,7 @@ var ArExperimental = require('../service/ArExperimentalService');
 
 module.exports.findAR = function findAR (req, res, next, date, _id) {
 
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query})
+  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
   
   ArExperimental.findAR(date, _id)
     .then(function (response) {
