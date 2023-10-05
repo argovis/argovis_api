@@ -1,7 +1,4 @@
-FROM node:20.8.0
-WORKDIR /tests
-COPY tests/package.json .
-RUN npm install
+FROM argovis/api:test-base-231005
 COPY tests .
 COPY nodejs-server/helpers/helpers.js tests/helpers.js
 COPY nodejs-server/helpers/area.js tests/area.js

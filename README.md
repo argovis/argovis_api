@@ -43,6 +43,10 @@ In general, the base image for the API shouldn't change often; it is meant to ca
 
 2. Update `Dockerfile` to build from your new base image (very first `FROM` line).
 
+3. Build a new testing base image, tagged with the build date:  `docker image build -f Dockerfile-test-base -t argovis/api:test-base-yymmdd .`
+
+4. Update `Dockerfile-test` to build from your new test base image.
+
 3. Build and test per the `.travis.yml` to make sure tests still pass with this new base.
 
-2. Push to Docker Hub: `docker image push argovis/api:base-yymmdd`, and push the updates to the `server` branch to GitHub.
+2. Push to Docker Hub: `docker image push argovis/api:base-yymmdd` and `docker image push argovis/api:test-base-yymmdd`, and push the updates to the `server` branch to GitHub.
