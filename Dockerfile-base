@@ -1,9 +1,9 @@
-FROM node:20.8.0 as build
+FROM node:20.8.0-alpine3.17 as build
 WORKDIR /app
 # hack to avoid https://github.com/npm/cli/issues/4838
 ENV HOME=/app/npmlogs
 RUN mkdir /app/npmlogs && chown -R 1000660000 /app/npmlogs
 COPY nodejs-server/package.json .
 RUN npm install
-RUN apt-get update -y
+RUN apk update
 
