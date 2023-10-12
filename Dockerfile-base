@@ -6,4 +6,5 @@ RUN mkdir /app/npmlogs && chown -R 1000660000 /app/npmlogs
 COPY nodejs-server/package.json .
 RUN npm install
 RUN apk update
+RUN chown -R 1000660000 /app/npmlogs/.npm
 
