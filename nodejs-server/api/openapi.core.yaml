@@ -28,8 +28,6 @@ tags:
   description: Gridded products derived from Argo floats and simulations.
 - name: tc
   description: tropical cyclone data
-- name: ar (experimental)
-  description: atmospheric river shapes
 - name: argone
   description: Argo float position forcast product
 - name: summary (experimental)
@@ -38,6 +36,8 @@ tags:
   description: Trajectories of argo floats
 - name: timeseries
   description: timeseries-formatted grids derived from satellite data.
+- name: extended
+  description: objected with geographic extent beyond a single point
 - name: token
   description: token validation
 - name: ping
@@ -77,63 +77,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Ping
-  /ar:
-    get:
-      tags:
-      - ar (experimental)
-      summary: Find and filter atmo river shapes.
-      operationId: findAR
-      parameters:
-      - name: date
-        in: query
-        description: three hour increments starting at 2004-01-01T00:00:00 and ending
-          at 2017-04-02T03:00:00
-        required: false
-        style: form
-        explode: true
-        allowReserved: true
-        schema:
-          type: string
-          format: date-time
-          example: 2010-01-01T00:00:00Z
-      - name: _id
-        in: query
-        description: ID of an atmospheric river object
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: 1_262992
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/arShapeSchema'
-                x-content-type: application/json
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-        "500":
-          description: Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/errorResponse'
-      x-swagger-router-controller: ArExperimental
   /argone:
     get:
       tags:
@@ -1105,6 +1048,249 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Timeseries
+  /extended/{extendedName}:
+    get:
+      tags:
+      - extended
+      summary: Search and filter for extended object named in path
+      operationId: findExtended
+      parameters:
+      - name: extendedName
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          enum:
+          - ar
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: winding
+        in: query
+        description: Enforce ccw winding for polygon and multipolygon
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/genericExtended'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Extended
+  /extended/meta:
+    get:
+      tags:
+      - extended
+      summary: Metadata for extended objects by ID
+      operationId: findextendedMeta
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/genericExtendedMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Extended
+  /extended/{extendedName}/vocabulary:
+    get:
+      tags:
+      - extended
+      summary: Vocab data for the named extended object.
+      operationId: extendedVocab
+      parameters:
+      - name: extendedName
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          enum:
+          - ar
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Extended
   /cchdo:
     get:
       tags:
@@ -2230,18 +2416,6 @@ components:
         date_formateed:
           type: string
           format: date
-      example:
-        date: 2000-01-23T04:56:07.000+00:00
-        date_formateed: 2000-01-23
-        shapeId: 0
-        _id: _id
-        geolocation:
-          coordinates:
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          - - 6.02745618307040320615897144307382404804229736328125
-            - 6.02745618307040320615897144307382404804229736328125
-          type: type
     argone:
       required:
       - _id
@@ -2550,13 +2724,6 @@ components:
               maxItems: 2
               minItems: 2
               type: number
-      example:
-        coordinates:
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
-        - - 6.02745618307040320615897144307382404804229736328125
-          - 6.02745618307040320615897144307382404804229736328125
-        type: type
     data:
       type: array
       items:

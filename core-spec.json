@@ -49,10 +49,6 @@
          "description": "tropical cyclone data"
       },
       {
-         "name": "ar (experimental)",
-         "description": "atmospheric river shapes"
-      },
-      {
          "name": "argone",
          "description": "Argo float position forcast product"
       },
@@ -67,6 +63,10 @@
       {
          "name": "timeseries",
          "description": "timeseries-formatted grids derived from satellite data."
+      },
+      {
+         "name": "extended",
+         "description": "objected with geographic extent beyond a single point"
       },
       {
          "name": "token",
@@ -93,47 +93,6 @@
                         "schema": {
                            "type": "string",
                            "example": "OK"
-                        }
-                     }
-                  }
-               },
-               "400": {
-                  "$ref": "#/components/responses/badRequest"
-               },
-               "404": {
-                  "$ref": "#/components/responses/notFound"
-               },
-               "500": {
-                  "$ref": "#/components/responses/serverError"
-               }
-            }
-         }
-      },
-      "/ar": {
-         "get": {
-            "tags": [
-               "ar (experimental)"
-            ],
-            "summary": "Find and filter atmo river shapes.",
-            "operationId": "findAR",   
-            "parameters": [
-               {
-                  "$ref": "#/components/parameters/arDate"
-               },
-               {
-                  "$ref": "#/components/parameters/arID"
-               }
-            ],
-            "responses": {
-               "200": {
-                  "description": "OK",
-                  "content": {
-                     "application/json": {
-                        "schema": {
-                           "type": "array",
-                           "items": {
-                              "$ref": "#/components/schemas/arShapeSchema"
-                           }
                         }
                      }
                   }
@@ -743,6 +702,162 @@
                   "schema": {
                      "type": "string",
                      "enum": ["noaasst", "copernicussla", "ccmpwind"]
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+"/extended/{extendedName}": {
+         "get": {
+            "tags": [
+               "extended"
+            ],
+            "summary": "Search and filter for extended object named in path",
+            "operationId": "findExtended",
+            "parameters": [
+               {
+                  "name": "extendedName",
+                  "in": "path",
+                  "required": "true",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["ar"]
+                  }
+               },
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/winding"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "$ref": "#/components/parameters/mostrecent"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/genericExtended"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/extended/meta": {
+         "get": {
+            "tags": [
+               "extended"
+            ],
+            "summary": "Metadata for extended objects by ID",
+            "operationId": "findextendedMeta",
+            "parameters":[
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/genericExtendedMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/extended/{extendedName}/vocabulary": {
+         "get": {
+            "tags": [
+               "extended"
+            ],
+            "summary": "Vocab data for the named extended object.",
+            "operationId": "extendedVocab",
+            "parameters": [
+               {
+                  "name": "extendedName",
+                  "in": "path",
+                  "required": "true",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["ar"]
                   }
                }
             ],
