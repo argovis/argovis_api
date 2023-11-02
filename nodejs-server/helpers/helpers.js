@@ -718,7 +718,8 @@ module.exports.earliest_records = function(dataset){
     'noaasst': new Date("1989-12-31T00:00:00.000Z"),
     'copernicussla': new Date("1993-01-03T00:00:00Z"),
     'ccmpwind': new Date("1993-01-03T00:00:00Z"),
-    'glodap': new Date('0001-01-01T00:00:00Z')
+    'glodap': new Date('0001-01-01T00:00:00Z').
+    'ar': new Date("2000-01-01T00:00:00Z")
   }
 
   return dates[dataset]
@@ -740,7 +741,8 @@ module.exports.final_records = function(dataset){
     'noaasst': new Date("2023-01-29T00:00:01Z"),
     'copernicussla': new Date("2022-07-31T00:00:01Z"),
     'ccmpwind': new Date("1993-12-26T00:00:01Z"),
-    'glodap': new Date('0001-01-01T00:00:01Z')
+    'glodap': new Date('0001-01-01T00:00:01Z'),
+    'ar': new Date("2022-01-01T00:00:00Z")
   }
 
   return dates[dataset]
@@ -761,7 +763,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
-  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories', 'timeseries']
+  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories', 'timeseries', 'extended']
 
   if(standard_routes.includes(path[0])){
     //// metadata routes
@@ -769,7 +771,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       return 0.2
     }
     //// core data routes
-    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap')) || (path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) ){
+    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap')) || (path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) || (path[0]=='extended' && (path[1]=='ar')) ){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1

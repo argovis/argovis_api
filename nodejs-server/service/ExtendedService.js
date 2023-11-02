@@ -1,5 +1,8 @@
 'use strict';
-
+const Extended = require('../models/extended');
+const helpers = require('../helpers/helpers')
+const GJV = require('geojson-validation');
+const summaries = require('../models/summary');
 
 /**
  * Vocab data for the named extended object.
@@ -9,13 +12,8 @@
  **/
 exports.extendedVocab = function(extendedName) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+      const query = summaries.find({"_id":extendedName+"summary"}).lean()
+      query.exec(helpers.queryCallback.bind(null,x=>x, resolve, reject))
   });
 }
 
@@ -36,15 +34,75 @@ exports.extendedVocab = function(extendedName) {
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * returns List
  **/
-exports.findExtended = function(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent) {
+exports.findExtended = function(res,externdedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "{}", "{}" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    // generic helper for all timeseries search and filter routes
+    // input sanitization
+
+    let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    if(params.hasOwnProperty('code')){
+      // error, return and bail out
+      reject(params)
+      return
     }
+
+    params.mostrecent = mostrecent
+
+    // decide y/n whether to service this request
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    if(bailout){
+      reject(bailout)
+      return
+    }
+
+    // local filter: fields in data collection other than geolocation and timestamp 
+    let local_filter = {$match:{}}
+    if(id){
+        local_filter['$match']['_id'] = id
+    }
+    if(Object.keys(local_filter['$match']).length > 0){
+      local_filter = [local_filter]
+    } else {
+      local_filter = []
+    }
+
+    // postprocessing parameters
+    let pp_params = {
+        compression: compression,
+        dateRange: [params.startDate, params.endDate],
+        mostrecent: mostrecent,
+        suppress_meta: compression=='minimal'
+    }
+
+    // can we afford to project data documents down to a subset in aggregation?
+    let projection = null
+    if(compression=='minimal'){
+      projection = ['_id', 'metadata', 'timestamp', 'geolocation']
+    }
+
+    // metadata table filter: no-op promise stub, nothing to filter grid data docs on from metadata at the moment
+    let metafilter = Promise.resolve([])
+
+    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Extended[extendedName], params, local_filter, projection, null))
+
+    Promise.all([metafilter, datafilter])
+        .then(search_result => {
+
+          let stub = function(data, metadata){
+              // given a data and corresponding metadata document,
+              // return the record that should be returned when the compression=minimal API flag is set
+              // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+              return [
+                data['_id'], 
+                data['timestamp'],
+                data['geolocation']
+              ]
+          }
+          let postprocess = helpers.post_xform(Extended['extendedMeta'], pp_params, search_result, res, stub)
+          res.status(404) // 404 by default
+          resolve([search_result[1], postprocess])
+        })
   });
 }
 
@@ -55,15 +113,16 @@ exports.findExtended = function(extendedName,id,startDate,endDate,polygon,multip
  * id String Unique ID to search for. (optional)
  * returns List
  **/
-exports.findextendedMeta = function(id) {
+exports.findextendedMeta = function(res, id) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "{}", "{}" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
+    let match = {
+      '_id': id
     }
-  });
-}
+    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
+    const query = Extended['extendedMeta'].aggregate([{$match:match}]);
+    let postprocess = helpers.meta_xform(res)
+    res.status(404) // 404 by default
+    resolve([query.cursor(), postprocess])  
+  })
+}
