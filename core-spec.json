@@ -1944,7 +1944,6 @@
          },
          "generic_source_info": {
             "type": "object",
-            "required": ["source"],
             "properties": {
                "source": {
                   "type": "array",
@@ -2367,6 +2366,31 @@
                },
                "timeseries": {
                   "$ref": "#/components/schemas/timeseries"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
+               }
+            }
+         },
+         "genericExtendedMeta": {
+            "type": "object",
+            "required": ["_id", "data_type", "data_info", "date_updated_argovis", "source"],
+            "properties":{
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
                },
                "source": {
                   "type": "array",

@@ -58,7 +58,39 @@ exports.findExtended = function(extendedName,id,startDate,endDate,polygon,multip
 exports.findextendedMeta = function(id) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ "{}", "{}" ];
+    examples['application/json'] = [ {
+  "data_info" : [ "", "" ],
+  "data_type" : "data_type",
+  "_id" : "_id",
+  "source" : [ {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  }, {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  } ],
+  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
+}, {
+  "data_info" : [ "", "" ],
+  "data_type" : "data_type",
+  "_id" : "_id",
+  "source" : [ {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  }, {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  } ],
+  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00"
+} ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
