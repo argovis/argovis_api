@@ -1,17 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-var vertex = Schema({
-  type: [Number],
-  required: true,
-  validate: {
-    validator: function(v){
-      return v.length == 2
-    },
-    message: x => '${x} is not a valid coordinate set'
-  }
-})
-
 var geolocation = Schema({
   type: {
     type: String,
@@ -19,7 +8,7 @@ var geolocation = Schema({
     enum: ['MultiPolygon']
   },
   coordinates:{
-    type: [[[vertex]]],
+    type: [[[[Number]]]],
     required: true
   }
 })

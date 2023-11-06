@@ -718,7 +718,7 @@ module.exports.earliest_records = function(dataset){
     'noaasst': new Date("1989-12-31T00:00:00.000Z"),
     'copernicussla': new Date("1993-01-03T00:00:00Z"),
     'ccmpwind': new Date("1993-01-03T00:00:00Z"),
-    'glodap': new Date('0001-01-01T00:00:00Z').
+    'glodap': new Date('0001-01-01T00:00:00Z'),
     'ar': new Date("2000-01-01T00:00:00Z")
   }
 
