@@ -2747,8 +2747,6 @@ components:
               - type: string
               - type: number
     generic_source_info:
-      required:
-      - source
       type: object
       properties:
         source:
@@ -3299,6 +3297,48 @@ components:
         timeseries:
         - 2010-01-01T00:00:00Z
         - 2010-01-01T00:00:00Z
+        data_type: data_type
+        _id: _id
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    genericExtendedMeta:
+      required:
+      - _id
+      - data_info
+      - data_type
+      - date_updated_argovis
+      - source
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        data_info:
+          $ref: '#/components/schemas/data_info'
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+      example:
+        data_info:
+        - ""
+        - ""
         data_type: data_type
         _id: _id
         source:
