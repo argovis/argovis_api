@@ -2426,17 +2426,20 @@
                "raster": {
                   "type": "array",
                   "items": {
-                     "anyOf": [
-                        {
-                           "type": "number"
-                        },
-                        {
-                           "type": "array",
-                           "items": {
+                     "type": "array",
+                     "items":{
+                        "anyOf": [
+                           {
                               "type": "number"
+                           },
+                           {
+                              "type": "array",
+                              "items": {
+                                 "type": "number"
+                              }
                            }
-                        }
-                     ]
+                        ]
+                     }
                   }
                },
                "basins": {
