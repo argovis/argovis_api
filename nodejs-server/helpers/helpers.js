@@ -214,7 +214,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       for(let i=1; i<params.multipolygon.length; i++){
         let blob = {'$match': {'geolocation':{}}}
         blob['$match']['geolocation'][geosearch] = {$geometry: params.multipolygon[i]}
-        spacetimeMatch.push( {$geometry: params.multipolygon[i]} )
+        spacetimeMatch.push( blob )
       }
     }
   }
@@ -362,7 +362,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     }
     aggPipeline.push({$project: project})
   }
-  console.log(aggPipeline[0]['$match']['geolocation'])
+
   return model.aggregate(aggPipeline).cursor()
 }
 
