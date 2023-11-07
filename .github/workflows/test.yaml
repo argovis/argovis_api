@@ -24,7 +24,7 @@ jobs:
       - name: 'launch core API'
         run: docker container run --network bridge  -d --name api --env ARGONODE=core argovis/api:test
       - name: 'check core API container'
-        run: docker container inspect database
+        run: docker container ls
       - name: 'test core'
         run: docker container run --network bridge testrunner:dev npm run test-core
       - name: 'test core helpers'
