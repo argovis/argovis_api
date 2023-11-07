@@ -47,6 +47,7 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
     }
 
     params.mostrecent = mostrecent
+    params.extended = true // extended objects need a geointersects search instead of geowithin for polygons and multipolygons
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 

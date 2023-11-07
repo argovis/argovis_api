@@ -179,6 +179,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   let proxMatch = []
   let foreignMatch = []
   let isTimeseries = ['noaasst', 'copernicussla', 'ccmpwind'].includes(params.dataset)
+  let geosearch = params.extended ? '$geoIntersects' : '$geoWithin' 
 
   // construct match stages as required
   /// prox match construction
@@ -200,16 +201,20 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       }
     }
     if(params.polygon) {
-      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
+      spacetimeMatch[0]['$match']['geolocation'] = {}
+      spacetimeMatch[0]['$match']['geolocation'][geosearch] = {$geometry: params.polygon}
     }
     if(params.multipolygon){
       params.multipolygon.sort((a,b)=>{area.geometry(a, params.winding) - area.geometry(b, params.winding)}) // smallest first to minimize size of unindexed geo search
-      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
+      spacetimeMatch[0]['$match']['geolocation'] = {} 
+      spacetimeMatch[0]['$match']['geolocation'][geosearch] = {$geometry: params.multipolygon[0]}
     }
     // zoom in on subsequent polygon regions; will be unindexed.
     if(params.multipolygon && params.multipolygon.length > 1){
       for(let i=1; i<params.multipolygon.length; i++){
-        spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
+        let blob = {'$match': {'geolocation':{}}}
+        blob['$match']['geolocation'][geosearch] = {$geometry: params.multipolygon[i]}
+        spacetimeMatch.push( {$geometry: params.multipolygon[i]} )
       }
     }
   }
@@ -357,7 +362,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     }
     aggPipeline.push({$project: project})
   }
-
+  console.log(aggPipeline[0]['$match']['geolocation'])
   return model.aggregate(aggPipeline).cursor()
 }
 
