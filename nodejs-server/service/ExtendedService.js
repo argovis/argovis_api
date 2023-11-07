@@ -36,6 +36,7 @@ exports.extendedVocab = function(extendedName) {
  **/
 exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,extendedName) {
   return new Promise(function(resolve, reject) {
+
     // generic helper for all timeseries search and filter routes
     // input sanitization
     let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
