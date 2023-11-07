@@ -2375,6 +2375,60 @@
                }
             }
          },
+         "genericExtended": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "timestamp", "raster", "basins"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "metadata": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONmultipolygon"
+               },
+               "true_geolocation": {
+                   "$ref": "#/components/schemas/geoJSONmultipolygon"
+               },
+               "timestamp": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "raster": {
+                  "type": "array",
+                  "items": {
+                     "anyOf": [
+                        {
+                           "type": "number"
+                        },
+                        {
+                           "type": "array",
+                           "items": {
+                              "type": "number"
+                           }
+                        }
+                     ]
+                  }
+               },
+               "basins": {
+                  "type": "array",
+                  "items": {
+                     "type": "integer"
+                  }
+               },
+               "flags": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               }
+               
+            }
+         },
          "genericExtendedMeta": {
             "type": "object",
             "required": ["_id", "data_type", "data_info", "date_updated_argovis", "source"],
