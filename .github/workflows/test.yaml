@@ -9,16 +9,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      database:
-        image: argovis/testdb:0.36
-        network: bridge
-      redis:
-        image: redis:7.0.2
-        network: bridge
-
     steps:
       - uses: actions/checkout@v2
+      - name: 'launch db'
+        run: docker container run -d --network bridge argovis/testdb:0.36
+      - name: 'launch redis'
+        run: docker container run -d --network bridge redis:7.0.2
       - name: 'build_api_rc'
         run: docker image build -t argovis/api:test .
       - name: 'build_test_rig'
@@ -30,12 +26,12 @@ jobs:
       - name: 'test core'
         run: docker container run --network bridge testrunner:dev npm run test-core
       - name: 'test core helpers'
-        run: docker container run testrunner:dev npm run test-helpers
+        run: docker container run --network bridge testrunner:dev npm run test-helpers
       - name: 'tear down core api'
         run: docker container rm -f api
       - name: 'launch miami API'
-        run: docker container run -d --name api --env ARGONODE=miami argovis/api:test
+        run: docker container run --network bridge -d --name api --env ARGONODE=miami argovis/api:test
       - name: 'test miami'
-        run: docker container run testrunner:dev npm run test-miami
+        run: docker container run --network bridge testrunner:dev npm run test-miami
       - name: 'test miami helpers'
-        run: docker container run testrunner:dev npm run test-helpers
+        run: docker container run --network bridge testrunner:dev npm run test-helpers
