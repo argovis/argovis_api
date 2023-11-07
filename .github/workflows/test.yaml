@@ -1,0 +1,37 @@
+name: unit_testing
+
+on:
+  pull_request:
+    branches:
+      - "server"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      database:
+        image: argovis/testdb:0.36
+      redis:
+        image: redis:7.0.2
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'build_api_rc':
+        run: docker image build -t argovis/api:test .
+      - name: 'build_test_rig':
+        run: docker image build -f Dockerfile-test -t testrunner:dev .
+      - name: 'launch core API'
+        run: docker container run -d --name api --env ARGONODE=core argovis/api:test
+      - name: 'test core'
+        run: docker container run testrunner:dev npm run test-core
+      - name: 'test core helpers'
+        run: docker container run testrunner:dev npm run test-helpers
+      - name: 'tear down core api'
+        run: docker container rm -f api
+      - name: 'launch miami API'
+        run: docker container run -d --name api --env ARGONODE=miami argovis/api:test
+      - name: 'test miami'
+        run: docker container run testrunner:dev npm run test-miami
+      - name: 'test miami helpers'
+        run: docker container run testrunner:dev npm run test-helpers
