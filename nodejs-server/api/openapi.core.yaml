@@ -3313,6 +3313,62 @@ components:
           url: url
           doi: doi
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    genericExtended:
+      required:
+      - _id
+      - basins
+      - geolocation
+      - metadata
+      - raster
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        metadata:
+          type: array
+          items:
+            type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONmultipolygon'
+        true_geolocation:
+          $ref: '#/components/schemas/geoJSONmultipolygon'
+        timestamp:
+          type: string
+          format: date-time
+        raster:
+          type: array
+          items:
+            anyOf:
+            - type: number
+            - type: array
+              items:
+                type: number
+        basins:
+          type: array
+          items:
+            type: integer
+        flags:
+          type: array
+          items:
+            type: string
+      example:
+        metadata:
+        - metadata
+        - metadata
+        true_geolocation: null
+        raster:
+        - ""
+        - ""
+        flags:
+        - flags
+        - flags
+        _id: _id
+        basins:
+        - 0
+        - 0
+        geolocation: "{}"
+        timestamp: 2000-01-23T04:56:07.000+00:00
     genericExtendedMeta:
       required:
       - _id

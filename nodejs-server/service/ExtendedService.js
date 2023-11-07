@@ -39,7 +39,23 @@ exports.extendedVocab = function(extendedName) {
 exports.findExtended = function(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent) {
   return new Promise(function(resolve, reject) {
     var examples = {};
-    examples['application/json'] = [ "{}", "{}" ];
+    examples['application/json'] = [ {
+  "metadata" : [ "metadata", "metadata" ],
+  "raster" : [ "", "" ],
+  "flags" : [ "flags", "flags" ],
+  "_id" : "_id",
+  "basins" : [ 0, 0 ],
+  "geolocation" : "{}",
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+}, {
+  "metadata" : [ "metadata", "metadata" ],
+  "raster" : [ "", "" ],
+  "flags" : [ "flags", "flags" ],
+  "_id" : "_id",
+  "basins" : [ 0, 0 ],
+  "geolocation" : "{}",
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+} ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
