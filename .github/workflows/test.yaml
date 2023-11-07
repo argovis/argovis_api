@@ -23,6 +23,8 @@ jobs:
         run: docker image build -f Dockerfile-test -t testrunner:dev .
       - name: 'launch core API'
         run: docker container run -d --name api --env ARGONODE=core argovis/api:test
+      - name: 'check core API container'
+        run: docker container logs api ; docker container inspect api
       - name: 'test core'
         run: docker container run testrunner:dev npm run test-core
       - name: 'test core helpers'
