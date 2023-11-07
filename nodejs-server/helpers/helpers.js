@@ -398,8 +398,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
 
-  // if chunk has no data recoreded, abandon
-  if(chunk.data.length == 0){
+  // if chunk has no data recoreded and doesn't have an extended objects raster, abandon
+  if(!chunk.raster && chunk.data.length == 0){
     return false
   }
 
@@ -585,6 +585,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 
 module.exports.post_xform = function(metaModel, pp_params, search_result, res, stub){
   let nDocs = 0
+
   let postprocess = pp_params.suppress_meta ? 
     pipe(async chunk => {
       // munge the chunk and push it downstream if it isn't rejected.
@@ -742,7 +743,7 @@ module.exports.final_records = function(dataset){
     'copernicussla': new Date("2022-07-31T00:00:01Z"),
     'ccmpwind': new Date("1993-12-26T00:00:01Z"),
     'glodap': new Date('0001-01-01T00:00:01Z'),
-    'ar': new Date("2022-01-01T00:00:00Z")
+    'ar': new Date("2022-01-01T00:00:01Z")
   }
 
   return dates[dataset]

@@ -34,12 +34,12 @@ exports.extendedVocab = function(extendedName) {
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * returns List
  **/
-exports.findExtended = function(res,externdedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent) {
+exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,extendedName) {
   return new Promise(function(resolve, reject) {
     // generic helper for all timeseries search and filter routes
     // input sanitization
-
     let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -100,6 +100,7 @@ exports.findExtended = function(res,externdedName,id,startDate,endDate,polygon,m
               ]
           }
           let postprocess = helpers.post_xform(Extended['extendedMeta'], pp_params, search_result, res, stub)
+
           res.status(404) // 404 by default
           resolve([search_result[1], postprocess])
         })
