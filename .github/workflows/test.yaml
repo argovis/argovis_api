@@ -12,8 +12,10 @@ jobs:
     services:
       database:
         image: argovis/testdb:0.36
+        network: bridge
       redis:
         image: redis:7.0.2
+        network: bridge
 
     steps:
       - uses: actions/checkout@v2
