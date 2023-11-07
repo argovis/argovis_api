@@ -26,7 +26,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("GET /extended/ar?_id", function () {
       it("returns one atmo river result", async function () {
-        const response = await request.get("/extended/ar?_id=2000.01.01.03.0_5").set({'x-argokey': 'developer'});
+        const response = await request.get("/extended/ar?id=2000.01.01.03.0_5").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/extended/{extendedName}'].get.responses['200'].content['application/json'].schema);
       });
     });
