@@ -9,30 +9,31 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      database:
-        image: argovis/testdb:0.36
-      redis:
-        image: redis:7.0.2
-
     steps:
       - uses: actions/checkout@v2
+      - name: 'create network'
+        run: docker network create ghactions
+      - name: 'launch db'
+        run: docker container run -d --network ghactions --name database argovis/testdb:0.37
+      - name: 'launch redis'
+        run: docker container run -d --network ghactions --name redis redis:7.0.2
       - name: 'build_api_rc'
         run: docker image build -t argovis/api:test .
       - name: 'build_test_rig'
         run: docker image build -f Dockerfile-test -t testrunner:dev .
       - name: 'launch core API'
-        run: docker container run -d --name api --env ARGONODE=core argovis/api:test
-      - name: 'test core'
-        run: docker container run testrunner:dev npm run test-core
+        run: docker container run --network ghactions  -d --name api --env ARGONODE=core argovis/api:test
+      - name: 'check core API container'
+        run: docker network inspect ghactions
       - name: 'test core helpers'
-        run: docker container run testrunner:dev npm run test-helpers
+        run: docker container run --network ghactions testrunner:dev npm run test-helpers
+      - name: 'test core'
+        run: docker container run --network ghactions testrunner:dev npm run test-core
       - name: 'tear down core api'
         run: docker container rm -f api
       - name: 'launch miami API'
-        run: docker container run -d --name api --env ARGONODE=miami argovis/api:test
+        run: docker container run --network ghactions -d --name api --env ARGONODE=miami argovis/api:test
       - name: 'test miami'
-        run: docker container run testrunner:dev npm run test-miami
+        run: docker container run --network ghactions testrunner:dev npm run test-miami
       - name: 'test miami helpers'
-        run: docker container run testrunner:dev npm run test-helpers
-
+        run: docker container run --network ghactions testrunner:dev npm run test-helpers
