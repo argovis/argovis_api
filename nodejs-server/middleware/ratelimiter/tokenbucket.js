@@ -20,6 +20,7 @@ module.exports.tokenbucket = function (req, res, next) {
 	let cellprice = 0.0001 // token cost of 1 sq deg day
 	let metaDiscount = 100 // scaledown factor to discount except-data-values request by relative to data requests
 	let maxbulk = 1000000 // maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
+	let maxbulk_timeseries = 50 // maximum allowed size of area[sq km]/13000sqkm for timeseries; set to prevent OOM crashes
 	let argokey = 'guest'
 	if(req.headers['x-argokey']){
 		argokey = req.headers['x-argokey']
@@ -55,7 +56,7 @@ module.exports.tokenbucket = function (req, res, next) {
 		let d = new Date()
 		let t = d.getTime()
 		let tokensnow = Math.min(userbucket.ntokens + Math.round((t - userbucket.lastUpdate)/tokenrespawntime), bucketsize)
-		requestCost = helpers.cost(req['url'], requestCost, cellprice, metaDiscount, maxbulk)
+		requestCost = helpers.cost(req['url'], requestCost, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)
 		if(requestCost.hasOwnProperty('code')){
 			hsetAsync(userbucket.key, "ntokens", tokensnow-1, "lastUpdate", t) // penalize spamming us with bad requests a little
 			throw(requestCost)
