@@ -801,7 +801,11 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
         if( (path[0]=='timeseries' && geospan > maxbulk_timeseries) || (path[0]!='timeseries' && geospan*dayspan > maxbulk) ){
           return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
         }
-        c = geospan*dayspan*cellprice
+        if(path[0] == 'timeseries'){
+          c = geospan*cellprice
+        } else {
+          c = geospan*dayspan*cellprice
+        }
         if(isNaN(c)){
           c = 1 // protect against NaNs messing up user's token alotment
         }
