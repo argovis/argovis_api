@@ -12,6 +12,7 @@ const c = 1
 const cellprice = 0.0001
 const metaDiscount = 100
 const maxbulk = 1000000
+const maxbulk_timeseries = 50
 const bucketSize = 100
 
 $RefParser.dereference(rawspec, (err, schema) => {
@@ -49,37 +50,37 @@ $RefParser.dereference(rawspec, (err, schema) => {
 
     describe("cost functions", function () {
       it("cost of entire globe for a day with data for a standard API route", async function () {
-        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z&data=doxy', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice);
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z&data=doxy', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.almost.equal(360000000/13000*1*cellprice);
       });
     }); 
 
     describe("cost functions", function () {
       it("cost of entire globe for a day with data for a standard API route", async function () {
-        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z', c, cellprice, metaDiscount, maxbulk)).to.almost.equal(360000000/13000*1*cellprice/metaDiscount);
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2000-01-02T00:00:00Z', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.almost.equal(360000000/13000*1*cellprice/metaDiscount);
       });
     }); 
 
     describe("cost functions", function () {
       it("cost of 15 deg box near equator for 2 years with data for a standard API route should prohibit more than a few such requests in parallel", async function () {
-        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2002-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk)*10).to.be.greaterThan(bucketSize);
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2002-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)*10).to.be.greaterThan(bucketSize);
       });
     }); 
 
     describe("cost functions", function () {
       it("cost of 15 deg box near equator for 30 years with data for a standard API route should be out of scope", async function () {
-        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2030-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk).code).to.eql(413);
+        expect(helpers.cost('/argo?startDate=2000-01-01T00:00:00Z&endDate=2030-01-01T00:00:00Z&polygon=[[0,-7.5],[15,-7.5],[15,7.5],[0,7.5],[0,-7.5]]&data=temperature', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries).code).to.eql(413);
       });
     });
 
     describe("cost functions", function () {
       it("cost of metadata request should be a flat 0.2", async function () {
-        expect(helpers.cost('/argo/meta?id=4901283_m0', c, cellprice, metaDiscount, maxbulk)).to.eql(0.2);
+        expect(helpers.cost('/argo/meta?id=4901283_m0', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.eql(0.2);
       });
     }); 
 
     describe("cost functions", function () {
       it("cost of metadata request should be a flat 0.2", async function () {
-        expect(helpers.cost('/grids/meta?id=kg21_ohc15to300', c, cellprice, metaDiscount, maxbulk)).to.eql(0.2);
+        expect(helpers.cost('/grids/meta?id=kg21_ohc15to300', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.eql(0.2);
       });
     }); 
 
