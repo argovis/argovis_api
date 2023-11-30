@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: 'build_api_rc':
+      - name: 'build_api_rc'
         run: docker image build -t argovis/api:test .
       - name: 'build_test_rig':
         run: docker image build -f Dockerfile-test -t testrunner:dev .
