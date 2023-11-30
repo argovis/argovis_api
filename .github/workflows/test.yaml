@@ -14,7 +14,7 @@ jobs:
       - name: 'create network'
         run: docker network create ghactions
       - name: 'launch db'
-        run: docker container run -d --network ghactions --name database argovis/testdb:0.36
+        run: docker container run -d --network ghactions --name database argovis/testdb:0.36.1
       - name: 'launch redis'
         run: docker container run -d --network ghactions --name redis redis:7.0.2
       - name: 'build_api_rc'

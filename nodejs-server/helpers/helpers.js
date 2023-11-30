@@ -743,7 +743,7 @@ module.exports.final_records = function(dataset){
     'trajectories': new Date("2021-01-01T01:13:27Z"),
     'noaasst': new Date("2023-01-29T00:00:01Z"),
     'copernicussla': new Date("2022-07-31T00:00:01Z"),
-    'ccmpwind': new Date("1993-12-26T00:00:01Z"),
+    'ccmpwind': new Date("2019-12-29T00:00:01Z"),
     'glodap': new Date('0001-01-01T00:00:01Z')
   }
 

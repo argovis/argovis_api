@@ -58,7 +58,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.status).to.eql(200);
         expect(response.body).to.be.jsonSchema(schema.paths['/timeseries/{timeseriesName}'].get.responses['200'].content['application/json'].schema);
         expect(response.body[0]).not.to.have.property('timeseries')
-        expect(response.body[0].data[0].length).to.eql(52) 
+        expect(response.body[0].data[0].length).to.eql(1409) 
       });
     });
 
@@ -72,7 +72,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /timeseries/ccmpwind", function () {
       it("make sure mostrecent behaves as expected without a time window", async function () {
         const response = await request.get("/timeseries/ccmpwind?id=0.125_0.125&data=uwnd&mostrecent=3").set({'x-argokey': 'developer'});
-        expect(response.body[0].data).to.eql([["NaN",-0.6804429513535329,"NaN"]]) 
+        expect(response.body[0].data).to.eql([[-0.5306808191484639, -0.05723989282601646, "NaN"]]) 
       });
     });
 
