@@ -179,6 +179,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   let proxMatch = []
   let foreignMatch = []
   let isTimeseries = ['noaasst', 'copernicussla', 'ccmpwind'].includes(params.dataset)
+  let geosearch = params.extended ? '$geoIntersects' : '$geoWithin' 
 
   // construct match stages as required
   /// prox match construction
@@ -200,16 +201,20 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       }
     }
     if(params.polygon) {
-      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.polygon}}
+      spacetimeMatch[0]['$match']['geolocation'] = {}
+      spacetimeMatch[0]['$match']['geolocation'][geosearch] = {$geometry: params.polygon}
     }
     if(params.multipolygon){
       params.multipolygon.sort((a,b)=>{area.geometry(a, params.winding) - area.geometry(b, params.winding)}) // smallest first to minimize size of unindexed geo search
-      spacetimeMatch[0]['$match']['geolocation'] = {$geoWithin: {$geometry: params.multipolygon[0]}}
+      spacetimeMatch[0]['$match']['geolocation'] = {} 
+      spacetimeMatch[0]['$match']['geolocation'][geosearch] = {$geometry: params.multipolygon[0]}
     }
     // zoom in on subsequent polygon regions; will be unindexed.
     if(params.multipolygon && params.multipolygon.length > 1){
       for(let i=1; i<params.multipolygon.length; i++){
-        spacetimeMatch.push( {$match: {"geolocation": {$geoWithin: {$geometry: params.multipolygon[i]}}}} )
+        let blob = {'$match': {'geolocation':{}}}
+        blob['$match']['geolocation'][geosearch] = {$geometry: params.multipolygon[i]}
+        spacetimeMatch.push( blob )
       }
     }
   }
@@ -401,8 +406,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
     }
   }
 
-  // if chunk has no data recoreded, abandon
-  if(chunk.data.length == 0){
+  // if chunk has no data recoreded and doesn't have an extended objects raster, abandon
+  if(!chunk.raster && chunk.data.length == 0){
     return false
   }
 
@@ -588,6 +593,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
 
 module.exports.post_xform = function(metaModel, pp_params, search_result, res, stub){
   let nDocs = 0
+
   let postprocess = pp_params.suppress_meta ? 
     pipe(async chunk => {
 
@@ -722,7 +728,8 @@ module.exports.earliest_records = function(dataset){
     'noaasst': new Date("1989-12-31T00:00:00.000Z"),
     'copernicussla': new Date("1993-01-03T00:00:00Z"),
     'ccmpwind': new Date("1993-01-03T00:00:00Z"),
-    'glodap': new Date('0001-01-01T00:00:00Z')
+    'glodap': new Date('0001-01-01T00:00:00Z'),
+    'ar': new Date("2000-01-01T00:00:00Z")
   }
 
   return dates[dataset]
@@ -744,7 +751,8 @@ module.exports.final_records = function(dataset){
     'noaasst': new Date("2023-01-29T00:00:01Z"),
     'copernicussla': new Date("2022-07-31T00:00:01Z"),
     'ccmpwind': new Date("2019-12-29T00:00:01Z"),
-    'glodap': new Date('0001-01-01T00:00:01Z')
+    'glodap': new Date('0001-01-01T00:00:01Z'),
+    'ar': new Date("2022-01-01T00:00:01Z")
   }
 
   return dates[dataset]
@@ -766,7 +774,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
   let qString = new URLSearchParams(url.split('?')[1]);
 
   /// handle standardized routes
-  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories', 'timeseries']
+  let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'trajectories', 'timeseries', 'extended']
 
   if(standard_routes.includes(path[0])){
     //// metadata routes
@@ -774,7 +782,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
       return 0.2
     }
     //// core data routes
-    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap')) || (path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) ){
+    if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap')) || (path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) || (path[0]=='extended' && (path[1]=='ar')) ){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1
