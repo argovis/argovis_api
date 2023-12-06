@@ -219,8 +219,8 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     }
   }
 
-  /// construct filter for matching metadata docs if required
-  if(foreign_docs.length > 0 && foreign_docs[0]._id !== null){
+  /// construct filter for matching metadata docs if required; timeseries never filter on metadata docs
+  if(!isTimeseries && foreign_docs.length > 0 && foreign_docs[0]._id !== null){
     let metaIDs = new Set(foreign_docs.map(x => x['_id']))
     foreignMatch.push({$match:{'metadata':{$in:Array.from(metaIDs)}}})
   }
@@ -300,6 +300,9 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
 
   // filter down to requested time range in mongo for timeseries data
   if(isTimeseries){
+
+    params.timeseries = JSON.parse(JSON.stringify(foreign_docs[0]['timeseries']))
+    params.timeseries = params.timeseries.map(x => new Date(x))
 
     let lowIndex = 0
     let highIndex = params.timeseries.length-1
@@ -593,6 +596,7 @@ module.exports.post_xform = function(metaModel, pp_params, search_result, res, s
 
   let postprocess = pp_params.suppress_meta ? 
     pipe(async chunk => {
+
       // munge the chunk and push it downstream if it isn't rejected.
       let doc = null
       if(!pp_params.mostrecent || nDocs < pp_params.mostrecent){
@@ -746,21 +750,24 @@ module.exports.final_records = function(dataset){
     'trajectories': new Date("2021-01-01T01:13:27Z"),
     'noaasst': new Date("2023-01-29T00:00:01Z"),
     'copernicussla': new Date("2022-07-31T00:00:01Z"),
-    'ccmpwind': new Date("1993-12-26T00:00:01Z"),
+    'ccmpwind': new Date("2019-12-29T00:00:01Z"),
     'glodap': new Date('0001-01-01T00:00:01Z'),
     'ar': new Date("2022-01-01T00:00:01Z")
+    'ccmpwind': new Date("2019-12-29T00:00:01Z"),
+    'glodap': new Date('0001-01-01T00:00:01Z')
   }
 
   return dates[dataset]
 
 }
 
-module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
+module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries){
   // return the tokenbucket price for this URL.
   // c == defualt cost
   // cellprice == token cost of 1 sq deg day
   // metaDiscount == scaledown factor to discount except-data-values request by relative to data requests
   // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
+  // maxbulk_timeseries == maximum allowed size of area[sq km]/13000sqkm; set to prevent OOM crashes
 
   /// determine path steps
   let path = url.split('?')[0].split('/').slice(1)
@@ -782,7 +789,6 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
         c = 1
       }
-
       //// query parameters that specify a larger but still circumscribed number of records
       else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') || qString.get('metadata') ){
         c = 10
@@ -799,13 +805,17 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk){
           return params
         }
 
-        ///// cost out request
+        ///// cost out request; timeseries limited only by geography since entire time span for each matched lat/long must be pulled off disk in any case.
         let geospan = module.exports.geoarea(params.polygon,params.multipolygon,qString.get('winding'),params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
         let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
-        if(geospan*dayspan > maxbulk){
+        if( (path[0]=='timeseries' && geospan > maxbulk_timeseries) || (path[0]!='timeseries' && geospan*dayspan > maxbulk) ){
           return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
         }
-        c = geospan*dayspan*cellprice
+        if(path[0] == 'timeseries'){
+          c = geospan*cellprice
+        } else {
+          c = geospan*dayspan*cellprice
+        }
         if(isNaN(c)){
           c = 1 // protect against NaNs messing up user's token alotment
         }
