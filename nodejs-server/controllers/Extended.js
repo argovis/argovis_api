@@ -49,30 +49,3 @@ module.exports.findextendedMeta = function findextendedMeta (req, res, next, id)
     });
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports.timeseriesVocab = function timeseriesVocab (req, res, next, timeseriesName) {
-  
-  apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, product: timeseriesName, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
-
-  Timeseries.timeseriesVocab(timeseriesName)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    },
-    function (response) {
-      utils.writeJson(res, response, response.code);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
