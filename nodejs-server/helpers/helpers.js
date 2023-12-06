@@ -753,8 +753,6 @@ module.exports.final_records = function(dataset){
     'ccmpwind': new Date("2019-12-29T00:00:01Z"),
     'glodap': new Date('0001-01-01T00:00:01Z'),
     'ar': new Date("2022-01-01T00:00:01Z")
-    'ccmpwind': new Date("2019-12-29T00:00:01Z"),
-    'glodap': new Date('0001-01-01T00:00:01Z')
   }
 
   return dates[dataset]
