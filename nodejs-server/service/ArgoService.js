@@ -203,11 +203,11 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
 
               return [
                 data['_id'], 
-                data['metadata'],
                 data.geolocation.coordinates[0], 
                 data.geolocation.coordinates[1], 
                 data.timestamp,
-                Array.from(sourceset)
+                Array.from(sourceset),
+                data['metadata']
               ]
           }
           let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res, stub)

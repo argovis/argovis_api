@@ -137,7 +137,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /drifters", function () {
       it("should return appropriate minimal representation of this measurement", async function () {
         const response = await request.get("/drifters?id=101143_0&compression=minimal").set({'x-argokey': 'developer'});
-        expect(response.body).to.eql([['101143_0', ["101143"], -17.74345, 14.74677, "2012-03-15T22:00:00.000Z",1300915]]);  
+        expect(response.body).to.eql([['101143_0',  -17.74345, 14.74677, "2012-03-15T22:00:00.000Z",1300915,["101143"]]]);  
       });
     }); 
 
