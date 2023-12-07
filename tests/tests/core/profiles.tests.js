@@ -531,7 +531,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argo", function () {
       it("edgecase 20230315", async function () {
         const response = await request.get("/argo?id=2902857_001&presRange=80,100&compression=minimal").set({'x-argokey': 'developer'});
-        expect(response.body).to.eql([['2902857_001',152.12710166666668,42.39075666666667,'2022-07-05T12:01:51.999Z',[ 'argo_bgc', 'argo_core' ]]]);
+        expect(response.body).to.eql([['2902857_001',["2902857_m0"],152.12710166666668,42.39075666666667,'2022-07-05T12:01:51.999Z',[ 'argo_bgc', 'argo_core' ]]]);
       });
     });
 
