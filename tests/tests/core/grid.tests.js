@@ -174,7 +174,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /grids/rg09", function () {
       it("should return appropriate minimal representation of this measurement", async function () {
         const response = await request.get("/grids/rg09?id=20040115000000_20.5_-64.5&compression=minimal").set({'x-argokey': 'developer'});
-        expect(response.body).to.eql([['20040115000000_20.5_-64.5', 20.5, -64.5, "2004-01-15T00:00:00.000Z"]]);  
+        expect(response.body).to.eql([['20040115000000_20.5_-64.5', ["rg09_temperature_200401_Total","rg09_salinity_200401_Total"], 20.5, -64.5, "2004-01-15T00:00:00.000Z"]]);  
       });
     }); 
 

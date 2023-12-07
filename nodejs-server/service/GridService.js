@@ -100,6 +100,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
               // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
               return [
                 data['_id'], 
+                data['metadata'],
                 data.geolocation.coordinates[0], 
                 data.geolocation.coordinates[1], 
                 data.timestamp
