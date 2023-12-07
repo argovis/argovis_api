@@ -203,6 +203,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
 
               return [
                 data['_id'], 
+                data['metadata'],
                 data.geolocation.coordinates[0], 
                 data.geolocation.coordinates[1], 
                 data.timestamp,

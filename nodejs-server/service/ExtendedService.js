@@ -97,6 +97,7 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
               // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
               return [
                 data['_id'], 
+                data['metadata'],
                 data['timestamp'],
                 data['geolocation']
               ]
