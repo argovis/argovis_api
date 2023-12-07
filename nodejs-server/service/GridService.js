@@ -100,10 +100,10 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
               // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
               return [
                 data['_id'], 
-                data['metadata'],
                 data.geolocation.coordinates[0], 
                 data.geolocation.coordinates[1], 
-                data.timestamp
+                data.timestamp,
+                data['metadata']
               ]
           }
           let postprocess = helpers.post_xform(Grid[gridName+'Meta'], pp_params, search_result, res, stub)

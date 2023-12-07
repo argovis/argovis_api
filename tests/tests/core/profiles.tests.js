@@ -150,7 +150,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /cchdo", function () {
       it("should return appropriate minimal representation of this measurement", async function () {
         const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&compression=minimal").set({'x-argokey': 'developer'});
-        expect(response.body).to.eql([['expo_08PD0196_1_sta_016_cast_001_type_ctd', ["972_m1"], -57.6833, -42.8133, "1996-04-01T10:24:00.000Z", [ "cchdo_woce" ], [ "AR08" ], 972]]);  
+        expect(response.body).to.eql([['expo_08PD0196_1_sta_016_cast_001_type_ctd', -57.6833, -42.8133, "1996-04-01T10:24:00.000Z", [ "cchdo_woce" ], [ "AR08" ], 972,["972_m1"]]]);  
       });
     }); 
 
@@ -461,7 +461,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argo", function () {
       it("minimal compression reponds appropriately", async function () {
         const response = await request.get("/argo?startDate=2022-07-07T12:00:21Z&endDate=2022-07-07T12:02:21Z&source=argo_bgc&compression=minimal").set({'x-argokey': 'developer'});
-         expect(response.body).to.eql([["2902857_003", ["2902857_m0"], 152.28354833333333, 42.39558666666667, "2022-07-07T12:01:21.000Z", ['argo_bgc', 'argo_core']]]) 
+         expect(response.body).to.eql([["2902857_003", 152.28354833333333, 42.39558666666667, "2022-07-07T12:01:21.000Z", ['argo_bgc', 'argo_core'].["2902857_m0"], ]]) 
       });
     });
     
@@ -531,7 +531,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argo", function () {
       it("edgecase 20230315", async function () {
         const response = await request.get("/argo?id=2902857_001&presRange=80,100&compression=minimal").set({'x-argokey': 'developer'});
-        expect(response.body).to.eql([['2902857_001',["2902857_m0"],152.12710166666668,42.39075666666667,'2022-07-05T12:01:51.999Z',[ 'argo_bgc', 'argo_core' ]]]);
+        expect(response.body).to.eql([['2902857_001',152.12710166666668,42.39075666666667,'2022-07-05T12:01:51.999Z',[ 'argo_bgc', 'argo_core' ],["2902857_m0"],]]);
       });
     });
 
