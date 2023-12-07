@@ -461,7 +461,7 @@ $RefParser.dereference(rawspec, (err, schema) => {
     describe("GET /argo", function () {
       it("minimal compression reponds appropriately", async function () {
         const response = await request.get("/argo?startDate=2022-07-07T12:00:21Z&endDate=2022-07-07T12:02:21Z&source=argo_bgc&compression=minimal").set({'x-argokey': 'developer'});
-         expect(response.body).to.eql([["2902857_003", 152.28354833333333, 42.39558666666667, "2022-07-07T12:01:21.000Z", ['argo_bgc', 'argo_core'].["2902857_m0"], ]]) 
+         expect(response.body).to.eql([["2902857_003", 152.28354833333333, 42.39558666666667, "2022-07-07T12:01:21.000Z", ['argo_bgc', 'argo_core'],["2902857_m0"] ]]) 
       });
     });
     
