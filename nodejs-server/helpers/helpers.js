@@ -366,7 +366,19 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     aggPipeline.push({$project: project})
   }
 
-  return model.aggregate(aggPipeline).cursor()
+  //return model.aggregate(aggPipeline).cursor()
+  return model.aggregate(aggPipeline).exec()
+}
+
+ module.exports.metatable_stream = function(metamodel, data_docs){
+  let metaids = []
+  for(let i=0; i<data_docs.length; i++){
+    metaids = metaids.concat(data_docs[i].metadata)
+  }
+  metaids = new Set(metaids)
+  return metamodel.aggregate([
+    {$match: {_id: {$in: Array.from(metaids)}}}
+  ]).cursor()
 }
 
 module.exports.combineDataInfo = function(dinfos){
@@ -386,6 +398,9 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <stub>: function accepting one data document and its corresponding metadata document, returns appropriate representation for the compression=minimal flag.
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
+
+  // hackaroo
+  return chunk
 
   // immediately return a minimal stub if requested and data has been projected off
   if(pp_params.compression == 'minimal' && !chunk.hasOwnProperty('data')){

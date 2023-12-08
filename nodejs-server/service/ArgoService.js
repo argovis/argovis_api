@@ -189,9 +189,13 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
+    //let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
 
-    Promise.all([metafilter, datafilter])
+    let datafilter = helpers.datatable_stream(argo['argo'], params, local_filter, projection, data_filter, [])
+
+    let bulkmetafilter = datafilter.then(helpers.metatable_stream.bind(null, argo['argoMeta']))
+
+    Promise.all([datafilter, bulkmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){
