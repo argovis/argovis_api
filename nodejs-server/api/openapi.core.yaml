@@ -1805,6 +1805,15 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -3862,6 +3871,16 @@ components:
       explode: true
       schema:
         type: number
+    batchMeta:
+      name: batchmeta
+      in: query
+      description: return the metadata documents corresponding to a temporospatial
+        data search
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
     lat:
       name: lat
       in: query

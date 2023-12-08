@@ -124,9 +124,10 @@ exports.argoVocab = function(parameter) {
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data argo_data_keys Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
+exports.findArgo = function(id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

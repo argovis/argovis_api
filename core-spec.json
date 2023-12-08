@@ -1135,6 +1135,9 @@
                },
                {
                   "$ref": "#/components/parameters/presRange"
+               },
+               {
+                 "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -2744,6 +2747,14 @@
             "description": "get back only the n records with the most recent values of timestamp.",
             "schema": {
                "type": "number"
+            }
+         },
+         "batchMeta": {
+            "in": "query",
+            "name": "batchmeta",
+            "description": "return the metadata documents corresponding to a temporospatial data search",
+            "schema": {
+               "type": "string"
             }
          },
          "lat": {
