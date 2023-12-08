@@ -370,7 +370,12 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   return model.aggregate(aggPipeline).exec()
 }
 
- module.exports.metatable_stream = function(metamodel, data_docs){
+ module.exports.metatable_stream = function(bulkmeta, metamodel, data_docs){
+
+  if(!bulkmeta){
+    return Promise.resolve([])
+  }
+
   let metaids = []
   for(let i=0; i<data_docs.length; i++){
     metaids = metaids.concat(data_docs[i].metadata)
@@ -399,8 +404,10 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
 
-  // hackaroo
-  return chunk
+  // nothing to do if we're just passing meta docs through for a bulk metadata match
+  if(pp_params.bulkmeta){
+    return chunk
+  }
 
   // immediately return a minimal stub if requested and data has been projected off
   if(pp_params.compression == 'minimal' && !chunk.hasOwnProperty('data')){

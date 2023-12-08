@@ -189,13 +189,12 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
     }
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    //let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
 
-    let datafilter = helpers.datatable_stream(argo['argo'], params, local_filter, projection, data_filter, [])
+    pp_params.bulkmeta = false
+    let bulkmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.bulkmeta, argo['argoMeta']))
 
-    let bulkmetafilter = datafilter.then(helpers.metatable_stream.bind(null, argo['argoMeta']))
-
-    Promise.all([datafilter, bulkmetafilter])
+    Promise.all([metafilter, datafilter, bulkmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){
@@ -217,7 +216,11 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
           let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res, stub)
 
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.bulkmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
 
         })
   });
