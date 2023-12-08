@@ -103,9 +103,11 @@ exports.argoVocab = function(parameter) {
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data argo_data_keys Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
+
+exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     // input sanitization
     let params = helpers.parameter_sanitization('argo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
@@ -191,7 +193,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
 
-    pp_params.bulkmeta = false
+    pp_params.bulkmeta = batchmeta
     let bulkmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.bulkmeta, argo['argoMeta']))
 
     Promise.all([metafilter, datafilter, bulkmetafilter])

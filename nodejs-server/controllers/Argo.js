@@ -68,11 +68,11 @@ module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
     });
 };
 
-module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange) {
+module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange, batchmeta) {
 
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
 
-  Profiles.findArgo(res, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange)
+  Profiles.findArgo(res, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange, batchmeta)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
