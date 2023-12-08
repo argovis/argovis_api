@@ -366,8 +366,12 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     aggPipeline.push({$project: project})
   }
 
-  //return model.aggregate(aggPipeline).cursor()
-  return model.aggregate(aggPipeline).exec()
+  if(params.bulkmeta){
+    return model.aggregate(aggPipeline).exec()  
+  } else {
+    return model.aggregate(aggPipeline).cursor()
+  }
+  
 }
 
  module.exports.metatable_stream = function(bulkmeta, metamodel, data_docs){

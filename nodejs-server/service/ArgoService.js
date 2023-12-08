@@ -116,6 +116,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
       reject(params)
       return
     }
+    params.bulkmeta = batchmeta
 
     // decide y/n whether to service this request
     if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),platform].some(x=>x)){
@@ -155,7 +156,8 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
         mostrecent: mostrecent,
         always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
         suppress_meta: true, // argo doesn't use metadata in stubs, and data_info lives on the data doc, so no need for metadata in post.
-        qcsuffix: '_argoqc'
+        qcsuffix: '_argoqc',
+        bulkmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -193,7 +195,6 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
 
-    pp_params.bulkmeta = batchmeta
     let bulkmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.bulkmeta, argo['argoMeta']))
 
     Promise.all([metafilter, datafilter, bulkmetafilter])
