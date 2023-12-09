@@ -61,7 +61,7 @@ exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
         mostrecent: mostrecent,
-        suppress_meta: compression=='minimal', // don't need to look up tc metadata if making a minimal request
+        suppress_meta: compression=='minimal' || batchmeta, // don't need to look up tc metadata if making a minimal request
         batchmeta : batchmeta
     }
 
@@ -82,9 +82,9 @@ exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, tc['tc'], params, local_filter, projection, null))
 
-    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, tc['tcMeta']))
 
-    Promise.all([metafilter, datafilter])
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){

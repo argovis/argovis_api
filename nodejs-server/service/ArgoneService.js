@@ -56,7 +56,7 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         junk: ['dist'],
-        suppress_meta: compression=='minimal', // don't need to look up argo metadata if making a minimal request
+        suppress_meta: compression=='minimal' || batchmeta, // don't need to look up argo metadata if making a minimal request
         batchmeta : batchmeta
     }
 
@@ -73,7 +73,7 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {batchmeta:batchmeta}, local_filter, projection, null))
 
-    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argone['argoneMeta']))
     
     Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {

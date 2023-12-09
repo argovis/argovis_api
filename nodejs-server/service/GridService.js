@@ -78,7 +78,8 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
         mostrecent: mostrecent,
-        batchmeta : batchmeta
+        batchmeta : batchmeta,
+        suppress_meta: batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -94,7 +95,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter, projection, null))
 
-    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, Grid[gridName+'Meta']))
 
     Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {

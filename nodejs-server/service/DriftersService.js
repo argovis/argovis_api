@@ -86,7 +86,8 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,w
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
         mostrecent: mostrecent,
-        batchmeta : batchmeta
+        batchmeta : batchmeta,
+        suppress_meta: batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -112,7 +113,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,w
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Drifter['drifter'], params, local_filter, projection, null))
 
-    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, Drifter['drifterMeta']))
 
     Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {

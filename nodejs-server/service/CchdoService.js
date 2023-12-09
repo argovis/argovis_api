@@ -73,7 +73,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
         presRange: presRange,
         mostrecent: mostrecent,
         qcsuffix: '_woceqc',
-        suppress_meta: compression != 'minimal', // cchdo used metadata in stubs, but no where else in post
+        suppress_meta: compression != 'minimal' || batchmeta, // cchdo used metadata in stubs, but no where else in post
         batchmeta : batchmeta
     }
 
@@ -112,7 +112,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter, projection, data_filter))
 
-    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, cchdo['cchdoMeta']))
 
     Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {

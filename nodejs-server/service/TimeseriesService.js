@@ -62,7 +62,7 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
         presRange: null,
         dateRange: [params.startDate, params.endDate],
         //mostrecent: mostrecent, // mostrecent filtering done in mongo during stream for timeseries
-        suppress_meta: compression=='minimal',
+        suppress_meta: compression=='minimal' || batchmeta,
         batchmeta : batchmeta
     }
 
@@ -78,9 +78,9 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Timeseries[timeseriesName], params, local_filter, projection, null))
 
-    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, Timeseries['timeseriesMeta']))
 
-    Promise.all([metafilter, datafilter])
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){

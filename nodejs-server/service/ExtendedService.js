@@ -75,7 +75,7 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
         compression: compression,
         dateRange: [params.startDate, params.endDate],
         mostrecent: mostrecent,
-        suppress_meta: compression=='minimal',
+        suppress_meta: compression=='minimal' || batchmeta,
         batchmeta : batchmeta
     }
 
@@ -91,7 +91,7 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Extended[extendedName], params, local_filter, projection, null))
 
-    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, Extended['extendedMeta']))
 
     Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
