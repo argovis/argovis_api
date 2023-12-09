@@ -43,9 +43,10 @@ exports.findgridMeta = function(res,id) {
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,data,presRange) {
+exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     // generic helper for all grid search and filter routes
     // input sanitization
