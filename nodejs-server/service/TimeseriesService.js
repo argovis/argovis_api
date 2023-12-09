@@ -34,6 +34,7 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
     }
 
     params.mostrecent = mostrecent
+    params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
@@ -60,7 +61,8 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
         presRange: null,
         dateRange: [params.startDate, params.endDate],
         //mostrecent: mostrecent, // mostrecent filtering done in mongo during stream for timeseries
-        suppress_meta: compression=='minimal'
+        suppress_meta: compression=='minimal',
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -74,6 +76,8 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Timeseries[timeseriesName], params, local_filter, projection, null))
+
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
 
     Promise.all([metafilter, datafilter])
         .then(search_result => {
@@ -91,7 +95,11 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
           }
           let postprocess = helpers.post_xform(Timeseries['timeseriesMeta'], pp_params, search_result, res, stub)
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
         })
   });
 }

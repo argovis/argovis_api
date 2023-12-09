@@ -366,7 +366,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     aggPipeline.push({$project: project})
   }
 
-  if(params.bulkmeta){
+  if(params.batchmeta){
     return model.aggregate(aggPipeline).exec()  
   } else {
     return model.aggregate(aggPipeline).cursor()
@@ -374,9 +374,9 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
   
 }
 
- module.exports.metatable_stream = function(bulkmeta, metamodel, data_docs){
+ module.exports.metatable_stream = function(batchmeta, metamodel, data_docs){
 
-  if(!bulkmeta){
+  if(!batchmeta){
     return Promise.resolve([])
   }
 
@@ -409,7 +409,7 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // or return false to drop this item from the stream
 
   // nothing to do if we're just passing meta docs through for a bulk metadata match
-  if(pp_params.bulkmeta){
+  if(pp_params.batchmeta){
     return chunk
   }
 

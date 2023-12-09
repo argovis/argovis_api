@@ -31,6 +31,7 @@ exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,
       reject(params)
       return
     }
+    params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
@@ -59,7 +60,8 @@ exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
         mostrecent: mostrecent,
-        suppress_meta: compression=='minimal' // don't need to look up tc metadata if making a minimal request
+        suppress_meta: compression=='minimal', // don't need to look up tc metadata if making a minimal request
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -79,6 +81,8 @@ exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, tc['tc'], params, local_filter, projection, null))
 
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+
     Promise.all([metafilter, datafilter])
         .then(search_result => {
 
@@ -97,7 +101,11 @@ exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,
 
           let postprocess = helpers.post_xform(tc['tcMeta'], pp_params, search_result, res, stub)
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
 
         })
   });

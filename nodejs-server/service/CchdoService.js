@@ -33,6 +33,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
       reject(params)
       return
     }
+    params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
     if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),cchdo_cruise,woceline].some(x=>x)){
@@ -71,7 +72,8 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
         presRange: presRange,
         mostrecent: mostrecent,
         qcsuffix: '_woceqc',
-        suppress_meta: compression != 'minimal' // cchdo used metadata in stubs, but no where else in post
+        suppress_meta: compression != 'minimal', // cchdo used metadata in stubs, but no where else in post
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -109,7 +111,9 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, cchdo['cchdo'], params, local_filter, projection, data_filter))
 
-    Promise.all([metafilter, datafilter])
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
           
           let stub = function(data, metadata){
@@ -133,7 +137,11 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,windi
 
           let postprocess = helpers.post_xform(cchdo['cchdoMeta'], pp_params, search_result, res, stub)
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
           
         })
   });

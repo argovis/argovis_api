@@ -55,7 +55,8 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         junk: ['dist'],
-        suppress_meta: compression=='minimal' // don't need to look up argo metadata if making a minimal request
+        suppress_meta: compression=='minimal', // don't need to look up argo metadata if making a minimal request
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -69,9 +70,11 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
     let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {}, local_filter, projection, null))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {batchmeta:batchmeta}, local_filter, projection, null))
 
-    Promise.all([metafilter, datafilter])
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+    
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
           let stub = function(data, metadata){
               // given a data and corresponding metadata document,
@@ -90,7 +93,11 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
           let postprocess = helpers.post_xform(argone['argoneMeta'], pp_params, search_result, res, stub)
 
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
 
         })
 

@@ -57,6 +57,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,w
       reject(params)
       return
     }
+    params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
@@ -84,7 +85,8 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,w
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: null,
-        mostrecent: mostrecent
+        mostrecent: mostrecent,
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -110,7 +112,9 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,w
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Drifter['drifter'], params, local_filter, projection, null))
 
-    Promise.all([metafilter, datafilter])
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){
@@ -129,7 +133,11 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,multipolygon,w
 
           let postprocess = helpers.post_xform(Drifter['drifterMeta'], pp_params, search_result, res, stub)
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
 
         })
     
