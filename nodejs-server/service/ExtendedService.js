@@ -34,9 +34,10 @@ exports.extendedVocab = function(extendedName) {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * compression String Data minification strategy to apply. (optional)
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findExtended = function(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent) {
+exports.findExtended = function(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,batchmeta) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Argone = require('../service/ArgoneService');
 
-module.exports.findargone = function findargone (req, res, next, id, forecastOrigin, forecastGeolocation, metadata, compression, data) {
-  Argone.findargone(id, forecastOrigin, forecastGeolocation, metadata, compression, data)
+module.exports.findargone = function findargone (req, res, next, id, forecastOrigin, forecastGeolocation, metadata, compression, data, batchmeta) {
+  Argone.findargone(id, forecastOrigin, forecastGeolocation, metadata, compression, data, batchmeta)
     .then(function (response) {
       utils.writeJson(res, response);
     })

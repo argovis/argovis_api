@@ -147,6 +147,9 @@
                      },
                      "example": "90"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -272,6 +275,9 @@
                      },
                      "example": "wind,~surface_pressure"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -450,6 +456,9 @@
                },
                {
                   "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -621,6 +630,9 @@
                      },
                      "example": "uwnd,vwnd"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -731,7 +743,7 @@
             }
          }
       },
-"/extended/{extendedName}": {
+      "/extended/{extendedName}": {
          "get": {
             "tags": [
                "extended"
@@ -777,6 +789,9 @@
                },
                {
                   "$ref": "#/components/parameters/mostrecent"
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -955,6 +970,9 @@
                },
                {
                   "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -1137,7 +1155,7 @@
                   "$ref": "#/components/parameters/presRange"
                },
                {
-                 "$ref": "#/components/parameters/batchMeta" 
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
@@ -1477,6 +1495,9 @@
                   "schema": {
                      "$ref": "#/components/schemas/argotrajectory_data_keys"
                   }
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
                }
             ],
             "responses": {
