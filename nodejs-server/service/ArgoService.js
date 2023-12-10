@@ -103,9 +103,11 @@ exports.argoVocab = function(parameter) {
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data argo_data_keys Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange) {
+
+exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     // input sanitization
     let params = helpers.parameter_sanitization('argo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
@@ -114,6 +116,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
       reject(params)
       return
     }
+    params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
     if(source && ![id,(startDate && endDate),polygon,multipolygon,(center && radius),platform].some(x=>x)){
@@ -153,7 +156,8 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
         mostrecent: mostrecent,
         always_import: true, // add data_keys and everything in data_adjacent to data docs, no matter what
         suppress_meta: true, // argo doesn't use metadata in stubs, and data_info lives on the data doc, so no need for metadata in post.
-        qcsuffix: '_argoqc'
+        qcsuffix: '_argoqc',
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -191,7 +195,9 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter, projection, data_filter))
 
-    Promise.all([metafilter, datafilter])
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argo['argoMeta']))
+
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){
@@ -213,7 +219,11 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,windin
           let postprocess = helpers.post_xform(argo['argoMeta'], pp_params, search_result, res, stub)
 
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
 
         })
   });

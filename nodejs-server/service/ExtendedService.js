@@ -32,9 +32,10 @@ exports.extendedVocab = function(extendedName) {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * compression String Data minification strategy to apply. (optional)
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,extendedName) {
+exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,extendedName,batchmeta) {
   return new Promise(function(resolve, reject) {
 
     // generic helper for all timeseries search and filter routes
@@ -49,6 +50,7 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
 
     params.mostrecent = mostrecent
     params.extended = true // extended objects need a geointersects search instead of geowithin for polygons and multipolygons
+    params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
@@ -73,7 +75,8 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
         compression: compression,
         dateRange: [params.startDate, params.endDate],
         mostrecent: mostrecent,
-        suppress_meta: compression=='minimal'
+        suppress_meta: compression=='minimal' || batchmeta,
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -88,7 +91,9 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Extended[extendedName], params, local_filter, projection, null))
 
-    Promise.all([metafilter, datafilter])
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, Extended['extendedMeta']))
+
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){
@@ -105,7 +110,11 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
           let postprocess = helpers.post_xform(Extended['extendedMeta'], pp_params, search_result, res, stub)
 
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
         })
   });
 }

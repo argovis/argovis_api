@@ -43,9 +43,10 @@ exports.findgridMeta = function(res,id) {
  * mostrecent BigDecimal get back only the n records with the most recent values of timestamp. (optional)
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,data,presRange) {
+exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     // generic helper for all grid search and filter routes
     // input sanitization
@@ -56,6 +57,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
       reject(params)
       return
     }
+    params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
     let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
@@ -75,7 +77,9 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         presRange: presRange,
-        mostrecent: mostrecent
+        mostrecent: mostrecent,
+        batchmeta : batchmeta,
+        suppress_meta: batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -91,7 +95,9 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter, projection, null))
 
-    Promise.all([metafilter, datafilter])
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, Grid[gridName+'Meta']))
+
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
 
           let stub = function(data, metadata){
@@ -108,7 +114,11 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
           }
           let postprocess = helpers.post_xform(Grid[gridName+'Meta'], pp_params, search_result, res, stub)
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
         })
   });
 }

@@ -156,6 +156,15 @@ paths:
           items:
             pattern: "^((~)?((90)|(180)|(270)|(360)|(450)|(540)|(630)|(720)|(810)|(900)|(990)|(1080)|(1170)|(1260)|(1350)|(1440)|(1530)|(1620)|(1710)|(1800){1})|all|except-data-values)$"
             type: string
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -378,6 +387,15 @@ paths:
           items:
             pattern: "^((~)?((wind)|(surface_pressure){1})|all|except-data-values)$"
             type: string
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -665,6 +683,15 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -927,6 +954,15 @@ paths:
           example: "uwnd,vwnd"
           items:
             type: string
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -1172,6 +1208,15 @@ paths:
         explode: true
         schema:
           type: number
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -1479,6 +1524,15 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -1805,6 +1859,15 @@ paths:
             maxItems: 2
             minItems: 2
             type: number
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -2178,6 +2241,15 @@ paths:
         allowReserved: true
         schema:
           $ref: '#/components/schemas/argotrajectory_data_keys'
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -3862,6 +3934,16 @@ components:
       explode: true
       schema:
         type: number
+    batchMeta:
+      name: batchmeta
+      in: query
+      description: return the metadata documents corresponding to a temporospatial
+        data search
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
     lat:
       name: lat
       in: query

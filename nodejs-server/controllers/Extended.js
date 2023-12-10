@@ -21,11 +21,11 @@ module.exports.extendedVocab = function extendedVocab (req, res, next, extendedN
     });
 };
 
-module.exports.findExtended = function findExtended (req, res, next, extendedName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent) {
+module.exports.findExtended = function findExtended (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, batchmeta, extendedName) {
 
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, product: extendedName, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
-
-  Extended.findExtended(res, extendedName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent)
+  
+  Extended.findExtended(res, id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,extendedName,batchmeta)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);

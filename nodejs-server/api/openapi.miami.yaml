@@ -219,6 +219,15 @@ paths:
           items:
             pattern: "^((~)?((ve)|(vn)|(err_lon)|(err_lat)|(err_ve)|(err_vn)|(gap)|(sst)|(sst1)|(sst2)|(err_sst)|(err_sst1)|(err_sst2)|(flg_sst)|(flg_sst1)|(flg_sst2){1})|all|except-data-values)$"
             type: string
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
@@ -834,6 +843,16 @@ components:
       explode: true
       schema:
         type: number
+    batchMeta:
+      name: batchmeta
+      in: query
+      description: return the metadata documents corresponding to a temporospatial
+        data search
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
     wmo:
       name: wmo
       in: query

@@ -4,11 +4,11 @@ var utils = require('../utils/writer.js');
 var Tc = require('../service/TcService');
 var helpers = require('../helpers/helpers')
 
-module.exports.findTC = function findTC (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, name, mostrecent, compression, data) {
+module.exports.findTC = function findTC (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, name, mostrecent, compression, data, batchmeta) {
 
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
 
-  Tc.findTC(res, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, name, mostrecent, compression, data)
+  Tc.findTC(res, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, name, mostrecent, compression, data, batchmeta)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);

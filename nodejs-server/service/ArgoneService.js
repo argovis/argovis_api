@@ -13,9 +13,10 @@ const helpers = require('../helpers/helpers')
  * metadata String metadata pointer (optional)
  * compression String Data minification strategy to apply. (optional)
  * data List Forecast durations to include. Return only documents that have all data requested. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadata,compression,data) {
+exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadata,compression,data,batchmeta) {
   return new Promise(function(resolve, reject) {
 
     // decide y/n whether to service this request; sanitize inputs
@@ -55,7 +56,8 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
         compression: compression,
         data: JSON.stringify(data) === '["except-data-values"]' ? null : data, // ie `data=except-data-values` is the same as just omitting the data qsp
         junk: ['dist'],
-        suppress_meta: compression=='minimal' // don't need to look up argo metadata if making a minimal request
+        suppress_meta: compression=='minimal' || batchmeta, // don't need to look up argo metadata if making a minimal request
+        batchmeta : batchmeta
     }
 
     // can we afford to project data documents down to a subset in aggregation?
@@ -69,9 +71,11 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
     let metacomplete = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {}, local_filter, projection, null))
+    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argone['argone'], {batchmeta:batchmeta}, local_filter, projection, null))
 
-    Promise.all([metafilter, datafilter])
+    let batchmetafilter = datafilter.then(helpers.metatable_stream.bind(null, pp_params.batchmeta, argone['argoneMeta']))
+    
+    Promise.all([metafilter, datafilter, batchmetafilter])
         .then(search_result => {
           let stub = function(data, metadata){
               // given a data and corresponding metadata document,
@@ -90,7 +94,11 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
           let postprocess = helpers.post_xform(argone['argoneMeta'], pp_params, search_result, res, stub)
 
           res.status(404) // 404 by default
-          resolve([search_result[1], postprocess])
+          if(pp_params.batchmeta){
+            resolve([search_result[2], postprocess])
+          } else {
+            resolve([search_result[1], postprocess])
+          }
 
         })
 

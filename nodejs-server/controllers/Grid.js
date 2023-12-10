@@ -4,11 +4,11 @@ var utils = require('../utils/writer.js');
 var Grid = require('../service/GridService');
 var helpers = require('../helpers/helpers')
 
-module.exports.findgrid = function findgrid (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data, presRange, gridName) {
+module.exports.findgrid = function findgrid (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data, presRange, batchmeta, gridName) {
  
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, product: gridName, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
 
-  Grid.findgrid(res,gridName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data, presRange)
+  Grid.findgrid(res,gridName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, data, presRange, batchmeta)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
