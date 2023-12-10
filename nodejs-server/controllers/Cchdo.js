@@ -13,8 +13,8 @@ module.exports.cchdoVocab = function cchdoVocab (req, res, next, parameter) {
     });
 };
 
-module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange) {
-  Cchdo.findCCHDO(id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange)
+module.exports.findCCHDO = function findCCHDO (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange, batchmeta) {
+  Cchdo.findCCHDO(id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, cchdo_cruise, source, compression, mostrecent, data, presRange, batchmeta)
     .then(function (response) {
       utils.writeJson(res, response);
     })

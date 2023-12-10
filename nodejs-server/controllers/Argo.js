@@ -43,8 +43,8 @@ module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
     });
 };
 
-module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange) {
-  Argo.findArgo(id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange)
+module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange, batchmeta) {
+  Argo.findArgo(id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, platform, platform_type, source, compression, mostrecent, data, presRange, batchmeta)
     .then(function (response) {
       utils.writeJson(res, response);
     })
