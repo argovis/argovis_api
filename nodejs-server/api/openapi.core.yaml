@@ -24,6 +24,8 @@ tags:
   description: "Argo profile data, including core, BGC and deep floats"
 - name: cchdo
   description: CCHDO profile data.
+- name: easyocean
+  description: Interpolated CCHDO profile data.
 - name: grid
   description: Gridded products derived from Argo floats and simulations.
 - name: tc
@@ -1677,6 +1679,303 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: Cchdo
+  /easyocean:
+    get:
+      tags:
+      - easyocean
+      summary: Easyocean search and filter.
+      operationId: findeasyocean
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: multipolygon
+        in: query
+        description: array of polygon regions; region of interest is taken as the
+          intersection of all listed polygons.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+      - name: winding
+        in: query
+        description: Enforce ccw winding for polygon and multipolygon
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - "true"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: metadata
+        in: query
+        description: metadata pointer
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: woceline
+        in: query
+        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
+          for list of options.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: A10
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+      - name: mostrecent
+        in: query
+        description: get back only the n records with the most recent values of timestamp.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "absolute_salinity,~conservative_temperature"
+          items:
+            pattern: "^((~)?((absolute_salinity)|(conservative_temperature)|(ctd_salinity)|(ctd_temperature)|(doxy)|(pressure){1})|all|except-data-values|[0-9]+)$"
+            type: string
+      - name: presRange
+        in: query
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/easyocean'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Easyocean
+  /easyocean/meta:
+    get:
+      tags:
+      - easyocean
+      summary: Easyocean metadata search and filter.
+      operationId: findeasyoceanmeta
+      parameters:
+      - name: woceline
+        in: query
+        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
+          for list of options.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: A10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/easyoceanMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Easyocean
+  /easyocean/vocabulary:
+    get:
+      tags:
+      - easyocean
+      summary: List all possible values for certain easyocean query string parameters
+      operationId: easyoceanVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: Easyocean query string parameter to summarize possible values
+          of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - woceline
+          - data
+          - metadata
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Easyocean
   /argo:
     get:
       tags:
@@ -3028,6 +3327,53 @@ components:
         instrument: instrument
         _id: _id
         date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+    easyocean:
+      required:
+      - _id
+      - basin
+      - data
+      - data_info
+      - geolocation
+      - metadata
+      - source
+      - timestamp
+      type: object
+    easyoceanMeta:
+      required:
+      - _id
+      - date_updated_argovis
+      - occupancies
+      type: object
+      properties:
+        _id:
+          type: string
+        date_updated_argovis:
+          type: string
+          format: date-time
+        occupancies:
+          type: array
+          items:
+            $ref: '#/components/schemas/easyoceanMeta_occupancies'
+      example:
+        occupancies:
+        - varying_direction: varying_direction
+          expocodes:
+          - expocodes
+          - expocodes
+          static_direction: static_direction
+          time_boundaries:
+          - 2000-01-23T04:56:07.000+00:00
+          - 2000-01-23T04:56:07.000+00:00
+        - varying_direction: varying_direction
+          expocodes:
+          - expocodes
+          - expocodes
+          static_direction: static_direction
+          time_boundaries:
+          - 2000-01-23T04:56:07.000+00:00
+          - 2000-01-23T04:56:07.000+00:00
+        _id: _id
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
     argo:
       required:
       - _id
@@ -3610,6 +3956,31 @@ components:
           "n": 0.80082819046101150206595775671303272247314453125
           mostrecent: 2010-01-01T00:00:00Z
         _id: argo_bgc
+    easyoceanMeta_occupancies:
+      type: object
+      properties:
+        varying_direction:
+          type: string
+        static_direction:
+          type: string
+        expocodes:
+          type: array
+          items:
+            type: string
+        time_boundaries:
+          type: array
+          items:
+            type: string
+            format: date-time
+      example:
+        varying_direction: varying_direction
+        expocodes:
+        - expocodes
+        - expocodes
+        static_direction: static_direction
+        time_boundaries:
+        - 2000-01-23T04:56:07.000+00:00
+        - 2000-01-23T04:56:07.000+00:00
     inline_response_200_summary:
       type: object
       properties:
