@@ -39,9 +39,10 @@ exports.easyoceanVocab = function(parameter) {
  * data List Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
  * presRange List Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
+ * section_start_date Date Start date of the section of interest; see metadata corresponding to the WOCE line of interest for valid options. (optional)
  * returns List
  **/
-exports.findeasyocean = function(res, id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,woceline,compression,mostrecent,data,presRange,batchmeta) {
+exports.findeasyocean = function(res, id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,woceline,compression,mostrecent,data,presRange,batchmeta,section_start_date) {
   return new Promise(function(resolve, reject) {
 
     // input sanitization
@@ -67,6 +68,9 @@ exports.findeasyocean = function(res, id,startDate,endDate,polygon,multipolygon,
     }
     if(metadata){
       local_filter['$match']['metadata'] = metadata
+    }
+    if(section_start_date){
+      local_filter['$match']['section_start_date'] = new Date(section_start_date) 
     }
     if(Object.keys(local_filter['$match']).length > 0){
       local_filter = [local_filter]

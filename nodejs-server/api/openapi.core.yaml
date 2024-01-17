@@ -1852,6 +1852,18 @@ paths:
         explode: true
         schema:
           type: string
+      - name: section_start_date
+        in: query
+        description: Start date of the section of interest; see metadata corresponding
+          to the WOCE line of interest for valid options.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
       responses:
         "200":
           description: OK
