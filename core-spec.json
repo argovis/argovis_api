@@ -2318,7 +2318,7 @@
          },
          "easyocean": {
                "type": "object",
-               "required": ["_id","metadata","geolocation","data","basin","timestamp","data_info","source"],
+               "required": ["_id","metadata","geolocation","basin","timestamp","data_info","source"],
                "_id": {
                   "type": "string"
                },

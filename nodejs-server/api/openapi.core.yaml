@@ -3343,7 +3343,6 @@ components:
       required:
       - _id
       - basin
-      - data
       - data_info
       - geolocation
       - metadata
