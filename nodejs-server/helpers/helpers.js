@@ -807,19 +807,19 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
   if(standard_routes.includes(path[0])){
     //// metadata routes
     if(path.length==2 && path[1] == 'meta'){
-      return 0.2
+      return c/metaDiscount
     }
     //// core data routes
     if(path.length==1 || (path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap')) || (path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) || (path[0]=='extended' && (path[1]=='ar')) ){
       ///// any query parameter that specifies a particular record or small set of records can get waived through
       if(qString.get('id') || qString.get('wmo') || qString.get('name')){
-        c = 1
+        c = c/5
       }
       //// query parameters that specify a larger but still circumscribed number of records
       else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') || qString.get('metadata') ){
-        c = 10
+        c = c/1
         if(url.includes('compression=minimal')) {
-          c = 1
+          c = c/5
         }
       }
 
@@ -852,7 +852,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
         }
       }
     } 
-    //// */meta and */vocabulary routes unconstrained for now  
+    //// */vocabulary routes unconstrained for now  
   } 
 
   /// all other routes unconstrained for now
