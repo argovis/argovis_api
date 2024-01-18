@@ -73,14 +73,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
     });
 
     describe("cost functions", function () {
-      it("cost of metadata request should be a flat 0.2", async function () {
-        expect(helpers.cost('/argo/meta?id=4901283_m0', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.eql(0.2);
+      it("cost of metadata request should be scaled by metaDiscount", async function () {
+        expect(helpers.cost('/argo/meta?id=4901283_m0', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.eql(c/metaDiscount);
       });
     }); 
 
     describe("cost functions", function () {
-      it("cost of metadata request should be a flat 0.2", async function () {
-        expect(helpers.cost('/grids/meta?id=kg21_ohc15to300', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.eql(0.2);
+      it("cost of metadata request should be scaled my metaDiscount", async function () {
+        expect(helpers.cost('/grids/meta?id=kg21_ohc15to300', c, cellprice, metaDiscount, maxbulk, maxbulk_timeseries)).to.eql(c/metaDiscount);
       });
     }); 
 
