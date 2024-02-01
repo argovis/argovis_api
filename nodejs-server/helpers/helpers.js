@@ -407,7 +407,6 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   // <stub>: function accepting one data document and its corresponding metadata document, returns appropriate representation for the compression=minimal flag.
   // returns chunk mutated into its final, user-facing form
   // or return false to drop this item from the stream
-
   // nothing to do if we're just passing meta docs through for a bulk metadata match
   if(pp_params.batchmeta){
     return chunk
@@ -448,7 +447,8 @@ module.exports.postprocess_stream = function(chunk, metadata, pp_params, stub){
   if(pp_params.data){
     let current_key = ''
     for(let i=0; i<pp_params.data.length; i++){
-      if(pp_params.data[i].charAt[0]!='~'){
+
+      if(pp_params.data[i].charAt(0)!='~'){
         /// keys and qc allowed list
         if((!parseInt(pp_params.data[i]) && parseInt(pp_params.data[i])!==0) || (parseInt(pp_params.data[i])>=90)) { // numbers in the data string are lists of allowed qc flags - excpet for argone, which uses forecast days as data keys starting at 90
           current_key = pp_params.data[i]
@@ -938,7 +938,7 @@ module.exports.parse_data = function(d){
     if(all_flags.includes(d[i])){
       flags.push(d[i])
     } else if(d[i][0] === '~'){
-      negation_keys.push(d[i])
+      negation_keys.push(d[i].slice(1))
     } else if(isNaN(d[i])) {
       data_keys.push(d[i])
     }
