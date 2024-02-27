@@ -135,6 +135,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(area.geometry({'type':'Polygon', 'coordinates': [[[0,0],[0,1],[1,1],[1,0],[0,0]]]}, false)).to.be.lessThan(250000000000000);
       });
     });
+
+    describe("area functions", function () {
+      it("should not overestimate the area of the north pacific above about 20N", async function () {
+        expect(helpers.geoarea({'type':'Polygon', 'coordinates': [[[-110,22],[-238,20],[-230,32],[-218,36],[-214,45],[-200,54],[-193,60],[-157,58],[-146,61],[-124,47],[-120,37],[-110,22]]]})).to.be.lessThan(35000000);
+      });
+    });
 }
 
 })
