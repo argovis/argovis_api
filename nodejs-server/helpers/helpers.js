@@ -43,32 +43,34 @@ module.exports.geoWeightedSum = function(terms){
     return sum
 }
 
-module.exports.validlonlat = function(shape){
+module.exports.validlonlat = function(shape, suppress){
     // shape: array of lon lat arrays, [[lon 0, lat 0], [lon 1, lat 1], [lon 2, lat 2]...]
     // returns the same array normalizd to longitudes on [-180,180] and latitudes on [-90,90]
+    // unless suppress is set.
 
-    return shape.map(([longitude, latitude]) => {
-      long = longitude
-      while (long > 180){
-        long -= 360
-      }
-      while (long < -180){
-        long += 360
-      }
+    if(suppress){
+      return shape
+    } else {
+      return shape.map(([longitude, latitude]) => {
+        long = longitude
+        while (long > 180){
+          long -= 360
+        }
+        while (long < -180){
+          long += 360
+        }
 
-      lat = latitude
-      while (lat > 90){
-        lat -= 180
-      }
-      while (lat < -90){
-        lat += 180
-      }
+        lat = latitude
+        while (lat > 90){
+          lat -= 180
+        }
+        while (lat < -90){
+          lat += 180
+        }
 
-      return [long, lat]
-    })
-
-    return shape.every(point => point[0] >= -180 && point[0] <= 180 && point[1] >= -90 && point[1] <= 90)
-
+        return [long, lat]
+      })
+    }
 }
 
 module.exports.zip = function(arrays){
@@ -77,7 +79,7 @@ module.exports.zip = function(arrays){
     });
 }
 
-module.exports.polygon_sanitation = function(poly,enforceWinding){
+module.exports.polygon_sanitation = function(poly,enforceWinding,suppressCoordCleaning){
   // given a string <poly> that describes a polygon as [[lon0,lat0],[lon1,lat1],...,[lonN,latN],[lon0,lat0]],
   // make sure its formatted sensibly, and return it as a geojson polygon.
   const GJV = require('geojson-validation')
@@ -89,7 +91,7 @@ module.exports.polygon_sanitation = function(poly,enforceWinding){
     return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
   }
 
-  p = module.exports.validlonlat(p)
+  p = module.exports.validlonlat(p, suppressCoordCleaning)
 
   p = {
     "type": "Polygon",
@@ -110,7 +112,7 @@ module.exports.polygon_sanitation = function(poly,enforceWinding){
   return p
 }
 
-module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,polygon,multipolygon,winding,center,radius){
+module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,polygon,multipolygon,winding,center,radius, suppressCoordCleaning){
   // sanity check and transform generic temporospatial query string parameters in preparation for search.
 
   params = {"dataset": dataset}
@@ -132,7 +134,7 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
   }
 
   if(polygon){
-    polygon = module.exports.polygon_sanitation(polygon, winding)
+    polygon = module.exports.polygon_sanitation(polygon, winding, suppressCoordCleaning)
     if(polygon.hasOwnProperty('code')){
       // error, return and bail out
       return polygon
@@ -146,7 +148,7 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
     } catch (e) {
       return {"code": 400, "message": "Multipolygon region wasn't proper JSON; format should be [[first polygon], [second polygon]], where each polygon is [lon,lat],[lon,lat],..."};
     }
-    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x),winding)})
+    multipolygon = multipolygon.map(function(x){return module.exports.polygon_sanitation(JSON.stringify(x),winding, suppressCoordCleaning)})
     if(multipolygon.some(p => p.hasOwnProperty('code'))){
       multipolygon = multipolygon.filter(x=>x.hasOwnProperty('code'))
       return multipolygon[0]
@@ -843,8 +845,8 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
 
       ///// assume a temporospatial query absent the above (and if _nothing_ is provided, assumes and rejects an all-space-and-time request)
       else{
-        ///// parameter cleaning and coercing
-        let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'))
+        ///// parameter cleaning and coercing; don't coerce coords to be mongo appropriate here, causes problems with area computation
+        let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('multipolygon'),qString.get('winding'),qString.get('center'),qString.get('radius'), true)
         if(params.hasOwnProperty('code')){
           return params
         }
