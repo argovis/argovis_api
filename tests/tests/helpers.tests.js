@@ -42,9 +42,23 @@ $RefParser.dereference(rawspec, (err, schema) => {
     }); 
 
     describe("validlonlat", function () {
-      it("flags an invalid longitude", async function () {
-        points = [[-185.2236986,70.1153552],[-183.9932299,56.4218209],[-155.5166674,56.7123646],[-154.1104174,69.8748184],[-185.2236986,70.1153552]]
-        expect(helpers.validlonlat(points)).to.be.false  
+      it("waives through valid longitude", async function () {
+        points = [[175,70],[177,56],[-155,56],[-154,69],[175,70]]
+        expect(helpers.validlonlat(points)).to.eql([[175,70],[177,56],[-155,56],[-154,69],[175,70]])
+      });
+    });
+
+    describe("validlonlat", function () {
+      it("modulates an invalid longitude", async function () {
+        points = [[-185,70],[-183,56],[-155,56],[-154,69],[-185,70]]
+        expect(helpers.validlonlat(points)).to.eql([[175,70],[177,56],[-155,56],[-154,69],[175,70]])
+      });
+    }); 
+
+    describe("validlonlat", function () {
+      it("modulates an invalid longitude from several rotations away", async function () {
+        points = [[-905,70],[-2703,56],[-155,56],[-154,69],[-905,70]]
+        expect(helpers.validlonlat(points)).to.eql([[175,70],[177,56],[-155,56],[-154,69],[175,70]])
       });
     }); 
 

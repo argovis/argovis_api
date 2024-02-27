@@ -45,7 +45,27 @@ module.exports.geoWeightedSum = function(terms){
 
 module.exports.validlonlat = function(shape){
     // shape: array of lon lat arrays, [[lon 0, lat 0], [lon 1, lat 1], [lon 2, lat 2]...]
-    // returns true if all longitudes are in -180 to 180 and all latitudes are in -90 to 90, as required by mongo's geojson representation.
+    // returns the same array normalizd to longitudes on [-180,180] and latitudes on [-90,90]
+
+    return shape.map(([longitude, latitude]) => {
+      long = longitude
+      while (long > 180){
+        long -= 360
+      }
+      while (long < -180){
+        long += 360
+      }
+
+      lat = latitude
+      while (lat > 90){
+        lat -= 180
+      }
+      while (lat < -90){
+        lat += 180
+      }
+
+      return [long, lat]
+    })
 
     return shape.every(point => point[0] >= -180 && point[0] <= 180 && point[1] >= -90 && point[1] <= 90)
 
@@ -69,9 +89,7 @@ module.exports.polygon_sanitation = function(poly,enforceWinding){
     return {"code": 400, "message": "Polygon region wasn't proper JSON; format should be [[lon,lat],[lon,lat],...]"};
   }
 
-  if(!module.exports.validlonlat(p)){
-    return {"code": 400, "message": "All lon, lat pairs must respect -180<=lon<=180 and -90<=lat<-90"}; 
-  }
+  p = module.exports.validlonlat(p)
 
   p = {
     "type": "Polygon",
