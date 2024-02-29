@@ -24,6 +24,7 @@ const summaries = require('../models/summary');
  * returns List
  **/
 exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,presRange,compression,mostrecent,data,batchmeta) {
+
   return new Promise(function(resolve, reject) {
     // generic helper for all timeseries search and filter routes
     // input sanitization
@@ -47,11 +48,12 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
 
     // local filter: fields in data collection other than geolocation and timestamp 
     let local_filter = {$match:{}}
+
     if(id){
         local_filter['$match']['_id'] = id
     }
     if(presRange){
-      local_filter['$match']['$or'] = [{'level': {'$exists': false}},{'level': {'$gte': presRange[0],'$lte': presRange[1]}}] // or to accommodate timeseries with no levels, ie satellite surface grids
+      local_filter['$match']['$or'] = [{'level': {'$exists': false}},{'level': {'$gte': presRange[0],'$lte': presRange[1]}}] // $or to accommodate timeseries with no levels, ie satellite surface grids
     }
     if(Object.keys(local_filter['$match']).length > 0){
       local_filter = [local_filter]
