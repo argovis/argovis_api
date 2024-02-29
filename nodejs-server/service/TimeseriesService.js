@@ -50,6 +50,9 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
     if(id){
         local_filter['$match']['_id'] = id
     }
+    if(presRange){
+      local_filter['$match']['$or'] = [{'level': {'$exists': false}},{'level': {'$gte': presRange[0],'$lte': presRange[1]}}] // or to accommodate timeseries with no levels, ie satellite surface grids
+    }
     if(Object.keys(local_filter['$match']).length > 0){
       local_filter = [local_filter]
     } else {
