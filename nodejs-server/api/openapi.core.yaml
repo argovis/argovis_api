@@ -3731,6 +3731,8 @@ components:
           type: number
         data:
           $ref: '#/components/schemas/data'
+        level:
+          type: number
       example:
         metadata:
         - metadata
@@ -3740,6 +3742,7 @@ components:
           - ""
         - - ""
           - ""
+        level: 6.02745618307040320615897144307382404804229736328125
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         geolocation:
