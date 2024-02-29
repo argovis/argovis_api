@@ -66,7 +66,7 @@
       },
       {
          "name": "timeseries",
-         "description": "timeseries-formatted grids derived from satellite data."
+         "description": "timeseries-formatted grids."
       },
       {
          "name": "extended",
@@ -613,6 +613,9 @@
                },
                {
                   "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
                },
                {
                   "$ref": "#/components/parameters/compression"
