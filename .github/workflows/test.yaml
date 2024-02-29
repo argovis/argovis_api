@@ -37,4 +37,11 @@ jobs:
         run: docker container run --network ghactions testrunner:dev npm run test-miami
       - name: 'test miami helpers'
         run: docker container run --network ghactions testrunner:dev npm run test-helpers
-
+      - name: 'tear down miami api'
+        run: docker container rm -f api
+      - name: 'launch bsose API'
+        run: docker container run --network ghactions -d --name api --env ARGONODE=bsose argovis/api:test
+      - name: 'test bsose'
+        run: docker container run --network ghactions testrunner:dev npm run test-bsose
+      - name: 'test bsose helpers'
+        run: docker container run --network ghactions testrunner:dev npm run test-helpers
