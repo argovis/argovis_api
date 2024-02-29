@@ -2708,6 +2708,9 @@
                },
                "data": {
                   "$ref": "#/components/schemas/data"
+               },
+               "level": {
+                  "type": "number"
                }
             }
          },

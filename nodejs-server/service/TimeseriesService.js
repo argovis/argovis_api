@@ -26,8 +26,9 @@ exports.findtimeseries = function(timeseriesName,id,startDate,endDate,polygon,mu
     examples['application/json'] = [ {
   "metadata" : [ "metadata", "metadata" ],
   "data" : [ [ "", "" ], [ "", "" ] ],
+  "level" : 1.4658129805029452,
   "_id" : "_id",
-  "basin" : 0.8008281904610115,
+  "basin" : 6.027456183070403,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
@@ -35,8 +36,9 @@ exports.findtimeseries = function(timeseriesName,id,startDate,endDate,polygon,mu
 }, {
   "metadata" : [ "metadata", "metadata" ],
   "data" : [ [ "", "" ], [ "", "" ] ],
+  "level" : 1.4658129805029452,
   "_id" : "_id",
-  "basin" : 0.8008281904610115,
+  "basin" : 6.027456183070403,
   "geolocation" : {
     "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
     "type" : "type"
