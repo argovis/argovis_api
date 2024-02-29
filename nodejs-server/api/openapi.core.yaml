@@ -833,6 +833,7 @@ paths:
           - noaasst
           - copernicussla
           - ccmpwind
+          - bsose
       - name: id
         in: query
         description: Unique ID to search for.
@@ -1072,6 +1073,7 @@ paths:
           - noaasst
           - copernicussla
           - ccmpwind
+          - bsose
       responses:
         "200":
           description: OK
