@@ -28,7 +28,7 @@ const helpers = require('../helpers/helpers')
 exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization('cchdo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('cchdo',id,startDate,endDate,polygon,multipolygon,"[[0,0],[1,1]]",winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)

@@ -111,7 +111,7 @@ exports.argoVocab = function(parameter) {
 exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius,metadata,platform,platform_type,source,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization('argo',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('argo',id,startDate,endDate,polygon,multipolygon,box,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -124,7 +124,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,multipolygon,box,wi
       reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id or platform search."})
       return
     }
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, params.box) 
     if(bailout){
       reject(bailout)
       return

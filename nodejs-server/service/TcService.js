@@ -26,7 +26,7 @@ const summaries = require('../models/summary');
 exports.findTC = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,name,metadata,mostrecent,compression,data,batchmeta) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization('tc',id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization('tc',id,startDate,endDate,polygon,multipolygon,"[[0,0],[1,1]]",winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)

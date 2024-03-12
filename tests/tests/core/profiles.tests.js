@@ -581,6 +581,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /argo", function () {
+      it("polygon versus box should return slightly different things near boundary", async function () {
+        const poly_response = await request.get("/argo?polygon=[[152,42.38],[153,42.38],[153,43],[152,43],[152,42.38]]").set({'x-argokey': 'developer'});
+        const box_response  = await request.get("/argo?box=[[152,42.38],[153,43]]").set({'x-argokey': 'developer'});
+        expect(poly_response.body.length).to.eql(2);
+        expect(box_response.body.length).to.eql(3);
+      });
+    });
+
     describe("GET /cchdo", function () {
       it("explicitly asking for cchdo qc information", async function () {
         const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&data=doxy,temperature,temperature_woceqc").set({'x-argokey': 'developer'});

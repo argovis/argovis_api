@@ -40,7 +40,7 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,wi
 
     // generic helper for all timeseries search and filter routes
     // input sanitization
-    let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,"[[0,0],[1,1]]",winding,center,radius)
 
     if(params.hasOwnProperty('code')){
       // error, return and bail out
