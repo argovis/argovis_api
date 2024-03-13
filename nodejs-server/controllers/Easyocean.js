@@ -20,11 +20,11 @@ module.exports.easyoceanVocab = function easyoceanVocab (req, res, next, paramet
     });
 };
 
-module.exports.findeasyocean = function findeasyocean (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, compression, mostrecent, data, presRange, batchmeta, section_start_date) {
+module.exports.findeasyocean = function findeasyocean (req, res, next, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, metadata, woceline, compression, mostrecent, data, presRange, batchmeta, section_start_date) {
   
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
 
-  Easyocean.findeasyocean(res, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, woceline, compression, mostrecent, data, presRange, batchmeta, section_start_date)
+  Easyocean.findeasyocean(res, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, metadata, woceline, compression, mostrecent, data, presRange, batchmeta, section_start_date)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
