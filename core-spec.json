@@ -789,9 +789,6 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
-                  "$ref": "#/components/parameters/box"
-               },
-               {
                   "$ref": "#/components/parameters/winding"
                },
                {
