@@ -260,7 +260,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
     }
     if(params.box) {
       spacetimeMatch[0]['$match']['geolocation.coordinates'] = {}
-      spacetimeMatch[0]['$match']['geolocation.coordinates'][geosearch] = {'$box': params.box}
+      spacetimeMatch[0]['$match']['geolocation.coordinates']['$geoWithin'] = {'$box': params.box}
     }
   }
 
