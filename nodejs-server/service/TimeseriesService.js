@@ -33,7 +33,6 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
       reject(params)
       return
     }
-    console.log(9000, params)
 
     params.mostrecent = mostrecent
     params.batchmeta = batchmeta
