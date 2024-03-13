@@ -993,4 +993,42 @@ module.exports.parse_data = function(d){
   return [data_keys, negation_keys]
 }
 
+module.exports.box2polygon = function(lowerLeft, upperRight) {
+    let minLon = lowerLeft[0]
+    let minLat = lowerLeft[1]
+    let maxLon = upperRight[0]
+    let maxLat = upperRight[1]
+
+    const vertices = [];
+
+    // Generate vertices along the bottom edge
+    for (let lon = minLon; lon <= maxLon; lon += 0.1) {
+        vertices.push([lon, minLat]);
+    }
+
+    // Generate vertices along the right edge
+    for (let lat = minLat; lat <= maxLat; lat += 0.1) {
+        vertices.push([maxLon, lat]);
+    }
+
+    // Generate vertices along the top edge
+    for (let lon = maxLon; lon >= minLon; lon -= 0.1) {
+        vertices.push([lon, maxLat]);
+    }
+
+    // Generate vertices along the left edge
+    for (let lat = maxLat; lat >= minLat; lat -= 0.1) {
+        vertices.push([minLon, lat]);
+    }
+
+    // Close the polygon by adding the first vertex again
+    vertices.push([minLon, minLat]);
+
+    const polygon = {
+        type: "Polygon",
+        coordinates: [vertices]
+    };
+
+    return polygon;
+}
 
