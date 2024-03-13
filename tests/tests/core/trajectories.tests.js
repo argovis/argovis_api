@@ -123,6 +123,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body[0].hasOwnProperty('data_info')).to.eql(false);  
       });
     }); 
+
+    describe("GET /argotrajectories", function () {
+      it("check basic box behavior", async function () {
+        const response = await request.get("/argotrajectories?box=[[-28,4],[-27,5]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(2); 
+      });
+    }); 
   }
 })
 

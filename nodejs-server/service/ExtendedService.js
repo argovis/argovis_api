@@ -27,6 +27,7 @@ exports.extendedVocab = function(extendedName) {
  * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
+ * box String lon, lat pairs of the lower left and upper right corners of a box on a mercator projection, packed like [[lower left lon, lower left lat],[upper right lon, upper right lat]] (optional)
  * winding String Enforce ccw winding for polygon and multipolygon (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
@@ -35,11 +36,24 @@ exports.extendedVocab = function(extendedName) {
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,winding,center,radius,compression,mostrecent,extendedName,batchmeta) {
-  return new Promise(function(resolve, reject) {
 
+exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius,compression,mostrecent,extendedName,batchmeta) {
+  return new Promise(function(resolve, reject) {
     // generic helper for all timeseries search and filter routes
     // input sanitization
+
+    // extended objects must be geo-searched by $geoIntersects, which is only supported on 2dsphere indexes; 
+    // therefore, requests for box regions must be coerced into approximately corresponding geodesic-edged polygons.
+    if(box) {
+      box = helpers.box_sanitation(box)
+        if(box.hasOwnProperty('code')){
+        // error, return and bail out
+        return box
+      }
+
+      polygon = JSON.stringify(helpers.box2polygon(box[0], box[1]).coordinates[0])
+    }
+
     let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
 
     if(params.hasOwnProperty('code')){
