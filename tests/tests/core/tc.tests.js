@@ -153,6 +153,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body[0].hasOwnProperty('data_info')).to.eql(false);  
       });
     }); 
+
+    describe("GET /tc", function () {
+      it("check basic box behavior", async function () {
+        const response = await request.get("/tc?box=[[-95,28],[-94,29]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1); 
+      });
+    }); 
   }
 })
 

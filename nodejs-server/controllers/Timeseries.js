@@ -5,8 +5,8 @@ var utils = require('../utils/writer.js');
 var Timeseries = require('../service/TimeseriesService');
 var helpers = require('../helpers/helpers')
 
-module.exports.findtimeseries = function findtimeseries (req, res, next, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, compression, mostrecent, data, batchmeta, timeseriesName) {
-  
+module.exports.findtimeseries = function findtimeseries (req, res, next, id, startDate, endDate, polygon, box, multipolygon, winding, center, radius, compression, mostrecent, data, batchmeta, timeseriesName) {
+
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, product: timeseriesName, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
   
   Timeseries.findtimeseries(res, timeseriesName, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, compression, mostrecent, data, batchmeta)

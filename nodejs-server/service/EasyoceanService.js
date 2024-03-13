@@ -47,7 +47,7 @@ exports.findeasyocean = function(res, id,startDate,endDate,polygon,multipolygon,
   return new Promise(function(resolve, reject) {
 
     // input sanitization
-    let params = helpers.parameter_sanitization('easyocean',id,startDate,endDate,polygon,multipolygon,"[[0,0],[1,1]]",winding,center,radius)
+    let params = helpers.parameter_sanitization('easyocean',id,startDate,endDate,polygon,multipolygon,box,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -56,7 +56,7 @@ exports.findeasyocean = function(res, id,startDate,endDate,polygon,multipolygon,
     params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, params.box) 
     if(bailout){
       reject(bailout)
       return

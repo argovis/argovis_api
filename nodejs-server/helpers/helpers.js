@@ -258,7 +258,7 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
         spacetimeMatch.push( blob )
       }
     }
-    if(params.box && JSON.stringify(params.box) != '[[0,0],[1,1]]' ) {
+    if(params.box) {
       spacetimeMatch[0]['$match']['geolocation.coordinates'] = {'$geoWithin': {'$box': params.box}}
     }
   }

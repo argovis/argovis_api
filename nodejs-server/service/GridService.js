@@ -52,7 +52,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     // generic helper for all grid search and filter routes
     // input sanitization
 
-    let params = helpers.parameter_sanitization(gridName,id,startDate,endDate,polygon,multipolygon,"[[0,0],[1,1]]",winding,center,radius)
+    let params = helpers.parameter_sanitization(gridName,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -61,7 +61,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,multipolyg
     params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, params.box) 
     if(bailout){
       reject(bailout)
       return

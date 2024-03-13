@@ -76,6 +76,15 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /timeseries/ccmpwind", function () {
+      it("check basic box behavior", async function () {
+        const response1 = await request.get("/timeseries/ccmpwind?box=[[0,0],[1,1]]").set({'x-argokey': 'developer'});
+        expect(response1.body.length).to.eql(1);
+        const response2 = await request.get("/timeseries/ccmpwind?box=[[1,1],[2,2]]").set({'x-argokey': 'developer'});
+        expect(response2.body.length).to.eql(0); 
+      });
+    }); 
+
   }
 })
 

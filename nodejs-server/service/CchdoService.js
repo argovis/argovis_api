@@ -29,7 +29,7 @@ const helpers = require('../helpers/helpers')
 exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius,metadata,woceline,cchdo_cruise,source,compression,mostrecent,data,presRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     // input sanitization
-    let params = helpers.parameter_sanitization('cchdo',id,startDate,endDate,polygon,multipolygon,"[[0,0],[1,1]]",winding,center,radius)
+    let params = helpers.parameter_sanitization('cchdo',id,startDate,endDate,polygon,multipolygon,box,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
@@ -42,7 +42,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,multipolygon,box,w
       reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id, CCHDO cruise ID, or WOCE line search."})
       return
     }
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, params.box) 
     if(bailout){
       reject(bailout)
       return

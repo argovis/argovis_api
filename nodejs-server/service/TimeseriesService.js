@@ -27,19 +27,19 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
   return new Promise(function(resolve, reject) {
     // generic helper for all timeseries search and filter routes
     // input sanitization
-
-    let params = helpers.parameter_sanitization(timeseriesName,id,startDate,endDate,polygon,multipolygon,"[[0,0],[1,1]]",winding,center,radius)
+    let params = helpers.parameter_sanitization(timeseriesName,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius)
     if(params.hasOwnProperty('code')){
       // error, return and bail out
       reject(params)
       return
     }
+    console.log(9000, params)
 
     params.mostrecent = mostrecent
     params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.multipolygon, params.box) 
     if(bailout){
       reject(bailout)
       return
