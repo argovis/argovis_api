@@ -13,8 +13,8 @@ module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, i
     });
 };
 
-module.exports.drifterSearch = function drifterSearch (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta) {
-  Drifters.drifterSearch(id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta)
+module.exports.drifterSearch = function drifterSearch (req, res, next, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta) {
+  Drifters.drifterSearch(id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta)
     .then(function (response) {
       utils.writeJson(res, response);
     })

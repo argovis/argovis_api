@@ -244,6 +244,9 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
                   "$ref": "#/components/parameters/winding"
                },
                {
@@ -429,6 +432,9 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
                   "$ref": "#/components/parameters/winding"
                },
                {
@@ -601,6 +607,9 @@
                },
                {
                   "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
@@ -780,6 +789,9 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
                   "$ref": "#/components/parameters/winding"
                },
                {
@@ -928,6 +940,9 @@
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/winding"
@@ -1116,6 +1131,9 @@
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/winding"
@@ -1657,6 +1675,9 @@
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/winding"

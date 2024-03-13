@@ -13,8 +13,8 @@ module.exports.extendedVocab = function extendedVocab (req, res, next, extendedN
     });
 };
 
-module.exports.findExtended = function findExtended (req, res, next, extendedName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, batchmeta) {
-  Extended.findExtended(extendedName, id, startDate, endDate, polygon, multipolygon, winding, center, radius, compression, mostrecent, batchmeta)
+module.exports.findExtended = function findExtended (req, res, next, extendedName, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, compression, mostrecent, batchmeta) {
+  Extended.findExtended(extendedName, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, compression, mostrecent, batchmeta)
     .then(function (response) {
       utils.writeJson(res, response);
     })
