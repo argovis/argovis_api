@@ -148,6 +148,34 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(helpers.box2polygon(box[0], box[1])).to.almost.deep.equal({'type':'Polygon', 'coordinates':[[[0,0],[0.1,0],[0.15,0],[0.15,0.1],[0.15,0.15],[0.05,0.15],[0,0.15],[0,0.05],[0,0]]]})
       });
     }); 
+
+    describe("box_sanitation", function () {
+      it("handle boxes that cross the dateline", async function () {
+        box = '[[175,0],[-175,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    }); 
+
+    describe("box_sanitation", function () {
+      it("handle boxes multiple rotations away", async function () {
+        box = '[[895,0],[545,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    });
+
+    describe("box_sanitation", function () {
+      it("handle boxes multiple negative rotations away", async function () {
+        box = '[[-545,0],[-895,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    }); 
+
+    describe("box_sanitation", function () {
+      it("waive through boxes that dont cross the dateline", async function () {
+        box = '[[-175,0],[175,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[-175,0],[175,5]] ])
+      });
+    }); 
 }
 
 })

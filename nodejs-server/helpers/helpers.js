@@ -112,6 +112,23 @@ module.exports.polygon_sanitation = function(poly,enforceWinding,suppressCoordCl
   return p
 }
 
+module.exports.remove_laps = function(coordpairs){
+  // there's no usecase for any coordinate pairs to ever be outside [-360, 360], remove extra full rotations.
+
+  let extrarotations = 0
+  let maxlong = Math.max(...coordpairs.map(subArray => subArray[0]))
+  if(maxlong > 360){
+    extrarotations = Math.floor(maxlong / 360)
+  }
+
+  let minlong = Math.min(...coordpairs.map(subArray => subArray[0]))
+  if(maxlong < -360){
+    extrarotations = -1*Math.floor(-1*minlong / 360)
+  }
+
+  return coordpairs.map(x => [x[0] - 360*extrarotations, x[1]])
+}
+
 module.exports.box_sanitation = function(box,suppressCoordCleaning){
   let b = {}
 
@@ -121,7 +138,22 @@ module.exports.box_sanitation = function(box,suppressCoordCleaning){
     return {"code": 400, "message": "Box region wasn't proper JSON; format should be [[lon,lat],[lon,lat]]"};
   }
 
-  return module.exports.validlonlat(b, suppressCoordCleaning)
+  b = module.exports.remove_laps(b)
+
+  // might need to split up into two boxes if box crosses the dateline.
+  // disambiguate by insisting that the first point is always west of the last point.
+  if(b[0][0] > b[1][0]) {
+    let dateline = Math.ceil(b[0][0] / 180) * 180
+    b = [
+      [b[0],[dateline, b[1][1]]],    
+      [[dateline-360, b[0][1]],b[1]]    
+    ]
+
+  } else {
+    b = [b]
+  }
+
+  return b.map(x => module.exports.validlonlat(x, suppressCoordCleaning))
 }
 
 module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius, suppressCoordCleaning){
