@@ -168,6 +168,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
         box = '[[175,0],[-175,5]]'
         expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
       });
+    });
+
+    describe("box_sanitation", function () {
+      it("handle boxes that cross -180 on (-360, 360)", async function () {
+        box = '[[-185,0],[-175,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    }); 
+
+    describe("box_sanitation", function () {
+      it("handle boxes that cross 180 on (-360, 360)", async function () {
+        box = '[[175,0],[185,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
     }); 
 
     describe("box_sanitation", function () {
