@@ -190,6 +190,28 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[-175,0],[175,5]] ])
       });
     }); 
-}
+
+    describe("remove_laps", function () {
+      it("do nothing with no laps to remove", async function () {
+        box = [[0,0],[10,5]]
+        expect(helpers.remove_laps(box)).to.almost.deep.equal([[0,0],[10,5]])
+      });
+    }); 
+
+    describe("remove_laps", function () {
+      it("remove negative laps", async function () {
+        box = [[-720,0],[-710,5]]
+        expect(helpers.remove_laps(box)).to.almost.deep.equal([[0,0],[10,5]])
+      });
+    });
+
+    describe("remove_laps", function () {
+      it("remove positive laps", async function () {
+        box = [[720,0],[730,5]]
+        expect(helpers.remove_laps(box)).to.almost.deep.equal([[0,0],[10,5]])
+      });
+    }); 
+
+  }
 
 })

@@ -113,19 +113,20 @@ module.exports.polygon_sanitation = function(poly,enforceWinding,suppressCoordCl
 }
 
 module.exports.remove_laps = function(coordpairs){
-  // there's no usecase for any coordinate pairs to ever be outside [-360, 360], remove extra full rotations.
+  // if we imagine drawing shapes on a world map with centerlon in [-180,180],
+  // there's no usecase for any coordinate pairs to ever be outside (-360, 360); remove extra full rotations.
 
   let extrarotations = 0
   let maxlong = Math.max(...coordpairs.map(subArray => subArray[0]))
-  if(maxlong > 360){
+  if(maxlong >= 360){
     extrarotations = Math.floor(maxlong / 360)
   }
 
   let minlong = Math.min(...coordpairs.map(subArray => subArray[0]))
-  if(maxlong < -360){
+  if(minlong <= -360){
     extrarotations = -1*Math.floor(-1*minlong / 360)
   }
-
+  
   return coordpairs.map(x => [x[0] - 360*extrarotations, x[1]])
 }
 
