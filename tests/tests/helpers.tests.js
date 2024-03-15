@@ -149,6 +149,20 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     }); 
 
+    describe("box2polygon", function () {
+      it("box2polygon over the dateline", async function () {
+        box = [[179.9,0],[-179.9,0.1]]
+        expect(helpers.box2polygon(box[0], box[1])).to.almost.deep.equal({'type':'Polygon', 'coordinates':[[ [179.9,0],[180,0],[180.1,0],[180.1,0.1],[180,0.1],[179.9,0.1],[179.9,0] ]]})
+      });
+    }); 
+
+    describe("box2polygon", function () {
+      it("box2polygon over the dateline, one cycle back", async function () {
+        box = [[-180.1,0],[-539.9,0.1]]
+        expect(helpers.box2polygon(box[0], box[1])).to.almost.deep.equal({'type':'Polygon', 'coordinates':[[ [-180.1,0],[-180,0],[-179.9,0],[-179.9,0.1],[-180,0.1],[-180.1,0.1],[-180.1,0] ]]})
+      });
+    }); 
+
     describe("box_sanitation", function () {
       it("handle boxes that cross the dateline", async function () {
         box = '[[175,0],[-175,5]]'

@@ -45,16 +45,19 @@ exports.findExtended = function(res,id,startDate,endDate,polygon,multipolygon,bo
     // extended objects must be geo-searched by $geoIntersects, which is only supported on 2dsphere indexes; 
     // therefore, requests for box regions must be coerced into approximately corresponding geodesic-edged polygons.
     if(box) {
-      box = helpers.box_sanitation(box)
+      box = helpers.box_sanitation(box, false, true)[0] // if we're going to search it like a polygon, we dont need to split on the dateline
         if(box.hasOwnProperty('code')){
         // error, return and bail out
         return box
       }
 
       polygon = JSON.stringify(helpers.box2polygon(box[0], box[1]).coordinates[0])
+
+      // always enforce winding for boxes on extended object searches
+      winding=true
     }
 
-    let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,winding,center,radius)
+    let params = helpers.parameter_sanitization(extendedName,id,startDate,endDate,polygon,multipolygon,null,winding,center,radius)
 
     if(params.hasOwnProperty('code')){
       // error, return and bail out
