@@ -590,6 +590,31 @@ $RefParser.dereference(rawspec, (err, schema) => {
       });
     });
 
+    describe("GET /argo", function () {
+      it("box crossing dateline", async function () {
+        const cross_dateline  = await request.get("/argo?box=[[150,40],[190,50]]").set({'x-argokey': 'developer'});
+        expect(cross_dateline.body.length).to.eql(3);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("box crossing dateline - one rotation back", async function () {
+        const cross_dateline  = await request.get("/argo?box=[[-210,40],[-170,50]]").set({'x-argokey': 'developer'});
+        expect(cross_dateline.body.length).to.eql(3);
+        const dont_cross_dateline  = await request.get("/argo?box=[[-170,50],[-210,40]]").set({'x-argokey': 'developer'});
+        expect(dont_cross_dateline.body.length).to.eql(0);
+      });
+    });
+
+    describe("GET /argo", function () {
+      it("box going over the dateline versus not", async function () {
+        const dont_cross_dateline = await request.get("/argo?box=[[150,40],[160,50]]").set({'x-argokey': 'developer'});
+        const cross_dateline  = await request.get("/argo?box=[[160,40],[150,50]]").set({'x-argokey': 'developer'});
+        expect(dont_cross_dateline.body.length).to.eql(3);
+        expect(cross_dateline.body.length).to.eql(0);
+      });
+    });
+
     describe("GET /cchdo", function () {
       it("explicitly asking for cchdo qc information", async function () {
         const response = await request.get("/cchdo?id=expo_08PD0196_1_sta_016_cast_001_type_ctd&data=doxy,temperature,temperature_woceqc").set({'x-argokey': 'developer'});

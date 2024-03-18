@@ -32,5 +32,14 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body.length).to.eql(1); 
       });
     }); 
+
+    describe("GET /extended/ar", function () {
+      it("check box behavior over dateline", async function () {
+        const response_dl = await request.get("/extended/ar?box=[[179,-55],[-179,-54]]").set({'x-argokey': 'developer'});
+        expect(response_dl.body.length).to.eql(0); 
+        const response_nodl = await request.get("/extended/ar?box=[[-179,-55],[179,-54]]").set({'x-argokey': 'developer'});
+        expect(response_nodl.body.length).to.eql(1); 
+      });
+    }); 
   }
 })

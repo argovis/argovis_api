@@ -112,7 +112,25 @@ module.exports.polygon_sanitation = function(poly,enforceWinding,suppressCoordCl
   return p
 }
 
-module.exports.box_sanitation = function(box,suppressCoordCleaning){
+module.exports.remove_laps = function(coordpairs){
+  // if we imagine drawing shapes on a world map with centerlon in [-180,180],
+  // there's no usecase for any coordinate pairs to ever be outside (-360, 360); remove extra full rotations.
+
+  let extrarotations = 0
+  let maxlong = Math.max(...coordpairs.map(subArray => subArray[0]))
+  if(maxlong >= 360){
+    extrarotations = Math.floor(maxlong / 360)
+  }
+
+  let minlong = Math.min(...coordpairs.map(subArray => subArray[0]))
+  if(minlong <= -360){
+    extrarotations = -1*Math.floor(-1*minlong / 360)
+  }
+  
+  return coordpairs.map(x => [x[0] - 360*extrarotations, x[1]])
+}
+
+module.exports.box_sanitation = function(box,suppressCoordCleaning, suppressDatelineSplit){
   let b = {}
 
   try {
@@ -121,7 +139,24 @@ module.exports.box_sanitation = function(box,suppressCoordCleaning){
     return {"code": 400, "message": "Box region wasn't proper JSON; format should be [[lon,lat],[lon,lat]]"};
   }
 
-  return module.exports.validlonlat(b, suppressCoordCleaning)
+  b = module.exports.remove_laps(b)
+
+  // coerce into [-180,180]
+  b = module.exports.validlonlat(b, suppressCoordCleaning)
+
+  // might need to split up into two boxes if box crosses the dateline.
+  // disambiguate by insisting that the first point is always west of the last point.
+  if(b[0][0] > b[1][0] && !suppressDatelineSplit) {
+    b = [
+      [b[0],[180, b[1][1]]],    
+      [[-180, b[0][1]],b[1]]    
+    ]
+
+  } else {
+    b = [b]
+  }
+
+  return b.map(x => module.exports.validlonlat(x, suppressCoordCleaning))
 }
 
 module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius, suppressCoordCleaning){
@@ -259,8 +294,18 @@ module.exports.datatable_stream = function(model, params, local_filter, projecti
       }
     }
     if(params.box) {
-      spacetimeMatch[0]['$match']['geolocation.coordinates'] = {}
-      spacetimeMatch[0]['$match']['geolocation.coordinates']['$geoWithin'] = {'$box': params.box}
+      // might have to $or over a list of two boxes to deal with the dateline
+      let boxsearch = {'$or': params.box.map(b => ({'geolocation.coordinates': {'$geoWithin':{'$box':b}} })) }
+      if(spacetimeMatch[0]['$match']['timestamp']){
+        spacetimeMatch[0]['$match'] = {
+          '$and': [
+            boxsearch,
+            {'timestamp': spacetimeMatch[0]['$match']['timestamp']}
+          ]
+        }
+      } else {
+        spacetimeMatch[0]['$match'] = boxsearch
+      }
     }
   }
 
@@ -840,6 +885,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
   // maxbulk == maximum allowed size of ndays x area[sq km]/13000sqkm; set to prevent OOM crashes
   // maxbulk_timeseries == maximum allowed size of area[sq km]/13000sqkm; set to prevent OOM crashes
   /// determine path steps
+  
   let path = url.split('?')[0].split('/').slice(1)
 
   /// tokenize query string
@@ -916,7 +962,10 @@ module.exports.geoarea = function(polygon, multipolygon, box, winding, radius){
     geospan = Math.min(areas)
   } else if(box){
     // treat a box like a rectangular polygon
-    geospan = area.geometry({"type":"Polygon", "coordinates":[[[box[0][0],box[0][1]],[box[1][0],box[0][1]],[box[1][0],box[1][1]],[box[0][0],box[1][1]],[box[0][0],box[0][1]]]]}) / 1000000
+    geospan = 0
+    for (let i=0; i<box.length; i++){
+      geospan += area.geometry({"type":"Polygon", "coordinates":[[[box[i][0][0],box[i][0][1]],[box[i][1][0],box[i][0][1]],[box[i][1][0],box[i][1][1]],[box[i][0][0],box[i][1][1]],[box[i][0][0],box[i][0][1]]]]}) / 1000000
+    }
   }
 
   return geospan
@@ -999,25 +1048,31 @@ module.exports.box2polygon = function(lowerLeft, upperRight) {
     let maxLon = upperRight[0]
     let maxLat = upperRight[1]
 
+    if(maxLon < minLon){
+      // ie if we've wrapped the dateline
+      maxLon += 360
+      maxLon = parseFloat(maxLon.toFixed(8)) // floating point errors can get really pathological here
+    }
+
     const vertices = [];
 
     // Generate vertices along the bottom edge
-    for (let lon = minLon; lon <= maxLon; lon += 0.1) {
+    for (let lon = minLon; lon < maxLon; lon += 0.1) {
         vertices.push([lon, minLat]);
     }
 
     // Generate vertices along the right edge
-    for (let lat = minLat; lat <= maxLat; lat += 0.1) {
+    for (let lat = minLat; lat < maxLat; lat += 0.1) {
         vertices.push([maxLon, lat]);
     }
 
     // Generate vertices along the top edge
-    for (let lon = maxLon; lon >= minLon; lon -= 0.1) {
+    for (let lon = maxLon; lon > minLon; lon -= 0.1) {
         vertices.push([lon, maxLat]);
     }
 
     // Generate vertices along the left edge
-    for (let lat = maxLat; lat >= minLat; lat -= 0.1) {
+    for (let lat = maxLat; lat > minLat; lat -= 0.1) {
         vertices.push([minLon, lat]);
     }
 

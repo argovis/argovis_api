@@ -148,6 +148,84 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(helpers.box2polygon(box[0], box[1])).to.almost.deep.equal({'type':'Polygon', 'coordinates':[[[0,0],[0.1,0],[0.15,0],[0.15,0.1],[0.15,0.15],[0.05,0.15],[0,0.15],[0,0.05],[0,0]]]})
       });
     }); 
-}
+
+    describe("box2polygon", function () {
+      it("box2polygon over the dateline", async function () {
+        box = [[179.9,0],[-179.9,0.1]]
+        expect(helpers.box2polygon(box[0], box[1])).to.almost.deep.equal({'type':'Polygon', 'coordinates':[[ [179.9,0],[180,0],[180.1,0],[180.1,0.1],[180,0.1],[179.9,0.1],[179.9,0] ]]})
+      });
+    }); 
+
+    describe("box2polygon", function () {
+      it("box2polygon over the dateline, one cycle back", async function () {
+        box = [[-180.1,0],[-539.9,0.1]]
+        expect(helpers.box2polygon(box[0], box[1])).to.almost.deep.equal({'type':'Polygon', 'coordinates':[[ [-180.1,0],[-180,0],[-179.9,0],[-179.9,0.1],[-180,0.1],[-180.1,0.1],[-180.1,0] ]]})
+      });
+    }); 
+
+    describe("box_sanitation", function () {
+      it("handle boxes that cross the dateline", async function () {
+        box = '[[175,0],[-175,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    });
+
+    describe("box_sanitation", function () {
+      it("handle boxes that cross -180 on (-360, 360)", async function () {
+        box = '[[-185,0],[-175,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    }); 
+
+    describe("box_sanitation", function () {
+      it("handle boxes that cross 180 on (-360, 360)", async function () {
+        box = '[[175,0],[185,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    }); 
+
+    describe("box_sanitation", function () {
+      it("handle boxes multiple rotations away", async function () {
+        box = '[[895,0],[545,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    });
+
+    describe("box_sanitation", function () {
+      it("handle boxes multiple negative rotations away", async function () {
+        box = '[[-545,0],[-895,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[175,0],[180,5]], [[-180,0],[-175,5]] ])
+      });
+    }); 
+
+    describe("box_sanitation", function () {
+      it("waive through boxes that dont cross the dateline", async function () {
+        box = '[[-175,0],[175,5]]'
+        expect(helpers.box_sanitation(box)).to.almost.deep.equal([ [[-175,0],[175,5]] ])
+      });
+    }); 
+
+    describe("remove_laps", function () {
+      it("do nothing with no laps to remove", async function () {
+        box = [[0,0],[10,5]]
+        expect(helpers.remove_laps(box)).to.almost.deep.equal([[0,0],[10,5]])
+      });
+    }); 
+
+    describe("remove_laps", function () {
+      it("remove negative laps", async function () {
+        box = [[-720,0],[-710,5]]
+        expect(helpers.remove_laps(box)).to.almost.deep.equal([[0,0],[10,5]])
+      });
+    });
+
+    describe("remove_laps", function () {
+      it("remove positive laps", async function () {
+        box = [[720,0],[730,5]]
+        expect(helpers.remove_laps(box)).to.almost.deep.equal([[0,0],[10,5]])
+      });
+    }); 
+
+  }
 
 })
