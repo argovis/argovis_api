@@ -25,7 +25,7 @@ const summaries = require('../models/summary');
  * returns List
  **/
 
-exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygon,multipolygon,box,winding,center,radius,presRange,compression,mostrecent,data,batchmeta) {
+exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygon,box,multipolygon,winding,center,radius,presRange,compression,mostrecent,data,batchmeta) {
 
   return new Promise(function(resolve, reject) {
     // generic helper for all timeseries search and filter routes
