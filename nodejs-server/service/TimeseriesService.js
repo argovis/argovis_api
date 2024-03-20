@@ -9,6 +9,7 @@
  * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
  * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
  * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
+ * box String lon, lat pairs of the lower left and upper right corners of a box on a mercator projection, packed like [[lower left lon, lower left lat],[upper right lon, upper right lat]] (optional)
  * multipolygon String array of polygon regions; region of interest is taken as the intersection of all listed polygons. (optional)
  * winding String Enforce ccw winding for polygon and multipolygon (optional)
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
@@ -20,7 +21,7 @@
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findtimeseries = function(timeseriesName,id,startDate,endDate,polygon,multipolygon,winding,center,radius,presRange,compression,mostrecent,data,batchmeta) {
+exports.findtimeseries = function(timeseriesName,id,startDate,endDate,polygon,box,multipolygon,winding,center,radius,presRange,compression,mostrecent,data,batchmeta) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
