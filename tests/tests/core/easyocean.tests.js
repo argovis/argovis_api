@@ -17,5 +17,12 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body).to.be.jsonSchema(schema.paths['/easyocean'].get.responses['200'].content['application/json'].schema);
       });
     });
+
+    describe("GET /easyocean", function () {
+      it("check basic box behavior", async function () {
+        const response = await request.get("/easyocean?box=[[-56,-67],[-55,-66]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(2); 
+      });
+    }); 
   }
 })

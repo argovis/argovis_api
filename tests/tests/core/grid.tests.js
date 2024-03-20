@@ -183,6 +183,13 @@ $RefParser.dereference(rawspec, (err, schema) => {
         const response = await request.get("/grids/rg09?polygon=[[22,-65],[22,-64],[26,-64],[26,-65],[22,-65]]&startDate=2000-01-01T00:00:00Z&endDate=2020-01-01T00:00:00Z&data=rg09_temperature&presRange=0,100").set({'x-argokey': 'developer'});
         expect(response.body).to.be.jsonSchema(schema.paths['/grids/{gridName}'].get.responses['200'].content['application/json'].schema);
       });
+    });
+
+    describe("GET /grids/rg09", function () {
+      it("check basic box behavior", async function () {
+        const response = await request.get("/grids/rg09?box=[[20,-65],[21,-64]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1); 
+      });
     }); 
   }
 })

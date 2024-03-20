@@ -25,5 +25,21 @@ $RefParser.dereference(rawspec, (err, schema) => {
         expect(response.body[0]['_id']).to.eql('2000.01.01.03.0_5')
       });
     });
+
+    describe("GET /extended/ar", function () {
+      it("check basic box behavior", async function () {
+        const response = await request.get("/extended/ar?box=[[-35,-55],[-34,-54]]").set({'x-argokey': 'developer'});
+        expect(response.body.length).to.eql(1); 
+      });
+    }); 
+
+    describe("GET /extended/ar", function () {
+      it("check box behavior over dateline", async function () {
+        const response_dl = await request.get("/extended/ar?box=[[179,-55],[-179,-54]]").set({'x-argokey': 'developer'});
+        expect(response_dl.body.length).to.eql(0); 
+        const response_nodl = await request.get("/extended/ar?box=[[-179,-55],[179,-54]]").set({'x-argokey': 'developer'});
+        expect(response_nodl.body.length).to.eql(1); 
+      });
+    }); 
   }
 })

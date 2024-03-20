@@ -244,6 +244,9 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
                   "$ref": "#/components/parameters/winding"
                },
                {
@@ -429,6 +432,9 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
                   "$ref": "#/components/parameters/winding"
                },
                {
@@ -601,6 +607,9 @@
                },
                {
                   "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
@@ -783,6 +792,9 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
                   "$ref": "#/components/parameters/winding"
                },
                {
@@ -931,6 +943,9 @@
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/winding"
@@ -1121,6 +1136,9 @@
                   "$ref": "#/components/parameters/multipolygon"
                },
                {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
                   "$ref": "#/components/parameters/winding"
                },
                {
@@ -1306,6 +1324,9 @@
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/winding"
@@ -1657,6 +1678,9 @@
                },
                {
                   "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
                },
                {
                   "$ref": "#/components/parameters/winding"
@@ -3052,6 +3076,16 @@
             "schema": {
                "type": "string",
                "example": "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+            }
+         },
+         "box": {
+            "in": "query",
+            "name": "box",
+            "description": "lon, lat pairs of the lower left and upper right corners of a box on a mercator projection, packed like [[lower left lon, lower left lat],[upper right lon, upper right lat]]",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[0,0],[1,1]]"
             }
          },
          "center": {

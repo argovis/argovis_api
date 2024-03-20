@@ -18,11 +18,11 @@ module.exports.drifterMetaSearch = function drifterMetaSearch (req, res, next, i
     });
 };
 
-module.exports.drifterSearch = function drifterSearch (req, res, next, id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta) {
+module.exports.drifterSearch = function drifterSearch (req, res, next, id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta) {
 
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu'})
 
-  Drifters.drifterSearch(res,id, startDate, endDate, polygon, multipolygon, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta)
+  Drifters.drifterSearch(res,id, startDate, endDate, polygon, multipolygon, box, winding, center, radius, metadata, wmo, platform, compression, mostrecent, data, batchmeta)
     .then(pipefittings => helpers.data_pipeline.bind(null, res)(pipefittings),
     function (response) {
       utils.writeJson(res, response, response.code);
