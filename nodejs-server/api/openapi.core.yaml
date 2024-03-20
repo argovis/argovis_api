@@ -37,7 +37,7 @@ tags:
 - name: Argo trajectories (experimental)
   description: Trajectories of argo floats
 - name: timeseries
-  description: timeseries-formatted grids derived from satellite data.
+  description: timeseries-formatted grids.
 - name: extended
   description: objected with geographic extent beyond a single point
 - name: token
@@ -857,6 +857,7 @@ paths:
           - noaasst
           - copernicussla
           - ccmpwind
+          - bsose
       - name: id
         in: query
         description: Unique ID to search for.
@@ -959,6 +960,21 @@ paths:
         schema:
           type: number
           example: 50
+      - name: presRange
+        in: query
+        description: Pressure range in dbar to filter for; levels outside this range
+          will not be returned.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
       - name: compression
         in: query
         description: Data minification strategy to apply.
@@ -1093,6 +1109,7 @@ paths:
           - noaasst
           - copernicussla
           - ccmpwind
+          - bsose
       responses:
         "200":
           description: OK
@@ -3810,6 +3827,8 @@ components:
           type: number
         data:
           $ref: '#/components/schemas/data'
+        level:
+          type: number
       example:
         metadata:
         - metadata
@@ -3819,6 +3838,7 @@ components:
           - ""
         - - ""
           - ""
+        level: 6.02745618307040320615897144307382404804229736328125
         _id: _id
         basin: 0.80082819046101150206595775671303272247314453125
         geolocation:

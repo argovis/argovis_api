@@ -1,0 +1,672 @@
+{
+   "openapi": "3.0.3",
+   "info": {
+      "title": "Argovis API",
+      "description": "REST API for BSOSE data.",
+      "contact": {
+         "name": "Argovis Collaboration",
+         "email": "argovis@colorado.edu",
+         "url": "https://argovis.colorado.edu"
+      },
+      "license": {
+         "name": "MIT",
+         "url": "https://opensource.org/licenses/MIT"
+      },
+      "version": "2.0"
+   },
+   "externalDocs": {
+      "description": "Find us on GitHub",
+      "url": "https://github.com/argovis/argovis_api"
+   },
+   "servers": [
+      {
+         "url": "http://54.172.200.236:8080/"
+      },
+      {
+         "url": "/bapi"
+      }
+   ],
+   "security": [
+      {
+         "name": []
+      }
+   ],
+   "tags": [
+      {
+         "name": "summary (experimental)",
+         "description": "Summary statistics (mostly for internal use)"
+      },
+      {
+         "name": "timeseries",
+         "description": "timeseries-formatted grids."
+      },
+      {
+         "name": "token",
+         "description": "token validation"
+      },
+      {
+         "name": "ping",
+         "description": "ping for liveness"
+      }
+   ],
+   "paths": {
+      "/ping": {
+         "get": {
+            "tags": [
+               "ping"
+            ],
+            "summary": "Dummy endpoint for liveness checks",
+            "operationId": "ping",
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "text/plain": {
+                        "schema": {
+                           "type": "string",
+                           "example": "OK"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/timeseries/{timeseriesName}": {
+         "get": {
+            "tags": [
+               "timeseries"
+            ],
+            "summary": "Search and filter for timeseries named in path",
+            "operationId": "findtimeseries",
+            "parameters": [
+               {
+                  "name": "timeseriesName",
+                  "in": "path",
+                  "required": "true",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["noaasst", "copernicussla", "ccmpwind", "bsose"]
+                  }
+               },
+               {
+                  "$ref": "#/components/parameters/genericID"
+               },
+               {
+                  "$ref": "#/components/parameters/startDate"
+               },
+               {
+                  "$ref": "#/components/parameters/endDate"
+               },
+               {
+                  "$ref": "#/components/parameters/polygon"
+               },
+               {
+                  "$ref": "#/components/parameters/box"
+               },
+               {
+                  "$ref": "#/components/parameters/multipolygon"
+               },
+               {
+                  "$ref": "#/components/parameters/winding"
+               },
+               {
+                  "$ref": "#/components/parameters/center"
+               },
+               {
+                  "$ref": "#/components/parameters/radius"
+               },
+               {
+                  "$ref": "#/components/parameters/presRange"
+               },
+               {
+                  "$ref": "#/components/parameters/compression"
+               },
+               {
+                  "$ref": "#/components/parameters/mostrecent"
+               },
+               {
+                  "name": "data",
+                  "in": "query",
+                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
+                  "style": "form",
+                  "explode": false,
+                  "allowReserved": true,
+                  "schema": {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     },
+                     "example": "uwnd,vwnd"
+                  }
+               },
+               {
+                  "$ref": "#/components/parameters/batchMeta" 
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/genericTimeseries"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/timeseries/meta": {
+         "get": {
+            "tags": [
+               "timeseries"
+            ],
+            "summary": "Metadata for timeseries by ID",
+            "operationId": "findtimeseriesMeta",
+            "parameters":[
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "$ref": "#/components/schemas/genericTimeseriesMeta"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/timeseries/{timeseriesName}/vocabulary": {
+         "get": {
+            "tags": [
+               "timeseries"
+            ],
+            "summary": "List data and lattice for the requested timeseries.",
+            "operationId": "timeseriesVocab",
+            "parameters": [
+               {
+                  "name": "timeseriesName",
+                  "in": "path",
+                  "required": "true",
+                  "schema": {
+                     "type": "string",
+                     "enum": ["noaasst", "copernicussla", "ccmpwind", "bsose"]
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "array",
+                           "items": {
+                              "type": "string"
+                           }
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/summary": {
+         "get": {
+            "tags": [
+               "summary (experimental)"
+            ],
+            "summary": "Fetch a document from the summary collection by ID.",
+            "operationId": "fetchSummary",   
+            "parameters": [
+               {
+                  "$ref": "#/components/parameters/genericID"
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      },
+      "/token": {
+         "get": {
+            "tags": [
+               "token"
+            ],
+            "summary": "validate an API token",
+            "operationId": "validateToken",
+            "parameters": [
+               {
+                  "in": "query",
+                  "name": "token",
+                  "required": true,
+                  "description": "token to validate",
+                  "schema": {
+                     "type": "string"
+                  }
+               }
+            ],
+            "responses": {
+               "200": {
+                  "description": "OK",
+                  "content": {
+                     "application/json": {
+                        "schema": {
+                           "type": "object"
+                        }
+                     }
+                  }
+               },
+               "400": {
+                  "$ref": "#/components/responses/badRequest"
+               },
+               "404": {
+                  "$ref": "#/components/responses/notFound"
+               },
+               "500": {
+                  "$ref": "#/components/responses/serverError"
+               }
+            }
+         }
+      }
+   },
+   "components": {
+      "schemas": {
+         "geoJSONpoint": {
+            "type": "object",
+            "required": ["type", "coordinates"],
+            "properties": {
+               "type": {
+                  "type": "string"
+               },
+               "coordinates": {
+                  "type": "array",
+                  "items": {
+                     "type": "number",
+                     "minItems": 2,
+                     "maxItems": 2
+                  }
+               }
+            }
+         },
+         "data": {
+            "type": "array",
+            "items": {
+               "type": "array",
+               "items": {
+                  "anyOf": [ {"type": "string"}, {"type": "number"}]
+               }
+            }
+         },
+         "data_info": {
+            "type": "array",
+            "items": {
+               "anyOf": [
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "string"
+                     }
+                  },
+                  {
+                     "type": "array",
+                     "items": {
+                        "type": "array",
+                        "items": {
+                           "anyOf": [ {"type": "string"}, {"type": "number"}]
+                        }
+                     }
+                  }
+               ]
+            }
+         },
+         "generic_source_info": {
+            "type": "object",
+            "properties": {
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "url": {
+                  "type": "string"
+               },
+               "date_updated": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "doi": {
+                  "type": "string"
+               }
+            }
+         },
+         "timeseries": {
+            "type": "array",
+            "items": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"    
+            }
+         },
+         "genericTimeseries": {
+            "type": "object",
+            "required": ["_id", "metadata", "geolocation", "basin"],
+            "properties": {
+               "_id": {
+                  "type": "string"
+               },
+               "metadata": {
+                  "type": "array",
+                  "items": {
+                     "type": "string"
+                  }
+               },
+               "geolocation": {
+                   "$ref": "#/components/schemas/geoJSONpoint"
+               },
+               "basin": {
+                  "type": "number"
+               },
+               "data": {
+                  "$ref": "#/components/schemas/data"
+               },
+               "level": {
+                  "type": "number"
+               }
+            }
+         },
+         "genericTimeseriesMeta": {
+            "type": "object",
+            "required": ["_id", "data_type", "data_info", "date_updated_argovis", "timeseries", "source"],
+            "properties":{
+               "_id": {
+                  "type": "string"
+               },
+               "data_type": {
+                  "type": "string"
+               },
+               "data_info": {
+                  "$ref": "#/components/schemas/data_info"
+               },
+               "date_updated_argovis": {
+                  "type": "string",
+                  "format": "date-time"
+               },
+               "timeseries": {
+                  "$ref": "#/components/schemas/timeseries"
+               },
+               "source": {
+                  "type": "array",
+                  "items": {
+                     "$ref": "#/components/schemas/generic_source_info"
+                  }
+               }
+            }
+         },
+         "errorResponse": {
+            "type": "object",
+            "required": [
+               "code",
+               "message"
+            ],
+            "properties": {
+               "code": {
+                  "type": "integer"
+               },
+               "message": {
+                  "type": "string"
+               }
+            }
+         }
+      },
+      "parameters": {
+         "startDate": {
+            "in": "query",
+            "name": "startDate",
+            "description": "ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "endDate": {
+            "in": "query",
+            "name": "endDate",
+            "description": "ISO 8601 UTC date-time formatted string indicating the end of the time period of interest.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "format": "date-time",
+               "example": "2010-01-01T00:00:00Z"
+            }
+         },
+         "presRange": {
+            "in": "query",
+            "name": "presRange",
+            "description": "Pressure range in dbar to filter for; levels outside this range will not be returned.",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
+         "compression": {
+            "in": "query",
+            "name": "compression",
+            "description": "Data minification strategy to apply.",
+            "schema": {
+               "type": "string",
+               "enum": ["minimal"]
+            }
+         },
+         "winding": {
+            "in": "query",
+            "name": "winding",
+            "description": "Enforce ccw winding for polygon and multipolygon",
+            "schema": {
+               "type": "string",
+               "enum": ["true"]
+            }
+         },
+         "genericID": {
+            "in": "query",
+            "name": "id",
+            "description": "Unique ID to search for.",
+            "schema": {
+               "type": "string",
+               "example": "4902911_0"
+            }
+         },
+         "polygon": {
+            "in": "query",
+            "name": "polygon",
+            "description": "array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+            }
+         },
+         "multipolygon": {
+            "in": "query",
+            "name": "multipolygon",
+            "description": "array of polygon regions; region of interest is taken as the intersection of all listed polygons.",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[[0,0],[0,1],[1,1],[1,0],[0,0]],[[0.5,0],[0.5,1],[1.5,1],[1.5,0],[0.5,0]]]"
+            }
+         },
+         "box": {
+            "in": "query",
+            "name": "box",
+            "description": "lon, lat pairs of the lower left and upper right corners of a box on a mercator projection, packed like [[lower left lon, lower left lat],[upper right lon, upper right lat]]",
+            "allowReserved": true,
+            "schema": {
+               "type": "string",
+               "example": "[[0,0],[1,1]]"
+            }
+         },
+         "center": {
+            "in": "query",
+            "name": "center",
+            "description": "center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'.",
+            "style": "form",
+            "explode": false,
+            "allowReserved": true,
+            "schema": {
+               "type": "array",
+               "items": {
+                  "type": "number",
+                  "minItems": 2,
+                  "maxItems": 2
+               },
+               "example": "10,20.1"
+            }
+         },
+         "radius": {
+            "in": "query",
+            "name": "radius",
+            "description": "km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'.",
+            "schema": {
+               "type": "number",
+               "example": 50
+            }
+         },
+         "mostrecent": {
+            "in": "query",
+            "name": "mostrecent",
+            "description": "get back only the n records with the most recent values of timestamp.",
+            "schema": {
+               "type": "number"
+            }
+         },
+         "batchMeta": {
+            "in": "query",
+            "name": "batchmeta",
+            "description": "return the metadata documents corresponding to a temporospatial data search",
+            "schema": {
+               "type": "string"
+            }
+         },
+         "metadata": {
+            "in": "query",
+            "name": "metadata",
+            "description": "metadata pointer",
+            "schema":{
+               "type": "string"
+            }
+         }
+      },
+      "responses": {
+         "badRequest": {
+            "description": "Bad Request",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "notFound": {
+            "description": "Not Found",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         },
+         "serverError": {
+            "description": "Server Error",
+            "content": {
+               "application/json": {
+                  "schema": {
+                     "$ref": "#/components/schemas/errorResponse"
+                  }
+               }
+            }
+         }
+      }
+   }
+}
