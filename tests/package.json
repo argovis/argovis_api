@@ -5,6 +5,7 @@
   "scripts": {
     "test-core": "npx mocha --timeout 15000 tests/core/*.tests.js",
     "test-miami": "npx mocha --timeout 15000 tests/miami/*.tests.js",
+    "test-bsose": "npx mocha --timeout 15000 tests/bsose/*.tests.js",
     "test-helpers": "npx mocha --timeout 15000 tests/helpers.tests.js"
   },
   "license": "Unlicense",
