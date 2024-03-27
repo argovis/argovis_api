@@ -906,7 +906,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
         c = c/5
       }
       //// query parameters that specify a larger but still circumscribed number of records
-      else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') || qString.get('metadata') ){
+      else if(qString.get('woceline') || qString.get('cchdo_cruise') || qString.get('platform') || (!['grids', 'timeseries', 'extended'].includes(path[0]) && qString.get('metadata')) ){
         c = c/1
         if(url.includes('compression=minimal')) {
           c = c/5
