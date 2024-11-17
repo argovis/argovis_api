@@ -1727,9 +1727,6 @@
                },
                {
                   "$ref": "#/components/parameters/platformID"
-               },
-               {
-                  "$ref": "#/components/parameters/page"
                }
             ],
             "responses": {
@@ -3020,15 +3017,6 @@
             "schema": {
                "type": "number",
                "example": 518
-            } 
-         },
-         "page": {
-            "in": "query",
-            "name": "page",
-            "description": "Page number of paginated results to return.",
-            "schema": {
-               "type": "integer",
-               "example": 0
             } 
          },
          "compression": {

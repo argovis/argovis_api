@@ -85,10 +85,9 @@ exports.findArgoTrajectory = function(id,startDate,endDate,polygon,box,center,ra
  *
  * id String Unique ID to search for. (optional)
  * platform String Unique platform ID to search for. (optional)
- * page Integer Page number of paginated results to return. (optional)
  * returns List
  **/
-exports.findArgotrajectorymeta = function(id,platform,page) {
+exports.findArgotrajectorymeta = function(id,platform) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

@@ -2604,15 +2604,6 @@ paths:
         schema:
           type: string
           example: "4902911"
-      - name: page
-        in: query
-        description: Page number of paginated results to return.
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-          example: 0
       responses:
         "200":
           description: OK
@@ -4299,16 +4290,6 @@ components:
       schema:
         type: number
         example: 518
-    page:
-      name: page
-      in: query
-      description: Page number of paginated results to return.
-      required: false
-      style: form
-      explode: true
-      schema:
-        type: integer
-        example: 0
     compression:
       name: compression
       in: query

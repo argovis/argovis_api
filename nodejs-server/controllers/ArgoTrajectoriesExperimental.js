@@ -23,8 +23,8 @@ module.exports.findArgoTrajectory = function findArgoTrajectory (req, res, next,
     });
 };
 
-module.exports.findArgotrajectorymeta = function findArgotrajectorymeta (req, res, next, id, platform, page) {
-  ArgoTrajectoriesExperimental.findArgotrajectorymeta(id, platform, page)
+module.exports.findArgotrajectorymeta = function findArgotrajectorymeta (req, res, next, id, platform) {
+  ArgoTrajectoriesExperimental.findArgotrajectorymeta(id, platform)
     .then(function (response) {
       utils.writeJson(res, response);
     })
