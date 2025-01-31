@@ -73,3 +73,10 @@ describe("GET /easyocean", function () {
     expect(response.body[0]._id).to.eql("SR04"); 
   });
 }); 
+
+describe("GET /easyocean", function () {
+    it("check basic data filtration behavior", async function () {
+      const response = await request.get("/easyocean?startDate=2010-12-23T00:00:00Z&endDate=2010-12-26T00:00:00Z&data=doxy").set({'x-argokey': 'developer'});
+      expect(response.body[0].data_info[0]).to.include("pressure"); 
+    });
+  }); 

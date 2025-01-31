@@ -62,6 +62,12 @@ exports.findeasyocean = function(res,id,startDate,endDate,polygon,box,center,rad
     params.verticalRange = presRange || verticalRange
     if(data && data.join(',') !== 'except-data-values'){
       params.data_query = helpers.parse_data_qsp(data.join(','))
+
+      if(!('pressure' in params.data_query[0]) && !('pressure' in params.data_query[2])){
+        // pull pressure out of mongo by default
+        params.data_query[2]['pressure'] = []
+        params.coerced_pressure = true
+      }
     }
     params.lookup_meta = batchmeta
     params.compression = compression
