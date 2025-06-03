@@ -4,11 +4,11 @@ const apihits = require('../models/apihits');
 var Timeseries = require('../service/TimeseriesService');
 var helpers = require('../helpers/helpers')
 
-module.exports.findtimeseries = function findtimeseries (req, res, next, id, startDate, endDate, polygon, box, center, radius, compression, data, batchmeta, timeseriesName) {
+module.exports.findtimeseries = function findtimeseries (req, res, next, id, startDate, endDate, polygon, box, center, radius, verticalRange, compression, data, batchmeta, timeseriesName) {
 
   apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, product: timeseriesName, isWeb: req.headers.origin === 'https://argovis.colorado.edu', avhTelemetry: req.headers.hasOwnProperty('x-avh-telemetry') ? req.headers['x-avh-telemetry'] : null})
   
-  Timeseries.findtimeseries(res, timeseriesName, id, startDate, endDate, polygon, box, center, radius, compression, data, batchmeta)
+  Timeseries.findtimeseries(res, timeseriesName, id, startDate, endDate, polygon, box, center, radius, verticalRange, compression, data, batchmeta)
     .then(
       pipefittings => helpers.data_pipeline.bind(null, req, res, batchmeta)(pipefittings),
       helpers.lookupReject.bind(null, req, res)
