@@ -613,6 +613,9 @@
                   "$ref": "#/components/parameters/radius"
                },
                {
+                "$ref": "#/components/parameters/verticalRange"
+               },
+               {
                   "$ref": "#/components/parameters/compression"
                },
                {

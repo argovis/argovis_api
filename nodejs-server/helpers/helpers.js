@@ -366,7 +366,7 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
     aggPipeline.push({$project: junk})
   }
 
-  return model.aggregate(aggPipeline).cursor()  
+  return model.aggregate(aggPipeline, { allowDiskUse: true }).cursor()  
 }
 
 module.exports.parse_data_qsp = function(data_query){
