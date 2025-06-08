@@ -3,8 +3,8 @@
 var utils = require('../utils/writer.js');
 var Timeseries = require('../service/TimeseriesService');
 
-module.exports.findtimeseries = function findtimeseries (req, res, next, timeseriesName, id, startDate, endDate, polygon, box, center, radius, compression, data, batchmeta) {
-  Timeseries.findtimeseries(timeseriesName, id, startDate, endDate, polygon, box, center, radius, compression, data, batchmeta)
+module.exports.findtimeseries = function findtimeseries (req, res, next, timeseriesName, id, startDate, endDate, polygon, box, center, radius, verticalRange, compression, data, batchmeta) {
+  Timeseries.findtimeseries(timeseriesName, id, startDate, endDate, polygon, box, center, radius, verticalRange, compression, data, batchmeta)
     .then(function (response) {
       utils.writeJson(res, response);
     })
