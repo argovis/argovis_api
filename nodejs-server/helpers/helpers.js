@@ -273,8 +273,8 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   // set up first part of pipeline aggregation:
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
 
-  if(params.compression !== 'minimal'){
-    // some stub requests are allowed that would swamp mongo's default sorting limits.
+  if(params.compression !== 'minimal' && params.is_timeseries === false){
+    // some stub and timeseries requests are allowed that would swamp mongo's default sorting limits.
     aggPipeline.push({$sort: {'timestamp':-1}})
   }
 
@@ -366,7 +366,7 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
     aggPipeline.push({$project: junk})
   }
 
-  return model.aggregate(aggPipeline, { allowDiskUse: true }).cursor()  
+  return model.aggregate(aggPipeline).cursor()  
 }
 
 module.exports.parse_data_qsp = function(data_query){
