@@ -183,7 +183,7 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
   }
 
   if(center){
-    params.center = center
+    params.center = module.exports.validlonlat([center], suppressCoordCleaning)[0]
   }
 
   if(radius){
@@ -365,7 +365,6 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
     }
     aggPipeline.push({$project: junk})
   }
-
   return model.aggregate(aggPipeline).cursor()  
 }
 
