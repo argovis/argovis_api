@@ -604,6 +604,13 @@ describe("GET /argo", function () {
   });
 });
 
+describe("GET /argo", function () {
+    it("center/radius outside [-180,180]", async function () {
+      const req = await request.get("/argo?center=[ -207.872898333 , 42.39075666666667 ]").set({'x-argokey': 'developer'});
+      expect(req.body.length).to.eql(1);
+    });
+  });
+
 describe("GET /argo/vocabulary", function () {
   it("basic position qc vocab enumeration", async function () {
     const qcs = await request.get("/argo/vocabulary?parameter=position_qc").set({'x-argokey': 'developer'});
