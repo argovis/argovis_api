@@ -183,7 +183,7 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
   }
 
   if(center){
-    params.center = center
+    params.center = module.exports.validlonlat(JSON.parse(center), suppressCoordCleaning)
   }
 
   if(radius){
