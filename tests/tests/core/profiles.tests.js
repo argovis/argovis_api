@@ -606,7 +606,7 @@ describe("GET /argo", function () {
 
 describe("GET /argo", function () {
     it("center/radius outside [-180,180]", async function () {
-      const req = await request.get("/argo?center=[ -207.872898333 , 42.39075666666667 ]").set({'x-argokey': 'developer'});
+      const req = await request.get("/argo?center=-207.872898333,42.39075666666667&radius=1").set({'x-argokey': 'developer'});
       expect(req.body.length).to.eql(1);
     });
   });

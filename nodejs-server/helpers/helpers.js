@@ -183,7 +183,7 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
   }
 
   if(center){
-    params.center = module.exports.validlonlat(JSON.parse(center), suppressCoordCleaning)
+    params.center = module.exports.validlonlat([center], suppressCoordCleaning)[0]
   }
 
   if(radius){
@@ -228,10 +228,8 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   // construct match stages as required
   /// prox match construction
   if(params.center && params.radius) {
-    console.log(params)
     proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [params.center[0], params.center[1]]}, maxDistance: 1000*params.radius, distanceField: "distcalculated"}}) 
     proxMatch.push({ $unset: "distcalculated" })
-    console.log([params.center[0], params.center[1]])
   }
   /// spacetime match construction
   if(params.startDate || params.endDate || params.polygon || params.box){
@@ -367,7 +365,6 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
     }
     aggPipeline.push({$project: junk})
   }
-  console.log(aggPipeline)
   return model.aggregate(aggPipeline).cursor()  
 }
 
