@@ -8,7 +8,7 @@ var userSchema = Schema(
     first: {type: String, required: true},
     last: {type: String, required: true},
     key: {type: String, required: true},
-    email: {type: String, required: true},
+    email: {type: String, required: false},
     tokenValid: {type: Number, required: true},
     affiliation: {type: String, required: false}
   }
