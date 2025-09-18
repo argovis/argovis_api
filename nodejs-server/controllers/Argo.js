@@ -52,13 +52,14 @@ module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
 };
 
 module.exports.bapVocab = function bapVocab (req, res, next, parameter) {
-  Argo.bapVocab(parameter)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+    apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu', avhTelemetry: req.headers.hasOwnProperty('x-avh-telemetry') ? req.headers['x-avh-telemetry'] : null})
+
+    Profiles.bapVocab(parameter)
+      .then(
+        helpers.simpleWrite.bind(null, req, res),
+        helpers.lookupReject.bind(null, req, res)
+      )
+      .catch(helpers.catchPipeline.bind(null, req, res));
 };
 
 module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, source, compression, data, presRange, verticalRange, batchmeta) {
@@ -85,22 +86,24 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
     .catch(helpers.catchPipeline.bind(null, req, res));
 };
 
-module.exports.findBAP = function findBAP (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, , presRange, verticalRange, batchmeta) {
-  Argo.findBAP(id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, , presRange, verticalRange, batchmeta)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+module.exports.findBAP = function findBAP (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, presRange, verticalRange, batchmeta) {
+    apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu', avhTelemetry: req.headers.hasOwnProperty('x-avh-telemetry') ? req.headers['x-avh-telemetry'] : null})
+
+    Profiles.findBAP(res, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, source, compression, data, presRange, verticalRange, batchmeta)
+      .then(
+        pipefittings => helpers.data_pipeline.bind(null, req, res, batchmeta)(pipefittings),
+        helpers.lookupReject.bind(null, req, res)
+      )
+      .catch(helpers.catchPipeline.bind(null, req, res));
 };
 
 module.exports.findBAPmeta = function findBAPmeta (req, res, next, id, platform) {
-  Argo.findBAPmeta(id, platform)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
+    apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu', avhTelemetry: req.headers.hasOwnProperty('x-avh-telemetry') ? req.headers['x-avh-telemetry'] : null})
+  
+    Profiles.findBAPmeta(res, id, platform)
+      .then(
+        pipefittings => helpers.data_pipeline.bind(null, req, res, false)(pipefittings),
+        helpers.lookupReject.bind(null, req, res)
+      )
+      .catch(helpers.catchPipeline.bind(null, req, res));
 };

@@ -95,17 +95,167 @@ exports.argoVocab = function(parameter) {
  * returns List
  **/
 exports.bapVocab = function(parameter) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ "", "" ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
+    return new Promise(function(resolve, reject) {
+        if(parameter == 'enum'){
+          resolve(["platform", "data", "metadata", "platform_type", "position_qc"])
+          return
+        } else if(parameter == 'data'){
+          const query = summaries.find({"_id":"bap_data_keys"}).lean()
+          query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
+        } else {
+    
+          let lookup = {
+              'platform': 'platform', // <parameter value> : <corresponding key in metadata document>
+              'metadata': 'metadata',
+              'platform_type': 'platform_type',
+              'position_qc': 'geolocation_argoqc'
+          }
+    
+          let model = null
+          if(parameter=='position_qc' || parameter == 'metadata'){
+            model = argo['bgcargoplus']
+          } else {
+            model = argo['bgcargoplusMeta']
+          }
+    
+          model.find().distinct(lookup[parameter], function (err, vocab) {
+            if (err){
+              reject({"code": 500, "message": "Server error"});
+              return;
+            }
+            resolve(vocab)
+          })
+        }
+      });
 }
 
+function collectionSearch(collection, res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta){
+    // generic logic to search over argo and argo-like data collections.
+    return new Promise(function(resolve, reject) {
+        // input sanitization
+        let params = helpers.parameter_sanitization(collection,id,startDate,endDate,polygon,box,false,center,radius)
+        if(params.hasOwnProperty('code')){
+          // error, return and bail out
+          reject(params)
+          return
+        }
+        params.batchmeta = batchmeta
+        params.compression = compression
+        params.verticalRange = presRange || verticalRange
+        params.metacollection = collection+'Meta'
+        if(data && data.join(',') !== 'except-data-values'){
+          params.data_query = helpers.parse_data_qsp(data.join(','))
+          params.qc_suffix = '_argoqc'
+    
+          if(!('pressure' in params.data_query[0]) && !('pressure' in params.data_query[2])){
+            // pull pressure out of mongo by default
+            params.data_query[2]['pressure'] = []
+            params.coerced_pressure = true
+          }
+        }
+        params.lookup_meta = batchmeta
+        params.compression = compression
+        params.batchmeta = batchmeta
+    
+        // decide y/n whether to service this request
+        if(source && ![id,(startDate && endDate),polygon,(center && radius),platform].some(x=>x)){
+          reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id or platform search."})
+          return
+        }
+        let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.box, false, presRange, verticalRange) 
+        if(bailout){
+          reject(bailout)
+          return
+        }
+    
+        // local filter: fields in data collection other than geolocation and timestamp 
+        let local_filter = {$match:{}}
+        if(id){
+            local_filter['$match']['_id'] = id
+        }
+        if(metadata){
+          local_filter['$match']['metadata'] = metadata
+        }
+        if(positionqc){
+          local_filter['$match']['geolocation_argoqc'] = {'$in': positionqc}
+        }
+        if(Object.keys(local_filter['$match']).length > 0){
+          local_filter = [local_filter]
+        } else {
+          local_filter = []
+        }
+    
+        // optional source filtering
+        if(source){
+          local_filter.push(helpers.source_filter(source))
+        }
+    
+        // can we afford to project data documents down to a subset in aggregation?
+        if(compression=='minimal' && data==null && presRange==null && verticalRange==null){
+          params.projection = ['_id', 'metadata', 'geolocation', 'timestamp', 'source']
+        }
+    
+        // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
+        let metafilter = Promise.resolve([])
+        params.metafilter = false
+        if(platform || platform_type){
+            let match = {
+                'platform': platform,
+                'platform_type': platform_type
+            }
+            Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+    
+            metafilter = argo[collection+'Meta'].aggregate([{$match: match}]).exec()
+            params.metafilter = true
+        }
+    
+        // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
+        let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo[collection], params, local_filter))
+    
+        Promise.all([metafilter, datafilter])
+            .then(search_result => {
+    
+              let stub = function(data){
+                  // given a data document,
+                  // return the record that should be returned when the compression=minimal API flag is set
+                  // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
+                  
+                  let sourceset = new Set(data.source.map(x => x.source).flat())
+    
+                  return [
+                    data['_id'], 
+                    data.geolocation.coordinates[0], 
+                    data.geolocation.coordinates[1], 
+                    data.timestamp,
+                    Array.from(sourceset),
+                    data['metadata']
+                  ]
+              }
+    
+              let postprocess = helpers.post_xform(params, search_result, res, stub)
+    
+              res.status(404) // 404 by default
+    
+              resolve([search_result[1], postprocess])
+            })
+      });
+}
+
+function metasearch(collection, res, id,platform){
+    // generic search of argo-like meta collections
+    return new Promise(function(resolve, reject) {
+        let match = {
+            '_id': id,
+            'platform': platform
+        }
+        Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
+    
+        const query = argo[collection].aggregate([{$match:match}]);
+        let postprocess = helpers.meta_xform(res)
+        res.status(404) // 404 by default
+        resolve([query.cursor(), postprocess])
+      });
+}
 
 /**
  * Argo search and filter.
@@ -130,114 +280,7 @@ exports.bapVocab = function(parameter) {
  * returns List
  **/
 exports.findArgo = function(res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta) {
-  return new Promise(function(resolve, reject) {
-    // input sanitization
-    let params = helpers.parameter_sanitization('argo',id,startDate,endDate,polygon,box,false,center,radius)
-    if(params.hasOwnProperty('code')){
-      // error, return and bail out
-      reject(params)
-      return
-    }
-    params.batchmeta = batchmeta
-    params.compression = compression
-    params.verticalRange = presRange || verticalRange
-    params.metacollection = 'argoMeta'
-    if(data && data.join(',') !== 'except-data-values'){
-      params.data_query = helpers.parse_data_qsp(data.join(','))
-      params.qc_suffix = '_argoqc'
-
-      if(!('pressure' in params.data_query[0]) && !('pressure' in params.data_query[2])){
-        // pull pressure out of mongo by default
-        params.data_query[2]['pressure'] = []
-        params.coerced_pressure = true
-      }
-    }
-    params.lookup_meta = batchmeta
-    params.compression = compression
-    params.batchmeta = batchmeta
-
-    // decide y/n whether to service this request
-    if(source && ![id,(startDate && endDate),polygon,(center && radius),platform].some(x=>x)){
-      reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id or platform search."})
-      return
-    }
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.box, false, presRange, verticalRange) 
-    if(bailout){
-      reject(bailout)
-      return
-    }
-
-    // local filter: fields in data collection other than geolocation and timestamp 
-    let local_filter = {$match:{}}
-    if(id){
-        local_filter['$match']['_id'] = id
-    }
-    if(metadata){
-      local_filter['$match']['metadata'] = metadata
-    }
-    if(positionqc){
-      local_filter['$match']['geolocation_argoqc'] = {'$in': positionqc}
-    }
-    if(Object.keys(local_filter['$match']).length > 0){
-      local_filter = [local_filter]
-    } else {
-      local_filter = []
-    }
-
-    // optional source filtering
-    if(source){
-      local_filter.push(helpers.source_filter(source))
-    }
-
-    // can we afford to project data documents down to a subset in aggregation?
-    if(compression=='minimal' && data==null && presRange==null && verticalRange==null){
-      params.projection = ['_id', 'metadata', 'geolocation', 'timestamp', 'source']
-    }
-
-    // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
-    let metafilter = Promise.resolve([])
-    params.metafilter = false
-    if(platform || platform_type){
-        let match = {
-            'platform': platform,
-            'platform_type': platform_type
-        }
-        Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
-
-        metafilter = argo['argoMeta'].aggregate([{$match: match}]).exec()
-        params.metafilter = true
-    }
-
-    // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-    let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo['argo'], params, local_filter))
-
-    Promise.all([metafilter, datafilter])
-        .then(search_result => {
-
-          let stub = function(data){
-              // given a data document,
-              // return the record that should be returned when the compression=minimal API flag is set
-              // should be id, long, lat, timestamp, and then anything needed to group this point together with other points in interesting ways.
-              
-              let sourceset = new Set(data.source.map(x => x.source).flat())
-
-              return [
-                data['_id'], 
-                data.geolocation.coordinates[0], 
-                data.geolocation.coordinates[1], 
-                data.timestamp,
-                Array.from(sourceset),
-                data['metadata']
-              ]
-          }
-
-          let postprocess = helpers.post_xform(params, search_result, res, stub)
-
-          res.status(404) // 404 by default
-
-          resolve([search_result[1], postprocess])
-        })
-  });
+    return collectionSearch('argo', res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta)
 }
 
 /**
@@ -248,18 +291,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,box,center,radius,m
  * returns List
  **/
 exports.findArgometa = function(res, id,platform) {
-  return new Promise(function(resolve, reject) {
-    let match = {
-        '_id': id,
-        'platform': platform
-    }
-    Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
-
-    const query = argo['argoMeta'].aggregate([{$match:match}]);
-    let postprocess = helpers.meta_xform(res)
-    res.status(404) // 404 by default
-    resolve([query.cursor(), postprocess])
-  });
+    return metasearch('argoMeta', res, id,platform)
 }
 
 
@@ -284,70 +316,8 @@ exports.findArgometa = function(res, id,platform) {
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findBAP = function(id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,compression,presRange,verticalRange,batchmeta) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "metadata" : [ "metadata", "metadata" ],
-  "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ [ "", "" ], [ "", "" ] ],
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_info" : [ "", "" ],
-  "cycle_number" : 6.027456183070403,
-  "timestamp_argoqc" : 5.962133916683182,
-  "_id" : "_id",
-  "profile_direction" : "profile_direction",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-}, {
-  "metadata" : [ "metadata", "metadata" ],
-  "geolocation_argoqc" : 1.4658129805029452,
-  "data" : [ [ "", "" ], [ "", "" ] ],
-  "basin" : 0.8008281904610115,
-  "source" : [ {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  }, {
-    "date_updated" : "2000-01-23T04:56:07.000+00:00",
-    "source" : [ "source", "source" ],
-    "url" : "url",
-    "doi" : "doi"
-  } ],
-  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
-  "data_info" : [ "", "" ],
-  "cycle_number" : 6.027456183070403,
-  "timestamp_argoqc" : 5.962133916683182,
-  "_id" : "_id",
-  "profile_direction" : "profile_direction",
-  "geolocation" : {
-    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
-    "type" : "type"
-  },
-  "timestamp" : "2000-01-23T04:56:07.000+00:00"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
+exports.findBAP = function(res, id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,compression,presRange,verticalRange,batchmeta) {
+    return collectionSearch('bgcargoplus', res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,null,compression,data,presRange,verticalRange,batchmeta)
 }
 
 
@@ -358,39 +328,7 @@ exports.findBAP = function(id,startDate,endDate,polygon,box,center,radius,metada
  * platform String Unique platform ID to search for. (optional)
  * returns List
  **/
-exports.findBAPmeta = function(id,platform) {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = [ {
-  "positioning_system" : "positioning_system",
-  "platform_type" : "platform_type",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "wmo_inst_type" : "wmo_inst_type",
-  "data_type" : "data_type",
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "_id" : "_id",
-  "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring",
-  "platform" : "platform"
-}, {
-  "positioning_system" : "positioning_system",
-  "platform_type" : "platform_type",
-  "pi_name" : [ "pi_name", "pi_name" ],
-  "wmo_inst_type" : "wmo_inst_type",
-  "data_type" : "data_type",
-  "data_center" : "data_center",
-  "instrument" : "instrument",
-  "_id" : "_id",
-  "oceanops" : "oceanops",
-  "fleetmonitoring" : "fleetmonitoring",
-  "platform" : "platform"
-} ];
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
+exports.findBAPmeta = function(res, id,platform) {
+    return metasearch('bgcargoplusMeta', res, id,platform)
 }
 
