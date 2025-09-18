@@ -1,5 +1,6 @@
 'use strict';
 const argo = require('../models/argo');
+const bap = require('../models/bap');
 const summaries = require('../models/summary');
 const helpers = require('../helpers/helpers')
 
@@ -100,7 +101,7 @@ exports.bapVocab = function(parameter) {
           resolve(["platform", "data", "metadata", "platform_type", "position_qc"])
           return
         } else if(parameter == 'data'){
-          const query = summaries.find({"_id":"bap_data_keys"}).lean()
+          const query = summaries.find({"_id":"bgcargoplus_data_keys"}).lean()
           query.exec(helpers.queryCallback.bind(null,x=>x[0]['data_keys'], resolve, reject))
         } else {
     
@@ -113,9 +114,9 @@ exports.bapVocab = function(parameter) {
     
           let model = null
           if(parameter=='position_qc' || parameter == 'metadata'){
-            model = argo['bgcargoplus']
+            model = bap['bgcargoplus']
           } else {
-            model = argo['bgcargoplusMeta']
+            model = bap['bgcargoplusMeta']
           }
     
           model.find().distinct(lookup[parameter], function (err, vocab) {
@@ -129,8 +130,9 @@ exports.bapVocab = function(parameter) {
       });
 }
 
-function collectionSearch(collection, res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta){
+function collectionSearch(collection, datamodel, metamodel, res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta){
     // generic logic to search over argo and argo-like data collections.
+
     return new Promise(function(resolve, reject) {
         // input sanitization
         let params = helpers.parameter_sanitization(collection,id,startDate,endDate,polygon,box,false,center,radius)
@@ -156,7 +158,6 @@ function collectionSearch(collection, res,id,startDate,endDate,polygon,box,cente
         params.lookup_meta = batchmeta
         params.compression = compression
         params.batchmeta = batchmeta
-    
         // decide y/n whether to service this request
         if(source && ![id,(startDate && endDate),polygon,(center && radius),platform].some(x=>x)){
           reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id or platform search."})
@@ -205,13 +206,13 @@ function collectionSearch(collection, res,id,startDate,endDate,polygon,box,cente
             }
             Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
     
-            metafilter = argo[collection+'Meta'].aggregate([{$match: match}]).exec()
+            metafilter = metamodel.aggregate([{$match: match}]).exec()
             params.metafilter = true
         }
     
         // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
-        let datafilter = metafilter.then(helpers.datatable_stream.bind(null, argo[collection], params, local_filter))
-    
+        let datafilter = metafilter.then(helpers.datatable_stream.bind(null, datamodel, params, local_filter))
+        
         Promise.all([metafilter, datafilter])
             .then(search_result => {
     
@@ -231,7 +232,7 @@ function collectionSearch(collection, res,id,startDate,endDate,polygon,box,cente
                     data['metadata']
                   ]
               }
-    
+              
               let postprocess = helpers.post_xform(params, search_result, res, stub)
     
               res.status(404) // 404 by default
@@ -241,7 +242,7 @@ function collectionSearch(collection, res,id,startDate,endDate,polygon,box,cente
       });
 }
 
-function metasearch(collection, res, id,platform){
+function metasearch(metamodel, res, id,platform){
     // generic search of argo-like meta collections
     return new Promise(function(resolve, reject) {
         let match = {
@@ -250,7 +251,7 @@ function metasearch(collection, res, id,platform){
         }
         Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
     
-        const query = argo[collection].aggregate([{$match:match}]);
+        const query = metamodel.aggregate([{$match:match}]);
         let postprocess = helpers.meta_xform(res)
         res.status(404) // 404 by default
         resolve([query.cursor(), postprocess])
@@ -280,7 +281,7 @@ function metasearch(collection, res, id,platform){
  * returns List
  **/
 exports.findArgo = function(res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta) {
-    return collectionSearch('argo', res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta)
+    return collectionSearch('argo', argo['argo'], argo['argoMeta'], res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,source,compression,data,presRange,verticalRange,batchmeta)
 }
 
 /**
@@ -291,7 +292,7 @@ exports.findArgo = function(res,id,startDate,endDate,polygon,box,center,radius,m
  * returns List
  **/
 exports.findArgometa = function(res, id,platform) {
-    return metasearch('argoMeta', res, id,platform)
+    return metasearch(argo['argoMeta'], res, id,platform)
 }
 
 
@@ -316,8 +317,8 @@ exports.findArgometa = function(res, id,platform) {
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findBAP = function(res, id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,compression,presRange,verticalRange,batchmeta) {
-    return collectionSearch('bgcargoplus', res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,null,compression,data,presRange,verticalRange,batchmeta)
+exports.findBAP = function(res, id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,compression,data,presRange,verticalRange,batchmeta) {
+    return collectionSearch('bgcargoplus', bap['bgcargoplus'], bap['bgcargoplusMeta'], res,id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,null,compression,data,presRange,verticalRange,batchmeta)
 }
 
 
@@ -329,6 +330,6 @@ exports.findBAP = function(res, id,startDate,endDate,polygon,box,center,radius,m
  * returns List
  **/
 exports.findBAPmeta = function(res, id,platform) {
-    return metasearch('bgcargoplusMeta', res, id,platform)
+    return metasearch(bap['bgcargoplusMeta'], res, id,platform)
 }
 
