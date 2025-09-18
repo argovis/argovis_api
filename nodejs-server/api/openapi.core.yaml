@@ -2844,6 +2844,10 @@ paths:
         style: form
         explode: false
         allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
       - name: presRange
         in: query
         description: "DEPRICATED, please use verticalRange instead. Pressure range\
