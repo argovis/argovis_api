@@ -86,7 +86,7 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
     .catch(helpers.catchPipeline.bind(null, req, res));
 };
 
-module.exports.findBAP = function findBAP (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, presRange, verticalRange, batchmeta) {
+module.exports.findBAP = function findBAP (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, data, presRange, verticalRange, batchmeta) {
     apihits.apihits.create({metadata: req.openapi.openApiRoute, query: req.query, isWeb: req.headers.origin === 'https://argovis.colorado.edu', avhTelemetry: req.headers.hasOwnProperty('x-avh-telemetry') ? req.headers['x-avh-telemetry'] : null})
 
     Profiles.findBAP(res, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, data, presRange, verticalRange, batchmeta)
