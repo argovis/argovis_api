@@ -1853,7 +1853,13 @@
                  "description": "Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses.",
                  "style": "form",
                  "explode": false,
-                 "allowReserved": true
+                 "allowReserved": true,
+                 "schema": {
+                    "type": "array",
+                    "items": {
+                       "type": "string"
+                    }
+                 }
               },
               {
                  "$ref": "#/components/parameters/presRange"

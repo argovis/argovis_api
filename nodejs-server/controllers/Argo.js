@@ -73,8 +73,8 @@ module.exports.findArgometa = function findArgometa (req, res, next, id, platfor
     });
 };
 
-module.exports.findBAP = function findBAP (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, , presRange, verticalRange, batchmeta) {
-  Argo.findBAP(id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, , presRange, verticalRange, batchmeta)
+module.exports.findBAP = function findBAP (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, data, presRange, verticalRange, batchmeta) {
+  Argo.findBAP(id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, data, presRange, verticalRange, batchmeta)
     .then(function (response) {
       utils.writeJson(res, response);
     })
