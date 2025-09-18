@@ -43,6 +43,16 @@ module.exports.argoVocab = function argoVocab (req, res, next, parameter) {
     });
 };
 
+module.exports.bapVocab = function bapVocab (req, res, next, parameter) {
+  Argo.bapVocab(parameter)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.findArgo = function findArgo (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, source, compression, data, presRange, verticalRange, batchmeta) {
   Argo.findArgo(id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, source, compression, data, presRange, verticalRange, batchmeta)
     .then(function (response) {
@@ -55,6 +65,26 @@ module.exports.findArgo = function findArgo (req, res, next, id, startDate, endD
 
 module.exports.findArgometa = function findArgometa (req, res, next, id, platform) {
   Argo.findArgometa(id, platform)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.findBAP = function findBAP (req, res, next, id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, , presRange, verticalRange, batchmeta) {
+  Argo.findBAP(id, startDate, endDate, polygon, box, center, radius, metadata, platform, platform_type, positionqc, compression, , presRange, verticalRange, batchmeta)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.findBAPmeta = function findBAPmeta (req, res, next, id, platform) {
+  Argo.findBAPmeta(id, platform)
     .then(function (response) {
       utils.writeJson(res, response);
     })
