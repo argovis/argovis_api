@@ -284,7 +284,7 @@ exports.findArgometa = function(res, id,platform) {
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findBAP = function(id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,compression,,presRange,verticalRange,batchmeta) {
+exports.findBAP = function(id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,compression,presRange,verticalRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
