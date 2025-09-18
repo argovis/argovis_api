@@ -89,6 +89,25 @@ exports.argoVocab = function(parameter) {
 
 
 /**
+ * List all possible values for certain BGC Argo+ query string parameters
+ *
+ * parameter String BGC Argo+ query string parameter to summarize possible values of.
+ * returns List
+ **/
+exports.bapVocab = function(parameter) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "", "" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Argo search and filter.
  *
  * id String Unique ID to search for. (optional)
@@ -240,6 +259,138 @@ exports.findArgometa = function(res, id,platform) {
     let postprocess = helpers.meta_xform(res)
     res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
+  });
+}
+
+
+/**
+ * BGC Argo+ search and filter.
+ *
+ * id String Unique ID to search for. (optional)
+ * startDate Date ISO 8601 UTC date-time formatted string indicating the beginning of the time period of interest. (optional)
+ * endDate Date ISO 8601 UTC date-time formatted string indicating the end of the time period of interest. (optional)
+ * polygon String array of [lon, lat] vertices describing a polygon bounding the region of interest; final point must match initial point (optional)
+ * box String lon, lat pairs of the lower left and upper right corners of a box on a mercator projection, packed like [[lower left lon, lower left lat],[upper right lon, upper right lat]] (optional)
+ * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
+ * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
+ * metadata String metadata pointer (optional)
+ * platform String Unique platform ID to search for. (optional)
+ * platform_type String Make/model of platform (optional)
+ * positionqc List Argo position qc flag. (optional)
+ * compression String Data minification strategy to apply. (optional)
+ *   Keys of data to include. Return only documents that have all data requested, within the pressure range if specified. Accepts ~ negation to filter out documents including the specified data. Omission of this parameter will result in metadata only responses. (optional)
+ * presRange List DEPRICATED, please use verticalRange instead. Pressure range in dbar to filter for; levels outside this range will not be returned. (optional)
+ * verticalRange List Vertical range to filter for in pressure or depth as appropriate for this dataset; levels outside this range will not be returned. (optional)
+ * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
+ * returns List
+ **/
+exports.findBAP = function(id,startDate,endDate,polygon,box,center,radius,metadata,platform,platform_type,positionqc,compression,,presRange,verticalRange,batchmeta) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "metadata" : [ "metadata", "metadata" ],
+  "geolocation_argoqc" : 1.4658129805029452,
+  "data" : [ [ "", "" ], [ "", "" ] ],
+  "basin" : 0.8008281904610115,
+  "source" : [ {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  }, {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  } ],
+  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
+  "cycle_number" : 6.027456183070403,
+  "timestamp_argoqc" : 5.962133916683182,
+  "_id" : "_id",
+  "profile_direction" : "profile_direction",
+  "geolocation" : {
+    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
+    "type" : "type"
+  },
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+}, {
+  "metadata" : [ "metadata", "metadata" ],
+  "geolocation_argoqc" : 1.4658129805029452,
+  "data" : [ [ "", "" ], [ "", "" ] ],
+  "basin" : 0.8008281904610115,
+  "source" : [ {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  }, {
+    "date_updated" : "2000-01-23T04:56:07.000+00:00",
+    "source" : [ "source", "source" ],
+    "url" : "url",
+    "doi" : "doi"
+  } ],
+  "date_updated_argovis" : "2000-01-23T04:56:07.000+00:00",
+  "data_info" : [ "", "" ],
+  "cycle_number" : 6.027456183070403,
+  "timestamp_argoqc" : 5.962133916683182,
+  "_id" : "_id",
+  "profile_direction" : "profile_direction",
+  "geolocation" : {
+    "coordinates" : [ 0.8008281904610115, 0.8008281904610115 ],
+    "type" : "type"
+  },
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * BGC Argo+ metadata search and filter.
+ *
+ * id String Unique ID to search for. (optional)
+ * platform String Unique platform ID to search for. (optional)
+ * returns List
+ **/
+exports.findBAPmeta = function(id,platform) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "positioning_system" : "positioning_system",
+  "platform_type" : "platform_type",
+  "pi_name" : [ "pi_name", "pi_name" ],
+  "wmo_inst_type" : "wmo_inst_type",
+  "data_type" : "data_type",
+  "data_center" : "data_center",
+  "instrument" : "instrument",
+  "_id" : "_id",
+  "oceanops" : "oceanops",
+  "fleetmonitoring" : "fleetmonitoring",
+  "platform" : "platform"
+}, {
+  "positioning_system" : "positioning_system",
+  "platform_type" : "platform_type",
+  "pi_name" : [ "pi_name", "pi_name" ],
+  "wmo_inst_type" : "wmo_inst_type",
+  "data_type" : "data_type",
+  "data_center" : "data_center",
+  "instrument" : "instrument",
+  "_id" : "_id",
+  "oceanops" : "oceanops",
+  "fleetmonitoring" : "fleetmonitoring",
+  "platform" : "platform"
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
   });
 }
 
