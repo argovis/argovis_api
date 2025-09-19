@@ -2698,6 +2698,330 @@ paths:
               schema:
                 $ref: '#/components/schemas/errorResponse'
       x-swagger-router-controller: ArgoTrajectoriesExperimental
+  /bgcargoplus:
+    get:
+      tags:
+      - argo
+      summary: BGC Argo+ search and filter.
+      operationId: findBAP
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: startDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the beginning
+          of the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: endDate
+        in: query
+        description: ISO 8601 UTC date-time formatted string indicating the end of
+          the time period of interest.
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      - name: polygon
+        in: query
+        description: "array of [lon, lat] vertices describing a polygon bounding the\
+          \ region of interest; final point must match initial point"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[-74.1,40.5],[-73.7,40.5],[-74.0,40.8],[-74.1,40.5]]"
+      - name: box
+        in: query
+        description: "lon, lat pairs of the lower left and upper right corners of\
+          \ a box on a mercator projection, packed like [[lower left lon, lower left\
+          \ lat],[upper right lon, upper right lat]]"
+        required: false
+        style: form
+        explode: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "[[0,0],[1,1]]"
+      - name: center
+        in: query
+        description: center to measure max radius from when defining circular region
+          of interest; must be used in conjunction with query string parameter 'radius'.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: radius
+        in: query
+        description: km from centerpoint when defining circular region of interest;
+          must be used in conjunction with query string parameter 'center'.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+          example: 50
+      - name: metadata
+        in: query
+        description: metadata pointer
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      - name: platform_type
+        in: query
+        description: Make/model of platform
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: PALACE
+      - name: positionqc
+        in: query
+        description: Argo position qc flag.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "1,2"
+          items:
+            type: number
+      - name: compression
+        in: query
+        description: Data minification strategy to apply.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+      - name: data
+        in: query
+        description: "Keys of data to include. Return only documents that have all\
+          \ data requested, within the pressure range if specified. Accepts ~ negation\
+          \ to filter out documents including the specified data. Omission of this\
+          \ parameter will result in metadata only responses."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: presRange
+        in: query
+        description: "DEPRICATED, please use verticalRange instead. Pressure range\
+          \ in dbar to filter for; levels outside this range will not be returned."
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: verticalRange
+        in: query
+        description: Vertical range to filter for in pressure or depth as appropriate
+          for this dataset; levels outside this range will not be returned.
+        required: false
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          example: "10,20.1"
+          items:
+            maxItems: 2
+            minItems: 2
+            type: number
+      - name: batchmeta
+        in: query
+        description: return the metadata documents corresponding to a temporospatial
+          data search
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/bap'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Argo
+  /bgcargoplus/meta:
+    get:
+      tags:
+      - argo
+      summary: BGC Argo+ metadata search and filter.
+      operationId: findBAPmeta
+      parameters:
+      - name: id
+        in: query
+        description: Unique ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 4902911_0
+      - name: platform
+        in: query
+        description: Unique platform ID to search for.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "4902911"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/bapMeta'
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Argo
+  /bgcargoplus/vocabulary:
+    get:
+      tags:
+      - argo
+      summary: List all possible values for certain BGC Argo+ query string parameters
+      operationId: bapVocab
+      parameters:
+      - name: parameter
+        in: query
+        description: BGC Argo+ query string parameter to summarize possible values
+          of.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - enum
+          - platform
+          - data
+          - metadata
+          - platform_type
+          - position_qc
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      x-swagger-router-controller: Argo
   /summary:
     get:
       tags:
@@ -3587,6 +3911,133 @@ components:
           type: string
       example:
         country: country
+        positioning_system: positioning_system
+        platform_type: platform_type
+        pi_name:
+        - pi_name
+        - pi_name
+        wmo_inst_type: wmo_inst_type
+        data_type: data_type
+        data_center: data_center
+        instrument: instrument
+        _id: _id
+        oceanops: oceanops
+        fleetmonitoring: fleetmonitoring
+        platform: platform
+    bap:
+      required:
+      - _id
+      - basin
+      - cycle_number
+      - data_info
+      - date_updated_argovis
+      - geolocation
+      - metadata
+      - source
+      - timestamp
+      type: object
+      properties:
+        _id:
+          type: string
+        geolocation:
+          $ref: '#/components/schemas/geoJSONpoint'
+        basin:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        metadata:
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/data'
+        data_info:
+          $ref: '#/components/schemas/data_info'
+        date_updated_argovis:
+          type: string
+          format: date-time
+        source:
+          type: array
+          items:
+            $ref: '#/components/schemas/generic_source_info'
+        cycle_number:
+          type: number
+        geolocation_argoqc:
+          type: number
+        profile_direction:
+          type: string
+        timestamp_argoqc:
+          type: number
+      example:
+        metadata:
+        - metadata
+        - metadata
+        geolocation_argoqc: 1.46581298050294517310021547018550336360931396484375
+        data:
+        - - ""
+          - ""
+        - - ""
+          - ""
+        basin: 0.80082819046101150206595775671303272247314453125
+        source:
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        - date_updated: 2000-01-23T04:56:07.000+00:00
+          source:
+          - source
+          - source
+          url: url
+          doi: doi
+        date_updated_argovis: 2000-01-23T04:56:07.000+00:00
+        data_info:
+        - ""
+        - ""
+        cycle_number: 6.02745618307040320615897144307382404804229736328125
+        timestamp_argoqc: 5.962133916683182377482808078639209270477294921875
+        _id: _id
+        profile_direction: profile_direction
+        geolocation:
+          coordinates:
+          - 0.80082819046101150206595775671303272247314453125
+          - 0.80082819046101150206595775671303272247314453125
+          type: type
+        timestamp: 2000-01-23T04:56:07.000+00:00
+    bapMeta:
+      required:
+      - _id
+      - data_type
+      type: object
+      properties:
+        _id:
+          type: string
+        data_type:
+          type: string
+        data_center:
+          type: string
+        instrument:
+          type: string
+        pi_name:
+          type: array
+          items:
+            type: string
+        platform:
+          type: string
+        platform_type:
+          type: string
+        fleetmonitoring:
+          type: string
+        oceanops:
+          type: string
+        positioning_system:
+          type: string
+        wmo_inst_type:
+          type: string
+      example:
         positioning_system: positioning_system
         platform_type: platform_type
         pi_name:
