@@ -691,7 +691,7 @@ describe("GET /bgcargoplus", function () {
 describe("GET /bgcargoplus", function () {
     it("get some bap profiles by date", async function () {
       const response = await request.get("/bgcargoplus?endDate=2006-12-20T00:00:00Z").set({'x-argokey': 'developer'});
-      expect(response.body.length).to.eql(1);
+      expect(response.body.length).to.eql(2);
     });
 });
 
