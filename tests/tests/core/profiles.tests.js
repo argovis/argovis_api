@@ -673,3 +673,31 @@ describe("GET /argo", function () {
     expect(response.status).to.eql(404);
   });
 }); 
+
+describe("GET /bgcargoplus", function () {
+    it("get all the bap profiles for a given float by float ID", async function () {
+      const response = await request.get("/bgcargoplus?platform=1900650").set({'x-argokey': 'developer'});
+      expect(response.body.length).to.eql(3);
+    });
+});
+
+describe("GET /bgcargoplus", function () {
+    it("get all the bap profiles for a given float by metadata ID", async function () {
+      const response = await request.get("/bgcargoplus?metadata=1900650_m0").set({'x-argokey': 'developer'});
+      expect(response.body.length).to.eql(3);
+    });
+});
+
+describe("GET /bgcargoplus", function () {
+    it("get some bap profiles by date", async function () {
+      const response = await request.get("/bgcargoplus?endDate=2006-12-20T00:00:00Z").set({'x-argokey': 'developer'});
+      expect(response.body.length).to.eql(2);
+    });
+});
+
+describe("GET /bgcargoplus/vovabulary", function () {
+    it("bap vocab route is up", async function () {
+      const response = await request.get("/bgcargoplus/vocabulary?parameter=enum").set({'x-argokey': 'developer'});
+      expect(response.body).to.eql(["platform", "data", "metadata", "platform_type", "position_qc"]);
+    });
+});
