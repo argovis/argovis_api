@@ -273,7 +273,7 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   // set up first part of pipeline aggregation:
   let aggPipeline = proxMatch.concat(spacetimeMatch).concat(local_filter).concat(foreignMatch)
 
-  if(params.compression !== 'minimal' && params.is_timeseries === false){
+  if(params.compression !== 'minimal' && !params.is_timeseries){
     // some stub and timeseries requests are allowed that would swamp mongo's default sorting limits.
     aggPipeline.push({$sort: {'timestamp':-1}})
   }
