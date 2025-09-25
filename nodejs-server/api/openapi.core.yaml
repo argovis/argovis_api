@@ -1447,14 +1447,14 @@ paths:
           type: string
       - name: woceline
         in: query
-        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
+        description: Expocode to search for. See /cchdo/vocabulary?parameter=expocode
           for list of options.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: A10
+          example: 06AQ19920929
       - name: cchdo_cruise
         in: query
         description: CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise
@@ -1591,14 +1591,14 @@ paths:
           example: 4902911_0
       - name: woceline
         in: query
-        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
+        description: Expocode to search for. See /cchdo/vocabulary?parameter=expocode
           for list of options.
         required: false
         style: form
         explode: true
         schema:
           type: string
-          example: A10
+          example: 06AQ19920929
       - name: cchdo_cruise
         in: query
         description: CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise
@@ -1660,6 +1660,7 @@ paths:
           - source
           - data
           - metadata
+          - expocode
       responses:
         "200":
           description: OK
@@ -4745,6 +4746,17 @@ components:
       schema:
         type: string
         example: A10
+    expocode:
+      name: woceline
+      in: query
+      description: Expocode to search for. See /cchdo/vocabulary?parameter=expocode
+        for list of options.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: 06AQ19920929
     cchdo_cruise:
       name: cchdo_cruise
       in: query
