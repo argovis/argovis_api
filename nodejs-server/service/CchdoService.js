@@ -32,6 +32,7 @@ exports.cchdoVocab = function(parameter) {
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * metadata String metadata pointer (optional)
  * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * expocode String Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
@@ -41,7 +42,7 @@ exports.cchdoVocab = function(parameter) {
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findCCHDO = function(id,startDate,endDate,polygon,box,center,radius,metadata,woceline,cchdo_cruise,source,compression,data,presRange,verticalRange,batchmeta) {
+exports.findCCHDO = function(id,startDate,endDate,polygon,box,center,radius,metadata,woceline,expocode,cchdo_cruise,source,compression,data,presRange,verticalRange,batchmeta) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
@@ -113,10 +114,11 @@ exports.findCCHDO = function(id,startDate,endDate,polygon,box,center,radius,meta
  *
  * id String Unique ID to search for. (optional)
  * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * expocode String Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
-exports.findCCHDOmeta = function(id,woceline,cchdo_cruise) {
+exports.findCCHDOmeta = function(id,woceline,expocode,cchdo_cruise) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {

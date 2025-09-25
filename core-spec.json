@@ -969,6 +969,9 @@
                   "$ref": "#/components/parameters/woceline"
                },
                {
+                "$ref": "#/components/parameters/expocode"
+               },
+               {
                   "$ref": "#/components/parameters/cchdo_cruise"
                },
                {
@@ -1044,6 +1047,9 @@
                   "$ref": "#/components/parameters/woceline"
                },
                {
+                "$ref": "#/components/parameters/expocode"
+               },
+               {
                   "$ref": "#/components/parameters/cchdo_cruise"
                }
             ],
@@ -1088,7 +1094,7 @@
                   "description": "GO-SHIP query string parameter to summarize possible values of.",
                   "schema": {
                      "type": "string",
-                     "enum": ["enum", "woceline", "cchdo_cruise", "source", "data", "metadata"]
+                     "enum": ["enum", "woceline", "cchdo_cruise", "source", "data", "metadata", "expocode"]
                   }
                }
             ],
@@ -3286,6 +3292,15 @@
             "schema": {
                "type": "string",
                "example": "A10"
+            } 
+         },
+         "expocode": {
+            "in": "query",
+            "name": "expocode",
+            "description": "Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options.",
+            "schema": {
+               "type": "string",
+               "example": "06AQ19920929"
             } 
          },
          "cchdo_cruise": {
