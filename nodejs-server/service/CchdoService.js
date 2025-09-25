@@ -15,6 +15,7 @@ const helpers = require('../helpers/helpers')
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * metadata String metadata pointer (optional)
  * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * expocode String Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
@@ -24,7 +25,7 @@ const helpers = require('../helpers/helpers')
  * batchmeta String return the metadata documents corresponding to a temporospatial data search (optional)
  * returns List
  **/
-exports.findCCHDO = function(res,id,startDate,endDate,polygon,box,center,radius,metadata,woceline,cchdo_cruise,source,compression,data,presRange,verticalRange,batchmeta) {
+exports.findCCHDO = function(res,id,startDate,endDate,polygon,box,center,radius,metadata,woceline,expocode,cchdo_cruise,source,compression,data,presRange,verticalRange,batchmeta) {
     
     return new Promise(function(resolve, reject) {
     // input sanitization
@@ -89,9 +90,10 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,box,center,radius,
     // metadata table filter: no-op promise if nothing to filter metadata for, custom search otherwise
     let metafilter = Promise.resolve([])
     params.metafilter = false
-    if(woceline||cchdo_cruise){
+    if(woceline||expocode||cchdo_cruise){
         let match = {
             'woce_lines': woceline,
+            'expocode': expocode,
             'cchdo_cruise_id': cchdo_cruise
         }
         Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
@@ -138,15 +140,17 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,box,center,radius,
  *
  * id String Unique ID to search for. (optional)
  * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * expocode String Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
-exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
+exports.findCCHDOmeta = function(res, id,woceline,expocode,cchdo_cruise) {
   return new Promise(function(resolve, reject) {
     let match = {
         '_id': id,
         'woce_lines': woceline,
-        'cchdo_cruise_id': cchdo_cruise
+        'cchdo_cruise_id': cchdo_cruise,
+        'expocode': expocode
     }
     Object.keys(match).forEach((k) => match[k] === undefined && delete match[k]);
 
@@ -166,7 +170,7 @@ exports.findCCHDOmeta = function(res, id,woceline,cchdo_cruise) {
 exports.cchdoVocab = function(parameter) {
   return new Promise(function(resolve, reject) {
     if(parameter == 'enum'){
-      resolve(["woceline", "cchdo_cruise", "source", "data", "metadata"])
+      resolve(["woceline", "expocode", "cchdo_cruise", "source", "data", "metadata"])
       return
     } else if(parameter == 'data'){
       // data_keys is a summary lookup
@@ -177,7 +181,8 @@ exports.cchdoVocab = function(parameter) {
           'woceline': 'woce_lines', // <parameter value> : <corresponding key in metadata document>
           'cchdo_cruise': 'cchdo_cruise_id',
           'source': 'source.source',
-          'metadata': 'metadata'
+          'metadata': 'metadata',
+          'expocode': 'expocode'
       }
 
       let model = null
