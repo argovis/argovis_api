@@ -1447,6 +1447,16 @@ paths:
           type: string
       - name: woceline
         in: query
+        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
+          for list of options.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: A10
+      - name: expocode
+        in: query
         description: Expocode to search for. See /cchdo/vocabulary?parameter=expocode
           for list of options.
         required: false
@@ -1590,6 +1600,16 @@ paths:
           type: string
           example: 4902911_0
       - name: woceline
+        in: query
+        description: WOCE line to search for. See /cchdo/vocabulary?parameter=woceline
+          for list of options.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: A10
+      - name: expocode
         in: query
         description: Expocode to search for. See /cchdo/vocabulary?parameter=expocode
           for list of options.
@@ -4747,7 +4767,7 @@ components:
         type: string
         example: A10
     expocode:
-      name: woceline
+      name: expocode
       in: query
       description: Expocode to search for. See /cchdo/vocabulary?parameter=expocode
         for list of options.
