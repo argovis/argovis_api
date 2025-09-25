@@ -14,7 +14,7 @@ const helpers = require('../helpers/helpers')
  * center List center to measure max radius from when defining circular region of interest; must be used in conjunction with query string parameter 'radius'. (optional)
  * radius BigDecimal km from centerpoint when defining circular region of interest; must be used in conjunction with query string parameter 'center'. (optional)
  * metadata String metadata pointer (optional)
- * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * woceline String Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * source List Experimental program source(s) to search for; document must match all sources to be returned. Accepts ~ negation to filter out documents. See /<data route>/vocabulary?parameter=source for list of options. (optional)
  * compression String Data minification strategy to apply. (optional)
@@ -137,7 +137,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,box,center,radius,
  * GO-SHIP metadata search and filter.
  *
  * id String Unique ID to search for. (optional)
- * woceline String WOCE line to search for. See /cchdo/vocabulary?parameter=woceline for list of options. (optional)
+ * woceline String Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options. (optional)
  * cchdo_cruise BigDecimal CCHDO cruise ID to search for. See /cchdo/vocabulary?parameter=cchdo_cruise for list of options. (optional)
  * returns List
  **/
