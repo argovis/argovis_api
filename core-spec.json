@@ -3296,7 +3296,7 @@
          },
          "expocode": {
             "in": "query",
-            "name": "woceline",
+            "name": "expocode",
             "description": "Expocode to search for. See /cchdo/vocabulary?parameter=expocode for list of options.",
             "schema": {
                "type": "string",
