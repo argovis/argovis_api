@@ -530,6 +530,7 @@ paths:
           enum:
           - rg09
           - kg21
+          - localGPspace
           - glodap
       - name: id
         in: query
@@ -767,6 +768,7 @@ paths:
           enum:
           - rg09
           - kg21
+          - localGPspace
           - glodap
       - name: parameter
         in: query
