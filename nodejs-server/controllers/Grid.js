@@ -10,7 +10,7 @@ module.exports.findgrid = function findgrid (req, res, next, id, startDate, endD
   if (gridName === 'kg21') {
     gridName = 'localGPspace';
   }
-
+  data = data.map(x => x.replaceAll("kg21","localGPspace"));
   Grid.findgrid(res,gridName, id, startDate, endDate, polygon, box, center, radius, compression, data, presRange, verticalRange, batchmeta)
     .then(
       pipefittings => helpers.data_pipeline.bind(null, req, res, batchmeta)(pipefittings),
