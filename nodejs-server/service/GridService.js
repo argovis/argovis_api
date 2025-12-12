@@ -57,7 +57,13 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,box,center
     }
     params.batchmeta = batchmeta
     params.compression = compression
-    params.metacollection = gridName+'Meta'
+    if(gridName === 'localGPintegral'){
+        params.metacollection = 'localGPMeta'
+        verticalRange = null // not obvious how to filter integral ranges by vertical bounds, decline for now.
+        presRange = null
+    } else {
+        params.metacollection = gridName+'Meta'
+    }
     params.is_grid = true
     params.verticalRange = presRange || verticalRange
     if(data && data.join(',') !== 'except-data-values'){

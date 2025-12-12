@@ -40,7 +40,7 @@ const GridMetaSchema = Schema({
   data_type: {type: String, required: true},
   date_updated_argovis: {type: Date, required: true},
   source: {type: sourceinfo, required: true},
-  levels: {type: [Number], required: true},
+  levels: {type: [Schema.Types.Mixed], required: true},
   data_info: [{type:[Schema.Types.Mixed], required: false}],
   lattice: [{type:[Schema.Types.Mixed], required: true}]
 });
@@ -52,5 +52,7 @@ module.exports['kg21Meta'] = mongoose.model('kg21Meta', GridMetaSchema, 'kg21Met
 module.exports['kg21'] = mongoose.model('kg21', GridSchema, 'kg21');
 module.exports['localGPspaceMeta'] = mongoose.model('localGPspaceMeta', GridMetaSchema, 'localGPspaceMeta');
 module.exports['localGPspace'] = mongoose.model('localGPspace', GridSchema, 'localGPspace');
+module.exports['localGPMeta'] = mongoose.model('localGPMeta', GridMetaSchema, 'localGPMeta');
+module.exports['localGPintegral'] = mongoose.model('localGPintegral', GridSchema, 'localGPintegral');
 module.exports['glodapMeta'] = mongoose.model('glodapMeta', GridMetaSchema, 'glodapMeta');
 module.exports['glodap'] = mongoose.model('glodap', GridSchema, 'glodap');
