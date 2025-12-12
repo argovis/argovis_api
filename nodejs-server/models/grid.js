@@ -50,5 +50,7 @@ module.exports['rg09Meta'] = mongoose.model('rg09Meta', GridMetaSchema, 'rg09Met
 module.exports['rg09'] = mongoose.model('rg09', GridSchema, 'rg09');
 module.exports['kg21Meta'] = mongoose.model('kg21Meta', GridMetaSchema, 'kg21Meta');
 module.exports['kg21'] = mongoose.model('kg21', GridSchema, 'kg21');
+module.exports['localGPspaceMeta'] = mongoose.model('localGPspaceMeta', GridMetaSchema, 'localGPspaceMeta');
+module.exports['localGPspace'] = mongoose.model('localGPspace', GridSchema, 'localGPspace');
 module.exports['glodapMeta'] = mongoose.model('glodapMeta', GridMetaSchema, 'glodapMeta');
 module.exports['glodap'] = mongoose.model('glodap', GridSchema, 'glodap');

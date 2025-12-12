@@ -866,7 +866,6 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
 
   /// handle standardized routes
   let standard_routes = ['argo', 'cchdo', 'drifters', 'tc', 'grids', 'argotrajectories', 'timeseries', 'extended', 'easyocean']
-
   if(standard_routes.includes(path[0])){
     //// metadata routes
     if(path.length==2 && path[1] == 'meta'){
@@ -874,11 +873,10 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
     }
     //// core data routes
     if( path.length==1 || 
-        (path.length==2 && path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='glodap')) || 
+        (path.length==2 && path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='localGPspace' || path[1]=='glodap')) || 
         (path.length==2 && path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) || 
         (path.length==2 && path[0]=='extended' && (path[1]=='ar')) ){
       let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('box'),false,qString.get('center'),qString.get('radius'), true)
-      
       ///// discount queries
       if(summaries['metadata'][params['dataset']]['metagroups'].some(key => qString.has(key)) || url.includes('compression=minimal')){
         c = c/5
@@ -914,7 +912,6 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
         if(!url.includes('data') || url.includes('except-data-values') || url.includes('compression=minimal')){
           c /= metaDiscount
         }
-        
       }
     } 
     //// */vocabulary routes unconstrained for now  
@@ -990,11 +987,12 @@ module.exports.source_filter = function(sourcelist){
 
 module.exports.find_grid_collection = function(token){
   // map a token including a grid's prefix ('rg09_temperature', 'rg09_salinity', ...) onto its collection name.
-
   if (["rg09_temperature", "rg09_salinity"].some(k => token.includes(k))) {
     return 'rg09'
   } else if(["kg21_ohc15to300"].some(k => token.includes(k))){
-    return 'kg21'
+    return 'localGPspace'
+  } else if(["localGPspace_ohc15to300"].some(k => token.includes(k)) ) {
+    return 'localGPspace'
   } else if (["glodap"].some(k => token.includes(k))){
     return 'glodap'
   } else {
