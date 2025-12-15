@@ -92,7 +92,7 @@ describe("cost functions", function () {
 
 describe("grid prefixes", function () {
   it('checks mapping between grid names and collection names', async function () {
-    expect(helpers.find_grid_collection('rg09_temperature_200401_Total')).to.eql('rg09');
+    expect(helpers.find_grid_metacollection('rg09_temperature_200401_Total')).to.eql('rg09Meta');
   });
 });
 

@@ -404,7 +404,7 @@
                   "required": "true",
                   "schema": {
                      "type": "string",
-                     "enum": ["rg09", "kg21", "localGPspace", "glodap"]
+                     "enum": ["rg09", "kg21", "localGPspace", "localGPintegral", "glodap"]
                   }
                },
                {
@@ -534,7 +534,7 @@
                   "required": "true",
                   "schema": {
                      "type": "string",
-                     "enum": ["rg09", "kg21", "localGPspace", "glodap"]
+                     "enum": ["rg09", "kg21", "localGPspace", "localGPintegral", "glodap"]
                   }
                },
                {

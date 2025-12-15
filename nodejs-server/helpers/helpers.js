@@ -985,18 +985,18 @@ module.exports.source_filter = function(sourcelist){
   return {$match: sourcematch}
 }
 
-module.exports.find_grid_collection = function(token){
-  // map a token including a grid's prefix ('rg09_temperature', 'rg09_salinity', ...) onto its collection name.
-  if (["rg09_temperature", "rg09_salinity"].some(k => token.includes(k))) {
-    return 'rg09'
-  } else if(["kg21_ohc15to300"].some(k => token.includes(k))){
-    return 'localGPspace'
-  } else if(["localGPspace_ohc15to300"].some(k => token.includes(k)) ) {
-    return 'localGPspace'
-  } else if (["glodap"].some(k => token.includes(k))){
-    return 'glodap'
+module.exports.find_grid_metacollection = function(token){
+  // given the ID of a document in a grid metadata collection, return the metadata collection name.
+  if (token.includes("rg09")){
+    return "rg09Meta"
+  } else if (token.includes("kg21") || token.includes("localGPspace")){
+    return "localGPspaceMeta"
+  } else if (token.includes("localGPintegral")){
+    return "localGPMeta"
+  } else if (token.includes("glodap")){
+    return "glodapMeta"
   } else {
-    return ''
+    return ""
   }
 }
 

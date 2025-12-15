@@ -13,14 +13,14 @@ const summaries = require('../models/summary');
 
 exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    let gridCollection = helpers.find_grid_collection(id)
-    if(gridCollection === ''){
+    let gridMetaCollection = helpers.find_grid_metacollection(id)
+    if(gridMetaCollection === ''){
       reject({
         code: 404,
         message: "No grid product matching ID " + id
       })
     }
-    const query = Grid[gridCollection + 'Meta'].aggregate([{$match:{'_id':id}}]);
+    const query = Grid[gridMetaCollection].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
     res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
@@ -57,7 +57,13 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,box,center
     }
     params.batchmeta = batchmeta
     params.compression = compression
-    params.metacollection = gridName+'Meta'
+    if(gridName === 'localGPintegral'){
+        params.metacollection = 'localGPMeta'
+        verticalRange = null // not obvious how to filter integral ranges by vertical bounds, decline for now.
+        presRange = null
+    } else {
+        params.metacollection = gridName+'Meta'
+    }
     params.is_grid = true
     params.verticalRange = presRange || verticalRange
     if(data && data.join(',') !== 'except-data-values'){
@@ -135,7 +141,7 @@ exports.gridVocab = function(gridName,parameter) {
         'data': 'data_info.0'
       }
 
-      Grid[gridName+'Meta'].find().distinct(lookup[parameter], function (err, vocab) {
+      Grid[helpers.find_grid_metacollection(gridName)].find().distinct(lookup[parameter], function (err, vocab) {
         if (err){
           reject({"code": 500, "message": "Server error"});
           return;
