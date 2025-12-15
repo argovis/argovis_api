@@ -531,6 +531,7 @@ paths:
           - rg09
           - kg21
           - localGPspace
+          - localGPintegral
           - glodap
       - name: id
         in: query
@@ -769,6 +770,7 @@ paths:
           - rg09
           - kg21
           - localGPspace
+          - localGPintegral
           - glodap
       - name: parameter
         in: query
