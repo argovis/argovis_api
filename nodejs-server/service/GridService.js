@@ -13,7 +13,7 @@ const summaries = require('../models/summary');
 
 exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    let gridMetaCollection = helpers.find_grid_collection(id)
+    let gridMetaCollection = helpers.find_grid_metacollection(id)
     if(gridMetaCollection === ''){
       reject({
         code: 404,
@@ -141,7 +141,7 @@ exports.gridVocab = function(gridName,parameter) {
         'data': 'data_info.0'
       }
 
-      Grid[helpers.find_grid_collection(gridName)].find().distinct(lookup[parameter], function (err, vocab) {
+      Grid[helpers.find_grid_metacollection(gridName)].find().distinct(lookup[parameter], function (err, vocab) {
         if (err){
           reject({"code": 500, "message": "Server error"});
           return;
