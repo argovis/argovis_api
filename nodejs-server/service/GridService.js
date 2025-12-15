@@ -13,14 +13,14 @@ const summaries = require('../models/summary');
 
 exports.findgridMeta = function(res,id) {
   return new Promise(function(resolve, reject) {
-    let gridCollection = helpers.find_grid_collection(id)
-    if(gridCollection === ''){
+    let gridMetaCollection = helpers.find_grid_collection(id)
+    if(gridMetaCollection === ''){
       reject({
         code: 404,
         message: "No grid product matching ID " + id
       })
     }
-    const query = Grid[gridCollection + 'Meta'].aggregate([{$match:{'_id':id}}]);
+    const query = Grid[gridMetaCollection].aggregate([{$match:{'_id':id}}]);
     let postprocess = helpers.meta_xform(res)
     res.status(404) // 404 by default
     resolve([query.cursor(), postprocess])
@@ -141,7 +141,7 @@ exports.gridVocab = function(gridName,parameter) {
         'data': 'data_info.0'
       }
 
-      Grid[gridName+'Meta'].find().distinct(lookup[parameter], function (err, vocab) {
+      Grid[helpers.find_grid_collection(gridName)].find().distinct(lookup[parameter], function (err, vocab) {
         if (err){
           reject({"code": 500, "message": "Server error"});
           return;
