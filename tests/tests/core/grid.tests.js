@@ -96,7 +96,7 @@ describe("GET /grids/rg09", function () {
 
 describe("GET /grids/rg09", function () {
   it("grids profile should be dropped if no requested data is available", async function () {
-    const response = await request.get("/grids/rg09?id=20040115000000_20.5_-64.5&data=localGPspace_ohc15to300").set({'x-argokey': 'developer'});
+    const response = await request.get("/grids/rg09?id=20040115000000_20.5_-64.5&data=potential_temperature").set({'x-argokey': 'developer'});
     expect(response.status).to.eql(404);
   });
 });

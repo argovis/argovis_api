@@ -873,7 +873,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
     }
     //// core data routes
     if( path.length==1 || 
-        (path.length==2 && path[0]=='grids' && (path[1]=='rg09' || path[1]=='kg21' || path[1]=='localGPspace' || path[1]=='glodap')) || 
+        (path.length==2 && path[0]=='grids' && (path[1]=='rg09' || path[1]=='localGPintegral' || path[1]=='glodap')) || 
         (path.length==2 && path[0]=='timeseries' && (path[1]=='noaasst' || path[1]=='copernicussla' || path[1]=='ccmpwind')) || 
         (path.length==2 && path[0]=='extended' && (path[1]=='ar')) ){
       let params = module.exports.parameter_sanitization(path[path.length-1], null,qString.get('startDate'),qString.get('endDate'),qString.get('polygon'),qString.get('box'),false,qString.get('center'),qString.get('radius'), true)
@@ -989,8 +989,6 @@ module.exports.find_grid_metacollection = function(token){
   // given the ID of a document in a grid metadata collection, return the metadata collection name.
   if (token.includes("rg09")){
     return "rg09Meta"
-  } else if (token.includes("kg21") || token.includes("localGPspace")){
-    return "localGPspaceMeta"
   } else if (token.includes("localGPintegral")){
     return "localGPMeta"
   } else if (token.includes("glodap")){
