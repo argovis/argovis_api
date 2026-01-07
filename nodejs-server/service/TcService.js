@@ -37,7 +37,7 @@ exports.findTC = function(res,id,startDate,endDate,polygon,box,center,radius,nam
       params.data_query = helpers.parse_data_qsp(data.join(','))
     }
     params.lookup_meta = batchmeta 
-    params.archtypical_meta = params.data_query
+    params.genericMeta = true
     params.compression = compression
     params.batchmeta = batchmeta
 
@@ -72,8 +72,7 @@ exports.findTC = function(res,id,startDate,endDate,polygon,box,center,radius,nam
       metafilter = tc['tcMeta'].aggregate([{$match: {'name': name}}]).exec()
       params.metafilter = true
     } else if(!batchmeta) {
-      // get an arbitrary metadata doc, unless we're getting specific ones from batchmeta
-      metafilter = tc['tcMeta'].find({}).limit(1).exec()
+      metafilter = summaries.find({_id:'tcGenericMeta'}).lean().exec()
       params.metafilter = false
     }
 

@@ -59,7 +59,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,box,center,rad
     params.batchmeta = batchmeta
     params.compression = compression
     params.metacollection = 'driftersMeta'
-    params.archtypical_meta = true // any metadata document passed in to the datafilter from the metafilter has a globally applicable data_info, and possibly other fields.
+    params.genericMeta = true // the summaries collection has a generic metadata document that applies to all data docs in the corresponding data collection.
     if(data && data.join(',') !== 'except-data-values'){
       params.data_query = helpers.parse_data_qsp(data.join(','))
     }
@@ -105,7 +105,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,box,center,rad
         metafilter = Drifter['driftersMeta'].aggregate([{$match: match}]).exec()
         params.metafilter = true
     } else {
-      metafilter = Drifter['driftersMeta'].find({}).limit(1).exec()
+      metafilter = summaries.find({_id:'driftersGenericMeta'}).lean().exec()
       params.metafilter = false
     }
 

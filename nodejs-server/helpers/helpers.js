@@ -327,13 +327,21 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
   }
 
   //// some metadata documents pre-pulled have globally useful data
-  if(params.archtypical_meta && foreign_docs.length > 0){
-    if(params.data_query){
+  if(params.genericMeta && foreign_docs.length > 0){
+    if(params.data_query || params.verticalRange || params.presRange){
       aggPipeline.push({
         $addFields: {
           data_info: foreign_docs[0].data_info
         }
       })
+    }
+
+    if(params.is_grid && params.verticalRange || params.presRange){
+        aggPipeline.push({
+            $addFields: {
+                levels: foreign_docs[0].levels
+            }
+        })
     }
 
     if(params.is_timeseries){
