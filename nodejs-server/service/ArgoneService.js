@@ -51,7 +51,7 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
     }
 
     // metadata table filter: just get the sole solitary argon metadata doc
-    let metafilter = argone['argoneMeta'].find({_id:'argone'}).exec()
+    let metafilter = argone['argoneMeta'].find({_id:'argone'}).lean().exec()
     let params = {
       'metafilter': false,
       'batchmeta': batchmeta,
@@ -64,7 +64,7 @@ exports.findargone = function(res, id,forecastOrigin,forecastGeolocation,metadat
       params.data_query = helpers.parse_data_qsp(data.join(','))
     }
     params.lookup_meta = false
-    params.archtypical_meta = true // there's just the one.
+    params.genericMeta = true // the sole metadata doc counts as effectively generic.
 
     // can we afford to project data documents down to a subset in aggregation?
     if(compression=='minimal' && data==null){

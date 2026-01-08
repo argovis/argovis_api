@@ -141,8 +141,6 @@ function collectionSearch(collection, datamodel, metamodel, res,id,startDate,end
           reject(params)
           return
         }
-        params.batchmeta = batchmeta
-        params.compression = compression
         params.verticalRange = presRange || verticalRange
         params.metacollection = collection+'Meta'
         if(data && data.join(',') !== 'except-data-values'){

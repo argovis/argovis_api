@@ -59,8 +59,7 @@ exports.findArgoTrajectory = function(res,id,startDate,endDate,polygon,box,cente
       reject(params)
       return
     }
-    params.batchmeta = batchmeta
-    params.compression = compression
+
     params.metacollection = 'argotrajectoriesMeta'
     if(data && data.join(',') !== 'except-data-values'){
       params.data_query = helpers.parse_data_qsp(data.join(','))

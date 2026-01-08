@@ -55,8 +55,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,box,center
       reject(params)
       return
     }
-    params.batchmeta = batchmeta
-    params.compression = compression
+
     if(gridName === 'localGPintegral'){
         params.metacollection = 'localGPMeta'
         verticalRange = null // not obvious how to filter integral ranges by vertical bounds, decline for now.
@@ -65,11 +64,12 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,box,center
         params.metacollection = gridName+'Meta'
     }
     params.is_grid = true
+    params.genericMeta = true // the summaries collection has a generic metadata document that applies to all data docs in a given grid collection
     params.verticalRange = presRange || verticalRange
     if(data && data.join(',') !== 'except-data-values'){
       params.data_query = helpers.parse_data_qsp(data.join(','))
     }
-    params.lookup_meta = batchmeta || params.data_query || params.verticalRange
+    params.lookup_meta = batchmeta
     params.compression = compression
     params.batchmeta = batchmeta
     // decide y/n whether to service this request
@@ -96,15 +96,22 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,box,center
       params.projection = ['_id', 'metadata', 'geolocation', 'timestamp']
     }
 
-    // metadata table filter: no-op promise stub, nothing to filter grid data docs on from metadata at the moment
+    // metadata table filter: nothing to filter on in meta collection, use this to fetch a generic metadata doc
+    // some grids have exactly one metadata doc, others have a summarized generic metadata doc.
     let metafilter = Promise.resolve([])
+    if(gridName === 'glodap'){
+        metafilter = Grid['glodapMeta'].find({_id:'glodapv2.2016b'}).lean().exec()
+    } else if(gridName === 'localGPintegral'){
+        metafilter = Grid['localGPMeta'].find({_id:'localGPintegral'}).lean().exec()
+    } else {
+        metafilter = summaries.find({_id:gridName+'GenericMeta'}).lean().exec()
+    }
     params.metafilter = false
 
     // datafilter must run syncronously after metafilter in case metadata info is the only search parameter for the data collection
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter))
     Promise.all([metafilter, datafilter])
         .then(search_result => {
-
           let stub = function(data){
               // given a data and corresponding metadata document,
               // return the record that should be returned when the compression=minimal API flag is set

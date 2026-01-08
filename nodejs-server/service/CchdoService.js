@@ -35,8 +35,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,box,center,radius,
       reject(params)
       return
     }
-    params.batchmeta = batchmeta
-    params.compression = compression
+
     params.verticalRange = presRange || verticalRange
     params.metacollection = 'cchdoMeta'
     if(data && data.join(',') !== 'except-data-values'){
