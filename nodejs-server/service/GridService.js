@@ -55,8 +55,7 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,box,center
       reject(params)
       return
     }
-    params.batchmeta = batchmeta
-    params.compression = compression
+
     if(gridName === 'localGPintegral'){
         params.metacollection = 'localGPMeta'
         verticalRange = null // not obvious how to filter integral ranges by vertical bounds, decline for now.
@@ -113,7 +112,6 @@ exports.findgrid = function(res,gridName,id,startDate,endDate,polygon,box,center
     let datafilter = metafilter.then(helpers.datatable_stream.bind(null, Grid[gridName], params, local_filter))
     Promise.all([metafilter, datafilter])
         .then(search_result => {
-
           let stub = function(data){
               // given a data and corresponding metadata document,
               // return the record that should be returned when the compression=minimal API flag is set

@@ -30,8 +30,7 @@ exports.findTC = function(res,id,startDate,endDate,polygon,box,center,radius,nam
       reject(params)
       return
     }
-    params.batchmeta = batchmeta
-    params.compression = compression
+
     params.metacollection = 'tcMeta'
     if(data && data.join(',') !== 'except-data-values'){
       params.data_query = helpers.parse_data_qsp(data.join(','))

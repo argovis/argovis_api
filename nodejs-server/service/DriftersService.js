@@ -56,8 +56,7 @@ exports.drifterSearch = function(res,id,startDate,endDate,polygon,box,center,rad
       reject(params)
       return
     }
-    params.batchmeta = batchmeta
-    params.compression = compression
+
     params.metacollection = 'driftersMeta'
     params.genericMeta = true // the summaries collection has a generic metadata document that applies to all data docs in the corresponding data collection.
     if(data && data.join(',') !== 'except-data-values'){

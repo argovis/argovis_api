@@ -765,7 +765,7 @@ module.exports.postprocess_stream = function(chunk, metadata, params, stub, res)
       }
     }
     if(newmeta.length > 0){
-      return newmeta
+      return newmeta.filter(x => !x._id.includes('GenericMeta'))
     }
   } else {
     if(chunk.metadata_docs){

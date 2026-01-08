@@ -33,8 +33,6 @@ exports.findtimeseries = function(res,timeseriesName,id,startDate,endDate,polygo
       return
     }
 
-    params.batchmeta = batchmeta
-    params.compression = compression
     params.is_timeseries = true
     params.genericMeta = true // each timeseries collection has exactly one meta doc, which counts as generic.
     if(data && data.join(',') !== 'except-data-values'){

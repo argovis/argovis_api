@@ -56,8 +56,7 @@ exports.findeasyocean = function(res,id,startDate,endDate,polygon,box,center,rad
       reject(params)
       return
     }
-    params.batchmeta = batchmeta
-    params.compression = compression
+
     params.metacollection = 'easyoceanMeta'
     params.verticalRange = presRange || verticalRange
     if(data && data.join(',') !== 'except-data-values'){
