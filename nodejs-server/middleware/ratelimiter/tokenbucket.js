@@ -32,7 +32,7 @@ module.exports.tokenbucket = function (req, res, next) {
 	// immediately count incoming requests
 	incomingRequestCounter.inc({ endpoint: req.path });
 	let bucketsize = 100
-	let tokenrespawntime = 250 // ms to respawn one token
+	let tokenrespawntime = 500 // ms to respawn one token
 	let requestCost = 1 //default cost, for except-data-values requests
 	let cellprice = 0.0001 // token cost of 1 sq deg day
 	let metaDiscount = 100 // scaledown factor to discount except-data-values request by relative to data requests
