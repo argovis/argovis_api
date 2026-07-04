@@ -1,14 +1,6 @@
-FROM node:22.2.0-alpine3.20 as build
+FROM node:26.4.0-alpine3.23 as build
 WORKDIR /app
-# hack to avoid https://github.com/npm/cli/issues/4838
-ENV HOME=/app/npmlogs
 RUN mkdir /app/npmlogs && chown -R 1000660000 /app/npmlogs
 COPY nodejs-server/package.json .
 RUN npm install
 RUN apk update
-# hack in security patched deep dependency
-RUN sed -i 's|"qs": "6.7.0"|"qs": "6.7.3"|g' /app/node_modules/body-parser/package.json 
-RUN rm package-lock.json && npm install
-
-RUN chown -R 1000660000 /app/npmlogs/.npm
-
