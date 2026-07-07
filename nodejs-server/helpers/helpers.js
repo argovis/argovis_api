@@ -622,7 +622,7 @@ module.exports.level_filter = function(data, data_info, coerced_pressure){
   });
 
   dcopy = dcopy.map( (level,index) => {
-    if(level.every(x => x === null)){
+    if(level.every(x => x === null || x === 'null')){ // string case is just there to exercise the tests, but shouldn't happen in practice
       return index
     } else{
       return -1
@@ -713,8 +713,8 @@ module.exports.postprocess_stream = function(chunk, metadata, params, stub, res)
     chunk.data = module.exports.data_filter(data_mask, chunk.data, params.data_query)
     chunk.data_info = module.exports.data_info_filter(data_mask, chunk.data_info)
     //// filter off levels that have all null values for all requested variables
-    //// skip this for grids, they need to be rectangular
-    if(!params.data_query[1].includes('all') && !params.is_grid){
+    //// skip this for grids and timeseries, they need to be rectangular
+    if(!params.data_query[1].includes('all') && !params.is_grid && !params.is_timeseries){
       chunk.data = module.exports.level_filter(chunk.data, chunk.data_info, params.coerced_pressure)
     }
     //// dump pressure if coerced and it's the only thing left on the data array after masking

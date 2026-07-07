@@ -37,6 +37,13 @@ describe("GET /timeseries/copernicussla", function () {
   });
 });
 
+describe("GET /timeseries/copernicussla", function () {
+    it("nulls should not drop from timeseries data vectors", async function () {
+      const response = await request.get("/timeseries/copernicussla?center=-46.875,35.625&radius=1&startDate=2022-07-10T00:00:00Z&endDate=2022-07-31T00:00:00Z&data=sla").set({'x-argokey': 'developer'});
+      expect(response.body[0].data[0].length).to.eql(response.body[0].timeseries.length)        
+    });
+  });
+
 describe("GET /timeseries/ccmpwind", function () {
   it("make sure ccmp time slicing matches expectations", async function () {
     const response = await request.get("/timeseries/ccmpwind?center=0.125,0.125&radius=1&startDate=1993-01-30T00:00:00Z&endDate=1993-02-14T00:00:00Z&data=uwnd").set({'x-argokey': 'developer'});
