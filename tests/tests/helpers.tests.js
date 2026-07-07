@@ -271,12 +271,41 @@ describe("vertical_bounds", function () {
   });
 }); 
 
+// for timerange_bound, remember that the first index returned is meant to be the first index kept, and the last index returned is meant to be the first index rejected.
 describe("timerange_bounds", function () {
   it("timerange filter - nominal", async function () {
     timeseries = ['2010-01-01T00:00:00Z', '2010-01-02T00:00:00Z', '2010-01-03T00:00:00Z', '2010-01-04T00:00:00Z'],
     expect(helpers.timerange_bounds(timeseries, '2010-01-01T12:00:00Z', '2010-01-04T00:00:00Z')).to.deep.equal([1,3])
   });
 }); 
+
+describe("timerange_bounds", function () {
+    it("timerange filter - delta t==0", async function () {
+      timeseries = ['2010-01-01T00:00:00Z', '2010-01-02T00:00:00Z', '2010-01-03T00:00:00Z', '2010-01-04T00:00:00Z'],
+      expect(helpers.timerange_bounds(timeseries, '2010-01-01T12:00:00Z', '2010-01-01T00:00:00Z')).to.deep.equal([1,1])
+    });
+  }); 
+
+describe("timerange_bounds", function () {
+    it("timerange filter - start on entry and end on entry", async function () {
+      timeseries = ['2010-01-01T00:00:00Z', '2010-01-02T00:00:00Z', '2010-01-03T00:00:00Z', '2010-01-04T00:00:00Z'],
+      expect(helpers.timerange_bounds(timeseries, '2010-01-02T00:00:00Z', '2010-01-03T00:00:00Z')).to.deep.equal([1,2])
+    });
+  }); 
+
+describe("timerange_bounds", function () {
+    it("timerange filter - start before time", async function () {
+      timeseries = ['2010-01-01T00:00:00Z', '2010-01-02T00:00:00Z', '2010-01-03T00:00:00Z', '2010-01-04T00:00:00Z'],
+      expect(helpers.timerange_bounds(timeseries, '1910-01-02T00:00:00Z', '2010-01-03T00:00:00Z')).to.deep.equal([0,2])
+    });
+  }); 
+
+describe("timerange_bounds", function () {
+    it("timerange filter - end after time", async function () {
+      timeseries = ['2010-01-01T00:00:00Z', '2010-01-02T00:00:00Z', '2010-01-03T00:00:00Z', '2010-01-04T00:00:00Z'],
+      expect(helpers.timerange_bounds(timeseries, '2010-01-02T00:00:00Z', '2110-01-03T00:00:00Z')).to.deep.equal([1,4])
+    });
+  }); 
 
 describe("level_filter", function () {
   it("level filter - nominal", async function () {
