@@ -588,7 +588,7 @@ module.exports.timerange_bounds = function(timeseries, startDate, endDate){
   while(lowIndex < highIndex && timeseries[lowIndex] < startDate){
     lowIndex++
   } // lowIndex now points at the first level index to keep
-  while(highIndex > lowIndex && timeseries[highIndex] >= endDate){
+  while(highIndex >= lowIndex && timeseries[highIndex] >= endDate){
     highIndex--
   } // highIndex now points at the last level index to keep
 

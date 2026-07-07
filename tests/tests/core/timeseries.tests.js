@@ -44,6 +44,13 @@ describe("GET /timeseries/copernicussla", function () {
     });
   });
 
+  describe("GET /timeseries/copernicussla", function () {
+    it("delta t of zero should return zero documents", async function () {
+      const response = await request.get("/timeseries/copernicussla?polygon=[[-50,30],[-50,40],[-40,40],[-40,30],[-50,30]]&data=sla&startDate=2016-03-15T00:00:00Z&endDate=2016-03-15T00:00:00Z").set({'x-argokey': 'developer'});
+      expect(response.body.length).to.eql(0)        
+    });
+  });
+
 describe("GET /timeseries/ccmpwind", function () {
   it("make sure ccmp time slicing matches expectations", async function () {
     const response = await request.get("/timeseries/ccmpwind?center=0.125,0.125&radius=1&startDate=1993-01-30T00:00:00Z&endDate=1993-02-14T00:00:00Z&data=uwnd").set({'x-argokey': 'developer'});
