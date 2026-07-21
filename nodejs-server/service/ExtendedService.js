@@ -82,7 +82,7 @@ exports.findExtended = function(res,extendedName,id,startDate,endDate,polygon,bo
     params.lookup_meta = false // there's only one AR meta document, just look it up once
     params.genericMeta = true // the sole AR meta doc counts as a generic metadata doc.
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, null, false, null, null) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, null, false, null, null, params.compression, params.batchmeta) 
     if(bailout){
       reject(bailout)
       return

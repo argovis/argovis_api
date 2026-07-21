@@ -69,7 +69,7 @@ exports.findArgoTrajectory = function(res,id,startDate,endDate,polygon,box,cente
     params.batchmeta = batchmeta
 
     // decide y/n whether to service this request
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.box, false, null, null) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.box, false, null, null, params.compression, params.batchmeta) 
     if(bailout){
       reject(bailout)
       return
