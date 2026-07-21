@@ -186,7 +186,8 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
     params.center = module.exports.validlonlat([center], suppressCoordCleaning)[0]
   }
 
-  if(radius){
+  hasrad = radius || radius==0
+  if(hasrad){
     params.radius = radius
   }
 
@@ -201,10 +202,11 @@ module.exports.request_sanitation = function(polygon, center, radius, box, requi
   }
 
   // basic sanity checks
+  hasrad = radius || radius==0
   if( (center && polygon) || (box && polygon) || (box && center)){
     return {"code": 400, "message": "Please request only one of polygon, box, or center."} 
   }
-  if((center && !radius) || (!center && radius)){
+  if((center && !hasrad) || (!center && hasrad)){
     return {"code": 400, "message": "Please specify both radius and center to filter for data less than <radius> km from <center>."}
   }
   if(presRange && verticalRange){
@@ -227,7 +229,8 @@ module.exports.datatable_stream = function(model, params, local_filter, foreign_
 
   // construct match stages as required
   /// prox match construction
-  if(params.center && params.radius) {
+  hasrad = params.radius || params.radius==0
+  if(params.center && hasrad) {
     proxMatch.push({$geoNear: {key: 'geolocation', near: {type: "Point", coordinates: [params.center[0], params.center[1]]}, maxDistance: 1000*params.radius, distanceField: "distcalculated"}}) 
     proxMatch.push({ $unset: "distcalculated" })
   }
