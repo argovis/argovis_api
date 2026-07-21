@@ -56,7 +56,7 @@ exports.findCCHDO = function(res,id,startDate,endDate,polygon,box,center,radius,
       reject({"code": 400, "message": "Please combine source queries with at least one of a time range, spatial extent, id, CCHDO cruise ID, or WOCE line search."})
       return
     }
-    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.box, false, presRange, verticalRange) 
+    let bailout = helpers.request_sanitation(params.polygon, params.center, params.radius, params.box, false, presRange, verticalRange, params.compression, params.batchmeta) 
     if(bailout){
       reject(bailout)
       return

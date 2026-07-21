@@ -194,8 +194,12 @@ module.exports.parameter_sanitization = function(dataset,id,startDate,endDate,po
   return params
 }
 
-module.exports.request_sanitation = function(polygon, center, radius, box, require_region, presRange, verticalRange){
+module.exports.request_sanitation = function(polygon, center, radius, box, require_region, presRange, verticalRange, compression, batchmeta){
   // given some parameters from a requst, decide whether or not to reject; return false == don't reject, return with message / code if do reject
+
+  if(batchmeta && compression === 'minimal'){
+    return {"code": 400, "message": "Please specify at most one of compression=minimal and batchmeta mode. Minimal compression is for stubs of data documents, batchmeta is for corresponding metadata documents."}
+  }
 
   if(require_region && !polygon && !(center || radius) && !box){
     return {"code": 400, "message": "This route requires a geographic region, either a polygon, box, or center and radius."} 
@@ -906,9 +910,10 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
           params.endDate = new Date(summaries['metadata'][params['dataset']].endDate)
         }
         ///// cost out request; timeseries limited only by geography since entire time span for each matched lat/long must be pulled off disk in any case.
+        ///// let them get away with stubs and batchmeta
         let geospan = module.exports.geoarea(params.polygon,params.box,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
         let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
-        if((!url.includes('compression=minimal')) && (path[0]=='timeseries' && path.length==2 && geospan > maxbulk_timeseries) || (path[0]!='timeseries' && geospan*dayspan > maxbulk) ){
+        if((!url.includes('compression=minimal')) && (!url.includes('batchmeta')) && (path[0]=='timeseries' && path.length==2 && geospan > maxbulk_timeseries) || (path[0]!='timeseries' && geospan*dayspan > maxbulk) ){
           return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
         }
         if(path[0] == 'timeseries'){
