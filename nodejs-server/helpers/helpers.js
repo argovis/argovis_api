@@ -913,7 +913,7 @@ module.exports.cost = function(url, c, cellprice, metaDiscount, maxbulk, maxbulk
         ///// let them get away with stubs and batchmeta
         let geospan = module.exports.geoarea(params.polygon,params.box,params.radius) / 13000 // 1 sq degree is about 13k sq km at eq
         let dayspan = Math.round(Math.abs((params.endDate - params.startDate) / (24*60*60*1000) )); // n days of request
-        if((!url.includes('compression=minimal')) && (!url.includes('batchmeta')) && (path[0]=='timeseries' && path.length==2 && geospan > maxbulk_timeseries) || (path[0]!='timeseries' && geospan*dayspan > maxbulk) ){
+        if((!url.includes('compression=minimal')) && (!url.includes('batchmeta')) && ((path[0]=='timeseries' && path.length==2 && geospan > maxbulk_timeseries) || (path[0]!='timeseries' && geospan*dayspan > maxbulk))){
           return {"code": 413, "message": "The temporospatial extent of your request is very large and likely to crash our API. Please request a smaller region or shorter timespan, or both."}
         }
         if(path[0] == 'timeseries'){
