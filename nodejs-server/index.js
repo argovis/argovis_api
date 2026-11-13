@@ -68,7 +68,7 @@ http.createServer(app).listen(serverPort, function () {
 // mongodb config and connection //////////////////
 mongoose.Promise = global.Promise;
 //const mongoDB = "mongodb://database1,database2,database3/argo?replicaSet=rsmongo&readPreference=secondary" // EV this later
-const mongoDB = "mongodb://database/argo"
+const mongoDB = process.env.MONGOCONNECT //"mongodb://database/argo"
 const mongooseOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
