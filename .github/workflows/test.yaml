@@ -22,7 +22,7 @@ jobs:
       - name: 'build_test_rig'
         run: docker image build -f Dockerfile-test -t testrunner:dev .
       - name: 'launch core API'
-        run: docker container run --network ghactions  -d --name api --env ARGONODE=core ARGOCONNECT=mongodb://database/argo argovis/api:test
+        run: docker container run --network ghactions  -d --name api --env ARGONODE=core --env ARGOCONNECT=mongodb://database/argo argovis/api:test
       - name: 'check core API container'
         run: docker network inspect ghactions
       - name: 'test core helpers'
@@ -32,7 +32,7 @@ jobs:
       - name: 'tear down core api'
         run: docker container rm -f api
       - name: 'launch miami API'
-        run: docker container run --network ghactions -d --name api --env ARGONODE=miami ARGOCONNECT=mongodb://database/argo argovis/api:test
+        run: docker container run --network ghactions -d --name api --env ARGONODE=miami --env ARGOCONNECT=mongodb://database/argo argovis/api:test
       - name: 'test miami'
         run: docker container run --network ghactions testrunner:dev npm run test-miami
       - name: 'test miami helpers'
